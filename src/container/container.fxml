@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.input.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="639.0" prefWidth="963.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="container.ContainerController">
+   <center>
+      <AnchorPane fx:id="anchor" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+         <menus>
+            <Menu mnemonicParsing="false" text="File">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#doNew" text="New" />
+                  <MenuItem mnemonicParsing="false" onAction="#doOpen" text="Open" />
+                  <MenuItem mnemonicParsing="false" text="Save" />
+                  <MenuItem mnemonicParsing="false" onAction="#doZip" text="Zip" />
+                  <MenuItem mnemonicParsing="false" onAction="#doClose" text="Close" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Undo" />
+                  <MenuItem mnemonicParsing="false" text="Redo" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Cut" />
+                  <MenuItem mnemonicParsing="false" text="Copy" />
+                  <MenuItem mnemonicParsing="false" text="Paste" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Compare" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="About" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+   </top>
+   <left>
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+         <items>
+            <TreeTableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" fx:id="xmlTree">
+              <columns>
+                <TreeTableColumn fx:id="col0" prefWidth="126.0" text="Element" />
+                <TreeTableColumn fx:id="col1" prefWidth="65.0" text="C2" />
+              </columns>
+            </TreeTableView>
+            <ListView fx:id="list" prefHeight="200.0" prefWidth="200.0" />
+         </items>
+      </SplitPane>
+   </left>
+   <right>
+      <VBox fx:id="fileContainer" minWidth="300.0" prefWidth="500.0" BorderPane.alignment="CENTER" />
+   </right>
+</BorderPane>

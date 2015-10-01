@@ -1,0 +1,7 @@
+
+
+.chart-symbol{ 
+    -fx-stroke: black;
+    -fx-background-color: blue;
+-fx-background-radius: 5px;
+ }

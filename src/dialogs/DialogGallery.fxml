@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="484.0" prefWidth="783.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dialogs.DialogGalleryController">
+   <children>
+      <VBox layoutX="20.0" prefHeight="267.0" prefWidth="367.0">
+         <children>
+            <HBox layoutX="20.0" prefHeight="61.0" prefWidth="510.0" spacing="10.0">
+               <children>
+                  <Button fx:id="alert" mnemonicParsing="false" onAction="#doAlert" text="Alert" />
+                  <Button fx:id="confirm" mnemonicParsing="false" onAction="#doConfirm" text="Confirm" />
+                  <Button fx:id="inform" mnemonicParsing="false" onAction="#doStyledDialog" text="Styled" />
+                  <Button fx:id="deny" mnemonicParsing="false" onAction="#doLogin" text="Log In" />
+                  <Button fx:id="explain" mnemonicParsing="false" onAction="#doTextInput" text="Name Input" />
+               </children>
+            </HBox>
+            <VBox prefHeight="206.0" prefWidth="421.0" spacing="10.0">
+               <children>
+                  <Button fx:id="rules" layoutX="224.0" layoutY="10.0" mnemonicParsing="false" onAction="#doRules" text="Rules" />
+                  <Button fx:id="save" mnemonicParsing="false" onAction="#doSave" text="Save" />
+                  <Button fx:id="open" mnemonicParsing="false" onAction="#doOpen" text="Open" />
+                  <Button fx:id="choose" mnemonicParsing="false" onAction="#doChoose" text="Choose" />
+                  <Button fx:id="find" mnemonicParsing="false" onAction="#doFind" text="Find" />
+                  <Button fx:id="connect" layoutX="10.0" layoutY="154.0" mnemonicParsing="false" onAction="#doConnect" text="Connect" />
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

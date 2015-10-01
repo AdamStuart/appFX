@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<!-- <?import NumberTextField2?>
+ -->
+
+<AnchorPane prefHeight="437.0" prefWidth="742.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="table.binder.BindingsController">
+   <children>
+    
+       <VBox fx:id="threeLineContainer" layoutX="35.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="157.0" prefWidth="234.0" />
+      <Label fx:id="heightDisplay" layoutX="328.0" layoutY="69.0" rotate="-90.0" text="theHeight" />
+      <Label fx:id="widthDisplay" layoutX="384.0" layoutY="6.0" text="theWidth" />
+      <Label fx:id="scaleDisplay" layoutX="488.0" layoutY="6.0" text="theScale" />
+      <TableView fx:id="tableView" layoutX="27.0" layoutY="204.0" prefHeight="182.0" prefWidth="656.0">
+        <columns>
+            <TableColumn fx:id="selectedCol" maxWidth="26.0" minWidth="26.0" prefWidth="26.0" />
+            <TableColumn fx:id="colorCol" maxWidth="55.0" minWidth="55.0" prefWidth="55.0" />
+          <TableColumn fx:id="widthCol" prefWidth="75.0" text="Width" />
+            <TableColumn fx:id="widthUnitsCol" prefWidth="70.0" text="units" />
+            <TableColumn fx:id="heightCol" prefWidth="75.0" text="Height" />
+            <TableColumn fx:id="heightUnitsCol" prefWidth="70.0" text="units" />
+            <TableColumn fx:id="areaCol" prefWidth="75.0" text="Area" />
+          <TableColumn fx:id="areaUnitsCol" text="units" />
+            <TableColumn fx:id="dueDateCol" prefWidth="127.0" text="Due Date" />
+        </columns>
+      </TableView>
+      <VBox fx:id="dragboxContainer" layoutX="374.0" layoutY="36.0" maxHeight="140.0" maxWidth="140.0" minHeight="140.0" minWidth="140.0" prefHeight="140.0" prefWidth="140.0" />
+      <Button fx:id="addRowBtn" layoutX="35.0" layoutY="397.0" mnemonicParsing="false" onAction="#addRow" text="Add" />
+      <Button fx:id="deleteRowBtn" layoutX="100.0" layoutY="397.0" mnemonicParsing="false" onAction="#deleteRow" prefHeight="26.0" prefWidth="64.0" text="Delete" />
+   </children>
+</AnchorPane>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane fx:id="rootPane" prefHeight="555.0" prefWidth="695.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chart.fancychart.FancyChartController">
+
+	<children>
+      <BorderPane fx:id="borderPane" prefHeight="555.0" prefWidth="418.0">
+         <bottom>
+						<HBox fx:id="colorPickerBox" BorderPane.alignment="CENTER" />
+         </bottom>
+         <center>
+				<VBox id="chart container" fx:id="chartBox" style="-fx-background-color: gray;" BorderPane.alignment="CENTER" />
+         </center>
+         <top>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#tableVis" text="Show/Hide Table" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </top>
+         <right>
+            <TabPane id="TabbedTables" fx:id="tabPane" prefHeight="526.0" prefWidth="228.0" style="-fx-background-color: ivory;" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+              <tabs>
+                <Tab fx:id="tabA" text="Table A">
+                     <content>
+                        <TableView fx:id="tableA" prefHeight="493.0" prefWidth="219.0">
+                          <columns>
+                            <TableColumn prefWidth="25.0" text="C1" />
+                            <TableColumn prefWidth="75.0" text="C2" />
+                          </columns>
+                        </TableView>
+                     </content>
+                </Tab>
+                <Tab fx:id="tabB" text="Table B">
+                     <content>
+                        <TableView fx:id="tableB" prefHeight="200.0" prefWidth="200.0">
+                          <columns>
+                            <TableColumn prefWidth="25.0" text="C1" />
+                            <TableColumn prefWidth="75.0" text="C2" />
+                          </columns>
+                        </TableView>
+                     </content>
+                </Tab>
+                  <Tab fx:id="tabC" text="Table C">
+                     <content>
+                        <TableView fx:id="tableC" prefHeight="471.0" prefWidth="181.0">
+                          <columns>
+                            <TableColumn prefWidth="25.0" text="C1" />
+                            <TableColumn prefWidth="75.0" text="C2" />
+                          </columns>
+                        </TableView>
+                     </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+         </right>
+         <left>
+            <VBox>
+               <children>
+                  <VBox fx:id="inspectors" prefHeight="124.0" prefWidth="175.0" style="-fx-background-color: ivory; -fx-border-width: 4; -fx-border-color: tan;" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label text="Legend" />
+                        <HBox spacing="8.0">
+                           <children>
+            								<ColorPicker fx:id="colorPicker0" minWidth="55" onAction="#setColor" style="-fx-color-label-visible: false;" />
+                              <Label fx:id="label1" text="Label" />
+                              <Label fx:id="stat1" layoutX="105.0" layoutY="10.0" text="Stat" />
+                           </children>
+                        </HBox>
+                        <HBox spacing="8.0">
+                           <children> 
+            								<ColorPicker fx:id="colorPicker1" minWidth="55" onAction="#setColor" style="-fx-color-label-visible: false;" />
+                              <Label fx:id="label2" text="Label" />
+                              <Label fx:id="stat2" layoutX="105.0" layoutY="10.0" text="Stat" />
+                           </children>
+                        </HBox>
+                        <HBox spacing="8.0">
+                           <children> 
+            								<ColorPicker fx:id="colorPicker2" minWidth="55" onAction="#setColor" style="-fx-color-label-visible: false;" />
+                              <Label fx:id="label3" text="Label" />
+                              <Label fx:id="stat3" layoutX="105.0" layoutY="10.0" text="Stat" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox id="Inspector" prefHeight="423.0" prefWidth="234.0" spacing="10.0" style="-fx-background-color: beige; -fx-border-color: brown;">
+                     <children>
+                        <ToolBar prefHeight="62.0" prefWidth="164.0">
+                           <items>
+                              <ToggleButton fx:id="line" mnemonicParsing="false" text="Line" />
+                              <ToggleButton fx:id="bar" mnemonicParsing="false" text="Bar" />
+                              <ToggleButton fx:id="scatter" mnemonicParsing="false" text="Scatter" />
+                              <ToggleButton fx:id="bubble" mnemonicParsing="false" text="Bubble" />
+                           </items>
+                        </ToolBar>
+                        <Label alignment="CENTER_RIGHT" text="Symbol" />
+                        <ColorPicker fx:id="fillColor" style="-fx-color-label-visible: false;" />
+                        <Label text="Stroke" />
+                        <ColorPicker fx:id="lineColor" style="-fx-color-label-visible: false;" />
+                        <Label layoutX="10.0" layoutY="360.0" text="Weight" />
+                        <Slider fx:id="weight" blockIncrement="2.0" majorTickUnit="5.0" max="30.0" minorTickCount="1" orientation="VERTICAL" prefHeight="69.0" prefWidth="60.0" showTickLabels="true" showTickMarks="true" value="1.0" />
+                        <Label text="Opacity" />
+                        <Slider fx:id="opacity" layoutX="10.0" layoutY="329.0" majorTickUnit="20.0" minorTickCount="5" orientation="VERTICAL" prefHeight="69.0" prefWidth="60.0" showTickLabels="true" showTickMarks="true" />
+                        <Button mnemonicParsing="false" text="Apply" />
+                     </children>
+                     <padding>
+                        <Insets top="20.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </VBox>
+         </left>
+      </BorderPane>
+	</children>
+</StackPane>

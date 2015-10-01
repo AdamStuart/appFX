@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="472.0" prefWidth="864.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="attributeValues.CodeOrganizerController">
+   <children>
+      <SplitPane dividerPositions="0.29797979797979796" prefHeight="367.0" prefWidth="600.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="365.0" prefWidth="221.0">
+               <children>
+                  <Accordion layoutX="-2.0" layoutY="-3.0" prefHeight="367.0" prefWidth="253.0">
+                    <panes>
+                      <TitledPane animated="false" text="Applications">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TreeView fx:id="appTree" layoutY="8.0" prefHeight="254.0" prefWidth="253.0" />
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </TitledPane>
+                      <TitledPane animated="false" text="Views">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TreeView fx:id="viewTree" layoutX="8.0" prefHeight="259.0" prefWidth="244.0" />
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </TitledPane>
+                      <TitledPane animated="false" text="Library">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TreeView fx:id="libTree" layoutY="7.0" prefHeight="257.0" prefWidth="253.0" />
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </TitledPane>
+                        <TitledPane animated="false" layoutX="10.0" layoutY="36.0" text="Reports">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TreeView fx:id="reportTree" layoutX="8.0" prefHeight="259.0" prefWidth="244.0" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                    </panes>
+                  </Accordion>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="386.0" prefWidth="416.0">
+               <children>
+                  <TabPane layoutX="2.0" prefHeight="365.0" prefWidth="601.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Metadata">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TextField layoutX="99.0" layoutY="14.0" />
+                                    <Label layoutX="16.0" layoutY="19.0" text="Owner" />
+                                    <TextField layoutX="99.0" layoutY="50.0" prefHeight="26.0" prefWidth="83.0" />
+                                    <Label layoutX="16.0" layoutY="55.0" text="Status" />
+                                    <TextField layoutX="99.0" layoutY="88.0" prefHeight="26.0" prefWidth="440.0" />
+                                    <Label layoutX="16.0" layoutY="93.0" text="Comments" />
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                      <Tab text="References">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TextArea layoutX="7.0" layoutY="7.0" prefHeight="306.0" prefWidth="583.0" />
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                        <Tab text="Source">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="576.0">
+                                 <children>
+                                    <HTMLEditor htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" prefHeight="200.0" prefWidth="506.0" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</VBox>

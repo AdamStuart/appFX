@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="626.0" prefWidth="878.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chart.ChartTabController">
+  <tabs>
+    <Tab text="FlexiPie Chart">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="567.0" prefWidth="911.0">
+               <children>
+                  <Label layoutX="14.0" layoutY="14.0" text="FlexiPie Chart -- Pie chart that supports dragging of wedge to change values.">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <StackPane fx:id="pieContainer" layoutX="42.0" layoutY="58.0" prefHeight="471.0" prefWidth="543.0" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab text="Hover Chart">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Label layoutX="14.0" layoutY="14.0" text="Hover Chart - data point tips show image and record information about that point">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <StackPane fx:id="hoverContainer" layoutX="42.0" layoutY="58.0" prefHeight="471.0" prefWidth="543.0" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+      <Tab text="Box and Whiskers Chart">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Label layoutX="22.0" layoutY="14.0" text="Box and Whiskers chart to show medians, quartiles and top of data distributions">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <StackPane fx:id="whiskersContainer" layoutX="42.0" layoutY="58.0" prefHeight="471.0" prefWidth="543.0" />
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+      <Tab text="Drilldown Chart">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Label layoutX="8.0" layoutY="14.0" text="Drilldown Chart -- drag a selection to inspect that data in other dimesnsion">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <StackPane fx:id="drillDownContainer" layoutX="42.0" layoutY="58.0" prefHeight="471.0" prefWidth="543.0" />
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+      <Tab text="Fancy Chart">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Label layoutX="14.0" layoutY="14.0" text="This is a zoomable, scrollable line chart from tesis">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <StackPane fx:id="fancyContainer" layoutX="42.0" layoutY="58.0" prefHeight="471.0" prefWidth="543.0" />
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+      <Tab text="Histograms">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Label layoutX="11.0" layoutY="14.0" text="Histogram distibutions with definable regions">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <StackPane fx:id="histogramContainer" layoutX="42.0" layoutY="50.0" prefHeight="471.0" prefWidth="543.0" />
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+      <Tab text="Time Series">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <StackPane fx:id="timeSeriesContainer" layoutX="42.0" layoutY="41.0" prefHeight="471.0" prefWidth="543.0" />
+                  <Label layoutX="8.0" layoutY="14.0" text="Time Series plots with data aggregaion">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+      <Tab text="US Map">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <StackPane fx:id="usMapContainer" layoutX="42.0" layoutY="41.0" prefHeight="471.0" prefWidth="543.0" />
+                  <Label layoutX="8.0" layoutY="14.0" text="US Map with heatmap">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+  </tabs>
+</TabPane>

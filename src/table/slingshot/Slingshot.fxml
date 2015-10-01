@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="root" onDragDone="#onDragDropped" onDragDropped="#onDragDropped" onDragEntered="#onDragEnter" onDragExited="#onDragExit" onDragOver="#onDragOver" prefHeight="831.0" prefWidth="1213.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="table.slingshot.SlingshotController">
+   <children>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <HBox prefHeight="100.0" prefWidth="794.0" spacing="12.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fx:id="logo" fitHeight="71.0" fitWidth="164.0" pickOnBounds="true" preserveRatio="true" />
+                  <Label text="Target X:" />
+                  <TextField fx:id="targetXfld" prefHeight="26.0" prefWidth="94.0" />
+                  <Label text="Target Y:" />
+                  <TextField fx:id="targetYfld" prefHeight="26.0" prefWidth="94.0" />
+                  <Label fx:id="version" text="version" />
+               </children>
+            </HBox>
+         </top>
+         <center>
+            <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="731.0" prefViewportWidth="1213.0">
+               <content>
+                  <TableView fx:id="theTable" minWidth="500.0" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
+                    <columns>
+                      <TableColumn fx:id="idCol" prefWidth="-1.0" text="ID" />
+                        <TableColumn fx:id="dateCol" minWidth="84.0" prefWidth="-1.0" text="Date" />
+                        <TableColumn fx:id="nameCol" minWidth="150.0" prefWidth="238.988037109375" text="Name" />
+                        <TableColumn fx:id="metricCol" prefWidth="120.0" text="Metric">
+                           <columns>
+                              <TableColumn fx:id="metricXCol" prefWidth="40.0" text="X" />
+                              <TableColumn fx:id="metricYCol" prefWidth="23.0" text="Y" />
+                           </columns>
+                        </TableColumn>
+                        <TableColumn fx:id="varCol" prefWidth="299.011962890625" text="Variance">
+                           <columns>
+                              <TableColumn fx:id="varXCol" prefWidth="40.0" text="X" />
+                              <TableColumn fx:id="varYCol" prefWidth="40.0" text="Y " />
+                              <TableColumn fx:id="varCol" prefWidth="40.0" text="Total" />
+                           </columns>
+                        </TableColumn>
+                      <TableColumn fx:id="medCol" prefWidth="120.0" text="Median">
+                           <columns>
+                              <TableColumn fx:id="medXCol" prefWidth="40.0" text="X" />
+                              <TableColumn fx:id="medYCol" prefWidth="23.0" text="Y" />
+                           </columns>
+                        </TableColumn>
+                        <TableColumn fx:id="cvCol" prefWidth="75.0" text="CV">
+                           <columns>
+                              <TableColumn fx:id="cvXCol" prefWidth="40.0" text="X" />
+                              <TableColumn fx:id="cvYCol" prefWidth="40.0" text="Y" />
+                           </columns>
+                        </TableColumn>
+                        <TableColumn fx:id="targCol" prefWidth="75.0" text="Target">
+                           <columns>
+                              <TableColumn fx:id="targXCol" prefWidth="40.0" text="X" />
+                              <TableColumn fx:id="targYCol" prefWidth="40.0" text="Y" />
+                           </columns>
+                        </TableColumn>
+                    </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </content>
+            </ScrollPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

@@ -1,0 +1,21 @@
+#stageX, #stageY {
+  -fx-padding: 1;
+  -fx-border-color: black;
+  -fx-border-style: dashed;
+  -fx-border-width: 2;
+  -fx-border-radius: 5;
+}
+
+
+.table-row-cell:empty {
+    -fx-background-color: khaki;
+    -fx-border-color: grey
+}
+ 
+.table-row-cell:hover{
+    -fx-background-color: blanchedalmond;
+}
+ 
+.table-row-cell:selected{
+    -fx-background-color: chocolate;
+}

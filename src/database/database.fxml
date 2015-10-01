@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane fx:id="container" prefHeight="756.0" prefWidth="851.0" stylesheets="@../code/draw/draw.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="database.DatabaseController">
+   <top>
+      <HBox>
+         <children>
+            <Button fx:id="leftSideBarButton" mnemonicParsing="false" text="Tools" />
+            <MenuBar BorderPane.alignment="CENTER" HBox.hgrow="ALWAYS">
+              <menus>
+                <Menu id="File" mnemonicParsing="false" text="File">
+                  <items>
+                        <MenuItem mnemonicParsing="false" onAction="#doNew" text="New">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="N" control="UP" meta="DOWN" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                    <MenuItem mnemonicParsing="false" onAction="#open" text="Open">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="O" control="UP" meta="DOWN" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#close" text="Close">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="W" control="UP" meta="DOWN" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#save" text="Save">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="UP" meta="DOWN" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#saveas" text="Save As">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="Q" control="UP" meta="DOWN" shift="DOWN" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#print" text="Print">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="P" control="UP" meta="DOWN" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#quit" text="Quit">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="Q" control="UP" meta="DOWN" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                  </items>
+                </Menu>
+                <Menu id="Edit" mnemonicParsing="false" text="Edit">
+                  <items>
+                        <MenuItem fx:id="undo" mnemonicParsing="false" onAction="#undo" text="Undo">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="Z" control="UP" meta="DOWN" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem fx:id="redo" mnemonicParsing="false" onAction="#redo" text="Redo">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="Z" control="UP" meta="DOWN" shift="DOWN" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#cut" text="Cut">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="X" control="UP" meta="DOWN" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#copy" text="Copy">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="C" control="UP" meta="DOWN" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#paste" text="Paste">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="V" control="UP" meta="DOWN" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                    <MenuItem mnemonicParsing="false" onAction="#deleteSelection" text="Delete" />
+                        <MenuItem mnemonicParsing="false" onAction="#selectAll" text="Select All">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="A" control="UP" meta="DOWN" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                  </items>
+                </Menu>
+                  <Menu id="Search" mnemonicParsing="false" text="Search">
+                    <items>
+                      <MenuItem id="Find" fx:id="find" mnemonicParsing="false" onAction="#find" text="Find...">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem id="Replace" fx:id="replace" mnemonicParsing="false" onAction="#replace" text="Replace..." />
+                        <MenuItem id="Filter" fx:id="filter" mnemonicParsing="false" onAction="#filter" text="Filter..." />
+                        <MenuItem id="Rules" fx:id="rules" mnemonicParsing="false" onAction="#rules" text="Rules" />
+                    </items>
+                  </Menu>
+                  <Menu id="Animate" mnemonicParsing="false" text="Animate">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Set up..." />
+                      <MenuItem mnemonicParsing="false" text="Play" />
+                        <MenuItem mnemonicParsing="false" text="Export" />
+                        <MenuItem mnemonicParsing="false" text="Share" />
+                    </items>
+                  </Menu>
+                <Menu id="Help" mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <Button fx:id="rightSideBarButton" mnemonicParsing="false" text="Info" />
+            <Button fx:id="bottomSideBarButton" layoutX="820.0" layoutY="10.0" mnemonicParsing="false" text="Info" />
+         </children>
+      </HBox>
+   </top>
+   <left>
+      <VBox fx:id="inspector" minWidth="-Infinity" prefHeight="727.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER_LEFT">
+         <padding>
+            <Insets top="20.0" />
+         </padding>
+         <children>
+            <Label text="Table">
+               <VBox.margin>
+                  <Insets left="8.0" />
+               </VBox.margin>
+            </Label>
+            <ChoiceBox fx:id="tableChoice" prefWidth="150.0" />
+            <Pane prefHeight="200.0" prefWidth="200.0" />
+            <Button fx:id="signUpButton" mnemonicParsing="false" onAction="#signUp" text="Sign Up" />
+             <Button fx:id="signInButton" mnemonicParsing="false" onAction="#signIn" text="Sign In" />
+            <Pane prefHeight="200.0" prefWidth="200.0" />
+            <Button fx:id="filterButton" mnemonicParsing="false" onAction="#filter" text="Filter" />
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <BorderPane fx:id="drawContainer" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <center>
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+               <items>
+                  <TableView fx:id="tableView" prefHeight="337.0" prefWidth="397.0" BorderPane.alignment="CENTER">
+                    <columns>
+                      <TableColumn prefWidth="75.0" text="C1" />
+                      <TableColumn prefWidth="75.0" text="C2" />
+                    </columns>
+                  </TableView>
+                  <VBox>
+                     <children>
+                        <HBox id="buttonss" alignment="TOP_CENTER" spacing="6.0">
+                           <children>
+                              <Pane HBox.hgrow="ALWAYS" />
+                              <Button fx:id="saveFormButton" mnemonicParsing="false" onAction="#saveForm" text="Save" />
+                              <Button fx:id="clearFormButton" mnemonicParsing="false" onAction="#clearForm" text="Clear" />
+                              <Button fx:id="deleteButton" layoutX="475.0" layoutY="10.0" mnemonicParsing="false" onAction="#deleteRecord" text="Delete" />
+                           </children>
+                        </HBox>
+                        <StackPane id="formContainer" fx:id="formContainer" prefHeight="332.0" prefWidth="382.0" />
+                     </children>
+                  </VBox>
+               </items>
+            </SplitPane>
+         </center>
+      </BorderPane>
+   </center>
+   <bottom>
+      <HBox fx:id="bottomDash" maxHeight="86.0" minHeight="50.0" prefHeight="86.0" prefWidth="851.0" spacing="25.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox />
+            <ProgressIndicator fx:id="progress" progress="0.0" HBox.hgrow="NEVER" />
+            <Label fx:id="status1" text="Status">
+               <font>
+                  <Font size="29.0" />
+               </font>
+            </Label>
+            <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <Label fx:id="status2" text="Secondary Status">
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+            </Label>
+         </children>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+      </HBox>
+   </bottom>
+   <right>
+      <VBox>
+         <children>
+            <TextArea fx:id="console" prefWidth="180.0" VBox.vgrow="ALWAYS" />
+         </children>
+      </VBox>
+   </right>
+</BorderPane>

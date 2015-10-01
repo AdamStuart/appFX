@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chart.flexiPie.FlexiPieController">
+   <children>
+      <HBox layoutX="40.0" layoutY="40.0" spacing="50.0">
+         <children>
+            <TreeTableView fx:id="table" maxHeight="250.0" maxWidth="-Infinity" minHeight="250.0" minWidth="-Infinity" prefHeight="250.0" prefWidth="256.0" HBox.hgrow="NEVER">
+              <columns>
+                  <TreeTableColumn fx:id="colorColumn" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
+                <TreeTableColumn fx:id="categoryColumn" prefWidth="120.0" text="Category" />
+                <TreeTableColumn fx:id="portionColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Portion" />
+              </columns>
+            </TreeTableView>
+            <Pane fx:id="container" layoutX="40.0" layoutY="40.0" prefHeight="464.0" prefWidth="464.0" />
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

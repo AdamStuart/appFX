@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox id="root" fx:id="root" prefHeight="586.0" prefWidth="743.0" spacing="15.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chart.timeseries.TimeSeriesController">
+   <children>
+      <LineChart fx:id="timeSeriesChart" prefHeight="282.0" prefWidth="717.0" VBox.vgrow="ALWAYS">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </LineChart>
+      <HBox prefHeight="52.0" prefWidth="743.0">
+         <children>
+            <Label prefHeight="16.0" prefWidth="95.0" text="Chart Type: " />
+            <VBox prefHeight="58.0" prefWidth="100.0" spacing="8.0">
+               <children>
+                  <RadioButton fx:id="rbLine" mnemonicParsing="false" text="Line" />
+                  <RadioButton fx:id="rbBar" mnemonicParsing="false" text="Bar" />
+               </children>
+            </VBox>
+            <Label prefHeight="16.0" prefWidth="105.0" text="Aggregate by" />
+            <VBox prefHeight="143.0" prefWidth="151.0" spacing="8.0">
+               <children>
+                  <RadioButton fx:id="rbMin" mnemonicParsing="false" text="Minute" />
+                  <RadioButton fx:id="rbHour" mnemonicParsing="false" text="Hour" />
+                  <RadioButton fx:id="rbDay" layoutX="10.0" layoutY="28.0" mnemonicParsing="false" text="Day" />
+                  <RadioButton fx:id="rbWeek" layoutX="10.0" layoutY="46.0" mnemonicParsing="false" text="Week" />
+                  <RadioButton fx:id="rbMonth" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" text="Month" />
+                  <RadioButton fx:id="rbYear" layoutX="10.0" layoutY="82.0" mnemonicParsing="false" text="Year" />
+               </children>
+            </VBox>
+            <VBox prefHeight="148.0" prefWidth="277.0">
+               <children>
+                  <HBox prefHeight="41.0" prefWidth="277.0">
+                     <children>
+                        <Label text="From">
+                           <padding>
+                              <Insets right="15.0" />
+                           </padding>
+                        </Label>
+                        <DatePicker fx:id="fromDate" prefHeight="26.0" prefWidth="139.0" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label text="End">
+                           <HBox.margin>
+                              <Insets right="25.0" />
+                           </HBox.margin>
+                        </Label>
+                        <DatePicker fx:id="endDate" prefHeight="26.0" prefWidth="154.0" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox prefHeight="89.0" prefWidth="743.0" spacing="30.0">
+         <children>
+            <ListView fx:id="listFile" prefHeight="96.0" prefWidth="246.0" />
+            <Button mnemonicParsing="false" onAction="#handleBrowse" text="Browse..." />
+            <CheckBox fx:id="multiChart" mnemonicParsing="false" text="Multi Line" />
+            <Button mnemonicParsing="false" onAction="#handleDraw" text="Draw" />
+         </children>
+      </HBox>
+      <Label fx:id="errLabel" text="This is where the error message goes." />
+   </children>
+</VBox>
