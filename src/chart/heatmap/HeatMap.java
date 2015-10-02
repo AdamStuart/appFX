@@ -43,10 +43,7 @@ import java.util.Map;
 
 
 /**
- * Created by
- * User: hansolo
- * Date: 27.12.12
- * Time: 05:46
+ * Created by  User: hansolo  * Date: 27.12.12
  */
 public class HeatMap extends ImageView {
     private static final SnapshotParameters SNAPSHOT_PARAMETERS = new SnapshotParameters();
