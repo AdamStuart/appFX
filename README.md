@@ -11,8 +11,8 @@ This project contains a variety of apps based on JavaFX 8, both collected and or
 There are a lot of added charts, and an application that shows most of them in tabs.<p>
 The Bindings Sandbox shows data edited by drag, text field and table cell, and tries to keep them in sync.<p>
 A couple of drawing programs, both with Undo implemented.<p>
-Snippets for a game program I never wrote, with a lot of drag and drop support.<p>
-Table factories for several different data types.
+Snippets for a game program I never wrote, with a lot of drag and drop support. Includes working examples of ImageView, MediaView, HTMLEditor and a scroll pane of intersperesed promts and dynamically regrowing text fields<p>
+Tables and cell factories for several different data types,.<p>
 A database app with 5 separate tables, with a lot of forms and utilities to build forms.<p>
 Dialogs came late to FX, so there are libraries out there that are no longer necessary.  Here's some examples of the new controls, as well as Find, Login, Connect, and Search templates.<p>
 Turing Patterns is an image generation demo, based on cellular automata<p>
