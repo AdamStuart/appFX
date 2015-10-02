@@ -29,6 +29,9 @@ public class EarthViewer extends Application {
     Sphere earth = new Sphere(EARTH_RADIUS);
     earth.setTranslateX(VIEWPORT_SIZE / 2d);
     earth.setTranslateY(VIEWPORT_SIZE / 2d);
+//    earth.setScaleX(0.1);
+//    earth.setScaleY(0.1);
+//    earth.setScaleZ(0.1);
 
     PhongMaterial earthMaterial = new PhongMaterial();
     earthMaterial.setDiffuseMap( new Image( DIFFUSE_MAP,  MAP_WIDTH, MAP_HEIGHT, true,  true  ) );
@@ -44,12 +47,16 @@ public class EarthViewer extends Application {
     StackPane root = new StackPane(group);
     Scene scene = new Scene(root, VIEWPORT_SIZE, VIEWPORT_SIZE, true,SceneAntialiasing.BALANCED );
     scene.setFill(Color.rgb(10, 10, 40));
-    scene.setCamera(new PerspectiveCamera());
+    PerspectiveCamera cam = new PerspectiveCamera();
+    scene.setCamera(cam);
+//    cam.setRotationAxis(Rotate.Y_AXIS);
+//    cam.setRotate(30);
     stage.setScene(scene);
-    stage.show();
 
-    stage.setFullScreen(true);
+//    stage.setFullScreen(true);
     rotateAroundYAxis(group).play();
+    scaleUp(group).play();
+    stage.show();
   }
 
   private RotateTransition rotateAroundYAxis(Node node) {
@@ -60,6 +67,16 @@ public class EarthViewer extends Application {
     rotate.setInterpolator(Interpolator.LINEAR);
     rotate.setCycleCount(RotateTransition.INDEFINITE);
     return rotate;
+  }
+
+  private ScaleTransition scaleUp(Node node) {
+	  ScaleTransition grower = new ScaleTransition( Duration.seconds(1d),  node );
+		 grower.setFromX(.1); 	 grower.setFromY(.1); 	 grower.setFromZ(.1); 
+		 grower.setToX(0.75); 	 grower.setToY(0.75); 	 grower.setToZ(0.75); 
+		 grower.setDuration(Duration.seconds(15));
+	 grower.setInterpolator(Interpolator.EASE_BOTH);
+	  grower.setCycleCount(1);
+    return grower;
   }
 
   public static void main(String[] args) {
