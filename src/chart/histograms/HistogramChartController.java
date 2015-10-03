@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import diagrams.draw.App;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
@@ -49,7 +48,7 @@ public class HistogramChartController implements Initializable
 		if (path == null)
 		{
 			FileChooser choose = new FileChooser();
-			File f = choose.showOpenDialog(App.getInstance().getStage().getOwner());
+			File f = choose.showOpenDialog(AppHistograms.getInstance().getStage().getOwner());
 			if (f != null)
 				path = f.getAbsolutePath();
 			System.out.println("Path: " + path);

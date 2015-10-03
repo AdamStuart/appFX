@@ -2,7 +2,6 @@ package container;
 
 import java.net.URL;
 
-import image.turingPattern.AppTuringPatternGenerator;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

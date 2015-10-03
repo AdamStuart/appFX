@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javafx.scene.layout.Region;
+
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CompoundCommand;
 import org.eclipse.emf.ecore.EAttribute;
@@ -25,7 +27,6 @@ import diagrams.grapheditor.model.GJoint;
 import diagrams.grapheditor.model.GModel;
 import diagrams.grapheditor.model.GNode;
 import diagrams.grapheditor.model.GraphPackage;
-import javafx.scene.layout.Region;
 
 /**
  * Provides utility methods for editing a {@link GModel} via EMF commands.

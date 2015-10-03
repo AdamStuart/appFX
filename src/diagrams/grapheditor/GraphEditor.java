@@ -5,6 +5,9 @@ package diagrams.grapheditor;
 
 import java.util.function.BiConsumer;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.scene.layout.Region;
+
 import org.eclipse.emf.common.command.CompoundCommand;
 
 import diagrams.grapheditor.model.GConnection;
@@ -13,8 +16,6 @@ import diagrams.grapheditor.model.GJoint;
 import diagrams.grapheditor.model.GModel;
 import diagrams.grapheditor.model.GNode;
 import diagrams.grapheditor.utils.GraphEditorProperties;
-import javafx.beans.property.ObjectProperty;
-import javafx.scene.layout.Region;
 
 /**
  * Provides functionality for displaying and editing graph-like diagrams in JavaFX.

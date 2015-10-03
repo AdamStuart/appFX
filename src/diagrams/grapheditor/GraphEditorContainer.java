@@ -3,12 +3,12 @@
  */
 package diagrams.grapheditor;
 
-import diagrams.grapheditor.model.GModel;
-import diagrams.grapheditor.window.GraphEditorMinimap;
-import diagrams.grapheditor.window.PanningWindow;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import diagrams.grapheditor.model.GModel;
+import diagrams.grapheditor.window.GraphEditorMinimap;
+import diagrams.grapheditor.window.PanningWindow;
 
 /**
  * A container for the graph editor.

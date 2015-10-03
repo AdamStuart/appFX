@@ -28,7 +28,8 @@
     -fx-font: 15 Arial;
     -fx-fill: black;
 }
-
+/* 
 .autocomplete-text{
-    -fx-skin: com.ngopal.autocomplete.AutoFillTextBoxSkin";
+    -fx-skin: com.ngopal.autocomplete.AutoFillTextBoxSkin;
 }
+*/

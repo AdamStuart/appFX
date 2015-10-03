@@ -16,7 +16,6 @@
 
 package chart.heatmap;
 
-import chart.heatmap.HeatMap.OpacityFn;
 import gui.Borders;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -35,6 +34,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import chart.heatmap.HeatMap.OpacityFn;
 
 
 /**

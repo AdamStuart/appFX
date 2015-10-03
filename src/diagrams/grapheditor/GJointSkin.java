@@ -3,10 +3,10 @@
  */
 package diagrams.grapheditor;
 
-import diagrams.grapheditor.model.GJoint;
-import diagrams.grapheditor.utils.DraggableBox;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import diagrams.grapheditor.model.GJoint;
+import diagrams.grapheditor.utils.DraggableBox;
 
 /**
  * The skin class for a {@link GJoint}. Responsible for visualizing joints in the graph editor.

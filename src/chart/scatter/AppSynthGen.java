@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 
 public class AppSynthGen extends Application
 {
+	public static void main(String[] args) {		launch(args);	}
+
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -58,5 +60,4 @@ public class AppSynthGen extends Application
 	
 //	static AppSynthGen instance;
 //	public static AppSynthGen getApp()	{ return instance;	}
-	public static void main(String[] args) {		launch(args);	}
 }

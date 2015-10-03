@@ -1,5 +1,7 @@
 package chart;
 
+import gui.Borders;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,12 +15,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-
-import chart.scatter.SynthFileStream;
-import chart.scatter.SynthGenMetaFileStream;
-import chart.scatter.SynthGenRecord;
-import gui.Borders;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberExpression;
@@ -49,11 +45,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
- 
+import SynthGenRecord;
+import javax.imageio.ImageIO;
 
 //https://gist.github.com/jewelsea/5072743
 public class OffScreenOffThreadCharts {

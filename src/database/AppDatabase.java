@@ -2,7 +2,6 @@ package database;
 
 import java.net.URL;
 
-import diagrams.draw.App;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

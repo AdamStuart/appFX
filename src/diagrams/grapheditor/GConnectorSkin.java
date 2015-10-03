@@ -3,8 +3,8 @@
  */
 package diagrams.grapheditor;
 
-import diagrams.grapheditor.model.GConnector;
 import javafx.scene.Node;
+import diagrams.grapheditor.model.GConnector;
 
 /**
  * The skin class for a {@link GConnector}. Responsible for visualizing connectors in the graph editor.

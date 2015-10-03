@@ -5,11 +5,11 @@ package diagrams.grapheditor;
 
 import java.util.List;
 
-import diagrams.grapheditor.model.GNode;
-import diagrams.grapheditor.utils.ResizableBox;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Point2D;
+import diagrams.grapheditor.model.GNode;
+import diagrams.grapheditor.utils.ResizableBox;
 
 /**
  * The skin class for a {@link GNode}. Responsible for visualizing nodes in the graph editor.

@@ -5,9 +5,9 @@ package diagrams.grapheditor;
 
 import java.util.List;
 
-import diagrams.grapheditor.model.GConnector;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import diagrams.grapheditor.model.GConnector;
 
 /**
  * The tail-skin class for a {@link GConnector}. Responsible for visualizing the tails that extend temporarily from

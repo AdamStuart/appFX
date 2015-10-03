@@ -1,20 +1,15 @@
 package container;
 
-import java.awt.image.BufferedImage;
+import gui.Borders;
+import icon.FontAwesomeIcons;
+import icon.GlyphsDude;
+
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import javax.swing.filechooser.FileSystemView;
-
-import gui.Borders;
-import icon.FontAwesomeIcons;
-import icon.GlyphsDude;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventTarget;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -39,8 +34,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import util.FileUtil;
-import util.SystemInfo;
 
+  
 public class ContainerController implements Initializable
 {
 	@FXML private ListView<File> list;

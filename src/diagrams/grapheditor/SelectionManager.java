@@ -6,11 +6,12 @@ package diagrams.grapheditor;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import javafx.collections.ObservableList;
+
 import org.eclipse.emf.common.command.CompoundCommand;
 
 import diagrams.grapheditor.model.GJoint;
 import diagrams.grapheditor.model.GNode;
-import javafx.collections.ObservableList;
 
 /**
  * Provides actions related to selections in the graph editor.
