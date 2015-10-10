@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.effect.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -9,7 +10,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="PlateController">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="plate.PlateController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -61,7 +62,7 @@
         </Menu>
       </menus>
     </MenuBar>
-    <SplitPane dividerPositions="0.2505567928730512, 0.5" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+    <SplitPane dividerPositions="0.3, 0.8" focusTraversable="true" prefHeight="452.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
       <items>
         <AnchorPane>
           <children>
@@ -75,8 +76,8 @@
             </Label>
                   <Button fx:id="plateView" layoutX="15.0" layoutY="48.0" mnemonicParsing="false" onAction="#plateView" text="Show Plate View" />
                   <Button fx:id="tableViewBtn" layoutX="15.0" layoutY="80.0" mnemonicParsing="false" onAction="#tableViewBtn" text="Show Tree View" />
-                  <ListView fx:id="setList" layoutX="15.0" layoutY="420.0" prefHeight="107.0" prefWidth="111.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="6.0" />
-                  <Label layoutX="16.0" layoutY="383.0" text="Sets" />
+                  <ListView fx:id="setList" layoutX="17.0" layoutY="399.0" prefHeight="107.0" prefWidth="111.0" AnchorPane.leftAnchor="17.0" AnchorPane.rightAnchor="4.0" />
+                  <Label layoutX="16.0" layoutY="372.0" text="Sets" />
                   <Button fx:id="saveSelection" layoutX="14.0" layoutY="113.0" mnemonicParsing="false" onAction="#saveSelection" text="Save Selection" />
                   <Button layoutX="29.0" layoutY="146.0" mnemonicParsing="false" text="Staging" />
                   <ScrollPane layoutX="18.0" layoutY="205.0" prefHeight="158.0" prefViewportHeight="49.0" prefViewportWidth="2.0" prefWidth="94.0">
@@ -86,7 +87,7 @@
                   </ScrollPane>
           </children>
         </AnchorPane>
-      <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="325.0" prefWidth="430.0">
+      <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="540.0" prefWidth="462.0">
         <children>
                   <GridPane fx:id="plate" alignment="TOP_CENTER" gridLinesVisible="true" layoutX="14.0" layoutY="56.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="256.0" prefWidth="408.0" AnchorPane.bottomAnchor="234.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="56.0">
                     <columnConstraints>
@@ -121,17 +122,11 @@
                   <Button fx:id="temp2" layoutX="335.0" layoutY="13.0" mnemonicParsing="false" text="Staging" />
                   <Button fx:id="temp1" layoutX="261.0" layoutY="13.0" mnemonicParsing="false" text="Staging" />
                   <Label layoutX="25.0" layoutY="337.0" text="Atrtribtues and Values" AnchorPane.bottomAnchor="196.0" />
-                  <TableView fx:id="tableView" layoutX="3.0" layoutY="353.0" prefHeight="200.0">
-                    <columns>
-                      <TableColumn fx:id="attributeCol" prefWidth="110.0" text="Attrribute" />
-                      <TableColumn fx:id="valueCol" minWidth="0.0" prefWidth="148.0" text="Value" />
-                    </columns>
-                  </TableView>
         </children>
       </AnchorPane>
-        <AnchorPane>
+        <AnchorPane SplitPane.resizableWithParent="false">
           <children>
-                  <VBox layoutX="-2.0" prefHeight="540.0" prefWidth="351.0" spacing="20.0">
+                  <VBox layoutX="-2.0" layoutY="278.0" prefHeight="262.0" prefWidth="235.0" spacing="20.0">
                      <children>
                   <Label alignment="CENTER" font="$x1" style="&#10;" text="Tree Table" textAlignment="CENTER" textFill="$x2" wrapText="false">
                            <VBox.margin>
@@ -158,11 +153,16 @@
                         <Insets top="10.0" />
                      </padding>
                   </VBox>
+                  <ImageView fitHeight="270.0" fitWidth="241.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <image>
+                        <Image url="@Plato1.jpg" />
+                     </image>
+                  </ImageView>
           </children>
         </AnchorPane>
       </items>
     </SplitPane>
-    <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
+    <HBox id="HBox" alignment="CENTER_LEFT" minHeight="120.0" prefHeight="143.0" prefWidth="900.0" spacing="5.0" VBox.vgrow="ALWAYS">
       <children>
         <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
           <font>
@@ -172,7 +172,12 @@
             <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
           </textFill>
         </Label>
-        <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
+            <TableView fx:id="tableView" prefHeight="200.0">
+              <columns>
+                <TableColumn fx:id="attributeCol" prefWidth="110.0" text="Attrribute" />
+                <TableColumn fx:id="valueCol" minWidth="0.0" prefWidth="148.0" text="Value" />
+              </columns>
+            </TableView>
         <Label font="$x3" maxWidth="-1.0" text="Right status" textFill="$x4" HBox.hgrow="NEVER" />
       </children>
       <padding>

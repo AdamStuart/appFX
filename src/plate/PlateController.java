@@ -33,8 +33,8 @@ public class PlateController implements Initializable {
 	@FXML private void tableViewBtn()		{		System.out.println("tableView");		}
 	@FXML private void saveSelection()		{		System.out.println("saveSelection");		}
 	
-	@FXML private ListView sets;
-	@FXML private ListView attributes;
+//	@FXML private ListView sets;
+//	@FXML private ListView attributes;
 	@FXML private TreeTableView analysisTable;
 	
 	@FXML private Button temp1;
@@ -80,6 +80,13 @@ public class PlateController implements Initializable {
 		setRowFactory();				// set the Row Factory of the table
 		setRowSelection();				// Set row selection as default
 //		analysisTable.setRoot(TreeTableModel.getTreeRoot());
+		for (int row = 0; row < 8; row++)
+			for (int col = 0; col < 12; col++)
+			{
+				Well well = new Well(row, col);
+				GridPane.setConstraints(well, col, row);
+				plate.getChildren().add(well);
+			}
 	}
 	
 	private void setCellValueFactories()

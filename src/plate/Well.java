@@ -15,13 +15,6 @@ public class Well extends Rectangle
 {
 	private int row;
 	private int column;
-    private ObjectProperty<String> artist = new SimpleObjectProperty<>();
-    public String getArtist()					{        return artist.get();    }
-    public void setArtist(String artist) 		{        this.artist.set(artist);    }
-
-	private BooleanProperty selected = new SimpleBooleanProperty();
-	public boolean getSelected() 			{        return selected.get();    }
-	public void setSelected(boolean b)		{        this.selected.set(b);    }
 
 	private ObservableList<AttributeValue> attributes;
 
@@ -38,12 +31,12 @@ public class Well extends Rectangle
 	    light.setAzimuth(-135);
 	    light.setElevation(30);
 	    setFill(Color.MAROON);
-	    setWidth(20); setHeight(20);
-	    setEffect(LightingBuilder.create().light(light).build());
+	    setWidth(100); setHeight(100);
 //		    setOnMouseEntered(System.out.println(getDescriptor()));
 	    
 //		    setPrefSize(200, 200);	
 	    }
+	//---------------------------------------------------------------------------------------------------
 	
 	public String getDescriptor()
 	{

@@ -1,13 +1,12 @@
 package image;
 
-
+// a simple app edit properties of an image interactively with sliders
+// uses low level binding via lambda expressions
 
 import java.io.InputStream;
 
 import image.turingPattern.AppTuringPatternGenerator;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -38,8 +37,7 @@ public class AppSliderSample extends Application {
 	final static Color textColor = Color.BROWN;
 	final static SepiaTone sepiaEffect = new SepiaTone();
 
-	@Override
-	public void start(Stage stage) {
+	@Override	public void start(Stage stage) {		// the entire program exists inside the start function!
 		Group root = new Group();
 		Scene scene = new Scene(root, 600, 400);
 		stage.setScene(scene);
@@ -66,52 +64,39 @@ public class AppSliderSample extends Application {
 		grid.getChildren().add(cainPic);
 		scene.setRoot(grid);
 
-		opacityCaption.setTextFill(textColor);
+		Label[] labels = new Label[] {opacityCaption, sepiaCaption, scalingCaption, opacityValue, sepiaValue, scalingValue};
+		grid.getChildren().addAll(labels);
+		for( Label l : labels)  l.setTextFill(textColor); 
+		
 		GridPane.setConstraints(opacityCaption, 0, 1);
-		grid.getChildren().add(opacityCaption);
-
-		opacityLevel.valueProperty().addListener((ov, old_val, new_val) ->{
-			cainPic.setOpacity(new_val.doubleValue());
-			opacityValue.setText(String.format("%.2f", new_val));
-		});
-
-		GridPane.setConstraints(opacityLevel, 1, 1);		grid.getChildren().add(opacityLevel);
-
-		opacityValue.setTextFill(textColor);
-		GridPane.setConstraints(opacityValue, 2, 1);		grid.getChildren().add(opacityValue);
-
-		sepiaCaption.setTextFill(textColor);
-		GridPane.setConstraints(sepiaCaption, 0, 2);		grid.getChildren().add(sepiaCaption);
-
-		sepiaTone.valueProperty().addListener(new ChangeListener<Number>() {
-			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-				sepiaEffect.setLevel(new_val.doubleValue());
-				sepiaValue.setText(String.format("%.2f", new_val));
-			}
-		});
-		GridPane.setConstraints(sepiaTone, 1, 2);			grid.getChildren().add(sepiaTone);
-
-		sepiaValue.setTextFill(textColor);
-		GridPane.setConstraints(sepiaValue, 2, 2);			grid.getChildren().add(sepiaValue);
-
-		scalingCaption.setTextFill(textColor);
-		GridPane.setConstraints(scalingCaption, 0, 3);		grid.getChildren().add(scalingCaption);
-
+		GridPane.setConstraints(sepiaCaption, 0, 2);	
+		GridPane.setConstraints(scalingCaption, 0, 3);	
+		GridPane.setConstraints(opacityLevel, 1, 1);		
+		GridPane.setConstraints(sepiaTone, 1, 2);		
+		GridPane.setConstraints(scaling, 1, 3);		
+		GridPane.setConstraints(opacityValue, 2, 1);	
+		GridPane.setConstraints(sepiaValue, 2, 2);	
+		GridPane.setConstraints(scalingValue, 2, 3);	
+		grid.getChildren().addAll (opacityLevel, sepiaTone, scaling);
+		
 		scaling.valueProperty().addListener((ov, old_val, new_val) -> {
 				cainPic.setScaleX(new_val.doubleValue());
 				cainPic.setScaleY(new_val.doubleValue());
 				scalingValue.setText(String.format("%.2f", new_val));
 		});
-		
-		GridPane.setConstraints(scaling, 1, 3);				grid.getChildren().add(scaling);
 
-		scalingValue.setTextFill(textColor);
-		GridPane.setConstraints(scalingValue, 2, 3);		grid.getChildren().add(scalingValue);
+		sepiaTone.valueProperty().addListener(( ov,  old_val,  new_val) -> {
+			sepiaEffect.setLevel(new_val.doubleValue());
+			sepiaValue.setText(String.format("%.2f", new_val));
+		});
+
+		opacityLevel.valueProperty().addListener((ov, old_val, new_val) ->{
+			cainPic.setOpacity(new_val.doubleValue());
+			opacityValue.setText(String.format("%.2f", new_val));
+		});										
 
 		stage.show();
 	}
 
-	public static void main(String[] args) {
-		launch(args);
-	}
+	public static void main(String[] args) {		launch(args);	}
 }
