@@ -13,7 +13,7 @@ The Bindings Sandbox shows data edited by drag, text field and table cell, and t
 A couple of drawing programs, both with Undo implemented.<p>
 Snippets for a game program I never wrote, with a lot of drag and drop support. Includes working examples of ImageView, MediaView, HTMLEditor and a scroll pane of interspersed prompts and dynamically regrowing text fields<p>
 Tables and cell factories for several different data types,.<p>
-A database app with 5 separate tables, with a lot of forms and utilities to build forms.<p>
+A database app with 6 separate tables, with a lot of forms and utilities to build forms.<p>
 Dialogs came late to FX, so there are libraries out there that are no longer necessary.  Here's some examples of the new controls, as well as Find, Login, Connect, and Search templates.<p>
 Turing Patterns is an image generation demo, based on cellular automata<p>
 AppContainer shows a directory of your file system in a TreeTableView, and gives you a baby desktop to manage and open files.<p>
