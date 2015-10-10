@@ -21,7 +21,7 @@ public class FileSystemTree extends TreeTableView<File>
 	public FileSystemTree(String path)
 		{
 			super();
-			if (path == null) path = "/";
+			if (path == null) path = ".";
 			TreeItem<File> root = createNode(new File(path));  
 			root.setExpanded(true);
 			setShowRoot(true);
@@ -40,10 +40,14 @@ public class FileSystemTree extends TreeTableView<File>
 			File f = p.getValue().getValue();
 			String text = f.getParentFile() == null ? "/" : f.getName();
 			setOnMouseClicked(ev -> {	if (ev.getClickCount() == 2) 	
+			{
+				TreeItem<File> tree = getSelectionModel().getSelectedItem();
+				if (tree != null)
 				{
-				File file = getSelectionModel().getSelectedItem().getValue();
-				ContainerController.openFile(file);
+					File file = tree.getValue();
+					if (file != null)	ContainerController.openFile(file);
 				}	
+			}
 			});
 				
 			return new ReadOnlyObjectWrapper<String>(text);

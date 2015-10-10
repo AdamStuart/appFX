@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="chart/scatter/" kind="src" path="src"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
-	<classpathentry kind="src" path="chart.scatter"/>
 	<classpathentry kind="src" path="/libFX"/>
-	<classpathentry kind="lib" path="/Users/adam/Documents/JavaFXExplorer/src/forms/commons-validator-1.4.1.jar"/>
-	<classpathentry kind="lib" path="/Users/adam/Documents/appFX/src/diagrams/grapheditor/libs/edit-2.3.0-v200706262000.jar"/>
-	<classpathentry kind="lib" path="/Users/adam/Documents/appFX/src/diagrams/grapheditor/libs/logback-classic-1.0.13.jar"/>
-	<classpathentry kind="lib" path="/Users/adam/Documents/appFX/src/diagrams/grapheditor/libs/logback-core-1.0.13.jar"/>
-	<classpathentry kind="lib" path="/Users/adam/Documents/appFX/src/diagrams/grapheditor/libs/org.eclipse.emf.common-2.9.2-v20131212-0545.jar"/>
-	<classpathentry kind="lib" path="/Users/adam/Documents/appFX/src/diagrams/grapheditor/libs/org.eclipse.emf.ecore-2.9.2-v20131212-0545.jar"/>
-	<classpathentry kind="lib" path="/Users/adam/Documents/appFX/src/diagrams/grapheditor/libs/org.eclipse.emf.ecore.xmi-2.9.1-v20131212-0545.jar"/>
-	<classpathentry kind="lib" path="/Users/adam/Documents/appFX/src/diagrams/grapheditor/libs/slf4j-api-1.7.5.jar"/>
-	<classpathentry kind="lib" path="/Users/adam/Documents/appFX/src/diagrams/grapheditor/libs/de.tesis.dynaware.grapheditor.api-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/Users/adam/Documents/appFX/src/diagrams/grapheditor/libs/de.tesis.dynaware.grapheditor.core-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/Users/adam/Documents/appFX/src/diagrams/grapheditor/libs/de.tesis.dynaware.grapheditor.model-1.1.1.jar"/>
+	<classpathentry kind="lib" path="src/diagrams/grapheditor/libs/de.tesis.dynaware.grapheditor.api-1.1.1.jar"/>
+	<classpathentry kind="lib" path="src/diagrams/grapheditor/libs/de.tesis.dynaware.grapheditor.core-1.1.1.jar"/>
+	<classpathentry kind="lib" path="src/diagrams/grapheditor/libs/de.tesis.dynaware.grapheditor.model-1.1.1.jar"/>
+	<classpathentry kind="lib" path="src/diagrams/grapheditor/libs/edit-2.3.0-v200706262000.jar"/>
+	<classpathentry kind="lib" path="src/diagrams/grapheditor/libs/logback-classic-1.0.13.jar"/>
+	<classpathentry kind="lib" path="src/diagrams/grapheditor/libs/logback-core-1.0.13.jar"/>
+	<classpathentry kind="lib" path="src/diagrams/grapheditor/libs/org.eclipse.emf.common-2.9.2-v20131212-0545.jar"/>
+	<classpathentry kind="lib" path="src/diagrams/grapheditor/libs/org.eclipse.emf.ecore-2.9.2-v20131212-0545.jar"/>
+	<classpathentry kind="lib" path="src/diagrams/grapheditor/libs/org.eclipse.emf.ecore.xmi-2.9.1-v20131212-0545.jar"/>
+	<classpathentry kind="lib" path="src/diagrams/grapheditor/libs/slf4j-api-1.7.5.jar"/>
+	<classpathentry kind="lib" path="/Users/adam/Downloads/commons-validator-1.4.1/commons-validator-1.4.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

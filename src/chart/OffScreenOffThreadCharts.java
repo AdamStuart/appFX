@@ -1,7 +1,5 @@
 package chart;
 
-import gui.Borders;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +13,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
+
+import chart.scatter.SynthFileStream;
+import chart.scatter.SynthGenMetaFileStream;
+import chart.scatter.SynthGenRecord;
+import gui.Borders;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberExpression;
@@ -48,8 +52,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
-import SynthGenRecord;
-import javax.imageio.ImageIO;
 
 //https://gist.github.com/jewelsea/5072743
 public class OffScreenOffThreadCharts {
@@ -137,29 +139,16 @@ public class OffScreenOffThreadCharts {
 			}
 			chart.getData().add(series);
 		}
-		
-		
-//    final PieChart chart = new PieChart();
-//    ObservableList<PieChart.Data> pieChartData =
-//      FXCollections.observableArrayList(
-//        new PieChart.Data("Grapefruit", random.nextInt(30)),
-//        new PieChart.Data("Oranges",    random.nextInt(30)),
-//        new PieChart.Data("Plums",      random.nextInt(30)),
-//        new PieChart.Data("Pears",      random.nextInt(30)),
-//        new PieChart.Data("Apples",     random.nextInt(30))
-//      );
-//    chart.setData(pieChartData);
-//    chart.setTitle("Imported Fruits - " + dateFormat.format(new Date()));
-// 
-    final Pane chartContainer = new Pane();		    // Place the chart in a container pane.
-    chartContainer.getChildren().add(chart);
-    chart.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-    chart.setPrefSize(CHART_SIZE, CHART_SIZE);
-    chart.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-    chart.setStyle("-fx-font-size: 16px;");
-    
-    return chartContainer;
-  }
+
+		final Pane chartContainer = new Pane();		    // Place the chart in a container pane.
+	    chartContainer.getChildren().add(chart);
+	    chart.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+	    chart.setPrefSize(CHART_SIZE, CHART_SIZE);
+	    chart.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+	    chart.setStyle("-fx-font-size: 16px;");
+	    
+	    return chartContainer;
+	  }
 	//------------------------------------------------------------------------------
 	public static String summaryFileName = "syntheticDefinitions";
   //----------------------------------------------------------------------------------------

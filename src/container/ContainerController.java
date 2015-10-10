@@ -55,7 +55,7 @@ public class ContainerController implements Initializable
 		AnchorPane.setTopAnchor(description, new Double(50));
 		anchor.getChildren().add(description);
 		setupDropPane();
-		fileTree = new FileSystemTree("/Users/adam/Documents/appFX/src");		// TODO -- hardcoded path
+		fileTree = new FileSystemTree(null);		// TODO -- hardcoded path
 		
 		fileContainer.getChildren().add(fileTree);
 		VBox.setVgrow(fileTree, Priority.ALWAYS);
