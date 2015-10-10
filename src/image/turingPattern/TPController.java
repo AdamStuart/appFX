@@ -43,6 +43,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import util.SoundUtility;
 
 import javax.imageio.ImageIO;
 
@@ -158,8 +159,10 @@ public class TPController  {
 	{
 		TuringPattern activePattern = getActivePattern();
 		if (activePattern != null)
+		{
 			activePattern.set(a,b,c,d,e);
-		patternStringProperty.set(activePattern.toString());
+			patternStringProperty.set(activePattern.toString());
+		}
 	}
 //	//-----------------------------------------------------------------------------------------
 //	@Override public void initialize(URL location, ResourceBundle resources) {
@@ -269,7 +272,7 @@ public class TPController  {
 	@FXML public void capture(ActionEvent ev) throws InterruptedException
 	{
 		try {
-			SoundUtility.playSound("shutter");
+			SoundUtility.play("shutter");
 			boolean ctrlDown = true; // (ev.getModifiers() & Event.CTRL_MASK) > 0;  //HOW DO I GET EVENT
 			Dimension outSize = getApp().getCanvasSize();
 			double mult = ctrlDown ? 2.4 : 1.0;
