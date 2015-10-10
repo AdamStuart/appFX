@@ -160,60 +160,27 @@ public class DemoImageTransitions extends Application {
         Image a = backToFront ? backImage : frontImage;
         Image b = backToFront ? frontImage : backImage;
         
+        int ord = currentTransition.ordinal() + 1;
+        if (ord >= Transition.values().length) ord = 0;
+        currentTransition = Transition.values()[ord];
+        
         switch(currentTransition) {
-            case VERTICAL_AROUND_X:
-                rotateVerticalTilesAroundY(a, b, easeBoth, oneSecond, delay);
-                currentTransition = Transition.VERTICAL_AROUND_Y;
-                break;
-            case VERTICAL_AROUND_Y:
-                rotateVerticalTilesAroundXandY(a, b, spline, oneSecond, delay);
-                currentTransition = Transition.VERTICAL_AROUND_X_AND_Y;
-                break;
-            case VERTICAL_AROUND_X_AND_Y:
-                rotateHorizontalTilesAroundX(a, b,spring, oneSecond, delay);
-                currentTransition = Transition.HORIZONTAL_AROUND_X;
-                break;
-            case HORIZONTAL_AROUND_X:
-                rotateHorizontalTilesAroundY(a, b,easeBoth, oneSecond, delay);
-                currentTransition = Transition.HORIZONTAL_AROUND_Y;
-                break;
-            case HORIZONTAL_AROUND_Y:
-                rotateHorizontalTilesAroundXandY(a, b, spline, oneSecond, delay);
-                currentTransition = Transition.HORIZONTAL_AROUND_X_AND_Y;
-                break;
-            case HORIZONTAL_AROUND_X_AND_Y:
-                rotateRectangularTilesAroundX(a, b,spring, oneSecond, delay);
-                currentTransition = Transition.RECTANGULAR_AROUND_X;
-                break;
-            case RECTANGULAR_AROUND_X:
-                rotateRectangularTilesAroundY(a, b, spring, oneSecond, delay);
-                currentTransition = Transition.RECTANGULAR_AROUND_Y;
-                break;
-            case RECTANGULAR_AROUND_Y:
-                rotateRectangularTilesAroundXandY(a, b, spline, oneSecond, delay);
-                currentTransition = Transition.RECTANGULAR_AROUND_X_AND_Y;
-                break;
-            case RECTANGULAR_AROUND_X_AND_Y:
-                disolvingBlocks(a, b,spline, oneSecond, delay);
-                currentTransition = Transition.DISOLVING_BLOCKS;
-                break;
-            case DISOLVING_BLOCKS:
-                cube(a, b,spline, oneSecond, delay);
-                currentTransition = Transition.CUBE;
-                break;
-            case CUBE:
-                flipHorizontal(a, b,spring, oneSecond, delay);
-                currentTransition = Transition.FLIP_HORIZONTAL;
-                break;
-            case FLIP_HORIZONTAL:
-                rotateVerticalTilesAroundX(a, b, easeBoth, twoSecond, delay);
-                currentTransition = Transition.VERTICAL_AROUND_X;
-                break;
+            case VERTICAL_AROUND_X:             rotateVerticalTilesAroundY(a, b, easeBoth, oneSecond, delay);         	break;
+            case VERTICAL_AROUND_Y:             rotateVerticalTilesAroundXandY(a, b, spline, oneSecond, delay);        	break;
+            case VERTICAL_AROUND_X_AND_Y:       rotateHorizontalTilesAroundX(a, b,spring, oneSecond, delay);           	break;
+            case HORIZONTAL_AROUND_X:           rotateHorizontalTilesAroundY(a, b,easeBoth, oneSecond, delay);         	break;
+            case HORIZONTAL_AROUND_Y:           rotateHorizontalTilesAroundXandY(a, b, spline, oneSecond, delay);       break;
+            case HORIZONTAL_AROUND_X_AND_Y:     rotateRectangularTilesAroundX(a, b,spring, oneSecond, delay);          	break;
+            case RECTANGULAR_AROUND_X:          rotateRectangularTilesAroundY(a, b, spring, oneSecond, delay);         	break;
+            case RECTANGULAR_AROUND_Y:          rotateRectangularTilesAroundXandY(a, b, spline, oneSecond, delay);      break;
+            case RECTANGULAR_AROUND_X_AND_Y:    disolvingBlocks(a, b,spline, oneSecond, delay);                			break;
+            case DISOLVING_BLOCKS:              cube(a, b,spline, oneSecond, delay);                					break;
+            case CUBE:                			flipHorizontal(a, b,spring, oneSecond, delay);                			break;
+            case FLIP_HORIZONTAL:               rotateVerticalTilesAroundX(a, b, easeBoth, twoSecond, delay);           break;
         }
 
-        for (Timeline timeline : timelines) {
+        for (Timeline timeline : timelines) 
             timeline.play();
-        }
     }
 
     /**
@@ -276,18 +243,18 @@ public class DemoImageTransitions extends Application {
             for (int x = 0 ; x < noOfTilesX; x++) {
                 // Create the viewports
                 viewPorts.add(new Rectangle2D(x * stepSizeX, y * stepSizeY, stepSizeX, stepSizeY));
-
+                ImageView front = imageViewsFront.get(count);
+                ImageView back = imageViewsBack.get(count);
                 // Update the frontside imageviews
-                imageViewsFront.get(count).getTransforms().clear();
-                imageViewsFront.get(count).toFront();
-                imageViewsFront.get(count).setImage(FRONT_IMAGE);
-                imageViewsFront.get(count).setViewport(viewPorts.get(count));
+                front.getTransforms().clear();
+                front.toFront();
+                front.setImage(FRONT_IMAGE);
+                front.setViewport(viewPorts.get(count));
 
                 // Update the backside imageviews
-                imageViewsBack.get(count).getTransforms().clear();
-                imageViewsBack.get(count).setImage(BACK_IMAGE);
-                imageViewsBack.get(count).setViewport(viewPorts.get(count));
-
+                back.getTransforms().clear();
+                back.setImage(BACK_IMAGE);
+                back.setViewport(viewPorts.get(count));
                 count++;
             }
         }
@@ -339,17 +306,14 @@ public class DemoImageTransitions extends Application {
             imageViewsBack.get(i).getTransforms().setAll(rotateX);
         }
 
-        for (int i = 0 ; i < noOfTilesX; i++) {
-            // Create the animations
+        for (int i = 0 ; i < noOfTilesX; i++) {			 // Create the animations
             Rotate rotateX = new Rotate(0, 0, FRONT_IMAGE.getHeight() * 0.5, 0, Rotate.X_AXIS);
 
             checkVisibility(rotateX, i);
-
             imageViewsFront.get(i).getTransforms().setAll(rotateX);
             imageViewsBack.get(i).getTransforms().addAll(rotateX);
 
-            // Layout the tiles horizontal
-            tiles.get(i).setTranslateX(i * stepSizeX);
+            tiles.get(i).setTranslateX(i * stepSizeX);		   // Layout the tiles
             tiles.get(i).setTranslateY(0);
 
             KeyValue kvXBegin = new KeyValue(rotateX.angleProperty(), 0, INTERPOLATOR);
@@ -357,7 +321,7 @@ public class DemoImageTransitions extends Application {
 
             KeyFrame kf0      = new KeyFrame(Duration.ZERO, kvXBegin);
             KeyFrame kf1      = new KeyFrame(DURATION, kvXEnd);
-
+            
             timelines.get(i).setDelay(Duration.millis(DELAY * i));
             timelines.get(i).getKeyFrames().setAll(kf0, kf1);
         }
@@ -815,23 +779,26 @@ public class DemoImageTransitions extends Application {
         int count = 0;
         for (int y = 0 ; y < noOfTilesY ; y++) {
             for (int x = 0 ; x < noOfTilesX; x++) {
-                // Layout the tiles in grid
-                tiles.get(count).setTranslateX(x * stepSizeX);
+               
+                ImageView front = imageViewsFront.get(count);
+                ImageView back = imageViewsBack.get(count);
+                
+                tiles.get(count).setTranslateX(x * stepSizeX);			 // Layout the tiles in grid
                 tiles.get(count).setTranslateY(y * stepSizeY);
 
                 tiles.get(count).getTransforms().clear();
-                imageViewsFront.get(count).getTransforms().clear();
-                imageViewsBack.get(count).getTransforms().clear();
+                front.getTransforms().clear();
+                back.getTransforms().clear();
 
                 // Create the key-values and key-frames and add them to the timelines
-                KeyValue kvFrontOpacityBegin = new KeyValue(imageViewsFront.get(count).opacityProperty(), 1, INTERPOLATOR);
-                KeyValue kvFrontOpacityEnd   = new KeyValue(imageViewsFront.get(count).opacityProperty(), 0, INTERPOLATOR);
+                KeyValue kvFrontOpacityBegin = new KeyValue(front.opacityProperty(), 1, INTERPOLATOR);
+                KeyValue kvFrontOpacityEnd   = new KeyValue(front.opacityProperty(), 0, INTERPOLATOR);
 
-                KeyValue kvFrontScaleXBegin  = new KeyValue(imageViewsFront.get(count).scaleXProperty(), 1, INTERPOLATOR);
-                KeyValue kvFrontScaleXEnd    = new KeyValue(imageViewsFront.get(count).scaleXProperty(), 0, INTERPOLATOR);
+                KeyValue kvFrontScaleXBegin  = new KeyValue(front.scaleXProperty(), 1, INTERPOLATOR);
+                KeyValue kvFrontScaleXEnd    = new KeyValue(front.scaleXProperty(), 0, INTERPOLATOR);
 
-                KeyValue kvFrontScaleYBegin  = new KeyValue(imageViewsFront.get(count).scaleYProperty(), 1, INTERPOLATOR);
-                KeyValue kvFrontScaleYEnd    = new KeyValue(imageViewsFront.get(count).scaleYProperty(), 0, INTERPOLATOR);
+                KeyValue kvFrontScaleYBegin  = new KeyValue(front.scaleYProperty(), 1, INTERPOLATOR);
+                KeyValue kvFrontScaleYEnd    = new KeyValue(front.scaleYProperty(), 0, INTERPOLATOR);
 
                 KeyFrame kf0 = new KeyFrame(Duration.ZERO, kvFrontOpacityBegin, kvFrontScaleXBegin, kvFrontScaleYBegin);
                 KeyFrame kf2 = new KeyFrame(DURATION, kvFrontOpacityEnd, kvFrontScaleXEnd, kvFrontScaleYEnd);
@@ -957,31 +924,9 @@ public class DemoImageTransitions extends Application {
         ROTATE_X.angleProperty().addListener(observable -> {
             int angleX = (int) ROTATE_X.getAngle();
             int angleY = (int) ROTATE_Y.getAngle();
-            if (angleX > 0 && angleX < 90) {
-                if (angleY > 0 && angleY < 90) {
-                    imageViewsFront.get(INDEX).toFront();
-                } else if (angleY > 90 && angleY < 270) {
-                    imageViewsBack.get(INDEX).toFront();
-                } else if (angleY > 270 && angleY < 360) {
-                    imageViewsFront.get(INDEX).toFront();
-                }
-            } else if (angleX > 90 && angleX < 270) {
-                if (angleY > 0 && angleY < 90) {
-                    imageViewsBack.get(INDEX).toFront();
-                } else if (angleY > 90 && angleY < 270) {
-                    imageViewsFront.get(INDEX).toFront();
-                } else if (angleY > 270 && angleY < 360) {
-                    imageViewsBack.get(INDEX).toFront();
-                }
-            } else {
-                if (angleY > 0 && angleY < 90) {
-                    imageViewsFront.get(INDEX).toFront();
-                } else if (angleY > 90 && angleY < 270) {
-                    imageViewsBack.get(INDEX).toFront();
-                } else if (angleY > 270 && angleY < 360) {
-                    imageViewsFront.get(INDEX).toFront();
-                }
-            }
+            if (inRange(angleX,90, 270))
+            	show(inRange(angleY, 90, 270), INDEX);
+            else show(!inRange(angleY, 90, 270), INDEX);            
         });
     }
 
@@ -992,18 +937,15 @@ public class DemoImageTransitions extends Application {
      */
     private void checkVisibility(final Rotate ROTATE, final int INDEX) {
         ROTATE.angleProperty().addListener((ov, oldAngle, newAngle) -> {
-            if (newAngle.doubleValue() > 360) {
-                imageViewsFront.get(INDEX).toFront();
-            } else if (newAngle.doubleValue() > 270) {
-                imageViewsFront.get(INDEX).toFront();
-            } else if (newAngle.doubleValue() > 180) {
-                imageViewsBack.get(INDEX).toFront();
-            } else if (newAngle.doubleValue() > 90) {
-                imageViewsBack.get(INDEX).toFront();
-            }
+        	show(newAngle.doubleValue() > 270, INDEX);
         });
     }
-
+    private static boolean inRange(int val, int min, int max)	{ return val > min && val <= max;	}
+    private void show(boolean showFront, int idx)	
+    {  if (showFront)   	imageViewsFront.get(idx).toFront(); 
+    else 				   	imageViewsBack.get(idx).toFront();
+    }
+    
     /**
      * Toggles the backside image to the frontside.
      * @param BACK_IMAGE
