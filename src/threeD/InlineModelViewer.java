@@ -22,8 +22,8 @@ public class InlineModelViewer extends Application {
   private static final double MODEL_Y_OFFSET = 0;
   private static final double MODEL_Z_OFFSET = VIEWPORT_SIZE / 2;
 
-  //  private static final String textureLoc = "http://icons.iconarchive.com/icons/aha-soft/desktop-halloween/256/Skull-and-bones-icon.png"; // icon license linkware, backlink to http://www.aha-soft.com
-  private static final String textureLoc = "http://d366vafdki9sdu.cloudfront.net/files/37/2688/seamless-marble-textures-pack-screenshots-4.jpg";
+    private static final String textureLoc = "http://icons.iconarchive.com/icons/aha-soft/desktop-halloween/256/Skull-and-bones-icon.png"; // icon license linkware, backlink to http://www.aha-soft.com
+//  private static final String textureLoc = "http://d366vafdki9sdu.cloudfront.net/files/37/2688/seamless-marble-textures-pack-screenshots-4.jpg";
   // texture sourced from: http://www.creattor.com/textures-patterns/seamless-marble-textures-pack-2688
   // texture license: http://creativecommons.org/licenses/by-nc/3.0/ => Creative Commons Attribution-NonCommercial 3.0 Unported
 
@@ -32,23 +32,11 @@ public class InlineModelViewer extends Application {
 
   private MeshView meshView = loadMeshView();
 
+//----------------------------------------------------------------------------------------------
   private MeshView loadMeshView() {
-    float[] points = {
-        -5, 5, 0,
-        -5, -5, 0,
-        5, 5, 0,
-        5, -5, 0
-    };
-    float[] texCoords = {
-        1, 1,
-        1, 0,
-        0, 1,
-        0, 0
-    };
-    int[] faces = {
-        2, 2, 1, 1, 0, 0,
-        2, 2, 3, 3, 1, 1
-    };
+    float[] points = 	{   -5, 5, 0,        	-5, -5, 0,      5, 5, 0,     5, -5, 0    };
+    float[] texCoords = {   1, 1,        		1, 0,        	0, 1,        0, 0    };
+    int[] faces = 		{   2, 2, 1, 1, 0, 0,   2, 2, 3, 3, 1, 1    };
 
     TriangleMesh mesh = new TriangleMesh();
     mesh.getPoints().setAll(points);
@@ -57,7 +45,7 @@ public class InlineModelViewer extends Application {
 
     return new MeshView(mesh);
   }
-
+//----------------------------------------------------------------------------------------------
   private Group buildScene() {
     meshView.setTranslateX(VIEWPORT_SIZE / 2 + MODEL_X_OFFSET);
     meshView.setTranslateY(VIEWPORT_SIZE / 2 * 9.0 / 16 + MODEL_Y_OFFSET);
@@ -69,7 +57,8 @@ public class InlineModelViewer extends Application {
     return new Group(meshView);
   }
 
-  @Override
+//----------------------------------------------------------------------------------------------
+ @Override
   public void start(Stage stage) {
     texture = new Image(textureLoc);
     texturedMaterial.setDiffuseMap(texture);
@@ -90,6 +79,7 @@ public class InlineModelViewer extends Application {
     stage.show();
   }
 
+//----------------------------------------------------------------------------------------------
   private SubScene createScene3D(Group group) {
     SubScene scene3d = new SubScene(group, VIEWPORT_SIZE, VIEWPORT_SIZE * 9.0/16, true, SceneAntialiasing.BALANCED);
     scene3d.setFill(Color.rgb(10, 10, 40));
@@ -115,11 +105,8 @@ public class InlineModelViewer extends Application {
 
     CheckBox rotate = new CheckBox("Rotate");
     rotate.selectedProperty().addListener(observable -> {
-      if (rotate.isSelected()) {
-        rotateTransition.play();
-      } else {
-        rotateTransition.pause();
-      }
+      if (rotate.isSelected())      rotateTransition.play();
+      else 					        rotateTransition.pause();
     });
 
     CheckBox texture = new CheckBox("Texture");
@@ -146,8 +133,5 @@ public class InlineModelViewer extends Application {
     return rotate;
   }
 
-  public static void main(String[] args) {
-    System.setProperty("prism.dirtyopts", "false");
-    launch(args);
-  }
+  public static void main(String[] args) {    launch(args);  }
 }

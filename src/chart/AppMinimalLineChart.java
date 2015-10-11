@@ -1,4 +1,4 @@
-package threeD;
+package chart;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -12,15 +12,12 @@ import javafx.scene.chart.XYChart.Series;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class liveLineChart extends Application {
+public class AppMinimalLineChart extends Application {
 
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    public static void main(String[] args) {    launch(args);    }
 
-    @Override
-    public void start(Stage primaryStage) {
+    @Override    public void start(Stage primaryStage) {
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
         LineChart lineChart = new LineChart(xAxis, yAxis);

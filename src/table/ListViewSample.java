@@ -43,21 +43,13 @@ public class ListViewSample extends Application {
         list.setItems(data);
  
         list.setCellFactory(new Callback<ListView<String>, 
-            ListCell<String>>() {
-                @Override 
-                public ListCell<String> call(ListView<String> list) {
-                    return new ColorRectCell();
-                }
+            ListCell<String>>() {  @Override   public ListCell<String> call(ListView<String> list) {  return new ColorRectCell();     }
             }
         );
  
-        list.getSelectionModel().selectedItemProperty().addListener(
-            new ChangeListener<String>() {
-                public void changed(ObservableValue<? extends String> ov, 
-                    String old_val, String new_val) {
+        list.getSelectionModel().selectedItemProperty().addListener( (ov, old_val,  new_val)-> {
                         label.setText(new_val);
                         label.setTextFill(Color.web(new_val));
-            }
         });
         stage.show();
     }
@@ -74,7 +66,5 @@ public class ListViewSample extends Application {
         }
     }
     
-    public static void main(String[] args) {
-        launch(args);
-    }
+    public static void main(String[] args) {        launch(args);    }
 }

@@ -1,37 +1,32 @@
 package plate;
-import model.AttributeValue;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Group;
 import javafx.scene.effect.Light;
-import javafx.scene.effect.LightingBuilder;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import model.AttributeValue;
 
-public class Well extends Rectangle
+public class Well extends Group
 {
 	private int row;
 	private int column;
-
+	Rectangle rect;
+	Circle cir;
+	
 	private ObservableList<AttributeValue> attributes;
 
 	public Well(int r, int c)
 	{
 		row = r;
 		column = c;
-		attributes = FXCollections.observableArrayList();
-		attributes.add(new AttributeValue("circleColor", "BISQUE"));
-		attributes.add(new AttributeValue("circleWeight", "1.0"));
-		attributes.add(new AttributeValue("circleSize", "0.8"));
-		setStyle("-fx-background-color: burlywood");
-	    Light.Distant light = new Light.Distant();
-	    light.setAzimuth(-135);
-	    light.setElevation(30);
-	    setFill(Color.MAROON);
-	    setWidth(100); setHeight(100);
+		rect = new Rectangle(12, 12, 80,80);
+	    rect.setFill(Color.MAROON);
+	    cir = new Circle(24, 24, 10);
+	    cir.setFill(Color.AQUAMARINE);
+	    getChildren().addAll(rect, cir);
+	    
 //		    setOnMouseEntered(System.out.println(getDescriptor()));
 	    
 //		    setPrefSize(200, 200);	

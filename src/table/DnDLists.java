@@ -38,85 +38,40 @@ public class DnDLists extends Application {
 		primaryStage.setTitle("Drag and Drop Application");
 
 		initializeComponents();
-
 		initializeListeners();
-
 		buildGUI();
-
 		populateData();
-
 		primaryStage.setScene(new Scene(rootPane, 400, 325));
 		primaryStage.show();
 	}
 
 	private void initializeListeners() {
-		playersListView.setOnDragDetected(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
+		playersListView.setOnDragDetected(event -> {
 				System.out.println("setOnDragDetected");
-
 				Dragboard dragBoard = playersListView.startDragAndDrop(TransferMode.MOVE);
-
 				ClipboardContent content = new ClipboardContent();
-
 				content.putString(playersListView.getSelectionModel().getSelectedItem().getName());
-
 				dragBoard.setContent(content);
-			}
 		});
 
-		playersListView.setOnDragDone(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(DragEvent dragEvent) {
+		playersListView.setOnDragDone(dragEvent -> {
 				System.out.println("setOnDragDone");
 
 				// This is not the ideal place to remove the player because the
 				// drag might not have been exited on the target.
 				// String player = dragEvent.getDragboard().getString();
 				// playersList.remove(new Player(player));
-			}
 		});
 
-		teamListView.setOnDragEntered(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(DragEvent dragEvent) {
-				System.out.println("setOnDragEntered");
+		teamListView.setOnDragEntered(dragEvent ->{ teamListView.setBlendMode(BlendMode.DIFFERENCE); });
+		teamListView.setOnDragExited(dragEvent ->{ teamListView.setBlendMode(null); });
+		teamListView.setOnDragOver(dragEvent ->{dragEvent.acceptTransferModes(TransferMode.MOVE);});
 
-				teamListView.setBlendMode(BlendMode.DIFFERENCE);
-			}
-		});
-
-		teamListView.setOnDragExited(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(DragEvent dragEvent) {
-				System.out.println("setOnDragExited");
-
-				teamListView.setBlendMode(null);
-			}
-		});
-
-		teamListView.setOnDragOver(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(DragEvent dragEvent) {
-				System.out.println("setOnDragOver");
-
-				dragEvent.acceptTransferModes(TransferMode.MOVE);
-			}
-		});
-
-		teamListView.setOnDragDropped(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(DragEvent dragEvent) {
-				System.out.println("setOnDragDropped");
-
+		teamListView.setOnDragDropped(dragEvent -> {
 				String player = dragEvent.getDragboard().getString();
-
 				teamListView.getItems().addAll(new Player(player));
-
 				playersList.remove(new Player(player));
-
 				dragEvent.setDropCompleted(true);
-			}
 		});
 	}
 

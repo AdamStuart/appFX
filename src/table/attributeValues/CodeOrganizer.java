@@ -55,7 +55,7 @@ public class CodeOrganizer extends Application
 				throw new Exception("failed: resource not found");
 			Parent root = FXMLLoader.load(loc);
 			scene = new Scene(root, 800, 600);
-			SimpleBooleanProperty boolProp = new SimpleBooleanProperty();
+//			SimpleBooleanProperty boolProp = new SimpleBooleanProperty();
 
 			fStage.setScene(scene);
 		} catch (Exception e)

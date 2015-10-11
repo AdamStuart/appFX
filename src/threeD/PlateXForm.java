@@ -61,17 +61,14 @@ public class PlateXForm extends Xform
 
 				c.setRotationAxis(new Point3D(1, 0, 0));
 				c.setRotate(90.);
-//				c.setTranslateX(0 - (k * i - halfWidth + halfK));
-//				c.setTranslateY(k * j - halfHeight + halfK);
 				c.translateZProperty().bind(heightProperty.divide(2).add(k / 8)); 
 
 				Text wellDescription = new Text();
 				wellDescription.setText(Well.wellNotation96(i, j));
 				wellDescription.setRotationAxis(new Point3D(0, 1, 0));
 				wellDescription.setFont(Font.font(null, FontWeight.BOLD, 14));
-				wellDescription.setTranslateX(0 - (k / 4 + (i == 8 ? -4 : 0)));
-//				// a hack to make up for I being narrower than the other letters
-//				wellDescription.setTranslateY(k * j - halfHeight + halfK);
+				wellDescription.setTranslateX(0 - (k / 4 + (i == 8 ? -4 : 0)));    // a hack to make up for I being narrower than the other letters
+
 				wellDescription.setTranslateZ(0);
 				wellDescription.setRotate(180.);
 				wellDescription.translateZProperty().bind(heightProperty.add(10));

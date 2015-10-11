@@ -153,15 +153,13 @@ public class AppDynamicLineChart extends Application {
     XYChart.Series<Number, Number> series = new XYChart.Series<>();
     series.setName(name);
     ObservableList<XYChart.Data<Number, Number>> seriesData = FXCollections.observableArrayList();
-    for (int i = 0; i < data.size(); i++) {
+    for (int i = 0; i < data.size(); i++) 
       seriesData.add(new XYChart.Data<>(i+1, data.get(i)));
-    }
     series.setData(seriesData);
-    
     return series;
   }
-  
-  private class Event {
+  //-----------------------------------------------------------------------------------
+  private class Event {		// an event here is a track event (shot put), not a mouse event
     private String name;
     private ObservableList<XYChart.Series<Number, Number>> series;
     private String strokeDashArray;
@@ -169,7 +167,10 @@ public class AppDynamicLineChart extends Application {
 
     public String getName() { return name; }
     public String getStrokeDashArray() { return strokeDashArray; }
-    
+    private boolean isActive() {      return isActive;    }
+    private void setActive(boolean isActive) {      this.isActive = isActive;    }
+    public ObservableList<XYChart.Series<Number, Number>> getSeries() {      return series;    }
+   
     public Event(String name, String strokeDashArray, ObservableList<XYChart.Series<Number, Number>> series) {
       this.name = name; this.strokeDashArray = strokeDashArray; this.series = series;
     }
@@ -178,16 +179,10 @@ public class AppDynamicLineChart extends Application {
       double checkedSeriesAvg = calcSeriesAverage(checkedSeries);
       double allSeriesAvgTot = 0;
       double seriesCount = series.size();
-      for (XYChart.Series<Number, Number> curSeries: series) {
+      for (XYChart.Series<Number, Number> curSeries: series) 
         allSeriesAvgTot += calcSeriesAverage(curSeries);
-      } 
       double allSeriesAvg = seriesCount != 0 ? allSeriesAvgTot / seriesCount: 0; 
-      
       return checkedSeriesAvg < allSeriesAvg;
-    }
-    
-    public ObservableList<XYChart.Series<Number, Number>> getSeries() {
-      return series;
     }
     
     private double calcSeriesAverage(XYChart.Series<Number, Number> series) {
@@ -199,16 +194,7 @@ public class AppDynamicLineChart extends Application {
       return count != 0 ? sum / count : 0; 
     }
 
-    private boolean isActive() {
-      return isActive;
-    }
-    
-    private void setActive(boolean isActive) {
-      this.isActive = isActive;
-    }
   }
   
-  public static void main(String[] args) {
-    launch(args);
-  }
+  public static void main(String[] args) {    launch(args);  }
 }
