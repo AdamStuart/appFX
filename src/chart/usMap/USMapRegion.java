@@ -67,33 +67,30 @@ public class USMapRegion implements Serializable {
     	americanRegions.addAll("All", "Northeast", "Mid-Atlantic", "South", "Mid-West", "Ark-La-Tex", "Southwest", "West", "Territories");
     }
 
-    public Integer getRegionId() {       return regionId;    }
-    public void setRegionId(Integer regionId) {        this.regionId = regionId;    }
+    public Integer getRegionId() 				{       return regionId;    }
+    public void setRegionId(Integer regionId) 	{        this.regionId = regionId;    }
 
-    public String getName() 			{        return name;    }
-    public void setName(String name) 	{        this.name = name;    }
+    public String getName() 					{        return name;    }
+    public void setName(String name) 			{        this.name = name;    }
 
-    public short getInternational() 	{        return international;  }
-    public void setInternational(short international) {        this.international = international;   }
+    public short getInternational() 			{        return international;  }
+    public void setInternational(short international) {  this.international = international;   }
 
-    public int getStartZone() 			{        return startZone;    }
-    public void setStartZone(int startZone) {        this.startZone = startZone;    }
+    public int getStartZone() 					{        return startZone;    }
+    public void setStartZone(int startZone) 	{        this.startZone = startZone;    }
 
-    public int getEndZone() 			{        return endZone;    }
-    public void setEndZone(int endZone) {        this.endZone = endZone;    }
+    public int getEndZone() 					{        return endZone;    }
+    public void setEndZone(int endZone) 		{        this.endZone = endZone;    }
 
 
     @Override    public int hashCode() {    	return (regionId != null ? regionId.hashCode() : 0);    }
 
     @Override    public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof USMapRegion)) {
-            return false;
-        }
+        if (!(object instanceof USMapRegion))             return false;
         USMapRegion other = (USMapRegion) object;
-        if ((this.regionId == null && other.regionId != null) || (this.regionId != null && !this.regionId.equals(other.regionId))) {
+        if ((this.regionId == null && other.regionId != null) || (this.regionId != null && !this.regionId.equals(other.regionId))) 
             return false;
-        }
         return true;
     }
 

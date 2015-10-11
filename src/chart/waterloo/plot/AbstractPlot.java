@@ -77,7 +77,7 @@ import chart.waterloo.markers.Plus;
 import chart.waterloo.markers.RightTriangle;
 import chart.waterloo.markers.Square;
 import chart.waterloo.markers.Triangle;
-import chart.waterloo.plot.model.DataModel;
+import chart.waterloo.model.DataModel;
 import chart.waterloo.util.GJCyclicArrayList;
 
 /**
@@ -1363,20 +1363,11 @@ public abstract class AbstractPlot<T extends List<? extends Node>> extends Stack
             public void set(MARKERTYPE type) {
                 super.set(type);
                 switch (type) {
-                    case CIRCLE:
-                        setMarkerTemplate(new Circle(getMarkerRadius()));
-                        break;
-                    case SQUARE:
-                        setMarkerTemplate(new Square(getMarkerRadius()));
-                        break;
-                    case TRIANGLE:
-                        setMarkerTemplate(new Triangle(getMarkerRadius()));
-                        break;
-                    case INVERTED_TRIANGLE:
-                        setMarkerTemplate(new InvertedTriangle(getMarkerRadius()));
-                        break;
-                    case LEFT_TRIANGLE:
-                        setMarkerTemplate(new LeftTriangle(getMarkerRadius()));
+                    case CIRCLE:   setMarkerTemplate(new Circle(getMarkerRadius()));           break;
+                    case SQUARE: setMarkerTemplate(new Square(getMarkerRadius()));   break;
+                    case TRIANGLE:  setMarkerTemplate(new Triangle(getMarkerRadius()));                       break;
+                    case INVERTED_TRIANGLE:  setMarkerTemplate(new InvertedTriangle(getMarkerRadius()));             break;
+                    case LEFT_TRIANGLE:                 setMarkerTemplate(new LeftTriangle(getMarkerRadius()));
                         break;
                     case RIGHT_TRIANGLE:
                         setMarkerTemplate(new RightTriangle(getMarkerRadius()));
@@ -1439,42 +1430,18 @@ public abstract class AbstractPlot<T extends List<? extends Node>> extends Stack
          * Stroke for the default marker edges
          */
         private DoubleProperty edgeWidth = new StyleableDoubleProperty(1d) {
-
-            @Override
-            public Object getBean() {
-                return AbstractPlot.VisualModel.this;
-            }
-
-            @Override
-            public String getName() {
-                return "edgeWidth";
-            }
-
-            @Override
-            public CssMetaData<? extends Styleable, Number> getCssMetaData() {
-                return StyleableProperties.EDGEWIDTH;
-            }
+            @Override            public Object getBean() {                return AbstractPlot.VisualModel.this;            }
+            @Override            public String getName() {                return "edgeWidth";            }
+            @Override            public CssMetaData<? extends Styleable, Number> getCssMetaData() {                return StyleableProperties.EDGEWIDTH;            }
 
         };
         /**
          * Stroke for line
          */
         private DoubleProperty lineWidth = new StyleableDoubleProperty(1d) {
-
-            @Override
-            public Object getBean() {
-                return AbstractPlot.VisualModel.this;
-            }
-
-            @Override
-            public String getName() {
-                return "lineWidth";
-            }
-
-            @Override
-            public CssMetaData<? extends Styleable, Number> getCssMetaData() {
-                return StyleableProperties.LINEWIDTH;
-            }
+            @Override            public Object getBean() {                return AbstractPlot.VisualModel.this;            }
+            @Override            public String getName() {                return "lineWidth";            }
+            @Override            public CssMetaData<? extends Styleable, Number> getCssMetaData() {                return StyleableProperties.LINEWIDTH;            }
 
         };
         /**
@@ -1484,16 +1451,11 @@ public abstract class AbstractPlot<T extends List<? extends Node>> extends Stack
         private Effect elementEffect = new DropShadow();
         private Constructor markerBuilder;
 
-        public VisualModel() {
-            createBuilder();
-        }
-
+        public VisualModel() {            createBuilder();        }
         /**
          * @return the markerArray
          */
-        public final Node getMarkerTemplate() {
-            return markerTemplate;
-        }
+        public final Node getMarkerTemplate() {            return markerTemplate;        }
 
         public final void setMarkerTemplate(Node node) {
             markerTemplate = node;
@@ -1510,11 +1472,9 @@ public abstract class AbstractPlot<T extends List<? extends Node>> extends Stack
          * @return the marker
          */
         public Node getMarker(int index) {
-            if (index > markerArray.size() - 1) {
-                for (int k = markerArray.size() - 1; k < index; k++) {
+            if (index > markerArray.size() - 1) 
+                for (int k = markerArray.size() - 1; k < index; k++) 
                     markerArray.add(createMarker(k));
-                }
-            }
             return markerArray.get(index);
         }
 
@@ -1526,124 +1486,77 @@ public abstract class AbstractPlot<T extends List<? extends Node>> extends Stack
          * @param marker the new Marker which may be any JavaFX Node
          */
         public void setMarker(int index, Node marker) {
-            if (index > markerArray.size() - 1) {
-                for (int k = markerArray.size() - 1; k < index; k++) {
+            if (index > markerArray.size() - 1) 
+                for (int k = markerArray.size() - 1; k < index; k++) 
                     markerArray.add(createMarker(k));
-                }
-            }
             markerArray.set(index, marker);
         }
-
         /**
          * @return the edgeColor
          */
-        public Paint getEdgeColor() {
-            return edgeColor.get();
-        }
-
+        public Paint getEdgeColor() {            return edgeColor.get();        }
         /**
          * @param edgeColor the edgeColor to set
          */
-        public void setEdgeColor(Paint edgeColor) {
-            this.edgeColor.set(edgeColor);
-        }
-
-        public ObjectProperty<Paint> edgeColorProperty() {
-            return edgeColor;
-        }
+        public void setEdgeColor(Paint edgeColor) {            this.edgeColor.set(edgeColor);        }
+        public ObjectProperty<Paint> edgeColorProperty() {            return edgeColor;        }
 
         /**
          * @return the edgeWidth
          */
-        public double getEdgeWidth() {
-            return edgeWidth.get();
-        }
+        public double getEdgeWidth() {            return edgeWidth.get();        }
 
         /**
          * @param edgeWidth the edgeWidth to set
          */
-        public void setEdgeWidth(double edgeWidth) {
-            this.edgeWidth.set(edgeWidth);
-        }
-
+        public void setEdgeWidth(double edgeWidth) {            this.edgeWidth.set(edgeWidth);        }
         /**
          * @return the lineColor
          */
-        public Paint getLineColor() {
-            return lineColor.get();
-        }
-
+        public Paint getLineColor() {            return lineColor.get();        }
         /**
          * @param lineColor the lineColor to set
          */
-        public void setLineColor(Paint lineColor) {
-            this.lineColor.set(lineColor);
-        }
-
+        public void setLineColor(Paint lineColor) {            this.lineColor.set(lineColor);        }
         /**
          * @return the fill
          */
-        public Paint getFill() {
-            return fill.get();
-        }
+        public Paint getFill() {            return fill.get();        }
 
         /**
          * @param fill the fill to set
          */
-        public void setFill(Paint fill) {
-            this.fill.set(fill);
-        }
+        public void setFill(Paint fill) {            this.fill.set(fill);        }
 
         //public ObjectProperty<Paint> fillProperty() {return fill;};
         /**
          * @return the lineWidth
          */
-        public double getLineWidth() {
-            return lineWidth.get();
-        }
-
+        public double getLineWidth() {            return lineWidth.get();        }
         /**
          * @param lineWidth the lineWidth to set
          */
-        public void setLineWidth(double lineWidth) {
-            this.lineWidth.set(lineWidth);
-        }
-
+        public void setLineWidth(double lineWidth) {            this.lineWidth.set(lineWidth);        }
         /**
          * @return the alpha
          */
-        public double getAlpha() {
-            return alpha;
-        }
-
+        public double getAlpha() {            return alpha;        }
         /**
          * @param alpha the alpha to set
          */
-        public void setAlpha(double alpha) {
-            this.alpha = alpha;
-        }
-
+        public void setAlpha(double alpha) {            this.alpha = alpha;        }
         /**
          * @return the elementEffect
          */
-        public Effect getElementEffect() {
-            return elementEffect;
-        }
-
+        public Effect getElementEffect() {            return elementEffect;        }
         /**
          * @param effect the elementEffect to set
-         */
-        public void setElementEffect(Effect effect) {
-            this.elementEffect = effect;
-        }
-
+         */        
+        public void setElementEffect(Effect effect) {            this.elementEffect = effect;        }
         /**
          * @return the dynamicMarkerSize
-         */
-        public GJCyclicArrayList<Dimension2D> getDynamicMarkerSize() {
-            return dynamicMarkerSize;
-        }
-
+         *          */
+        public GJCyclicArrayList<Dimension2D> getDynamicMarkerSize() {            return dynamicMarkerSize;        }
         /**
          * @param dynamicMarkerSize the dynamicMarkerSize to set
          */
@@ -1726,44 +1639,27 @@ public abstract class AbstractPlot<T extends List<? extends Node>> extends Stack
         /**
          * @return the markerType
          */
-        public MARKERTYPE getMarkerType() {
-            return markerType.get();
-        }
-
+        public MARKERTYPE getMarkerType() {            return markerType.get();        }
         /**
          * @param markerType the markerType to set
          */
-        public void setMarkerType(MARKERTYPE markerType) {
-            this.markerType.set(markerType);
-        }
-
-        public ObjectProperty<MARKERTYPE> markerTypeProperty() {
-            return markerType;
-        }
+        public void setMarkerType(MARKERTYPE markerType) {            this.markerType.set(markerType);        }
+        public ObjectProperty<MARKERTYPE> markerTypeProperty() {            return markerType;        }
 
         /**
          * @return the markerRadius
          */
-        public double getMarkerRadius() {
-            return markerRadius.get();
-        }
+        public double getMarkerRadius() {            return markerRadius.get();        }
 
         /**
          * @param markerRadius the markerRadius to set
          */
-        public void setMarkerRadius(double markerRadius) {
-            this.markerRadius.set(markerRadius);
-        }
-
-        public DoubleProperty markerRadius() {
-            return markerRadius;
-        }
+        public void setMarkerRadius(double markerRadius) {            this.markerRadius.set(markerRadius);        }
+        public DoubleProperty markerRadius() {            return markerRadius;        }
 
         /**
          * @return the labels
          */
-        public ArrayList<Text> getLabels() {
-            return labels;
-        }
+        public ArrayList<Text> getLabels() {            return labels;        }
     }
 }

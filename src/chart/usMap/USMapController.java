@@ -59,91 +59,33 @@ public class USMapController implements Initializable {
     @FXML public ChoiceBox<String> statChoiceBox;
 
     private static final ObservableList<String> statTypes = FXCollections.observableArrayList();
-
     
-    @Override public void initialize(URL url, ResourceBundle rb) {
-
-    	// populate live data regions choicebox
+    @Override public void initialize(URL url, ResourceBundle rb) {				// populate live data regions choicebox
 	    System.out.println("USMapController.initialize()");
-      root.setStyle("-fx-background-color:BROWN");
-       map = new UnitedStatesMapPane();
+	    root.setStyle("-fx-background-color:BROWN");
+	    map = new UnitedStatesMapPane();
         mapPane.getChildren().add(map);
-//        map.setPrefSize(6000, 5000);
         
         statTypes.addAll("Births", "Deaths", "Population");
         regionChoiceBox.setItems(USMapRegion.americanRegions);
         regionChoiceBox.getSelectionModel().selectFirst();
-        regionChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            @Override public void changed(ObservableValue ov, Object t, Object newValue) {
-      if (newValue instanceof String) 
-        map.zoomRegion(newValue.toString());         }
-            }  );
+        regionChoiceBox.getSelectionModel().selectedItemProperty().addListener((ov,  t,  newVal) ->{  map.zoomRegion(newVal.toString());   }  );
         
         statChoiceBox.setItems(statTypes);
         statChoiceBox.getSelectionModel().selectFirst();
-        statChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            @Override public void changed(ObservableValue ov, Object t, Object newValue) {
-      if (newValue instanceof String) 
-    	  fetchResults();        }
-            }  );
+        statChoiceBox.getSelectionModel().selectedItemProperty().addListener((ov,  t,  newVal) -> {  fetchResults();     }  );
         
         fetchResults();
     }
    
-    private void fetchResults() {
+    private void fetchResults() 
+    {
 //        System.err.println("fetchResults() ");
     	HashMap<String, Integer> statePop = new HashMap<String, Integer>();
     	for (String st : USMapRegion.ALL_STATES)
     		statePop.put(st, new Integer(((int)(100000 + (1000000 * Math.random())))));
     	
-    	
     	HashMap<String, Color> stateColorMap = ColorUtil.makeColorMap(statePop);
-   	
     	map.setStateColors(stateColorMap);
     }
-    
-//    private void fetchResults(final Date compareMonth, final Date toMonth, 
-//                final int compareProductID, final int toProductID) {
-//        System.out.println("fetchResults  "+compareMonth+",  "+toMonth+"  -- "+compareProductID+" , "+toProductID);
-//        Task<HeatMapQuantity[]> getHeatMapDataTask =  new Task<HeatMapQuantity[]>(){
-//            @Override protected HeatMapQuantity[] call() throws Exception {
-//                return hmc.getProductTypeHeatMap_JSON(HeatMapQuantity[].class, compareMonth, toMonth, compareProductID, toProductID);
-//            }
-//        };
-//        // listen for results and then update ui, and fetch initial data
-//        getHeatMapDataTask.valueProperty().addListener(new ChangeListener<HeatMapQuantity[]>() {
-//            @Override public void changed(ObservableValue<? extends HeatMapQuantity[]> ov, HeatMapQuantity[] t, HeatMapQuantity[] results) {
-//                long max = Long.MIN_VALUE, min = Long.MAX_VALUE;
-//                for(HeatMapQuantity hmq: results) {
-//                    max = Math.max(max, hmq.getQuantity());
-//                    min = Math.min(min, hmq.getQuantity());
-//                }
-//                double maxScale = 1d/(double)max;
-//                double minScale = 1d/(double)min;
-//
-//                for(HeatMapQuantity hmq: results) {
-//                    double v = Math.abs((double)hmq.getQuantity());
-//                    v = v / 10000;
-//                    v = 1 + (v*9);
-//                    v = Math.log10(v);
-//
-//                    Color color;
-//                    if (hmq.getQuantity() == 0) {
-//                        color = Color.WHITE;
-//                    } else if (hmq.getQuantity() > 0) {
-//                        color = ladder(v, HOT_COLORS);
-//                    } else {
-//                        color = ladder(v, COLD_COLORS);
-//                    }
-//                    map.setStateColor(hmq.getStateProvCd(), color);
-//                    // update labels
-//                    Label stateLabel = stateLabelMap.get(hmq.getStateProvCd());
-//                    if (stateLabel!=null) stateLabel.setText(hmq.getQuantity()>0? "+"+hmq.getQuantity() : Long.toString(hmq.getQuantity()));
-//                }
-//            }
-//        });
-//        // start task
-//        new Thread(getHeatMapDataTask).start();
-//    }
-   
 }

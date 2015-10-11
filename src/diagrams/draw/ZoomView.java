@@ -73,12 +73,34 @@ public class ZoomView
 		setViewPortToPaneTransform();
 	}
 	// **-------------------------------------------------------------------------------
+	//  make sure the rectangle (viewport) in the ZoomView corresponds 
+	// 	to the window onto the canvas
+	
+	private void setViewPortToPaneTransform()
+	{
+		double scaleX = 1;
+		double scaleY = 1;
+		Rectangle canvasBounds = new Rectangle(0,0,CANVAS_W,CANVAS_H);
+		Bounds canvasViewport = drawPane.getBoundsInParent();
+		Bounds controlBounds = zoomAnchor.getBoundsInLocal();
+
+		scaleX = drawPane.getScaleX() * canvasBounds.getWidth() / controlBounds.getWidth();
+		scaleY = drawPane.getScaleY() * canvasBounds.getHeight() / controlBounds.getHeight();
+		
+		double offsetX = canvasViewport.getMinX() / scaleX;
+		double offsetY = canvasViewport.getMinY() / scaleY;
+		double width = canvasViewport.getWidth() / scaleX;
+		double hght = canvasViewport.getHeight() / scaleY;
+		RectangleUtil.setRect(viewport, -offsetX, -offsetY, width, hght);
+	}
+	// **-------------------------------------------------------------------------------
 	// ZOOM RECT MOUSE HANDLERS
 
-Point2D startPoint, currentPoint;
-boolean dragging = false;
-boolean resizing = false;
-double startX = 0, startY = 0;
+	private Point2D startPoint, currentPoint;
+	private boolean dragging = false;
+	private boolean resizing = false;
+	private double startX = 0, startY = 0;
+	
 	private void setupViewport()
 	{
 		viewport = new Rectangle(20, 20, 80, 80);
@@ -151,27 +173,6 @@ double startX = 0, startY = 0;
 ////		translateY.setValue(-offsetY * scaleY);	
 //	}
 	
-	// **-------------------------------------------------------------------------------
-	//  make sure the rectangle (viewport) in the ZoomView corresponds 
-	// 	to the window onto the canvas
-	
-	private void setViewPortToPaneTransform()
-	{
-		double scaleX = 1;
-		double scaleY = 1;
-		Rectangle canvasBounds = new Rectangle(0,0,CANVAS_W,CANVAS_H);
-		Bounds canvasViewport = drawPane.getBoundsInParent();
-		Bounds controlBounds = zoomAnchor.getBoundsInLocal();
-
-		scaleX = drawPane.getScaleX() * canvasBounds.getWidth() / controlBounds.getWidth();
-		scaleY = drawPane.getScaleY() * canvasBounds.getHeight() / controlBounds.getHeight();
-		
-		double offsetX = canvasViewport.getMinX() / scaleX;
-		double offsetY = canvasViewport.getMinY() / scaleY;
-		double width = canvasViewport.getWidth() / scaleX;
-		double hght = canvasViewport.getHeight() / scaleY;
-		RectangleUtil.setRect(viewport, -offsetX, -offsetY, width, hght);
-	}
 	// **-------------------------------------------------------------------------------
 	// reset the window's scale and translate onto the canvas to match the change in 
 	//	our viewport within the ZoomView.

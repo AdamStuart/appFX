@@ -4150,11 +4150,10 @@ public final class Chart extends Pane {
 
         @Override
         protected Double computeValue() {
-            if (axis.matches("X")) {
+            if (axis.matches("X")) 
                 return (getYMax() - getYMin()) / 30d;
-            } else {
-                return (getXMax() - getXMin()) / 30d;
-            }
+           return (getXMax() - getXMin()) / 30d;
+            
         }
 
     }

@@ -48,12 +48,11 @@ public class ColorUtil
    */
   public static Color convertSRGBtoLinearRGB(Color color) {
       double[] colors = new double[] { color.getRed(), color.getGreen(), color.getBlue() };
-      for (int i=0; i<colors.length; i++) {
-          if (colors[i] <= 0.04045) {
-              colors[i] = colors[i] / 12.92;
-          } else {
-              colors[i] = Math.pow((colors[i] + 0.055) / 1.055, 2.4);
-          }
+      for (int i=0; i<colors.length; i++) 
+      {
+          if (colors[i] <= 0.04045)   	colors[i] = colors[i] / 12.92;
+           else               			colors[i] = Math.pow((colors[i] + 0.055) / 1.055, 2.4);
+          
       }
       return Color.color(colors[0], colors[1], colors[2], color.getOpacity());
   }
@@ -64,11 +63,9 @@ public class ColorUtil
   public static Color convertLinearRGBtoSRGB(Color color) {
       double[] colors = new double[] { color.getRed(), color.getGreen(), color.getBlue() };
       for (int i=0; i<colors.length; i++) {
-          if (colors[i] <= 0.0031308) {
-              colors[i] = colors[i] * 12.92;
-          } else {
-              colors[i] = (1.055 * Math.pow(colors[i], (1.0 / 2.4))) - 0.055;
-          }
+          if (colors[i] <= 0.0031308)   colors[i] = colors[i] * 12.92;
+           else 			            colors[i] = (1.055 * Math.pow(colors[i], (1.0 / 2.4))) - 0.055;
+          
       }
       return Color.color(colors[0], colors[1], colors[2], color.getOpacity());
   }
@@ -90,8 +87,7 @@ public class ColorUtil
 		return map;
 	}
 
-	static Color[] getHeatMapColors() // TODO -- integrate heatmap coloring from
-										// chart.heatmap
+	static Color[] getHeatMapColors() // TODO -- integrate heatmap coloring from chart.heatmap
 	{
 		Color[] map = new Color[32];
 		for (double i = 0; i < 32; i++)

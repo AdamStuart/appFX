@@ -105,11 +105,9 @@ public class UnitedStatesMapPane extends Region {
     
     public void setStateColor(String state, Color color) {
         Node stateNode = statesGroup.lookup("#"+state);
-        if (stateNode instanceof Shape) {
-            ((Shape)stateNode).setFill(color);
-        } else if (stateNode instanceof Group) {
-            setGroupColor((Group)stateNode,color);
-        }
+        if (stateNode instanceof Shape)            ((Shape)stateNode).setFill(color);
+        else if (stateNode instanceof Group)       setGroupColor((Group)stateNode,color);
+        
     }
     
     public void setStateColors(HashMap<String, Color> colorMap)
@@ -120,13 +118,9 @@ public class UnitedStatesMapPane extends Region {
     
     private void setGroupColor(Group group, Color color) {
         if (group != null) {
-            for(Node child: group.getChildren()) {
-                if (child instanceof Shape) {
-                    ((Shape)child).setFill(color);
-                } else if (child instanceof Group) {
-                    setGroupColor((Group)child,color);
-                }
-            }
+            for(Node child: group.getChildren()) 
+               if (child instanceof Shape)         ((Shape)child).setFill(color);
+               else if (child instanceof Group)    setGroupColor((Group)child,color);
         }
     }
     
@@ -137,33 +131,6 @@ public class UnitedStatesMapPane extends Region {
  
     
 	//-----------------------------------------------------------------------------------------
-	
-	boolean verbose = true;
-	boolean bypass = false;
-
-	private void showKids(Parent parent, String indent) {
-		if (bypass) return;
-
-		String id = parent.getId();
-		if (verbose) System.out.println(indent + shortClassname(parent.getClass().toString()) + ":  " + (id == null ? "-" : id));
-		if (parent instanceof SplitPane) {
-			for (Node n : ((SplitPane) parent).getItems())
-				if (n instanceof Parent)
-					showKids((Parent) n, indent + "    ");
-		} else if (parent instanceof ScrollPane) {
-			Node content = ((ScrollPane) parent).getContent();
-			if (content instanceof Parent)
-				showKids((Parent) content, indent + "    ");
-			if (verbose) System.out.println(indent + shortClassname(content.getClass().toString()) + ":  "
-					+ (content.getId() == null ? "-" : content.getId()));
-		} else
-			for (Node n : parent.getChildrenUnmodifiable())
-				if (n instanceof Parent)
-					showKids((Parent) n, indent + "    ");
-
-	}
-
-	private String shortClassname(String class1) 			{		return class1.substring(1 + class1.lastIndexOf('.'));	}
 
     private void createStateLabels() {
 //    	showKids(this, "");
@@ -263,15 +230,9 @@ public class UnitedStatesMapPane extends Region {
                     );
                 } else if (regionGroup.isVisible()) { // ONLY NEED TO HIDE VISIBLE OUTLINES
                     animateZoom.getKeyFrames().addAll(
-                        new KeyFrame(Duration.millis(1000), 
-                            new KeyValue(regionGroup.opacityProperty(),regionGroup.getOpacity())
+                        new KeyFrame(Duration.millis(1000),   new KeyValue(regionGroup.opacityProperty(),regionGroup.getOpacity())
                         ),
-                        new KeyFrame(Duration.millis(2000), 
-                            new EventHandler<ActionEvent>() {
-                                @Override public void handle(ActionEvent t) {
-                                    outlineNode.setVisible(false);
-                                }
-                            },
+                        new KeyFrame(Duration.millis(2000),  t -> {    outlineNode.setVisible(false);    },
                             new KeyValue(regionGroup.opacityProperty(),0, Interpolator.EASE_BOTH)
                         )
                     );
@@ -306,27 +267,16 @@ public class UnitedStatesMapPane extends Region {
         for (Node regionGroup: statesGroup.getChildren()) {
             if (regionGroup instanceof Group) {
                 animateZoom.getKeyFrames().addAll(
-                    new KeyFrame(Duration.millis(1000), 
-                        new KeyValue(regionGroup.opacityProperty(),regionGroup.getOpacity())
-                    ),
-                    new KeyFrame(Duration.millis(2000), 
-                        new KeyValue(regionGroup.opacityProperty(),1)
-                    )
+                    new KeyFrame(Duration.millis(1000),  new KeyValue(regionGroup.opacityProperty(),regionGroup.getOpacity()) ),
+                    new KeyFrame(Duration.millis(2000),  new KeyValue(regionGroup.opacityProperty(),1))
                 );
             } else if (regionGroup.isVisible()) { // OUTLINE IS VISIBLE
                 final Node outlineNode = regionGroup;
                 animateZoom.getKeyFrames().addAll(
                     new KeyFrame(Duration.millis(1000), 
-                        new KeyValue(regionGroup.opacityProperty(),regionGroup.getOpacity())
-                    ),
-                    new KeyFrame(Duration.millis(2000), 
-                        new EventHandler<ActionEvent>() {
-                            @Override public void handle(ActionEvent t) {
-                                outlineNode.setVisible(false);
-                            }
-                        },
-                        new KeyValue(regionGroup.opacityProperty(),0)
-                    )
+                        new KeyValue(regionGroup.opacityProperty(),regionGroup.getOpacity())  ),
+                    new KeyFrame(Duration.millis(2000), t -> { outlineNode.setVisible(false);   },
+                        new KeyValue(regionGroup.opacityProperty(),0) )
                 );
             }
         }
