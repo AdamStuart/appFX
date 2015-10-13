@@ -2,24 +2,23 @@ package table.binder;
 
 import java.time.format.DateTimeFormatter;
 
+import gui.Backgrounds;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import util.NodeUtil;
 
 // this isn't a control, but a collection of nodes that need coordination
 
 public class CornerDragBox extends StackPane
 {
 	BindingsController controller;
-	boolean verbose = false;
+	boolean verbose = true;
 	double viewToModelRatio = 1.;
 	Label widthLabel, heightLabel, areaLabel, scaleLabel;
 	
@@ -47,7 +46,7 @@ public class CornerDragBox extends StackPane
 	double MAX_RECT_HEIGHT = 140;
 	
 	//------------------------------------------------------------------------------
-	public void install(Rect r, double scale)
+	public void install(Rect r)
 	{
 		String colorStr; //  = "#" + r.getColor().toString().substring(2, 8);
 		Color col = r.getColor();
@@ -59,10 +58,10 @@ public class CornerDragBox extends StackPane
         setStyle("-fx-background-color: " + colorStr + ";");
 		if (verbose)
 			System.out.println("rect color = " + colorStr);
-        backgroundProperty().bind(new SimpleObjectProperty(new Background(new BackgroundFill(col, CornerRadii.EMPTY, Insets.EMPTY))));  ///setBackground(new Background(col));
-		String s = r.getWidthAndUnits();
+		Background bgnd = Backgrounds.coloredBackground(col);
+        setBackground(bgnd);
 
-		
+        String s = r.getWidthAndUnits();
 		if (verbose)	System.out.println(s);
 		widthLabel.setText(s);
 		s = r.getHeightAndUnits();
@@ -74,19 +73,15 @@ public class CornerDragBox extends StackPane
 		double w = r.getWidthInMeters();
 		double h = r.getHeightInMeters();
 		
-		if (scale <= 0)
-		{
-			double scaleW = MAX_RECT_WIDTH / w;
-			double scaleH = MAX_RECT_HEIGHT / h;
-	
-			scale  = Math.min(scaleW, scaleH);
-		}
+		double scaleW = MAX_RECT_WIDTH / w;
+		double scaleH = MAX_RECT_HEIGHT / h;
+		double scale  = Math.min(scaleW, scaleH);
+		
+		NodeUtil.forceWidth(this, (int)(w * scale));  
+		NodeUtil.forceHeight(this, (int)(h * scale));  
+		
 		String dat = DateTimeFormatter.ISO_DATE.format(r.getDueDate());
-		scaleLabel.setText(String.format("%.3f Due: %s", scale, dat));
-		NodeUtil.forceWidth(this, (int)(w * scale));   //setWidth(w * scale);
-//		setHeight(h * scale);
-		NodeUtil.forceHeight(this, (int)(h * scale));   //setWidth(w * scale);
-//		setLayoutY(MAX_RECT_HEIGHT - h * scale);
+		scaleLabel.setText(String.format("Scale: %.1f,   Due Date: %s", scale, dat));
 	}
 	
 	//------------------------------------------------------------------------------
@@ -109,10 +104,7 @@ public class CornerDragBox extends StackPane
 	}
 	
 	static int MAXWidth = 140;
-	double pin(double x, double floor, double top)
-	{
-		return Math.min(Math.max(floor, x), top);
-	}
+	double pin(double x, double floor, double top)	{		return Math.min(Math.max(floor, x), top);	}
 	
 	private void doDrag(MouseEvent e)
 	{
@@ -120,21 +112,19 @@ public class CornerDragBox extends StackPane
 
 		double x = pin(e.getX(), 1, MAXWidth);
 		double y = pin(e.getY(), 1, MAXWidth);;
-		NodeUtil.forceWidth(this, (int)x);   //setWidth(w * scale);
-		NodeUtil.forceHeight(this, (int) y);   //setWidth(w * scale);
+		NodeUtil.forceWidth(this, (int)x);  
+		NodeUtil.forceHeight(this, (int) y);  
 
 		Rect active = controller.getActiveRecord();
 		double wid = Math.max(0.0001, x) / viewToModelRatio;
 		active.setWidthInMeters(wid );
-		double ht = Math.max(0.0001,y) / viewToModelRatio;
-		active.setHeightInMeters(ht);	// don't let height go negative
+		double ht = Math.max(0.0001,y) / viewToModelRatio;		// don't let width or height go negative
+		active.setHeightInMeters(ht);	
 		active.recalcArea();
-		controller.install(viewToModelRatio);
 		
 	}
 	private void endDrag(MouseEvent e)
 	{
-		
 		if (verbose)		System.out.println("rectScale.setValue");
 //		rectScale = 1;			// TODO
 	}

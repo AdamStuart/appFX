@@ -12,7 +12,7 @@
 <?import javafx.collections.FXCollections?>
 <?import com.ngopal.autocomplete.* ?>
 
-<BorderPane id="AnchorPane" fx:id="mainPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ngopal.demo.GUIFX">
+<BorderPane id="AnchorPane" fx:id="mainPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="table.enemyList.EnemiesListController">
         
     <top>
         <StackPane alignment="CENTER_LEFT">

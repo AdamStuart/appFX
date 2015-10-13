@@ -1,12 +1,18 @@
 package table.binder;
 
+import gui.NumberField;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.event.ActionEvent;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import model.Unit;
+import model.ValueUnitRecord;
+import util.NodeUtil;
+import util.StringUtil;
 
 public class ValueWithUnitsBox extends HBox
 {
@@ -45,47 +51,46 @@ public class ValueWithUnitsBox extends HBox
 		unitEntry.setItems(Unit.getNames());
 		unitEntry.getSelectionModel().select(Unit.IN);
 		ReadOnlyObjectProperty<Unit> units = unitEntry.getSelectionModel().selectedItemProperty();
-		units.addListener( (observable, oldValue, newValue) -> 
-			{ controller.setUnits(getId(), unitEntry.getSelectionModel().getSelectedItem());			}
-		);
+		units.addListener( (obs, old, newV) -> 	{ controller.setUnits(getId(), unitEntry.getSelectionModel().getSelectedItem());});
 		
-		createCommitBinding(txtEntry, controller);	
+	  	 NumberBinding binding = Bindings.createDoubleBinding(() -> getValue());
+	     NodeUtil.invalOnActionOrFocusLost(txtEntry, binding); 
+	     binding.addListener((obs, oldVal, newVal) ->  
+	     	{  if (oldVal != newVal)	controller.setValue(getId(), (double) newVal);  
+	     	System.out.println("setValue  "+ getId());
+	     	});
+//		createCommitBinding(txtEntry, controller);	
+//		txtEntry.focusedProperty().addListener((obs, old, isFocused)-> { 
+//			if (! isFocused) {	controller.setValue(getId(), getValue()); }  });
+//		txtEntry.setOnAction(e -> {controller.setValue(getId(), getValue()); } );
+
 		getChildren().addAll(prompt, txtEntry, unitEntry);
 	}
 //===================================================================
 
-	public void install(ValueUnitRecord rec)				{	install(rec.getVal(), rec.getUnit());	}
-	public ValueUnitRecord extract(double d, Unit u)		{	return new ValueUnitRecord(getValue(), getUnit());		}
+//	public void install(ValueUnitRecord rec)		{	install(rec.getVal(), rec.getUnit());	}
+//	public ValueUnitRecord extract(double d, Unit u){	return new ValueUnitRecord(getValue(), getUnit());		}
 
 	
-	private void install(double d, Unit u)
+	public void install(ValueUnitRecord rec)
 	{
-		txtEntry.setText(String.format("%.2f", d));
-		int idx = unitEntry.getItems().indexOf(u);
+		txtEntry.setText(String.format("%.2f", rec.getVal()));
+		int idx = unitEntry.getItems().indexOf(rec.getUnit());
 		if (idx >= 0)
 			unitEntry.getSelectionModel().select(idx);
 	}
 	
 	//------------------------------------------------------------------------------
-	public Double getValue()		{		return toDouble(txtEntry.getText());	}
+	public Double getValue()		{		return StringUtil.toDouble(txtEntry.getText());	}
 	public Unit getUnit()			{		return unitEntry.getSelectionModel().getSelectedItem();	}
 	public void setValue(Double d)	{		txtEntry.setText(d.toString());	}
 	public void setUnit(Unit u)		{		unitEntry.getSelectionModel().select(u);	}
 //------------------------------------------------------------------------------
-
+//
 	private void createCommitBinding(TextField textField, BindingsController control) 
 	{
-	  	 NumberBinding binding = Bindings.createDoubleBinding(() -> toDouble(textField.getText()));
+	  	 NumberBinding binding = Bindings.createDoubleBinding(() -> getValue());
 	     NodeUtil.invalOnActionOrFocusLost(textField, binding); 
-	     binding.addListener((obs, oldVal, newVal) ->  {  	controller.setValue(getId(), (double) newVal);    });
+	     binding.addListener((obs, oldVal, newVal) ->  {  if (oldVal != newVal)	controller.setValue(getId(), (double) newVal);    });
    }
-
-   public static Double toDouble(String s)
-	{
-		try{
-			return Double.parseDouble(s);
-		}
-		catch (Exception e)	{ }
-		return new Double(Double.NaN);
-	}
 }

@@ -11,16 +11,15 @@ import javafx.stage.Stage;
 
 public class AppBindings extends Application
 {
-
     static final String RESOURCE = "Bindings.fxml";
+    static final String CSS = "application.css";
 
-    @Override
-    public void start(Stage primaryStage) throws Exception
+    @Override public void start(Stage primaryStage) throws Exception
     {
         URL resource = getClass().getResource(RESOURCE);
         Parent root = FXMLLoader.load(resource);
         Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource(CSS).toExternalForm());
 
 
         primaryStage.setTitle("Binding Sandbox");
@@ -29,9 +28,6 @@ public class AppBindings extends Application
         primaryStage.show();
     }
 
-    public static void main(String[] args)
-    {
-        launch(args);
-    }
+    public static void main(String[] args)    {    launch(args);    }
 
 }

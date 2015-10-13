@@ -13,7 +13,6 @@ public class ColorTableCell<MyColorable> extends TableCell<MyColorable, Color>
 	private ColorPicker createPicker()
 	{
 		colorPicker = new ColorPicker();
-
 		colorPicker.setOnAction(evt ->
 		{
 			ColorPicker cp = (ColorPicker) evt.getSource();
@@ -23,9 +22,7 @@ public class ColorTableCell<MyColorable> extends TableCell<MyColorable, Color>
 			int idx = getTableView().getSelectionModel().getSelectedIndex();
 			MyColorable rec = getTableView().getItems().get(idx);
 			if (rec instanceof Rect)
-			{
 				((Rect)rec).setColor(cw);
-			}
 		});
 		return colorPicker;
 	}
@@ -44,13 +41,7 @@ public class ColorTableCell<MyColorable> extends TableCell<MyColorable, Color>
 			colorPicker = createPicker();
 			colorPicker.setUserData(value);
 		}
-
 		colorPicker.setValue(value);
 		setGraphic(colorPicker);
 	}
-
-	// };
-
-	// }
-
 }

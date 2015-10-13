@@ -2,6 +2,7 @@ package table.binder;
 
 import java.time.LocalDate;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -17,13 +18,15 @@ import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.ChoiceBoxTableCell;
+//import javafx.scene.control.cell.ChoiceBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
+import model.Unit;
+import table.binder.tablecellHelpers.ChoiceBoxTableCell;
 import table.binder.tablecellHelpers.DateTableCell;
 import table.binder.tablecellHelpers.NumberColConverter;
 
@@ -33,7 +36,6 @@ public class BindingsController implements InvalidationListener
 	@FXML private SimpleDoubleProperty rectScale = new SimpleDoubleProperty(1.);
 
 	@FXML private VBox threeLineContainer;
-
 	@FXML private Label widthDisplay; // axis of rectDisplay
 	@FXML private Label heightDisplay; // "
 	private Label areaDisplay; // label centered in rectDisplay
@@ -80,14 +82,11 @@ public class BindingsController implements InvalidationListener
 
 		initTable();
 		createData();
-		TableViewSelectionModel<Rect> selModel = tableView.getSelectionModel();
-//		if (tableView.getItems().size() > 0)
-//			selModel.select(0);
 
 	}
 
 	// ------------------------------------------------------------------------------
-	public Rect getActiveRecord()	{		return getActiveRect();	}
+	public Rect getActiveRecord()				{		return getActiveRect();	}
 	public void setUnits(String id, Unit un)	{		getActiveRecord().setUnits(id, un);	}
 	public void setValue(String id, double d)	{		getActiveRecord().setVal(id, d);	}
 
@@ -98,19 +97,36 @@ public class BindingsController implements InvalidationListener
 		if (selectedItem == null)
 		{
 			if (tableView.getItems().isEmpty())
-				tableView.getItems().add(new Rect());
-System.out.println("items: " + tableView.getItems().size());
+				tableView.getItems().add(new Rect(this));
+			if (verbose) System.out.println("items: " + tableView.getItems().size());
 			tableView.getSelectionModel().select(0);
-			System.out.println("selected: " + tableView.getSelectionModel().getSelectedIndex());
+			if (verbose) System.out.println("selected: " + tableView.getSelectionModel().getSelectedIndex());
 			selectedItem = tableView.getSelectionModel().getSelectedItem();
 		}
 		return (Rect) selectedItem;
 	}
 	// ------------------------------------------------------------------------------
-	//	key method to move data from the model (getActiveRecord()) to the view components
-	
-	public void install(double rectScale)
+	private void tableSelectionChanged(Number oldRectIdx, Number newRectIdx)
 	{
+		
+		if (oldRectIdx != newRectIdx && newRectIdx.intValue() >= 0)
+		{
+			System.out.println("tableSelectionChanged: " + newRectIdx);
+//			getActiveRecord().setController(this);
+			install();
+//			int idx = tableView.getSelectionModel().getSelectedIndex();
+//			tableView.getItems().set(idx, newRect);
+//			install(-1);		this makes a cyclic call.  crashes slowly with no good stack diagnostic
+		}
+	}
+	// ------------------------------------------------------------------------------
+	//	key method to move data from the model (getActiveRecord()) to the view components
+	boolean recursing = false;
+	
+	public void install()
+	{	
+//		if (recursing) return;
+//		recursing = true;
 		Rect r = getActiveRecord();
 		if (r == null)
 		{
@@ -121,21 +137,22 @@ System.out.println("items: " + tableView.getItems().size());
 		heightLine.install(r.heightRecordProperty().getValue());
 		areaLine.install(r.areaRecordProperty().getValue());
 
-		dragbox.install(r, rectScale);
-
+		dragbox.install(r);
+//
 		int idx = tableView.getSelectionModel().getSelectedIndex();
-		if (idx >= 0)
-		try
-		{
-			tableView.getItems().set(idx, r);
-		}
-		catch (UnsupportedOperationException e)  {}
-		if (verbose)
-			System.out.println("install " + tableView.getItems().indexOf(r));
+//		if (idx >= 0)
+//		try
+//		{
+//			Platform.runLater(new Thread(() -> {tableView.getItems().set(idx, r); }));
+//		}
+//		catch (UnsupportedOperationException e)  {}
+//		if (verbose)
+//			System.out.println("install " + tableView.getItems().indexOf(r));
+//		recursing = false;
 
 	}
 
-	
+
 	// ------------------------------------------------------------------------------
 	@FXML private TableView<Rect> tableView;
 	@FXML private TableColumn<Rect, Double> widthCol;
@@ -161,12 +178,10 @@ System.out.println("items: " + tableView.getItems().size());
 	            return new TableCell<Rect, Color>(){
 
 	                private ColorPicker colorPicker;
-
 	                private ColorPicker createPicker()
 	                {
 	                    colorPicker = new ColorPicker();
 	                    colorPicker.setOnAction(evt -> {
-	                       
 	                            ColorPicker cp = (ColorPicker)evt.getSource();
 	                            Color cw = (Color)cp.getValue();
 	                            cw = cp.getValue();
@@ -179,18 +194,14 @@ System.out.println("items: " + tableView.getItems().size());
 	                }
 
 
-	                @Override
-	                protected void updateItem(Color value, boolean empty) {                      
+	                @Override  protected void updateItem(Color value, boolean empty) 
+	                {                      
 	                    super.updateItem(value, empty);
-	                    if(empty){
-	                      setGraphic(null);  return;			//http://stackoverflow.com/questions/25532568/javafx-tableview-delete-issue
-	                    }
-
+	                    if(empty){   setGraphic(null);  return;}		//http://stackoverflow.com/questions/25532568/javafx-tableview-delete-issue
 	                    if(colorPicker == null){
 	                        colorPicker = createPicker();
 	                        colorPicker.setUserData(value);
 	                    }
-
 	                    colorPicker.setValue(value);
 	                    setGraphic(colorPicker);
 	                }
@@ -198,81 +209,50 @@ System.out.println("items: " + tableView.getItems().size());
 	        }            
 	    });
 		
-
         dueDateCol.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
         dueDateCol.setCellFactory(p -> { return new DateTableCell<Rect>();     });
         dueDateCol.setOnEditCommit(event -> event.getRowValue().setDueDate(event.getNewValue()));
         dueDateCol.setEditable(true);
        
-		widthCol.setOnEditCommit((CellEditEvent<Rect, Double> t) ->
-		{
-			Rect r = ((Rect) t.getTableView().getItems().get(t.getTablePosition().getRow()));
-			r.setVal("width", t.getNewValue());
-		});
-		widthCol.setCellFactory(TextFieldTableCell.<Rect, Double> forTableColumn(new NumberColConverter()));
-		widthCol.setCellValueFactory(new PropertyValueFactory<>("widthVal"));
-		widthCol.getStyleClass().add("numeric");
-		widthUnitsCol.setCellValueFactory(new PropertyValueFactory<>("widthUnits"));
-		ObservableList<Unit> units = FXCollections.observableArrayList(Unit.values());
-		widthUnitsCol.setCellFactory(col -> new ChoiceBoxTableCell(widthUnitsCol, units));
-		widthUnitsCol.setOnEditCommit((CellEditEvent<Rect, Unit> t) ->
-		{
-			Rect r = ((Rect) t.getTableView().getItems().get(t.getTablePosition().getRow()));
-			r.setUnits("width", t.getNewValue());
-		});
-
-		heightCol.setCellValueFactory(new PropertyValueFactory<>("heightVal"));
-		heightCol.getStyleClass().add("numeric");
-		heightCol.setCellFactory(TextFieldTableCell.<Rect, Double> forTableColumn(new NumberColConverter()));
-		heightCol.setOnEditCommit((CellEditEvent<Rect, Double> t) ->
-		{
-			Rect r = ((Rect) t.getTableView().getItems().get(t.getTablePosition().getRow()));
-			r.setVal("height", t.getNewValue());
-		});
-
-		heightUnitsCol.setCellValueFactory(new PropertyValueFactory<>("heightUnits"));
-
-		heightUnitsCol.setCellFactory(col -> new ChoiceBoxTableCell(heightUnitsCol, units));
-		heightUnitsCol.setOnEditCommit((CellEditEvent<Rect, Unit> t) ->
-		{
-			Rect r = ((Rect) t.getTableView().getItems().get(t.getTablePosition().getRow()));
-			r.setUnits("height", t.getNewValue());
-		});
-
-		areaCol.setCellValueFactory(new PropertyValueFactory<>("areaVal"));
-		areaCol.setCellFactory(TextFieldTableCell.<Rect, Double> forTableColumn(new NumberColConverter()));
-		areaCol.getStyleClass().add("numeric");
-		areaCol.setOnEditCommit((CellEditEvent<Rect, Double> t) ->
-		{
-			Rect r = ((Rect) t.getTableView().getItems().get(t.getTablePosition().getRow()));
-			r.setVal("area", t.getNewValue());
-		});
-
-		areaUnitsCol.setCellValueFactory(new PropertyValueFactory<>("areaUnits"));
-		areaUnitsCol.setCellFactory(col -> new ChoiceBoxTableCell(areaUnitsCol, units, true));
-		areaUnitsCol.setOnEditCommit((CellEditEvent<Rect, Unit> t) ->
-		{
-			Rect r = ((Rect) t.getTableView().getItems().get(t.getTablePosition().getRow()));
-			r.setUnits("area", t.getNewValue());
-		});
-
+		setUpCols("width", widthCol, widthUnitsCol);
+		setUpCols("height", heightCol, heightUnitsCol);
+		setUpCols("area", areaCol, areaUnitsCol);
+			
 		tableView.setEditable(true);
 		selectedCol.setCellFactory(CheckBoxTableCell.forTableColumn(selectedCol));
 		selectedCol.setCellValueFactory(new PropertyValueFactory<>("selected"));
-
-		tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
-			{	tableSelectionChanged((Rect) oldValue, (Rect) newValue);	}
-		);
-
+	
+		tableView.getSelectionModel().selectedIndexProperty().addListener((a,b,c) -> 
+		{ tableSelectionChanged( b,c);});
 
 	}
 	// ------------------------------------------------------------------------------
+	// macros to customize our value and unit columns in the table, in pairs
+	
+	static ObservableList<Unit> units = FXCollections.observableArrayList(Unit.values());
+	
+	private void setUpCols(String prefix, TableColumn<Rect, Double> col1, TableColumn<Rect, Unit> col2)
+	{
+		col1.setCellValueFactory(new PropertyValueFactory<>(prefix +"Val"));
+		col1.setCellFactory(TextFieldTableCell.<Rect, Double> forTableColumn(new NumberColConverter()));
+		col1.getStyleClass().add("numeric");
+		col1.setOnEditCommit((CellEditEvent<Rect, Double> t) ->	{	getRect(t).setVal(prefix, t.getNewValue());		});
+		
+		col2.setCellValueFactory(new PropertyValueFactory<>(prefix +"Units"));
+		col2.setCellFactory(col -> new ChoiceBoxTableCell(col2, units, true));
+		col2.setOnEditCommit((CellEditEvent<Rect, Unit> t) ->	{	getRectUnit(t).setUnits(prefix, t.getNewValue());});
+	}
+	
+	Rect getRect(CellEditEvent<Rect, Double> t) { return ((Rect) t.getTableView().getItems().get(t.getTablePosition().getRow()));}
+	Rect getRectUnit(CellEditEvent<Rect, Unit> t) { return ((Rect) t.getTableView().getItems().get(t.getTablePosition().getRow()));}
+
+	// ------------------------------------------------------------------------------
 	private void createData()
 	{
-		Rect[] deflts = new Rect[] { new Rect(10, Unit.CM, 10, Unit.CM, Color.BROWN),
-						new Rect(10, Unit.CM, 2, Unit.CM, Color.GREEN), 
-						new Rect(1, Unit.IN, 2, Unit.IN, Color.CORAL),
-						new Rect(100.5, Unit.M, 132, Unit.M, Color.BLACK) };
+		Rect[] deflts = new Rect[] { new Rect(this, 10, Unit.CM, 10, Unit.CM, Color.BROWN),
+						new Rect(this, 10, Unit.CM, 2, Unit.CM, Color.GREEN), 
+						new Rect(this, 1, Unit.IN, 2, Unit.IN, Color.CORAL),
+						new Rect(this, 100.5, Unit.M, 132, Unit.M, Color.BLACK) };
 
 		ObservableList<Rect> data = FXCollections.observableArrayList();
 		for (Rect r : deflts)
@@ -280,16 +260,6 @@ System.out.println("items: " + tableView.getItems().size());
 		tableView.setItems(data);
 	}
 
-	// ------------------------------------------------------------------------------
-	private void tableSelectionChanged(Rect oldValue, Rect newValue)
-	{
-		if (newValue != null)
-		{
-			newValue.setController(this);
-//			install(newValue);
-//			install(-1);		this makes a cyclic call.  crashes slowly with no good stack diagnostic
-		}
-	}
 	// ------------------------------------------------------------------------------
 	@Override public void invalidated(Observable observable)
 	{
@@ -304,7 +274,7 @@ System.out.println("items: " + tableView.getItems().size());
 	{
 		if (verbose) System.out.println("addRow");
 		ObservableList<Rect> items = tableView.getItems();
-		items.add(new Rect());
+		items.add(new Rect(this));
 		tableView.setItems(null);
 		tableView.setItems(items);
 	}
@@ -320,14 +290,8 @@ System.out.println("items: " + tableView.getItems().size());
 //			tableView.getSelectionModel().select(0);
 			tableView.setItems(null);
 			tableView.setItems(items);
-		System.out.println("items has size of " + items.size());
-
-		try
-		{
-			install(0);
-		}
-		catch (Exception e) 		{ e.printStackTrace();}
-		}
-	}	
-
+			if (verbose) System.out.println("items has size of " + items.size());
+			install();
+		}	
+	}
 }

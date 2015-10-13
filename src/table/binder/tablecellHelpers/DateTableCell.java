@@ -36,25 +36,21 @@ public class DateTableCell<Rec> extends TableCell<Rec, LocalDate>
 		// updated, so commit will sent the wrong value. So we must update it ourselves
 		// from the editor's text value.
 
-		datePicker.addEventFilter( KeyEvent.KEY_PRESSED,
-			(KeyEvent event) ->
+		datePicker.setOnKeyPressed((event) ->		{
+			if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.TAB)
 			{
-				if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.TAB)
+				try
 				{
-					try
-					{
-						LocalDate val = datePicker.getConverter().fromString( datePicker.getEditor().getText());
-						datePicker.setValue(val);
-						commitEdit(LocalDate.from(datePicker.getValue()));
-					} catch (Exception e)
-					{}
-				}
-				if (event.getCode() == KeyCode.ESCAPE)
-				{
-					cancelEdit();
-				}
-			});
+					LocalDate val = datePicker.getConverter().fromString( datePicker.getEditor().getText());
+					datePicker.setValue(val);
+					commitEdit(LocalDate.from(datePicker.getValue()));
+				} catch (Exception e)
+				{}
+			}
+			if (event.getCode() == KeyCode.ESCAPE)		cancelEdit();
+		});
 		final StringConverter<LocalDate> defaultConverter = datePicker.getConverter();
+		
 		datePicker.setConverter(new StringConverter<LocalDate>()
 		{
 			@Override public String toString(LocalDate value)
@@ -100,18 +96,15 @@ public class DateTableCell<Rec> extends TableCell<Rec, LocalDate>
 			cell.addEventFilter(KeyEvent.KEY_PRESSED, event ->
 			{
 				if (event.getCode() == KeyCode.ENTER)
-				{
 					commitEdit(LocalDate.from(datePicker.getValue()));
-				}
 			});
 			return cell;
 		});
-
 		contentDisplayProperty().bind(
 						Bindings.when(editingProperty()).then(ContentDisplay.GRAPHIC_ONLY)
 										.otherwise(ContentDisplay.TEXT_ONLY));
 	}
-
+//----------------------------------------------------------------
 	@Override public void updateItem(LocalDate inDate, boolean empty)
 	{
 		super.updateItem(inDate, empty);
@@ -132,10 +125,11 @@ public class DateTableCell<Rec> extends TableCell<Rec, LocalDate>
 				e.printStackTrace();
 				text = "Error";
 			}
-			setText(text); // formatter.format(birthday)
+			setText(text); 
 			setGraphic(datePicker);
 		}
 	}
+	//----------------------------------------------------------------
 
 	@Override public void startEdit()
 	{

@@ -7,8 +7,8 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import model.Unit;
 import table.binder.Rect;
-import table.binder.Unit;
 
 // ------------------------------------------------------------------------------
 public class ChoiceBoxTableCell extends TableCell<Rect, Unit>
@@ -20,6 +20,7 @@ public class ChoiceBoxTableCell extends TableCell<Rect, Unit>
 	{
 		this(column, choiceList, false);
 	}
+	
 	public ChoiceBoxTableCell(TableColumn<Rect, Unit> column, ObservableList<Unit> choiceList, boolean squared)
 	{
 		box = new ChoiceBox<Unit>();
@@ -33,23 +34,15 @@ public class ChoiceBoxTableCell extends TableCell<Rect, Unit>
 				tv.getSelectionModel().select(getTableRow().getIndex());
 				tv.edit(tv.getSelectionModel().getSelectedIndex(), column);
 			} else
-			{
 				tv.edit(getTableRow().getIndex(), column);
-			}
 		});
-		this.box.valueProperty().addListener((observable, oldValue, newValue) ->
-		{
-			if (isEditing())
-			{
-				commitEdit(newValue);
-			}
-		});
+		box.valueProperty().addListener((obs, old, newValue) -> {	if (isEditing())	commitEdit(newValue);	});
 		setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 	}
 
-	public ChoiceBoxTableCell selectRowOnClick(boolean selectRowOnClick)
+	public ChoiceBoxTableCell selectRowOnClick(boolean sel)
 	{
-		this.selectRowOnClick = selectRowOnClick;
+		selectRowOnClick = sel;
 		return this;
 	}
 
@@ -58,14 +51,8 @@ public class ChoiceBoxTableCell extends TableCell<Rect, Unit>
 		super.updateItem(item, empty);
 
 		setText(null);
-		if (empty || item == null)
-		{
-			setGraphic(null);
-		} else
-		{
-			this.box.setValue(item);
-			this.setGraphic(this.box);
-		}
+		if (empty || item == null)			setGraphic(null);
+		else					{			box.setValue(item);			setGraphic(box);		}
 	}
 
 }
