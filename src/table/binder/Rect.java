@@ -156,8 +156,18 @@ public class Rect
 	public void setDueDate(LocalDate newValue)	{		dueDate.set( newValue);	}
 	public LocalDate getDueDate()			{		return dueDate.get();	}
 
+	// ------------------------------------------------------------------------------
 	@Override public String toString()	{ return "[" + getWidthAndUnits() + ", " + getHeightAndUnits() + "]"; }
 	// @formatter:on
+	public boolean equals(Rect other)
+	{
+		if (other == null) return false;
+		if (getWidthAndUnits().equals(other.getWidthAndUnits()))
+			if (getHeightAndUnits().equals(other.getHeightAndUnits()))
+				if (getAreaAndUnits().equals(other.getAreaAndUnits()))
+					return true;
+		return false;
+	}
 	// ------------------------------------------------------------------------------
 	public void recalcArea()
 	{
@@ -169,15 +179,6 @@ public class Rect
 		setArea(a);
 	}
 
-	public boolean equals(Rect other)
-	{
-		if (other == null) return false;
-		if (getWidthAndUnits().equals(other.getWidthAndUnits()))
-			if (getHeightAndUnits().equals(other.getHeightAndUnits()))
-				if (getAreaAndUnits().equals(other.getAreaAndUnits()))
-					return true;
-		return false;
-	}
 	// ------------------------------------------------------------------------------
 	// If the area is edited, there is an ambiguity about whether to adjust width, height or both.
 	// The parent passes in changeTheWidth, based on whether height or width was last edited.

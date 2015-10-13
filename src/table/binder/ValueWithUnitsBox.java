@@ -40,6 +40,7 @@ public class ValueWithUnitsBox extends HBox
 		prompt.getStyleClass().add("prompt");
 		prompt.setTranslateX(4);		// scoot it in and down a tad
 		prompt.setTranslateY(6);
+		
 		txtEntry = new NumberField();
 		txtEntry.setId(id + ".fld");
 		NodeUtil.forceWidth(txtEntry, textWidth);
@@ -53,24 +54,14 @@ public class ValueWithUnitsBox extends HBox
 		ReadOnlyObjectProperty<Unit> units = unitEntry.getSelectionModel().selectedItemProperty();
 		units.addListener( (obs, old, newV) -> 	{ controller.setUnits(getId(), unitEntry.getSelectionModel().getSelectedItem());});
 		
-	  	 NumberBinding binding = Bindings.createDoubleBinding(() -> getValue());
-	     NodeUtil.invalOnActionOrFocusLost(txtEntry, binding); 
-	     binding.addListener((obs, oldVal, newVal) ->  
-	     	{  if (oldVal != newVal)	controller.setValue(getId(), (double) newVal);  
-	     	System.out.println("setValue  "+ getId());
-	     	});
-//		createCommitBinding(txtEntry, controller);	
-//		txtEntry.focusedProperty().addListener((obs, old, isFocused)-> { 
-//			if (! isFocused) {	controller.setValue(getId(), getValue()); }  });
-//		txtEntry.setOnAction(e -> {controller.setValue(getId(), getValue()); } );
+	  	NumberBinding binding = Bindings.createDoubleBinding(() -> getValue());
+	    NodeUtil.invalOnActionOrFocusLost(txtEntry, binding); 
+	    binding.addListener((obs, oldVal, newVal) ->  
+	     	{  if (oldVal != newVal)	controller.setValue(getId(), (double) newVal);  });
 
-		getChildren().addAll(prompt, txtEntry, unitEntry);
+	    getChildren().addAll(prompt, txtEntry, unitEntry);
 	}
-//===================================================================
-
-//	public void install(ValueUnitRecord rec)		{	install(rec.getVal(), rec.getUnit());	}
-//	public ValueUnitRecord extract(double d, Unit u){	return new ValueUnitRecord(getValue(), getUnit());		}
-
+	//===================================================================
 	
 	public void install(ValueUnitRecord rec)
 	{
@@ -86,11 +77,4 @@ public class ValueWithUnitsBox extends HBox
 	public void setValue(Double d)	{		txtEntry.setText(d.toString());	}
 	public void setUnit(Unit u)		{		unitEntry.getSelectionModel().select(u);	}
 //------------------------------------------------------------------------------
-//
-	private void createCommitBinding(TextField textField, BindingsController control) 
-	{
-	  	 NumberBinding binding = Bindings.createDoubleBinding(() -> getValue());
-	     NodeUtil.invalOnActionOrFocusLost(textField, binding); 
-	     binding.addListener((obs, oldVal, newVal) ->  {  if (oldVal != newVal)	controller.setValue(getId(), (double) newVal);    });
-   }
 }

@@ -2,7 +2,6 @@ package table.binder;
 
 import java.time.LocalDate;
 
-import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -10,25 +9,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TableView.TableViewSelectionModel;
-import javafx.scene.control.cell.CheckBoxTableCell;
-//import javafx.scene.control.cell.ChoiceBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.util.Callback;
 import model.Unit;
-import table.binder.tablecellHelpers.ChoiceBoxTableCell;
-import table.binder.tablecellHelpers.DateTableCell;
-import table.binder.tablecellHelpers.NumberColConverter;
 
 public class BindingsController implements InvalidationListener
 {
@@ -41,29 +28,26 @@ public class BindingsController implements InvalidationListener
 	private Label areaDisplay; // label centered in rectDisplay
 	@FXML private Label scaleDisplay; // the scale to get current size to fit, we also show the date field here
 	@FXML private VBox dragboxContainer;
-
 	
 	// ------------------------------------------------------------------------------
-
-	// specs
-	// if area is edited, adjust width and height to maintain aspect ratio
+	// specs:
+	// if area is edited, adjust both width and height to maintain aspect ratio
 	// if a unit is changed immediately after the value, dont recalc value
 	// ------------------------------------------------------------------------------
-
 	boolean verbose = false;
-
-	ValueWithUnitsBox widthLine;
-	ValueWithUnitsBox heightLine;
-	ValueWithUnitsBox areaLine;
-	CornerDragBox dragbox;
-
+	// these four items comprise our form or view or scene graph
+	
+	private ValueWithUnitsBox widthLine;
+	private ValueWithUnitsBox heightLine;
+	private ValueWithUnitsBox areaLine;
+	private CornerDragBox dragbox;
+	BindingTable table;
 	// ------------------------------------------------------------------------------
 	// the app has 3 components: a dragbox to edit Rects with a mouse; a form to
 	// input Rects; and a table<Rect>
 
 	public void initialize()
 	{
-
 		assert (widthDisplay != null);
 		assert (heightDisplay != null);
 		assert (scaleDisplay != null);
@@ -80,53 +64,41 @@ public class BindingsController implements InvalidationListener
 		threeLineContainer.setSpacing(8);
 		threeLineContainer.getChildren().addAll(widthLine, heightLine, areaLine);
 
-		initTable();
+		table = new BindingTable(this);
 		createData();
-
 	}
 
 	// ------------------------------------------------------------------------------
 	public Rect getActiveRecord()				{		return getActiveRect();	}
+	public void setActiveRecord(Rect r)			{		tableView.getItems().set(tableView.getSelectionModel().getSelectedIndex(), r);	}
 	public void setUnits(String id, Unit un)	{		getActiveRecord().setUnits(id, un);	}
 	public void setValue(String id, double d)	{		getActiveRecord().setVal(id, d);	}
 
 	// ------------------------------------------------------------------------------
-	Rect getActiveRect()
+	//most of this handles only the initial case where there may not be data in the table
+	private Rect getActiveRect()
 	{
 		Object selectedItem = tableView.getSelectionModel().getSelectedItem();
 		if (selectedItem == null)
 		{
-			if (tableView.getItems().isEmpty())
-				tableView.getItems().add(new Rect(this));
-			if (verbose) System.out.println("items: " + tableView.getItems().size());
-			tableView.getSelectionModel().select(0);
-			if (verbose) System.out.println("selected: " + tableView.getSelectionModel().getSelectedIndex());
-			selectedItem = tableView.getSelectionModel().getSelectedItem();
+			ObservableList<Rect> items = tableView.getItems();
+			if (items == null)
+				items = FXCollections.observableArrayList();
+			if (items.isEmpty())
+				items.add(new Rect(this));
+			if (verbose) System.out.println("items: " + items.size());
+			table.select(0);
+			if (verbose) System.out.println("selected: " + table.getSelectedIndex());
+			selectedItem = table.getSelectedItem();
 		}
 		return (Rect) selectedItem;
 	}
-	// ------------------------------------------------------------------------------
-	private void tableSelectionChanged(Number oldRectIdx, Number newRectIdx)
-	{
-		
-		if (oldRectIdx != newRectIdx && newRectIdx.intValue() >= 0)
-		{
-			System.out.println("tableSelectionChanged: " + newRectIdx);
-//			getActiveRecord().setController(this);
-			install();
-//			int idx = tableView.getSelectionModel().getSelectedIndex();
-//			tableView.getItems().set(idx, newRect);
-//			install(-1);		this makes a cyclic call.  crashes slowly with no good stack diagnostic
-		}
-	}
+	
 	// ------------------------------------------------------------------------------
 	//	key method to move data from the model (getActiveRecord()) to the view components
-	boolean recursing = false;
 	
 	public void install()
 	{	
-//		if (recursing) return;
-//		recursing = true;
 		Rect r = getActiveRecord();
 		if (r == null)
 		{
@@ -136,24 +108,16 @@ public class BindingsController implements InvalidationListener
 		widthLine.install(r.widthRecordProperty().getValue());
 		heightLine.install(r.heightRecordProperty().getValue());
 		areaLine.install(r.areaRecordProperty().getValue());
-
 		dragbox.install(r);
-//
-		int idx = tableView.getSelectionModel().getSelectedIndex();
-//		if (idx >= 0)
-//		try
-//		{
-//			Platform.runLater(new Thread(() -> {tableView.getItems().set(idx, r); }));
-//		}
-//		catch (UnsupportedOperationException e)  {}
-//		if (verbose)
-//			System.out.println("install " + tableView.getItems().indexOf(r));
-//		recursing = false;
-
+//setActiveRecord(r);
+		table.refresh();
 	}
 
 
 	// ------------------------------------------------------------------------------
+	// All the table information is injected into the controller, but I'm passing
+	//	it to the BindingTable
+	
 	@FXML private TableView<Rect> tableView;
 	@FXML private TableColumn<Rect, Double> widthCol;
 	@FXML private TableColumn<Rect, Unit> widthUnitsCol;
@@ -164,89 +128,14 @@ public class BindingsController implements InvalidationListener
 	@FXML private TableColumn<Rect, Boolean> selectedCol;
 	@FXML private TableColumn<Rect, Color> colorCol;
 	@FXML private TableColumn<Rect, LocalDate> dueDateCol;
+	public TableColumn<?,?>[] getCols()	{ return new TableColumn[] {
+					selectedCol, colorCol, widthCol, widthUnitsCol, 
+					heightCol, heightUnitsCol, areaCol, areaUnitsCol, dueDateCol}; }
 
-	private void initTable()
-	{
-
-		colorCol.setEditable(true);
-		colorCol.setCellValueFactory(new PropertyValueFactory<>("color"));
-//		colorCol.setCellFactory(p -> { return new ColorTableCell<Rect>();     });
-		
-		colorCol.setCellFactory(new Callback<TableColumn<Rect, Color>, TableCell<Rect, Color>>() {          
-
-	        @Override public TableCell<Rect, Color> call(TableColumn<Rect,Color> arg0) {
-	            return new TableCell<Rect, Color>(){
-
-	                private ColorPicker colorPicker;
-	                private ColorPicker createPicker()
-	                {
-	                    colorPicker = new ColorPicker();
-	                    colorPicker.setOnAction(evt -> {
-	                            ColorPicker cp = (ColorPicker)evt.getSource();
-	                            Color cw = (Color)cp.getValue();
-	                            cw = cp.getValue();
-	            				tableView.getSelectionModel().select(getTableRow().getIndex());
-	            				int idx = tableView.getSelectionModel().getSelectedIndex();
-	            				if (idx >= 0)
-	            					tableView.getItems().get(idx).setColor(cw);
-	                    });
-	                    return colorPicker;
-	                }
-
-
-	                @Override  protected void updateItem(Color value, boolean empty) 
-	                {                      
-	                    super.updateItem(value, empty);
-	                    if(empty){   setGraphic(null);  return;}		//http://stackoverflow.com/questions/25532568/javafx-tableview-delete-issue
-	                    if(colorPicker == null){
-	                        colorPicker = createPicker();
-	                        colorPicker.setUserData(value);
-	                    }
-	                    colorPicker.setValue(value);
-	                    setGraphic(colorPicker);
-	                }
-	            };
-	        }            
-	    });
-		
-        dueDateCol.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
-        dueDateCol.setCellFactory(p -> { return new DateTableCell<Rect>();     });
-        dueDateCol.setOnEditCommit(event -> event.getRowValue().setDueDate(event.getNewValue()));
-        dueDateCol.setEditable(true);
-       
-		setUpCols("width", widthCol, widthUnitsCol);
-		setUpCols("height", heightCol, heightUnitsCol);
-		setUpCols("area", areaCol, areaUnitsCol);
-			
-		tableView.setEditable(true);
-		selectedCol.setCellFactory(CheckBoxTableCell.forTableColumn(selectedCol));
-		selectedCol.setCellValueFactory(new PropertyValueFactory<>("selected"));
-	
-		tableView.getSelectionModel().selectedIndexProperty().addListener((a,b,c) -> 
-		{ tableSelectionChanged( b,c);});
-
-	}
+	public TableView<Rect> getTableView()	{		return tableView;	}
 	// ------------------------------------------------------------------------------
-	// macros to customize our value and unit columns in the table, in pairs
+	// hard coded initial data set.  Could come from file or database
 	
-	static ObservableList<Unit> units = FXCollections.observableArrayList(Unit.values());
-	
-	private void setUpCols(String prefix, TableColumn<Rect, Double> col1, TableColumn<Rect, Unit> col2)
-	{
-		col1.setCellValueFactory(new PropertyValueFactory<>(prefix +"Val"));
-		col1.setCellFactory(TextFieldTableCell.<Rect, Double> forTableColumn(new NumberColConverter()));
-		col1.getStyleClass().add("numeric");
-		col1.setOnEditCommit((CellEditEvent<Rect, Double> t) ->	{	getRect(t).setVal(prefix, t.getNewValue());		});
-		
-		col2.setCellValueFactory(new PropertyValueFactory<>(prefix +"Units"));
-		col2.setCellFactory(col -> new ChoiceBoxTableCell(col2, units, true));
-		col2.setOnEditCommit((CellEditEvent<Rect, Unit> t) ->	{	getRectUnit(t).setUnits(prefix, t.getNewValue());});
-	}
-	
-	Rect getRect(CellEditEvent<Rect, Double> t) { return ((Rect) t.getTableView().getItems().get(t.getTablePosition().getRow()));}
-	Rect getRectUnit(CellEditEvent<Rect, Unit> t) { return ((Rect) t.getTableView().getItems().get(t.getTablePosition().getRow()));}
-
-	// ------------------------------------------------------------------------------
 	private void createData()
 	{
 		Rect[] deflts = new Rect[] { new Rect(this, 10, Unit.CM, 10, Unit.CM, Color.BROWN),
@@ -258,13 +147,14 @@ public class BindingsController implements InvalidationListener
 		for (Rect r : deflts)
 			data.add(r);
 		tableView.setItems(data);
+		table.select(0);
 	}
 
 	// ------------------------------------------------------------------------------
 	@Override public void invalidated(Observable observable)
 	{
 		if (observable instanceof Rect)
-			tableView.getSelectionModel().select((Rect) observable);
+			table.select((Rect) observable);
 	}
 	// ------------------------------------------------------------------------------
 	@FXML private Button addRowBtn; 		// only injected in case we want to disable them
@@ -275,7 +165,7 @@ public class BindingsController implements InvalidationListener
 		if (verbose) System.out.println("addRow");
 		ObservableList<Rect> items = tableView.getItems();
 		items.add(new Rect(this));
-		tableView.setItems(null);
+//		tableView.setItems(null);
 		tableView.setItems(items);
 	}
 	// ------------------------------------------------------------------------------
@@ -288,7 +178,7 @@ public class BindingsController implements InvalidationListener
 			ObservableList<Rect> items = tableView.getItems();
 			items.remove(selectedItem);
 //			tableView.getSelectionModel().select(0);
-			tableView.setItems(null);
+//			tableView.setItems(null);
 			tableView.setItems(items);
 			if (verbose) System.out.println("items has size of " + items.size());
 			install();

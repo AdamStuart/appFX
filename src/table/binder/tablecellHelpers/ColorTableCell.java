@@ -5,6 +5,11 @@ import javafx.scene.control.TableCell;
 import javafx.scene.paint.Color;
 import table.binder.Rect;
 
+interface MyColorable
+{
+	void setColor(Color c);
+}
+
 
 public class ColorTableCell<MyColorable> extends TableCell<MyColorable, Color>
 {

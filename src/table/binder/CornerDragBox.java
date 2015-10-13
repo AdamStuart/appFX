@@ -2,7 +2,10 @@ package table.binder;
 
 import java.time.format.DateTimeFormatter;
 
+import diagrams.grapheditor.GConnectionSkin;
+import diagrams.grapheditor.model.GConnection;
 import gui.Backgrounds;
+import gui.Borders;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -14,18 +17,23 @@ import javafx.scene.shape.Rectangle;
 import util.NodeUtil;
 
 // this isn't a control, but a collection of nodes that need coordination
-
+/*
+ *   *  {@link CornerDragBox}.
+     *
+     * @param a BindingsController and 4 labels
+ 	* CornerDragBox is a StackPane that aligns a rectangle with 4 Labels
+ */
 public class CornerDragBox extends StackPane
 {
 	BindingsController controller;
-	boolean verbose = true;
+	boolean verbose = false;
 	double viewToModelRatio = 1.;
 	Label widthLabel, heightLabel, areaLabel, scaleLabel;
 	
-	public CornerDragBox(BindingsController bindingsController, Label w, Label h, Label ar, Label scle)
+	public CornerDragBox(BindingsController c, Label w, Label h, Label ar, Label scle)
 	{
 		super();
-		controller = bindingsController;
+		controller = c;
 		widthLabel = w;
 		heightLabel = h; 
 		areaLabel = ar; 
@@ -39,37 +47,35 @@ public class CornerDragBox extends StackPane
         Rectangle handle = new Rectangle(12,12);  
         handle.setStyle("-fx-fill:white;");
         getChildren().add(handle);
-        
+        setBorder(Borders.dashedBorder);
          StackPane.setAlignment(handle, Pos.BOTTOM_RIGHT);
 	}
 	double MAX_RECT_WIDTH = 140;
 	double MAX_RECT_HEIGHT = 140;
 	
 	//------------------------------------------------------------------------------
+	//  OLD SCHOOL:  can this be replaced with bindings?
+	
 	public void install(Rect r)
 	{
-		String colorStr; //  = "#" + r.getColor().toString().substring(2, 8);
+//		String colorStr; //  = "#" + r.getColor().toString().substring(2, 8);
 		Color col = r.getColor();
-		double red = col.getRed();
-		double gr = col.getGreen();
-		double bl = col.getBlue();
+//		double red = col.getRed();
+//		double gr = col.getGreen();
+//		double bl = col.getBlue();
 			
-		colorStr = String.format("#%x%x%x", (int)(255 * red), (int)(255 * gr), (int)(255 * bl));
-        setStyle("-fx-background-color: " + colorStr + ";");
-		if (verbose)
-			System.out.println("rect color = " + colorStr);
+//		colorStr = String.format("#%x%x%x", (int)(255 * red), (int)(255 * gr), (int)(255 * bl));
+//        setStyle("-fx-background-color: " + colorStr + ";");
+//		if (verbose)
+//			System.out.println("rect color = " + colorStr);
 		Background bgnd = Backgrounds.coloredBackground(col);
         setBackground(bgnd);
 
-        String s = r.getWidthAndUnits();
-		if (verbose)	System.out.println(s);
-		widthLabel.setText(s);
-		s = r.getHeightAndUnits();
-		if (verbose)		System.out.println(s);
-		heightLabel.setText(s);
-		s = r.getAreaAndUnits();
-		if (verbose)		System.out.println(s);
-		areaLabel.setText(s);
+        widthLabel.setText(r.getWidthAndUnits());
+		heightLabel.setText(r.getHeightAndUnits());
+		areaLabel.setText(r.getAreaAndUnits());
+		if (verbose)		System.out.println(r.toString());
+
 		double w = r.getWidthInMeters();
 		double h = r.getHeightInMeters();
 		
@@ -89,18 +95,13 @@ public class CornerDragBox extends StackPane
 	//------------------------------------------------------------------------------
 	private void addRectHandlers()
 	{
-		setOnMousePressed(ev -> startDrag(ev));
+		setOnMousePressed(ev -> {
+			Rect active = controller.getActiveRecord();
+			double modelWidth = active.getWidthInMeters();
+			viewToModelRatio = getWidth()  / modelWidth;		// getWidthInInches
+		});
 		setOnMouseDragged(ev -> doDrag(ev));
-		setOnMouseReleased(ev -> endDrag(ev));
-	}
-	
-//	double rectLeft, rectRight, rectTop, rectBottom;
-	private void startDrag(MouseEvent e)
-	{
-		if (verbose) System.out.println("dragCorner");
-		Rect active = controller.getActiveRecord();
-		double modelWidth = active.getWidthInMeters();
-		viewToModelRatio = getWidth()  / modelWidth;		// getWidthInInches
+		setOnMouseReleased(ev -> {});
 	}
 	
 	static int MAXWidth = 140;
@@ -121,12 +122,8 @@ public class CornerDragBox extends StackPane
 		double ht = Math.max(0.0001,y) / viewToModelRatio;		// don't let width or height go negative
 		active.setHeightInMeters(ht);	
 		active.recalcArea();
+		controller.setActiveRecord(active);
 		
-	}
-	private void endDrag(MouseEvent e)
-	{
-		if (verbose)		System.out.println("rectScale.setValue");
-//		rectScale = 1;			// TODO
 	}
 
 }
