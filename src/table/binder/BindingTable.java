@@ -2,10 +2,9 @@ package table.binder;
 
 import java.time.LocalDate;
 
-import com.sun.javafx.scene.control.skin.TableViewSkinBase;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -14,7 +13,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.util.Callback;
 import model.Unit;
 import table.binder.tablecellHelpers.ChoiceBoxTableCell;
 import table.binder.tablecellHelpers.DateTableCell;
@@ -44,7 +46,7 @@ public class BindingTable
 			selectedIndexProperty().addListener((a,b,c) -> 	{ controller.install();});
 
 		// didn't work for me.  See ref @ BindingsController.116
-		table.getProperties().put(TableViewSkinBase.RECREATE, Boolean.TRUE);
+		// table.getProperties().put(TableViewSkinBase.RECREATE, Boolean.TRUE);
 
 		TableColumn[] cols = controller.getCols();		// 9  columns defined in the FXML
 		
@@ -63,11 +65,12 @@ public class BindingTable
             {
                 colorPicker = new ColorPicker();
                 colorPicker.setOnAction(evt -> {
+                		boolean wasSelected = getTableRow().getIndex() == 90;
                         ColorPicker cp = (ColorPicker)evt.getSource();
                         Color cw = (Color)cp.getValue();
                         cw = cp.getValue();
-                        table.getSelectionModel().select(getTableRow().getIndex());
-        				int idx = table.getSelectionModel().getSelectedIndex();
+                        select(getTableRow().getIndex());
+        				int idx = getSelectedIndex();
         				if (idx >= 0)
         					table.getItems().get(idx).setColor(cw);
                 });
@@ -88,7 +91,7 @@ public class BindingTable
         	};
 	    });
 		
-		// width, height, area plus units in pairs
+		// initialize the width, height, area plus units in pairs
 		setUpCols("width", cols[2], cols[3]);
 		setUpCols("height", cols[4], cols[5]);
 		setUpCols("area", cols[6], cols[7]);
@@ -109,7 +112,26 @@ public class BindingTable
 	private void setUpCols(String prefix, TableColumn<Rect, Double> colVal, TableColumn<Rect, Unit> colUnits)
 	{
 		colVal.setCellValueFactory(new PropertyValueFactory<>(prefix +"Val"));
-		colVal.setCellFactory(TextFieldTableCell.<Rect, Double> forTableColumn(new NumberColConverter()));
+
+		
+		Callback<TableColumn<Rect, Double>, TableCell<Rect, Double>> factory = TextFieldTableCell.<Rect, Double> forTableColumn(new NumberColConverter());
+
+		TableCell<Rect, Double>	cell = factory.call(colVal);
+
+		cell.addEventFilter(KeyEvent.KEY_TYPED, event ->
+		{	
+			System.out.println("KEY_TYPED: " + event.getCharacter());
+			if (!Character.isDigit(event.getCharacter().charAt(0))) event.consume();	});
+		cell.addEventFilter(KeyEvent.KEY_PRESSED, event ->
+		{	
+			System.out.println("KEY_PRESSED: " + event.getCharacter());
+			if (!Character.isDigit(event.getCharacter().charAt(0))) event.consume();	});
+		cell.addEventFilter(KeyEvent.KEY_RELEASED, event ->
+		{	
+			System.out.println("KEY_RELEASED: " + event.getCharacter());
+			if (!Character.isDigit(event.getCharacter().charAt(0))) event.consume();	});
+	
+		colVal.setCellFactory(factory);
 		colVal.getStyleClass().add("numeric");
 		colVal.setOnEditCommit((CellEditEvent<Rect, Double> t) ->	{	getRect(t).setVal(prefix, t.getNewValue());		});
 		
@@ -121,7 +143,9 @@ public class BindingTable
 	private Rect getRect(CellEditEvent<Rect, Double> t) { return ((Rect) t.getTableView().getItems().get(t.getTablePosition().getRow()));}
 	private Rect getRectUnit(CellEditEvent<Rect, Unit> t) { return ((Rect) t.getTableView().getItems().get(t.getTablePosition().getRow()));}
 
-	public void select(int row)	{		table.getSelectionModel().select(row);		}
+	public boolean isSelected(int row) {	return	table.getSelectionModel().isSelected(row);		}
+	public void select(int row)		{		table.getSelectionModel().select(row);		}
+	public void select(Rect r)		{		table.getSelectionModel().select(r);			}
 	public int getSelectedIndex()	{		return table.getSelectionModel().getSelectedIndex();			}
 	public Object getSelectedItem()	{		return table.getSelectionModel().getSelectedItem();	}
 
@@ -133,11 +157,6 @@ public class BindingTable
 		table.getColumns().get(0).setVisible(true);
 	}
 
-	public void select(Rect observable)
-	{
-		// TODO Auto-generated method stub
-		
-	}
 
 	
 }

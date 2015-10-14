@@ -53,10 +53,7 @@ public class DateTableCell<Rec> extends TableCell<Rec, LocalDate>
 		
 		datePicker.setConverter(new StringConverter<LocalDate>()
 		{
-			@Override public String toString(LocalDate value)
-			{
-				return defaultConverter.toString(value);
-			}
+			@Override public String toString(LocalDate value)	{	return defaultConverter.toString(value);	}
 
 			@Override public LocalDate fromString(String text)
 			{
@@ -114,13 +111,15 @@ public class DateTableCell<Rec> extends TableCell<Rec, LocalDate>
 		{
 			setText(null);		
 			setGraphic(null);				// if you see fields left after the row is deleted, this is missing
-		} else
+		} 
+		else
 		{
 			String text = "";
 			try
 			{
 				text = formatter.format(inDate);
-			} catch (Exception e)
+			} 
+			catch (Exception e)
 			{
 				e.printStackTrace();
 				text = "Error";
@@ -130,7 +129,6 @@ public class DateTableCell<Rec> extends TableCell<Rec, LocalDate>
 		}
 	}
 	//----------------------------------------------------------------
-
 	@Override public void startEdit()
 	{
 		super.startEdit();

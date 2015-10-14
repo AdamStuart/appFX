@@ -12,6 +12,8 @@ import model.Unit;
 import model.ValueUnitRecord;
 
 /**
+ * This is the model class for Binder application, as opposed to a geometric object
+ * It is 90% trivial accessors, with a couple of recalculation methods at the end
  * Created by pedro_000 on 2/11/2015. 
  * calculation logic migrated from BindingsController, AST 2/19/2015.
  * refactored to use ValueUnitRecords to encapsulate units

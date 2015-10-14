@@ -1,23 +1,33 @@
 package table.binder;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
+import gui.Backgrounds;
+import gui.Borders;
+import gui.ValueWithUnitsBox;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import model.IValueUnitSetter;
 import model.Unit;
+import util.NodeUtil;
 
-public class BindingsController implements InvalidationListener
+public class BindingsController implements InvalidationListener, IValueUnitSetter
 {
 
 	@FXML private SimpleDoubleProperty rectScale = new SimpleDoubleProperty(1.);
@@ -41,7 +51,7 @@ public class BindingsController implements InvalidationListener
 	private ValueWithUnitsBox heightLine;
 	private ValueWithUnitsBox areaLine;
 	private CornerDragBox dragbox;
-	BindingTable table;
+	private BindingTable table;
 	// ------------------------------------------------------------------------------
 	// the app has 3 components: a dragbox to edit Rects with a mouse; a form to
 	// input Rects; and a table<Rect>
@@ -69,11 +79,12 @@ public class BindingsController implements InvalidationListener
 	}
 
 	// ------------------------------------------------------------------------------
+	// @formatter:off
 	public Rect getActiveRecord()				{		return getActiveRect();	}
-	public void setActiveRecord(Rect r)			{		tableView.getItems().set(tableView.getSelectionModel().getSelectedIndex(), r);	}
-	public void setUnits(String id, Unit un)	{		getActiveRecord().setUnits(id, un);	}
+	public void setActiveRecord(Rect r)			{		tableView.getItems().set(table.getSelectedIndex(), r);	}
+	public void setUnit(String id, Unit un)		{		getActiveRecord().setUnits(id, un);	}
 	public void setValue(String id, double d)	{		getActiveRecord().setVal(id, d);	}
-
+	// @formatter:on
 	// ------------------------------------------------------------------------------
 	//most of this handles only the initial case where there may not be data in the table
 	private Rect getActiveRect()
@@ -148,6 +159,7 @@ public class BindingsController implements InvalidationListener
 			data.add(r);
 		tableView.setItems(data);
 		table.select(0);
+		tableView.requestFocus();
 	}
 
 	// ------------------------------------------------------------------------------
@@ -164,9 +176,12 @@ public class BindingsController implements InvalidationListener
 	{
 		if (verbose) System.out.println("addRow");
 		ObservableList<Rect> items = tableView.getItems();
-		items.add(new Rect(this));
+		Rect newRect = new Rect(this);
+		items.add(newRect);
 //		tableView.setItems(null);
 		tableView.setItems(items);
+		table.select(newRect);
+		tableView.requestFocus();
 	}
 	// ------------------------------------------------------------------------------
 	@FXML void deleteRow()
@@ -182,6 +197,107 @@ public class BindingsController implements InvalidationListener
 			tableView.setItems(items);
 			if (verbose) System.out.println("items has size of " + items.size());
 			install();
+			tableView.requestFocus();
 		}	
 	}
+
+	// this isn't a control, but a collection of nodes that need coordination
+	/*
+	 *   *  {@link CornerDragBox}.
+	     *
+	     * @param a BindingsController and 4 labels
+	 	* CornerDragBox is a StackPane that aligns a rectangle with 4 Labels
+	 */
+	static int MAXWidth = 140;
+	private class CornerDragBox extends StackPane
+	{
+		BindingsController controller;
+		boolean verbose = false;
+		double viewToModelRatio = 1.;
+		Label widthLabel, heightLabel, areaLabel, scaleLabel;
+		
+		public CornerDragBox(BindingsController c, Label w, Label h, Label ar, Label scle)
+		{
+			super();
+			controller = c;
+			widthLabel = w;
+			heightLabel = h; 
+			areaLabel = ar; 
+			scaleLabel = scle;
+	        addRectHandlers();
+	        setStyle("-fx-background-color: blue;");
+
+	        getChildren().add(areaLabel);
+	        StackPane.setAlignment(ar, Pos.CENTER);
+	        
+	        Rectangle handle = new Rectangle(12,12);  
+	        handle.setStyle("-fx-fill:white;");
+	        getChildren().add(handle);
+	        setBorder(Borders.dashedBorder);
+	         StackPane.setAlignment(handle, Pos.BOTTOM_RIGHT);
+		}
+		double MAX_RECT_WIDTH = 140;
+		double MAX_RECT_HEIGHT = 140;
+		
+		//------------------------------------------------------------------------------
+		//  OLD SCHOOL:  can this be replaced with bindings?
+		
+		public void install(Rect r)
+		{
+			Color col = r.getColor();
+	        setBackground(Backgrounds.coloredBackground(col));
+
+	        widthLabel.setText(r.getWidthAndUnits());
+			heightLabel.setText(r.getHeightAndUnits());
+			areaLabel.setText(r.getAreaAndUnits());
+			if (verbose)		System.out.println(r.toString());
+
+			// set the scale and aspect ratio of the rect
+			double w = r.getWidthInMeters();
+			double h = r.getHeightInMeters();
+			double scaleW = MAX_RECT_WIDTH / w;
+			double scaleH = MAX_RECT_HEIGHT / h;
+			double scale  = Math.min(scaleW, scaleH);		
+			NodeUtil.forceWidth(this, (int)(w * scale));  
+			NodeUtil.forceHeight(this, (int)(h * scale));  
+			
+			String dat = DateTimeFormatter.ISO_DATE.format(r.getDueDate());
+			scaleLabel.setText(String.format("Scale: %.1f,   Due Date: %s", scale, dat));
+		}
+		
+		//------------------------------------------------------------------------------
+		// Display rect mouse handlers
+		//------------------------------------------------------------------------------
+		private void addRectHandlers()
+		{
+			setOnMousePressed(ev -> {
+				Rect active = controller.getActiveRecord();
+				double modelWidth = active.getWidthInMeters();
+				viewToModelRatio = getWidth()  / modelWidth;		// getWidthInInches
+			});
+			setOnMouseDragged(ev -> doDrag(ev));
+			setOnMouseReleased(ev -> {});
+		}
+		
+		double pin(double x, double floor, double top)	{		return Math.min(Math.max(floor, x), top);	}
+		
+		private void doDrag(MouseEvent e)
+		{
+			if (verbose) System.out.println("doDrag: " + e.getX() + ", " + e.getY());
+
+			double x = pin(e.getX(), 1, MAXWidth);
+			double y = pin(e.getY(), 1, MAXWidth);;
+			NodeUtil.forceWidth(this, (int)x);  
+			NodeUtil.forceHeight(this, (int) y);  
+
+			Rect active = controller.getActiveRecord();
+			double wid = Math.max(0.0001, x) / viewToModelRatio;
+			active.setWidthInMeters(wid );
+			double ht = Math.max(0.0001,y) / viewToModelRatio;		// don't let width or height go negative
+			active.setHeightInMeters(ht);	
+			active.recalcArea();
+			controller.setActiveRecord(active);			
+		}
+	}
+
 }
