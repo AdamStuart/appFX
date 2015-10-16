@@ -9,27 +9,29 @@ import javafx.stage.Stage;
 
 public class AppContainer extends Application
 {
+    public static void main(String[] args)    {        launch(args);    }
 	private static AppContainer instance;
-	   static final String RESOURCE = "container.fxml";
+	static final String RESOURCE = "container.fxml";
 
 	public AppContainer() {	           instance = this;	}
-	// static method to get instance of view
 	public static AppContainer getInstance() {       return instance;	}
 	//-----------------------------------------------------------------------------------------
 	public void start(Stage primaryStage) throws Exception 
 	{
+		doNew(primaryStage);
+	}
+	
+	//-----------------------------------------------------------------------------------------
+	public void doNew(Stage stage) throws Exception 
+	{
         URL resource = getClass().getResource(RESOURCE);
         Scene scene = new Scene(FXMLLoader.load(resource));
-        primaryStage.setTitle("A Container of Files");
-        primaryStage.setX(20);
-		primaryStage.setWidth(1100);
-		primaryStage.setHeight(650);
-		primaryStage.setScene(scene);
-		primaryStage.show();
+        stage.setTitle("A Container of Files");
+        stage.setX(20);
+		stage.setWidth(1100);
+		stage.setHeight(650);
+		stage.setScene(scene);
+		stage.show();
 	}
-    public static void main(String[] args)
-    {
-        launch(args);
-    }
 
 }

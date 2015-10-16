@@ -138,7 +138,6 @@ public class FileSystemTree extends TreeTableView<File>
 		getColumns().setAll(nameColumn, sizeColumn, lastModifiedColumn);
 	}
 
-	
 	final int AWEEK = 1000 * 60 * 60 * 24 * 7;
 	final int AYEAR = 1000 * 60 * 60 * 24 * 365;
 
@@ -198,13 +197,9 @@ public class FileSystemTree extends TreeTableView<File>
 			if (files != null)
 			{
 				ObservableList<TreeItem<File>> children = FXCollections.observableArrayList();
-
 				for (File childFile : files)
-				{
 					if (showAll || !childFile.isHidden())
 						children.add(createNode(childFile));
-				}
-
 				return children;
 			}
 		}
@@ -216,12 +211,9 @@ public class FileSystemTree extends TreeTableView<File>
 		if (treeItem == null) return 0;
 		File f = (File) treeItem.getValue();
 		int sum = 0;
-		if (f != null)
-		{
-			if (f.isDirectory())
-				for (TreeItem<File> child : treeItem.getChildren())
-					sum += getNChildren(child);
-		}
+		if (f != null && f.isDirectory())
+			for (TreeItem<File> child : treeItem.getChildren())
+				sum += getNChildren(child);
 		return 1 + sum;
 	}
 

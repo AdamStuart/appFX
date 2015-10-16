@@ -274,7 +274,7 @@ public class HeatMap extends ImageView {
         ).start();    
     }
     
-    /**
+    /**-----------------------------------------------------------------------------------------
      * Create an image that contains a circle filled with a
      * radial gradient from white to transparent
      * @param RADIUS
@@ -282,13 +282,12 @@ public class HeatMap extends ImageView {
      */
     public Image createEventImage(final double RADIUS, final OpacityFn OPACITY_DISTRIBUTION) {
         Double radius = RADIUS < 1 ? 1 : RADIUS;
-        if (eventImages.containsKey(OPACITY_DISTRIBUTION.name() + radius)) {
+        if (eventImages.containsKey(OPACITY_DISTRIBUTION.name() + radius)) 
             return eventImages.get(OPACITY_DISTRIBUTION.name() + radius);
-        }
+        
         Stop[] stops = new Stop[11];
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < 11; i++) 
             stops[i] = new Stop(i * 0.1, Color.rgb(255, 255, 255, OPACITY_DISTRIBUTION.distribution[i]));
-        }
 
         int size = (int) (radius * 2);
         WritableImage raster        = new WritableImage(size, size);
@@ -314,7 +313,7 @@ public class HeatMap extends ImageView {
         return raster;
     }
 
-    /**
+    /**------------------------------------------------------------------------
      * Updates each event in the monochrome map to the given opacity gradient
      * which could be useful to reduce oversmoothing
      * @param OPACITY_GRADIENT
@@ -328,7 +327,7 @@ public class HeatMap extends ImageView {
         updateHeatMap();
     }
 
-    /**
+    /**------------------------------------------------------------------------
      * Recreates the heatmap based on the current monochrome map.
      * Using this approach makes it easy to change the used color
      * mapping.
@@ -370,11 +369,12 @@ public class HeatMap extends ImageView {
 
         for (Stop stop : stops) {
             double currentFraction = stop.getOffset();
-            if (Double.compare(currentFraction, fraction) == 0) {
+            if (Double.compare(currentFraction, fraction) == 0) 
                 return stop.getColor();
-            } else if (Double.compare(currentFraction, fraction) < 0) {
+            
+            if (Double.compare(currentFraction, fraction) < 0) 
                 lowerStop = new Stop(currentFraction, stop.getColor());
-            } else {
+             else {
                 upperStop = new Stop(currentFraction, stop.getColor());
                 break;
             }

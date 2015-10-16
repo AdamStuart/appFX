@@ -33,7 +33,7 @@ public class SubRangeGroup extends Group
 //				System.out.println("SelectionMousePressedHandler " + left + " - " + right);
 //				System.out.println("Event X " + event.getX());
 			
-				if (event.isSecondaryButtonDown()) 		return;					// TOD do menu for a right-click
+				if (event.isSecondaryButtonDown()) 		return;			// TODO do menu for a right-click
 				
 				if (Math.abs(left - x) < SLOP)		{	resizing = 1;	parent.setSelectionStart(right);			}
 				if (Math.abs(right - x) < SLOP)		{	resizing = 2;	parent.setSelectionStart(left);		}
@@ -65,8 +65,7 @@ public class SubRangeGroup extends Group
 				parent.setSelectionStart(-1);		parent.setSelectionEnd(-1);
 				resizing = 0;
 				parent.getPane().requestFocus();	// needed for the key event handler to receive events
-				event.consume();
-				
+				event.consume();				
 			});
 	}
 	

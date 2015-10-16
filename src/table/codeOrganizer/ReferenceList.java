@@ -1,4 +1,4 @@
-package table.attributeValues;
+package table.codeOrganizer;
 
 import javafx.scene.control.TableView;
 

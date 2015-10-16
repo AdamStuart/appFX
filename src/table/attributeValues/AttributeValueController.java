@@ -24,6 +24,7 @@ import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.InnerShadow;
@@ -39,6 +40,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import model.AttributeValue;
 import model.RandomAttributeValueData;
+import table.codeOrganizer.TreeTableModel;
 import util.FileUtil;
 
 public class AttributeValueController
@@ -250,7 +252,17 @@ private void setupDropPane()
 		Dragboard db = treeView.startDragAndDrop(TransferMode.COPY);
 		ClipboardContent content = new ClipboardContent();
 		int idx = treeView.getSelectionModel().getSelectedIndex();
-		String av = treeView.getTreeItem(idx).getValue().toString() + ": " + idx;
+		String av = "";
+		if (idx >= 0)
+		{
+			TreeItem<String> item = treeView.getTreeItem(idx);
+			if (item != null)
+			{
+				av = item.getValue() + ": " + idx;
+			}
+				
+		}
+//		String av = treeView.getTreeItem(idx).getValue().toString() + ": " + idx;
 //		content.clear();
 		content.put(TREE_TABLE_FORMAT, av);
 		db.setContent(content);

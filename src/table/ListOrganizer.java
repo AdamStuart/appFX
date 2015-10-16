@@ -1,6 +1,6 @@
 package table;
 
-
+//   https://gist.github.com/jewelsea/7821196
 import javafx.application.Application;
 import javafx.collections.*;
 import javafx.geometry.*;
@@ -14,23 +14,20 @@ import javafx.stage.Stage;
 import java.util.*;
 
 public class ListOrganizer extends Application {
+	public static void main(String[] args) {		launch(ListOrganizer.class);	}
+
+	
 	private static final String PREFIX = "http://icons.iconarchive.com/icons/jozef89/origami-birds/72/bird";
-
 	private static final String SUFFIX = "-icon.png";
-
 	private static final ObservableList<String> birds = FXCollections.observableArrayList("-black", "-blue", "-red",
 			"-red-2", "-yellow", "s-green", "s-green-2");
-
 	private static final ObservableList<Image> birdImages = FXCollections.observableArrayList();
 
-	public static void main(String[] args) {
-		launch(ListOrganizer.class);
-	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		birds.forEach(bird -> birdImages.add(new Image(PREFIX + bird + SUFFIX)));
 
+		birds.forEach(bird -> birdImages.add(new Image(PREFIX + bird + SUFFIX)));
 		ListView<String> birdList = new ListView<>(birds);
 		birdList.setCellFactory(param -> new BirdCell());
 		birdList.setPrefWidth(180);
@@ -42,6 +39,7 @@ public class ListOrganizer extends Application {
 		stage.show();
 	}
 
+	//-----------------------------------------------------------------------------
 	private class BirdCell extends ListCell<String> 
 	{
 		private final ImageView imageView = new ImageView();
@@ -75,18 +73,16 @@ public class ListOrganizer extends Application {
 			setOnDragEntered(event -> 
 			{
 				if (event.getGestureSource() != thisCell && event.getDragboard().hasString()) 
-				 setOpacity(0.6);		
+					setOpacity(0.6);		
 				});
 
 			setOnDragExited(event -> {
-				if (event.getGestureSource() != thisCell && event.getDragboard().hasString()) {
+				if (event.getGestureSource() != thisCell && event.getDragboard().hasString()) 
 					setOpacity(1);
-				}
 			});
 
 			setOnDragDropped(event -> {
 				if (getItem() == null)		return;
-		
 
 				Dragboard db = event.getDragboard();
 				boolean success = false;
@@ -105,11 +101,9 @@ public class ListOrganizer extends Application {
 
 					List<String> itemscopy = new ArrayList<>(getListView().getItems());
 					getListView().getItems().setAll(itemscopy);
-
 					success = true;
 				}
 				event.setDropCompleted(success);
-
 				event.consume();
 			});
 

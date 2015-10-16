@@ -1,15 +1,17 @@
 package container;
 
-import gui.Borders;
-import icon.FontAwesomeIcons;
-import icon.GlyphsDude;
-
 import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import diagrams.draw.App;
+import gui.Backgrounds;
+import gui.Borders;
+import gui.Effects;
+import icon.FontAwesomeIcons;
+import icon.GlyphsDude;
 import javafx.event.EventTarget;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,7 +23,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DataFormat;
@@ -32,8 +33,10 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import util.FileUtil;
+import util.StringUtil;
 
   
 public class ContainerController implements Initializable
@@ -45,12 +48,12 @@ public class ContainerController implements Initializable
 	@FXML TreeTableColumn<TreeTableView, String>  col0;
 	@FXML TreeTableColumn<TreeTableView, String>  col1;
 	private Label description;
-	FileSystemTree fileTree;
+	private FileSystemTree fileTree;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		description = new Label("Some text");
+		description = new Label("You can drop files here.");
 		AnchorPane.setRightAnchor(description, new Double(20));
 		AnchorPane.setTopAnchor(description, new Double(50));
 		anchor.getChildren().add(description);
@@ -77,36 +80,26 @@ public class ContainerController implements Initializable
 	{
 		anchor.setOnDragEntered(e ->
 		{
-			System.out.println("dragEntered ");
-			InnerShadow shadow = new InnerShadow();
-			shadow.setOffsetX(10.0);
-			shadow.setColor(Color.web("#FF6666"));
-			shadow.setOffsetY(10.0);
-			description.setEffect(shadow);
-			// dropPane.setStyle(". -fx-fill: red");
-			anchor.setStyle("-fx-background-color: #fffff2;");
+			anchor.setEffect(Effects.innershadow);
+			anchor.setBackground(Backgrounds.tan);
 			e.consume();
 		});
+		// drops don't work without this line!
+		anchor.setOnDragOver(e ->	{	e.acceptTransferModes(TransferMode.ANY);  e.consume();	});
 		
 		anchor.setOnDragExited(e ->
 		{
-			description.setEffect(null);
-			anchor.setStyle("-fx-background-color: white;");
+			anchor.setEffect(null);
+			anchor.setBackground(Backgrounds.white);
 			e.consume();
 		});
 		
-		anchor.setOnDragOver(e ->
-		{
-			e.acceptTransferModes(TransferMode.ANY);
-			e.consume();
-		});
-		
-		anchor.setOnDragDropped(e -> {
-			e.acceptTransferModes(TransferMode.ANY);
+		anchor.setOnDragDropped(e -> {	e.acceptTransferModes(TransferMode.ANY);
 			Dragboard db = e.getDragboard();
 			Set<DataFormat> formats = db.getContentTypes();
 			formats.forEach(a -> System.out.println("getContentTypes " + a.toString()));
-			anchor.setStyle("-fx-background-color: white;");
+			anchor.setEffect(null);
+			anchor.setBackground(Backgrounds.white);
 			if (db.hasFiles())  addFiles(e);
 		});
 	}
@@ -170,29 +163,26 @@ public class ContainerController implements Initializable
 	{
 		Tooltip.install(n, new Tooltip(FileUtil.getTextDescription(f)));
 	}
+	
+	// set the background on a single click, and launch the file on a double
 	void makeDoubleClickOpen(Node n)
 	{
         n.setOnMouseClicked(e -> {
         	EventTarget t = e.getTarget();
+        	int clickCt = e.getClickCount();
             if(e.getButton().equals(MouseButton.PRIMARY))
-                if(e.getClickCount() == 1)
-                {
-                	if (t instanceof Label)
-					{
-						Label lab = (Label) t;
-						setBackground(lab, "#FFD0FF");
-					}
+                if(clickCt == 1 && t instanceof Label)
+				{
+					Label lab = (Label) t;
+					setBackground(lab, "#FFD0FF");
                 }
-                if(e.getClickCount() == 2)
+                if(clickCt == 2 && t instanceof Label)
                  {
-                	if (t instanceof Label)
-					{
-						Label lab = (Label) t;
-						setBackground(lab,"white");
-						File f = findFile(lab.getText());
-						if (f != null)
-							openFile(f);
-					}
+					Label lab = (Label) t;
+					setBackground(lab,"white");
+					File f = findFile(lab.getText());
+					if (f != null)
+						openFile(f);
                  }
         	});
 	}
@@ -200,9 +190,23 @@ public class ContainerController implements Initializable
 
 	@FXML void doNew()
 	{
+		try
+		{
+			AppContainer.getInstance().doNew(new Stage());
+		} 
+		catch (Exception e)		{		e.printStackTrace();	}
 		
 	}
+	
 	@FXML void doOpen()
+	{
+		FileChooser chooser = new FileChooser();	
+		chooser.setTitle("Open Container File...");
+		File file = chooser.showOpenDialog(App.getInstance().getStage());
+		if (file != null)		open(file);
+	}
+	
+	void open(File f)
 	{
 		
 	}
@@ -212,31 +216,39 @@ public class ContainerController implements Initializable
 	}
 	@FXML void doZip()
 	{
-		
 	}
-	@FXML void doCompare()
+	@FXML void doUnzip()
 	{
-		
+       FileChooser fileChooser = new FileChooser();
+       fileChooser.getExtensionFilters().add(FileUtil.zipFilter);
+       File f = fileChooser.showOpenDialog(null);		    //Show open file dialog
+       if (f != null)
+       {
+    	  String entries =  FileUtil.decompress(f);
+    	 System.out.println("decompressed: " + entries 
+    		+ "\nsee folder at: " + StringUtil.chopExtension(f.getAbsolutePath()));
+       }
 	}
+	//--------------------------------------------------------------------------------------
 	@FXML void doUndo()
-	{
-		
+	{	
 	}
 	@FXML void doRedo()
 	{
-		
 	}
+	//--------------------------------------------------------------------------------------
 	@FXML void doCut()
 	{
-		
 	}
 	@FXML void doCopy()
 	{
-		
 	}
 	@FXML void doPaste()
 	{
-		
+	}
+	//--------------------------------------------------------------------------------
+	@FXML void doCompare()
+	{ 
 	}
 	//--------------------------------------------------------------------------------
 	static public void openFile(File f)
@@ -245,7 +257,7 @@ public class ContainerController implements Initializable
 		{
 			AppContainer.getInstance().getHostServices().showDocument(f.toURI().toURL().toExternalForm());
 		}
-		catch (Exception r3){}
+		catch (Exception e){}
 	}
 	
 	private File findFile(String name)
@@ -259,15 +271,11 @@ public class ContainerController implements Initializable
 
 	private static class FileListCell extends ListCell<File>
 	{
-		@Override
-		public void updateItem(File item, boolean empty)
+		@Override public void updateItem(File item, boolean empty)
 		{
 			super.updateItem(item, empty);
-			if (empty)
-			{
-				setGraphic(null);
-				setText(null);
-			} else
+			if (empty)			{		setGraphic(null);			setText(null);		} 
+			else
 			{
 				Image fxImage = FileUtil.getFileIcon(item.getName());
 				ImageView imageView = new ImageView(fxImage);

@@ -1,4 +1,4 @@
-package table.attributeValues;
+package table.codeOrganizer;
 
 import java.util.StringTokenizer;
 
@@ -118,8 +118,6 @@ static public void dumpTree(TreeItem<String> t, int indent, StringBuffer buff)
 static public void xmlTree(TreeItem<String> t, int indent, StringBuffer buff)
 {
 	String pad = "                ".substring(0,2 * indent);
-//	String pad = "   ";
-//	buff.append(pad + t.getValue());
 	ObservableList<TreeItem<String> >children = t.getChildren();
 	if (children.size() == 0)
 		buff.append(pad + "<Element name=\"" + t.getValue() + "\" />" );
