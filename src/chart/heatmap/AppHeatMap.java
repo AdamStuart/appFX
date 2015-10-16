@@ -83,18 +83,9 @@ public class AppHeatMap extends Application {
                 heatMap.setOpacityDistribution(OpacityFn.valueOf(str));
                 heatMap.updateMonochromeMap(OpacityFn.valueOf(str));
             } 
-            else if (SRC.equals(checkBoxFadeColors)) 
-            {
-                heatMap.setFadeColors(checkBoxFadeColors.isSelected());
-            } 
-            else if (SRC.equals(clearHeatMap)) 
-            {
-                heatMap.clearHeatMap();
-            }
-            else if (SRC.equals(button))
-            {
-                generateEvents(1000, 300, 0.4, 300, .1);
-            }
+            else if (SRC.equals(checkBoxFadeColors))    heatMap.setFadeColors(checkBoxFadeColors.isSelected());
+            else if (SRC.equals(clearHeatMap))          heatMap.clearHeatMap();
+            else if (SRC.equals(button))		        generateEvents(1000, 300, 0.4, 300, .1);
         };
         registerListeners();
     }
@@ -196,8 +187,5 @@ public class AppHeatMap extends Application {
 //        pane.heightProperty().addListener((ov, oldHeight, newHeight) -> heatMapBox.setPrefHeight(newHeight.doubleValue()-200));
     }
 	
-	private double PIN(double v, double min, double max)	{	
-		return (v < min)  ? min : ((v > max) ?  max : v);
-	}
-
+	private double PIN(double v, double min, double max) { return (v < min)  ? min : ((v > max) ?  max : v);	}
 }

@@ -41,7 +41,7 @@ public class PieModel
 	Color[] colors = new Color[]{Color.GREEN, Color.BLUE, Color.BROWN, Color.PURPLE, Color.BEIGE, Color.CYAN};
 	double[] sizes = new double[]{3, 4, 3.2, 3,8, 4.2};
 	
-	
+	//---------------------------------------------------------------------------------
 	public Wedge find(String s)
 	{
 		for (Wedge w : wedgeList)
@@ -91,23 +91,13 @@ public class PieModel
 	    connection.endXProperty().bind(handle.centerXProperty());
 	    connection.endYProperty().bind(handle.centerYProperty());
 
-	    handle.setOnMouseDragged(new EventHandler<MouseEvent>() {
-
-	        @Override public void handle(MouseEvent event) {
-
+	    handle.setOnMouseDragged(event -> {
 	            xMouse = event.getX() - centerX;
 	            yMouse = event.getY() - centerY;
-
-	           double angleInRadians = Math.atan2(-yMouse, xMouse);
-//	            arc.setStartAngle(Math.toDegrees(angleInRadians));
+	            double angleInRadians = Math.atan2(-yMouse, xMouse);
 	            setHandlePosition(angleInRadians);
-
-	        }
-
 	    });
-
 	    return new Group(connection, handle);
-
 	}
 	
 	void setHandlePosition(double a)
@@ -212,15 +202,10 @@ public class PieModel
            			w.deltaLength(-delta * weight);
            }
    	  }
-       
-		
 	}
 
 	Point2D getStartHandlePoint(Wedge inWedge) 				{	return inWedge.getStartPoint(center);	}
 	private double distanceFromCenter(double x, double y) 	{	return center.distance(x, y);	}
-
-
-
 	
 	public Group buildPie()
 	{
@@ -263,7 +248,6 @@ public class PieModel
 	}
 
 	public TreeItem createTreeItems() {
-		
 		TreeItem root = new TreeItem(new Wedge("Vertibrates", Color.ALICEBLUE, 360, null, -1));
 		for (Wedge w : wedgeList)
 		{

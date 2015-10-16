@@ -16,10 +16,10 @@
          <menus>
             <Menu mnemonicParsing="false" text="File">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#doNew" text="New" />
-                  <MenuItem mnemonicParsing="false" onAction="#doOpen" text="Open" />
+                  <MenuItem mnemonicParsing="false" onAction="#doOpen" text="Open..." />
                   <MenuItem mnemonicParsing="false" text="Save" />
-                  <MenuItem mnemonicParsing="false" onAction="#doZip" text="Zip" />
+                  <MenuItem mnemonicParsing="false" onAction="#doZip" text="Zip..." />
+                  <MenuItem mnemonicParsing="false" onAction="#doUnzip" text="Unzip..." />
                   <MenuItem mnemonicParsing="false" onAction="#doClose" text="Close" />
                </items>
             </Menu>

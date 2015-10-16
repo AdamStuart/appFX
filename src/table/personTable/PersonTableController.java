@@ -1,4 +1,4 @@
-package table;
+package table.personTable;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -22,14 +22,10 @@ import javafx.scene.paint.Color;
  */
 public class PersonTableController {
 	
-	@FXML
-	private TableView<Person> personTable;
-	@FXML
-	private TableColumn<Person, String> firstNameColumn;
-	@FXML
-	private TableColumn<Person, String> lastNameColumn;
-	@FXML
-	private TableColumn<Person, LocalDate> birthdayColumn;
+	@FXML	private TableView<Person> personTable;
+	@FXML	private TableColumn<Person, String> firstNameColumn;
+	@FXML	private TableColumn<Person, String> lastNameColumn;
+	@FXML	private TableColumn<Person, LocalDate> birthdayColumn;
 	
 	private ObservableList<Person> personData = FXCollections.observableArrayList();
 	
@@ -48,8 +44,7 @@ public class PersonTableController {
 	 * Initializes the controller class. This method is automatically called
 	 * after the fxml file has been loaded.
 	 */
-	@FXML
-	private void initialize() {
+	@FXML	private void initialize() {
 		// Initialize the columns.
 		firstNameColumn.setCellValueFactory(cellData -> cellData.getValue().firstNameProperty());
 		lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());
@@ -64,18 +59,17 @@ public class PersonTableController {
 				protected void updateItem(LocalDate item, boolean empty) {
 					super.updateItem(item, empty);
 					
-					if (item == null || empty) {
-						setText(null);
-						setStyle("");
-					} else {
-						// Format date.
-						setText(myDateFormatter.format(item));
+					if (item == null || empty) {	setText(null);		setStyle("");		}
+					else {
 						
+						setText(myDateFormatter.format(item));			// Format date.
 						// Style all dates in March with a different color.
-						if (item.getMonth() == Month.MARCH) {
+						if (item.getMonth() == Month.MARCH) 
+						{
 							setTextFill(Color.CHOCOLATE);
 							setStyle("-fx-background-color: yellow");
-						} else {
+						} else 
+						{
 							setTextFill(Color.BLACK);
 							setStyle("");
 						}

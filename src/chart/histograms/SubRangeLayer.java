@@ -83,16 +83,16 @@ public class SubRangeLayer			// a 1D GateLayer
 	/**-------------------------------------------------------------------------------
 	 *   Mouse handlers for clicks inside the selection rectangle
 	 */
-	private void drawSelectionRectangle(final double x, final double y) {
-		selectionH.setVisible(true);
-		selectionH.setLayoutX(x);
-		selectionH.setLayoutY(y);
-//		selectionH.setWidth(width);
-//		selectionH.setHeight(height);
-	}
-	private void drawSelectionRectangleAt(final double x, final double y) {
-		drawSelectionRectangle(x,y);
-	}
+//	private void drawSelectionRectangle(final double x, final double y) {
+//		selectionH.setVisible(true);
+//		selectionH.setLayoutX(x);
+//		selectionH.setLayoutY(y);
+////		selectionH.setWidth(width);
+////		selectionH.setHeight(height);
+//	}
+//	private void drawSelectionRectangleAt(final double x, final double y) {
+//		drawSelectionRectangle(x,y);
+//	}
 	private void disableAutoRanging() {
 		xAxis.setAutoRanging(false);
 		yAxis.setAutoRanging(false);
@@ -104,11 +104,11 @@ public class SubRangeLayer			// a 1D GateLayer
 	public void setAxisBounds() 
 	{
 		disableAutoRanging();
-	if (selectionStart < 0 || selectionEnd < 0)
-	{
-		selectionStart = selectionH.getLayoutX();
-		selectionEnd = selectionH.getLayoutX() + selectionH.getBoundsInLocal().getWidth();
-	}
+		if (selectionStart < 0 || selectionEnd < 0)
+		{
+			selectionStart = selectionH.getLayoutX();
+			selectionEnd = selectionH.getLayoutX() + selectionH.getBoundsInLocal().getWidth();
+		}
 		// compute new bounds for the chart's x and y axes
 		double selectionMinX = Math.min(selectionStart, selectionEnd);
 		double selectionMaxX = Math.max(selectionStart, selectionEnd);
@@ -121,7 +121,6 @@ public class SubRangeLayer			// a 1D GateLayer
 		String s = fmt.format(freq * 100) +  "% for ( " + fmt.format(xMin) + ", " + fmt.format(xMax) +  ")";
 		infoLabel.setText(s);
 		showInfo();
-
 	}
 	
 	private double getGateFreq(XYChart<Number, Number> chart, double xMin, double xMax)
@@ -143,10 +142,7 @@ public class SubRangeLayer			// a 1D GateLayer
 	 */
 	private void addDragSelectionMechanism() {
 		pane.setOnMousePressed((event) -> {
-			// do nothing for a right-click
-			if (event.isSecondaryButtonDown()) {
-				return;
-			}
+			if (event.isSecondaryButtonDown()) 		return;		// do nothing for a right-click
 
 			// store position of initial click
 			selectionStart = event.getX();
@@ -154,13 +150,10 @@ public class SubRangeLayer			// a 1D GateLayer
 			event.consume();
 		});
 		pane.setOnMouseDragged((event) -> {
-			if (event.isSecondaryButtonDown()) {
-				return;
-			}
-
+			if (event.isSecondaryButtonDown()) 		return;
+			
 			// store current cursor position
 			selectionEnd = event.getX();
-
 			selectionH.update(selectionStart, selectionEnd, event.getY());
 			event.consume();
 		});
@@ -170,15 +163,11 @@ public class SubRangeLayer			// a 1D GateLayer
 
 			setAxisBounds();
 			selectionStart = selectionEnd = -1;
-
-			// needed for the key event handler to receive events
-			pane.requestFocus();
+			pane.requestFocus();		// needed for the key event handler to receive events
 			event.consume();
 		
 		});
-		pane.setOnKeyReleased((event) -> {
-			
-		});
+		pane.setOnKeyReleased((event) -> {		});
 	}
 
 	/**-------------------------------------------------------------------------------
@@ -193,7 +182,6 @@ public class SubRangeLayer			// a 1D GateLayer
 		double chartWidth = chartPlotArea.getLayoutBounds().getWidth();
 		return computeBound(value, chartZeroX, chartWidth, xAxis.getLowerBound(), xAxis.getUpperBound(), false);
 	}
-	
 	
 	private double computeBound(double pixelPosition, double pixelOffset, double pixelLength, double lowerBound,
 			double upperBound, boolean axisInverted) {
@@ -210,8 +198,7 @@ public class SubRangeLayer			// a 1D GateLayer
 
 		double newBound = offset + sign * relativePosition * axisLength;
 		return newBound;
-
-}
+	}
 
 	public double getSelectionMin()		{		return Math.min(selectionStart, selectionEnd);		}
 	public double getSelectionMax()		{		return Math.max(selectionStart, selectionEnd);		}

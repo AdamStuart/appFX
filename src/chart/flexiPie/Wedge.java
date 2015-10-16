@@ -28,8 +28,8 @@ public class Wedge {
 		index = idx;
 		locked = new SimpleBooleanProperty(false);
 	}
-	public StringProperty nameProperty()	{ return name;	}
-	public DoubleProperty lengthProperty()	{ return length;	}  
+	public StringProperty nameProperty()	{ 	return name;	}
+	public DoubleProperty lengthProperty()	{ 	return length;	}  
 	public String getName() 				{	return name.getValue();	}
 	public double getLength() 				{	return length.getValue();	}
 	public void setStartAngle(double a) 	{	 arc.setStartAngle(a); 	}
@@ -46,12 +46,6 @@ public class Wedge {
 	public int getIndex() 					{	return index;  }		// redundant, but useful to iterate around the circle
 	public void setIndex(int i) 			{	index = i;  }				// be able to change index for deletion & insertion
 
-//	public void select()
-//	{
-//		arc.setStrokeWidth(5);
-//		model.select(this);
-//	}
-	
 	
 	public Point2D getStartPoint(Point2D center) 
 	{	
@@ -64,7 +58,6 @@ public class Wedge {
 		double scalar = 1.1* arc.getRadiusX();		// assumes circle and 10% extension outside the circumference
 		angle *= Math.PI / 180;
 		return new Point2D(center.getX() + (Math.cos(angle)* scalar),center.getY() - (Math.sin(angle)* scalar));	
-
 	}
 	
 	public Point2D getEndPoint(Point2D center) 
