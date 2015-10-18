@@ -1,17 +1,17 @@
 package container;
 
+import gui.Backgrounds;
+import gui.Borders;
+import gui.Effects;
+import icon.FontAwesomeIcons;
+import icon.GlyphsDude;
+
 import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import diagrams.draw.App;
-import gui.Backgrounds;
-import gui.Borders;
-import gui.Effects;
-import icon.FontAwesomeIcons;
-import icon.GlyphsDude;
 import javafx.event.EventTarget;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -37,6 +37,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import util.FileUtil;
 import util.StringUtil;
+import diagrams.draw.App;
 
   
 public class ContainerController implements Initializable

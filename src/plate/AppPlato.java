@@ -5,19 +5,24 @@ import java.net.URL;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.TreeItem;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import table.codeOrganizer.TreeTableModel;
 
 public class AppPlato extends Application
 {
 
     public static void main(final String[] args) {     Application.launch(args);   }
-    
+	public static TreeItem<String> getTreeRoot() 	{		return populationTree; }
+	static TreeItem<String> populationTree;
+
     static private String FXML = "";
 
 @Override public  void start(Stage stage) throws Exception {
     instance = this;
     theStage = stage;			//  used to position global dialogs
+	populationTree = TreeTableModel.getCellPopulationTree();
     doNew(theStage);
   }
 

@@ -1,12 +1,11 @@
 package diagrams.draw;
 
+import gui.Effects;
+
 import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-import diagrams.draw.Action.ActionType;
-import diagrams.draw.App.Tool;
-import gui.Effects;
 import javafx.event.EventHandler;
 import javafx.event.EventTarget;
 import javafx.event.EventType;
@@ -31,6 +30,8 @@ import model.AttributeMap;
 import util.FileUtil;
 import util.RectangleUtil;
 import util.StringUtil;
+import diagrams.draw.Action.ActionType;
+import diagrams.draw.App.Tool;
 
 public class ShapeFactory
 {
