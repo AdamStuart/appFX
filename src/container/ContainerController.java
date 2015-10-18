@@ -12,6 +12,12 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import diagrams.draw.App;
+import gui.Backgrounds;
+import gui.Borders;
+import gui.Effects;
+import icon.FontAwesomeIcons;
+import icon.GlyphsDude;
 import javafx.event.EventTarget;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
