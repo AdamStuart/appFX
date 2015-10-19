@@ -120,21 +120,21 @@ public class AppForms extends Application {
        
         tabPane.getTabs().addAll(multi, experiment, cyto, signup, validator, person, group, protocol, events, citations, invoice);
 
-        CheckBox checkBox = new CheckBox("Using Validation.css");
-        checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue) {
-                    // use a validation css for demo purpose
-                    tabPane.getStylesheets().add(AppForms.class.getResource("Validation.css").toExternalForm());
-                } else {
-                    tabPane.getStylesheets().remove(AppForms.class.getResource("Validation.css").toExternalForm());
-                }
-            }
-        });
+//        CheckBox checkBox = new CheckBox("Using Validation.css");
+//        checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+//                if (newValue) {
+//                    // use a validation css for demo purpose
+//                    tabPane.getStylesheets().add(AppForms.class.getResource("Validation.css").toExternalForm());
+//                } else {
+//                    tabPane.getStylesheets().remove(AppForms.class.getResource("Validation.css").toExternalForm());
+//                }
+//            }
+//        });
         Button button = new Button("CRUD");
         button.setOnAction(event ->  crudThisForm(event) );
-        return new VBox(6, new HBox(12, checkBox, button), tabPane);
+        return new VBox(6, new HBox(12, button), tabPane);			//checkBox, 
     }
 
    IDBTable getDBTable(String name)

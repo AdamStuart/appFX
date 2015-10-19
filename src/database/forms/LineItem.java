@@ -29,11 +29,7 @@ public class LineItem
     public LineItem(InvoiceForm form)
     {
     	parentForm = form;
-    	 
-    	extPriceProperty().addListener( new InvalidationListener() {
-    		@Override public void invalidated(Observable observable) {	parentForm.retotal();	}
-    			});
-
+    	extPriceProperty().addListener(observable -> { 		parentForm.retotal();	});
    }
     
         public static LineItem  makeLineItem(InvoiceForm form)
