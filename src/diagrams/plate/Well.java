@@ -169,19 +169,7 @@ private void updateStackBackground()
 		setHilited(false);  //stack.setBackground(Backgrounds.colored(unselectedColor)) ;	
 		updateStackBackground();
 	 }
-	//------------------------------------------------------------------------------------
-	
-	public void mouseEntered(MouseEvent ev)
-	{
-		System.err.println("mouseEntered");
-		
-	}
-	//------------------------------------------------------------------------------------
-	
-	public void mouseExited(MouseEvent ev)
-	{
-		getController().setAttributeText("");
-	}
+
 	//------------------------------------------------------------------------------------
 	public void doCircleClick(MouseEvent ev)
 	{
