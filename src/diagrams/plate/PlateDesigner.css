@@ -1,0 +1,92 @@
+/*  
+ * Colors defined by CSS:
+ * https://docs.oracle.com/javafx/2/api/javafx/scene/doc-files/cssref.html#typecolor
+ */
+
+/*------------------------------------------------------------ */
+
+.myDialog{
+    -fx-background-color: #f0f0f8;
+}
+.myDialog > *.button-bar > *.container{
+    -fx-background-color: #a9e200;
+}
+.myDialog > *.label.content{
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+.myDialog:header *.header-panel{
+    -fx-background-color: #a59c31;
+}
+.myDialog:header *.header-panel *.label{
+    -fx-font-size: 18px;
+    -fx-font-style: italic;
+    -fx-fill: #292929;
+}
+
+.well {
+	    -fx-fill: #f99dF0;			
+		-fx-stroke: #f9FdF0;		
+}
+/* 
+.well:hover {
+	    -fx-fill: #099dF0;			
+		-fx-stroke: #f9FdF0;		
+}
+
+*/
+/*------------------------------------------------------------ */
+.colheader {
+	    -fx-background-color: cornsilk;
+	
+}
+.colheader:selected {
+	    -fx-background-color: blue;
+	
+}
+.colheader:hover {
+	    -fx-background-color: yellow;
+	
+}
+.colheader:mouse-entered {
+	    -fx-background-color: yellow;
+	
+}
+/*------------------------------------------------------------ */
+.rowheader {
+	    -fx-background-color: cornsilk;
+	
+}
+.rowheader:selected {
+	    -fx-background-color: blue;
+	
+}
+.rowheader:hover {
+	    -fx-background-color: yellow;
+	
+}.rowheader:mouse-entered {
+	    -fx-background-color: yellow;
+	
+}
+/*------------------------------------------------------------ */
+
+/* 
+.background {
+    -fx-background-color: darkgray;
+}
+*/
+/*------------------------------------------------------------ */
+
+.plate {
+    -fx-background-color: cornsilk;
+}
+
+/*------------------------------------------------------------ */
+
+.wellText {
+  -fx-font-family: Times;
+  -fx-highlight-fill: cyan;
+  -fx-highlight-text-fill: blue;
+  -fx-text-fill: green;
+  -fx-background-color: green;
+}

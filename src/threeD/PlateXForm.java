@@ -13,7 +13,7 @@ import javafx.scene.shape.Cylinder;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import plate.Well;
+import diagrams.plate.Well;
 
 public class PlateXForm extends Xform
 {

@@ -107,7 +107,7 @@ public class SlingshotController implements Initializable
 		targetYfld.setText("" + y);
 	}
 	// ------------------------------------------------------
-	String SUMMARYFILE = "/table/slingshot/data/slingshot.data.summary";
+	String SUMMARYFILE = "slingshot.data.summary";
 
 	@FXML public void save()
 	{

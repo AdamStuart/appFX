@@ -2,10 +2,9 @@ package table.codeOrganizer;
 
 import java.util.StringTokenizer;
 
-import model.AttributeValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
+import util.TreeUtil;
 
 public class TreeTableModel
 {
@@ -45,6 +44,44 @@ public class TreeTableModel
 		return root;
 
 	}
+	static public TreeItem<String> getCellPopulationTree()
+	{
+
+		TreeItem<String> raw = makeTree("Events");
+		TreeItem<String> live = makeTree("Live");
+		raw.getChildren().add(live);
+		makeTrees(raw, "Debris", "Doublets", "Dead Cells");
+
+		TreeItem<String> lymph = makeTree("Lymphocytes");
+		TreeItem<String> t = makeTree("T Cells");
+		TreeItem<String> b = makeTree("B Cells");
+		live.getChildren().add(lymph);
+		makeTrees(live, "Monocytes", "Granulocytes", "Neutrophils", "Eosinophils", "Basophils");
+		makeTrees(lymph, "NK Cells", t, b);
+		makeTrees(t, "T Cell Receptors", "CD4", "CD8");
+		makeTrees(b, "Plasma B Cells", "Memory B Cells", "B-1", "B-reg");
+		return raw;
+
+	}
+	private static TreeItem<String> makeTree(String s)
+	{
+		return TreeUtil.makeTree(s);
+	}
+	private static void makeTrees(TreeItem<String> root, Object ... obj)
+	{
+		for (Object o : obj)
+		{
+			TreeItem<String> t = null;
+			if (o instanceof TreeItem<?>)
+				t = (TreeItem<String>) o;
+			else if (o instanceof String)
+				t = makeTree((String) o);
+			if (t != null)
+				root.getChildren().add(t);
+		}
+	}
+
+
 	//--------------------------------------------------------------------------------
 	static String expr = "(	Root   (	Application (  Dashboard    )  )	  )";
 	

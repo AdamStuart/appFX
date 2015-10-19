@@ -1,11 +1,11 @@
 package table.binder;
 
+import gui.Backgrounds;
+import gui.Borders;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import gui.Backgrounds;
-import gui.Borders;
-import gui.ValueWithUnitsBox;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -25,6 +25,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import model.IValueUnitSetter;
 import model.Unit;
+import model.ValueWithUnitsBox;
 import util.NodeUtil;
 
 public class BindingsController implements InvalidationListener, IValueUnitSetter
@@ -245,7 +246,7 @@ public class BindingsController implements InvalidationListener, IValueUnitSette
 		public void install(Rect r)
 		{
 			Color col = r.getColor();
-	        setBackground(Backgrounds.coloredBackground(col));
+	        setBackground(Backgrounds.colored(col));
 
 	        widthLabel.setText(r.getWidthAndUnits());
 			heightLabel.setText(r.getHeightAndUnits());
