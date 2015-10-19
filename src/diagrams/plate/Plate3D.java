@@ -1,4 +1,4 @@
-package plate;
+package diagrams.plate;
 
 import javafx.animation.RotateTransition;
 import javafx.beans.property.DoubleProperty;

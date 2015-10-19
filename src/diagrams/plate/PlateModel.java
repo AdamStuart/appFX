@@ -1,7 +1,8 @@
-package plate;
+package diagrams.plate;
 
 import java.util.List;
 
+import model.AttributeValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -12,7 +13,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import model.AttributeValue;
 
 
 public class PlateModel 

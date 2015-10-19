@@ -1,4 +1,4 @@
-package plate;
+package diagrams.plate;
 
 import gui.Backgrounds;
 import gui.Borders;

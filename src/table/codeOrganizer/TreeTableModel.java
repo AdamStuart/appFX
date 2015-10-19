@@ -49,6 +49,7 @@ public class TreeTableModel
 
 		TreeItem<String> raw = makeTree("Events");
 		TreeItem<String> live = makeTree("Live");
+		raw.getChildren().add(live);
 		makeTrees(raw, "Debris", "Doublets", "Dead Cells");
 
 		TreeItem<String> lymph = makeTree("Lymphocytes");
