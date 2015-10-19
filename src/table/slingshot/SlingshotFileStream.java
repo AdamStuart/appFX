@@ -2,6 +2,7 @@ package table.slingshot;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
 import java.util.NoSuchElementException;
@@ -66,14 +67,18 @@ public class SlingshotFileStream
 	{
 		ObservableList<SlingshotDataRow> list = FXCollections.observableArrayList();
 		Scanner inFile = null;
+		String filename = file;
 		try
 		{
-			File f = new File(file);
-			 if (!f.exists())
-			 {
-				System.err.println("Error opening file.");
-			 }
-			inFile = new Scanner(new File(file));
+			File f = new File(filename);
+			InputStream strm;
+			strm = this.getClass().getClassLoader().getResourceAsStream("table/slingshot/data/slingshot.data.summary");
+//			 if (!f.exists())
+//			 {
+//				System.err.println("Error opening file.");
+//				return null;
+//			 }
+			inFile = new Scanner(strm);
 			String firstLine = inFile.nextLine();   // targetX=939.49; targetY=494.8 ; index=30;
 			parseFirstLine(firstLine);
 			while (inFile.hasNext())
@@ -89,11 +94,13 @@ public class SlingshotFileStream
 				SlingshotDataRow p = new SlingshotDataRow(inId, s, longDate, stats11);
 				list.add(p);
 			}
-		} catch (FileNotFoundException e)
-		{
-			System.err.println("Error opening file.");
-			e.printStackTrace();
-		} catch (NoSuchElementException d)
+		} 
+//		catch (FileNotFoundException e)
+//		{
+//			System.err.println("Error opening file.");
+//			e.printStackTrace();
+//		} 
+		catch (NoSuchElementException d)
 		{
 			System.err.println("Error in file record structure");
 			d.printStackTrace();
