@@ -99,21 +99,15 @@ public class PlateController implements Initializable {
 		plate.setOpacity(0);  
 		plate.setVisible(true); 
 		subscene3D.setXAngle(150);
+		
 		Transition hider = new Transition() 
 		{
 			{ setCycleDuration(Duration.millis(500)); }
 			protected void interpolate(double frac)         {   plate.setOpacity(frac);     	subscene3D.setOpacity(1.0 - frac);        };
 		};
-	      hider.onFinishedProperty().set(actionEvent -> {
-	    	  subscene3D.setVisible(false);
-	    	  plate.setVisible(true);          }  );
-//	       plate.setVisible(false);
-		   hider.play();
-		   model.resetData();
-		   
-//	       plate.setVisible(true);
-//	       plate.setOpacity(1);
-//	       subscene3D.setVisible(false);
+	    hider.onFinishedProperty().set(ev -> {   subscene3D.setVisible(false);	  plate.setVisible(true);   });
+	    hider.play();
+		model.resetData();
 	}
 	//-----------------------------------------------------------------------------------
 //    final Xform axisGroup = new Xform();
@@ -166,7 +160,7 @@ public class PlateController implements Initializable {
 	//-----------------------------------------------------------------------------------
 	@FXML private void addProtocol()
 	{
-		protocolList.getRoot().getChildren().add(new TreeItem("an example"));
+		protocolList.getRoot().getChildren().add(new TreeItem<String>("an example"));
 	}
 	//-----------------------------------------------------------------------------------
  
@@ -175,8 +169,8 @@ public class PlateController implements Initializable {
 		plate = getPlate();
 		model = new PlateModel(this, plate);
 		tableSetup();
-	    protocolListSetup();
-	    cssSetup();
+//	    protocolListSetup();
+//	    cssSetup();
 	    installSidebars();
 		world = new Xform();
 		subscene3D = new Plate3D(model, world, 600, 400);  // plate.getWidth(), plate.getHeight());
@@ -198,15 +192,15 @@ public class PlateController implements Initializable {
 	    plate.getStyleClass().add("plate");
 	}
 	
-	private void protocolListSetup()
-	{
-		protocolList.setRoot(new TreeItem("Analysis"));
-		protocolList.getColumns().get(0).setCellValueFactory(p -> {
-            String text = p.getValue().getValue();  
-            return new ReadOnlyObjectWrapper<String>(text);
-    });
-		
-	}
+//	private void protocolListSetup()
+//	{
+//		protocolList.setRoot(new TreeItem<>("Analysis"));
+//		protocolList.getColumns().get(0).setCellValueFactory(p -> {
+//            String text = p.getValue().getValue();  
+//            return new ReadOnlyObjectWrapper<String>(text);
+//		});
+//	}
+	
 	public void setAttributeText(String t)
 	{
 		attrText.setText(t);

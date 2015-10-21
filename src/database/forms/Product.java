@@ -12,12 +12,22 @@ import javafx.beans.property.StringProperty;
 
 public class Product
 {
-	StringProperty sku;
-	StringProperty desc;
-	StringProperty amt;
-	DoubleProperty unitPrice;
+	private StringProperty sku;
+	private StringProperty desc;
+	private StringProperty amt;
+	private DoubleProperty unitPrice;
 
+	//----------------------------------------------------------------------------
+	public Property getProperty(String name)
+    {
+    	if ("sku".equals(name))  return sku;
+    	if ("desc".equals(name))  return desc;
+    	if ("amt".equals(name))  return amt;
+    	if ("unitPrice".equals(name))  return unitPrice;
+    	return null;
+    }
 
+	//----------------------------------------------------------------------------
     public StringProperty skuProperty() {    
     	if (sku == null) {   sku = new SimpleStringProperty();   }
         return sku;
@@ -50,6 +60,16 @@ public class Product
     public double getUnitPrice() 		{   	return unitPrice != null ? unitPriceProperty().get() : 0;  }
     public void setUnitPrice(double d) 	{      unitPriceProperty().set(d);   }
 
+    
+    //----------------------------------------------------------------------------
+   public static Product findSKU(String sku)
+    {
+    	for (Product p : catalog)
+    		if (sku.compareToIgnoreCase(p.getSKU()) == 0)
+    			return p;
+    	return null;
+    }
+     //----------------------------------------------------------------------------
     public static Product  makeProduct()
     {
     	Product item = new Product();
@@ -69,6 +89,7 @@ public class Product
     	return item;
     }
     
+    //----------------------------------------------------------------------------
     public static List<Product> catalog;
 
     public static List<Product> makeDummyCatalog()
@@ -87,22 +108,6 @@ public class Product
     	return new ArrayList<Product>();
     }
     
-    public static Product findSKU(String sku)
-    {
-    	for (Product p : catalog)
-    		if (sku.compareToIgnoreCase(p.getSKU()) == 0)
-    			return p;
-    	return null;
-    }
-    
-    
-    public Property getProperty(String name)
-    {
-    	if ("sku".equals(name))  return sku;
-    	if ("desc".equals(name))  return desc;
-    	if ("amt".equals(name))  return amt;
-    	if ("unitPrice".equals(name))  return unitPrice;
-    	return null;
-    }
-
+     
+ 
 }

@@ -23,6 +23,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
 import util.FormsUtil;
+import util.NodeUtil;
 
 public class InvoiceForm extends AbstractForm
 {
@@ -91,7 +92,8 @@ public class InvoiceForm extends AbstractForm
 			HBox notes = FormsUtil.makeLabelFieldHBox("notes", "Notes", "notes", NOTES);
 			Button addRec = new Button("+");
 			addRec.setOnAction(o -> addRecord());
-			container.getChildren().addAll(new HBox(6, trms, ship, due, paid), new HBox(6, notes, addRec));
+			container.getChildren().addAll(new HBox(6, trms, ship, due, paid), new HBox(6, notes, addRec), 
+							new HBox(new Label("(Note: 001 - 005 are the only legal SKUs.)")));
 			return container;
 		}
 
@@ -224,30 +226,24 @@ public class InvoiceForm extends AbstractForm
 			}
 			cols[0].setVisible(false);		// dont show status (for now)
 			qtyCol.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-			qtyCol.setOnEditCommit( new EventHandler<CellEditEvent<LineItem, Integer>>() {
-			        @Override public void handle(CellEditEvent<LineItem, Integer> t) {
+			qtyCol.setOnEditCommit( t -> {
 			        	LineItem row = ((LineItem) t.getTableView().getItems().get( t.getTablePosition().getRow()));
 			        	row.setQty(t.getNewValue());
 			        	row.recalc();
-			        }
 			    });
 
 			skuCol.setCellFactory(TextFieldTableCell.forTableColumn());
-			skuCol.setOnEditCommit( new EventHandler<CellEditEvent<LineItem, String>>() {
-			        @Override public void handle(CellEditEvent<LineItem, String> t) {
+			skuCol.setOnEditCommit( t -> {
 			        	LineItem row = ((LineItem) t.getTableView().getItems().get( t.getTablePosition().getRow()));
 			        	row.setSKU(t.getNewValue());
 			        	skuChanged(row);
-			        }
 			    });
 
 			tableView.setEditable(true);
 				
 		          
-			tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-		            @Override public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-		                tableSelectionChanged((LineItem) oldValue, (LineItem) newValue);
-		            }
+			tableView.getSelectionModel().selectedItemProperty().addListener((ob, old, newVal) -> {
+		                tableSelectionChanged((LineItem) old, (LineItem) newVal);
 		        });
 
 		    return tableView;
@@ -315,23 +311,23 @@ public class InvoiceForm extends AbstractForm
 			for (LineItem row : tableView.getItems())
         		subtotal += row.getExtPrice();
 
+			NodeUtil.showKids(this, "  ");
 			double tax = subtotal * TAX_RATE;
 			double shipping = FIXED_SHIPPING;
 			double total = subtotal + tax + shipping;
-
-			TextField subfld = (TextField) lookup("#" + INVOICE_FORM + "subtotal" + "Field");
+			TextField subfld = (TextField) lookup("#"+ "subtotal" + "Field");
 	        if (subfld != null)
 	        	subfld.setText(fmt.format(subtotal));
 	        
-	        TextField taxfld = (TextField) lookup("#" + INVOICE_FORM + "tax" + "Field");
+	        TextField taxfld = (TextField) lookup("#" + "tax" + "Field");
 	        if (taxfld != null)
 	        	taxfld.setText(fmt.format(tax));
 	        
-	        TextField shipfld = (TextField) lookup("#" + INVOICE_FORM + "ship" + "Field");
+	        TextField shipfld = (TextField) lookup("#" + "ship" + "Field");
 	        if (shipfld != null)
 	        	shipfld.setText(fmt.format(shipping));
         
-	        TextField totfld = (TextField) lookup("#" + INVOICE_FORM + "total" + "Field");
+	        TextField totfld = (TextField) lookup("#" + "total" + "Field");
 	        if (totfld != null)
 	        	totfld.setText(fmt.format(total));
 

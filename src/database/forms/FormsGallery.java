@@ -1,13 +1,58 @@
 package database.forms;
 
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import util.FormsUtil;
+import util.FormsUtil.ValidationType;
 
+/*
+ * FormsGallery
+ * 
+ * Examples of using FormsUtil libraries to build standard forms,
+ * and skin them with CSS
+ * 
+ * createValidationForm -- example of all the field level validation 
+ * createCytometryMLform -- for Bob
+ * createExperimentForm -- MIFlowCyt
+ * createSignUpForm() -- an example of cross field (form level) validation
+ */
 public class FormsGallery
 {
+	private static String PREFIX_VALIDATION_FORM = "validation_";
+
+	public static Region createValidationForm()
+	{
+		VBox pane = new VBox(12);
+		pane.setSpacing(8);
+		pane.setPadding(new Insets(8));
+
+		pane.getChildren().add(FormsUtil.makeEmailBox());
+		pane.getChildren().add(FormsUtil.makeURLBox());
+		pane.getChildren().add(FormsUtil.makeISBNBox(PREFIX_VALIDATION_FORM));
+
+		Region rgn1 = FormsUtil.makeValidatedBox("IP4", PREFIX_VALIDATION_FORM + "IP4", ValidationType.IP4);
+		Region rgn2 = FormsUtil.makeValidatedBox("Integer", PREFIX_VALIDATION_FORM + "int", ValidationType.INT);
+		Region rgn3 = FormsUtil.makeValidatedBox("Double", PREFIX_VALIDATION_FORM + "double", ValidationType.DOUBLE);
+		Region rgn4 = FormsUtil.makeValidatedBox("Currency", PREFIX_VALIDATION_FORM + "currency", ValidationType.CURRENCY);
+		Region rgn5 = FormsUtil.makeValidatedBox("Percent", PREFIX_VALIDATION_FORM + "percent", ValidationType.PERCENT);
+		Region rgn6 = FormsUtil.makeValidatedBox("Date", PREFIX_VALIDATION_FORM + "date", ValidationType.DATE);
+		Region rgn7 = FormsUtil.makeValidatedBox("CC", PREFIX_VALIDATION_FORM + "cc", ValidationType.CREDITCARD);
+		pane.getChildren().addAll(rgn1, rgn2, rgn3, rgn4, rgn5, rgn6, rgn7);
+		return pane;
+	}
 	// ----------------------------------------------------
 
 	static String maintainerTip = "The person or institution responsible for this work.";
@@ -56,17 +101,16 @@ public class FormsGallery
 		
 		HBox sub = FormsUtil.promptedText("Subject", "subject", 200, subjectTip);
 		HBox ver = FormsUtil.promptedText("Version", "version", 60, versionTip);
-		HBox loc = FormsUtil.makeURLBox("Latest Location", 200, locationTip);
+		HBox loc = FormsUtil.makeURLBox("", "Latest Location", 200, locationTip);
 		HBox schema = FormsUtil.makeSchemaStatusBox("Schema Status", schemaStatusTip);
 		HBox reg = FormsUtil.makeRegulatoryStatusChoiceBox(true, regStatusTip);   
 		HBox c = FormsUtil.promptedText("Copyright Holder", "copyright", 80, copyrightHolderTip);
-		HBox curi = FormsUtil.makeURLBox("Copyright URI", 200, copyrightLocationTip);
+		HBox curi = FormsUtil.makeURLBox("", "Copyright URI", 200, copyrightLocationTip);
 		HBox perm2 = FormsUtil.promptedText("Permissions", "permission", 50, permTip);
-		HBox release = FormsUtil.releaseDateBox("Release Date", "release", releaseDateTip);
+		HBox release = FormsUtil.makeDateBox( "Release Date", true,  200,releaseDateTip); 
 		HBox info = FormsUtil.promptedText("Supplementary Info", "info", 100, supplementaryTip);
 		HBox keys = FormsUtil.promptedText("Keywords", "keywords", 150, keywordsTip);
 		HBox verif = FormsUtil.promptedText("Verification Value", "verification", 50, verifTip);
-
 		
 		VBox top = new VBox(10);
 		VBox container = new VBox(6);		container.setPadding(new Insets(20));
@@ -101,8 +145,8 @@ public class FormsGallery
 	public static Region createExperimentForm(String prefix)
 	{
 		HBox expid = FormsUtil.makeInternalLabelField("ID", "id", 50, "createdDateTooltip");
-		HBox createdDate = FormsUtil.makeDateBox("Created", 80, true, tooltip);
-		HBox endDate = FormsUtil.makeDateBox("End Date", 80, true, endDateTooltip);
+		HBox createdDate = FormsUtil.makeDateBox("Created", true, 80, tooltip);
+		HBox endDate = FormsUtil.makeDateBox("End Date", true, 80, endDateTooltip);
 		HBox organization = FormsUtil.makeInternalLabelField("Organization", "orgnization", 100, tooltip);
 		HBox lab = FormsUtil.makeInternalLabelField("Lab", "lab", 50, tooltip);
 		HBox title = new HBox(20);
@@ -142,8 +186,6 @@ public class FormsGallery
 		VBox analysis = new VBox(6);
 		HBox anal = new HBox(20,  protocol, gating, panel );
 		analysis.getChildren().addAll(anal);
-
-
 	
 		VBox top = new VBox();
 		VBox container = new VBox(50);
@@ -153,14 +195,62 @@ public class FormsGallery
 		top.getChildren().addAll(scroller);
 		return top;
 	}
-	// ----------------------------------------------------
-	 public static Region createMultipleInstanceForm(String prefix)
-	{
-		 VBox container = FormsUtil.makeFormContainer();
-		 Region desc = FormsUtil.makeMultipleInstanceBox("Description", "1");   // ("Project", "project", 400, tooltip);
-		 Region reasearcher = FormsUtil.makeMultipleInstanceBox("Author", "researcher");
-		 container.getChildren().addAll(desc, reasearcher);
-		 return container;
+	 
 	
-	}
+	// ----------------------------------------------------
+	static String PREFIX_SIGNUP_FORM = "signup_";
+	  public static Region createSignUpForm() 
+	   {
+
+	    	VBox pane = new VBox(); // (new LC().width("450px").height("240px").insets("20 10 10 10"), new AC().index(0).align("right").gap("16px").index(1).grow(), new AC().gap("6px"));
+	    	pane.setSpacing(12);
+	    	pane.setPadding(new Insets(8));
+	    	pane.setPrefHeight(200);
+	    	pane.setPrefWidth(300);
+	        Label emailLabel = new Label("Your Email");
+	        emailLabel.setId(PREFIX_SIGNUP_FORM + "emailLabel");
+	        TextField emailField = new TextField();
+	        emailField.setId(PREFIX_SIGNUP_FORM + "emailField");
+
+	        Label confirmEmailLabel = new Label("Confirm Email");
+	        confirmEmailLabel.setId(PREFIX_SIGNUP_FORM + "confirmEmailLabel");
+	        TextField confirmEmailField = new TextField();
+	        confirmEmailField.setId(PREFIX_SIGNUP_FORM + "confirmEmailField");
+
+	        Label countryLabel = new Label("Country");
+	        ChoiceBox<String> countryChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList("United States", "Canada", "Mexico"));
+	        countryChoiceBox.setId(PREFIX_SIGNUP_FORM + "countryChoiceBox");
+
+	        Label zipCodeLabel = new Label("Zip Code");
+	        TextField zipCodeField = new TextField();
+	        zipCodeField.setId(PREFIX_SIGNUP_FORM + "zipCodeField");
+
+	        Label passwordLabel = new Label("Password");
+	        PasswordField passwordField = new PasswordField();
+	        Label confirmPasswordLabel = new Label("Confirm Password");
+	        passwordField.setId(PREFIX_SIGNUP_FORM + "passwordField");
+
+	        PasswordField confirmPasswordField = new PasswordField();
+	        confirmPasswordField.setId(PREFIX_SIGNUP_FORM + "confirmPasswordField");
+
+	        CheckBox agreeCheckBox = new CheckBox("Yes, I agree to the term of use");
+	        agreeCheckBox.setId(PREFIX_SIGNUP_FORM + "agreeCheckBox");
+
+	        Button signUpButton = new Button("Sign Up");
+	        signUpButton.setId(PREFIX_SIGNUP_FORM + "signUpButton");
+	        //signUpButton.disableProperty().bind(agreeCheckBox.selectedProperty().not());
+//	        emailLabel.setBorder(value);
+	        pane.getChildren().add(new HBox(emailLabel, emailField));
+	        pane.getChildren().add(new HBox(confirmEmailLabel, confirmEmailField));
+	        pane.getChildren().add(new HBox(countryLabel,countryChoiceBox));
+	        pane.getChildren().add(new HBox(zipCodeLabel, zipCodeField));
+	        pane.getChildren().add(new HBox(passwordLabel,passwordField));
+	        pane.getChildren().add(new HBox(confirmPasswordLabel, confirmPasswordField));
+	        pane.getChildren().add(new HBox(agreeCheckBox,signUpButton));
+	 
+	        return pane;
+	    }
+	
+
+
 }

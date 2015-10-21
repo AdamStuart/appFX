@@ -93,17 +93,12 @@ public class Plate3D extends SubScene
 	}
 
     private void handleMouse(SubScene scene, final Node root) {
-        scene.setOnMousePressed(me -> 
-            {
-                mousePosX = me.getSceneX();
-                mousePosY = me.getSceneY();
-                mouseOldX = me.getSceneX();
-                mouseOldY = me.getSceneY();
-            }
-        );
+        scene.setOnMousePressed(me ->    {
+                mousePosX =  mouseOldX = me.getSceneX();
+                mousePosY = mouseOldY = me.getSceneY();
+            } );
         
-        scene.setOnMouseDragged(me ->
-            {
+        scene.setOnMouseDragged(me ->   {
                 double modifier = 1.0;
                 boolean altDown = me.isAltDown();
                 if (me.isControlDown())     modifier = CONTROL_MULTIPLIER;        
@@ -153,26 +148,17 @@ public class Plate3D extends SubScene
                     cameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
                     cameraXform.rz.setAngle(0);
                     break;
-                case D:
-                   resetData();
-                    break;
-                case B:
-                    cameraXform.rx.setAngle(cameraXform.rx.getAngle() + 5);
-                    break;
-                case C:
-                    resetData();
-                    break;
-                case N:
-                    cameraXform.rx.setAngle(cameraXform.rx.getAngle() - 5);
-                    break;
+                case A: 		dumpCamera();                         break;
+                case D:        resetData();                    break;
+                case B:        cameraXform.rx.setAngle(cameraXform.rx.getAngle() + 5);            break;
+                case C:       resetData();                    break;
+                case N:       cameraXform.rx.setAngle(cameraXform.rx.getAngle() - 5);              break;
 //                    case X:
 //                        axisGroup.setVisible(!axisGroup.isVisible());
 //                        break;
-                    case V:
-                        wholePlate.setVisible(!wholePlate.isVisible());
-                        break;
+               case V:     wholePlate.setVisible(!wholePlate.isVisible());                break;
   
-                    case G:
+               case G:
                         RotateTransition rt = new RotateTransition(Duration.millis(3000));
                         rt.setAxis(new Point3D(1,0,0));
                         rt.setNode(wholePlate);
@@ -181,23 +167,15 @@ public class Plate3D extends SubScene
                         rt.play();
                         break;
 
-                    
-                    case A: dumpCamera();                         break;
-                    default: break;
+                  
+               default: break;
             }
         });
 
     }
-	private void resetData()
-	{
-		 model.resetData();
-		
+	private void resetData(){		 model.resetData();		
 	}
-	public void setScalar(double d)
-	{
-		scalar.set(d);
-		
-	}
+	public void setScalar(double d)	{		scalar.set(d);	}
 
  private void dumpCamera()
   {

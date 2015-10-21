@@ -1,7 +1,5 @@
 package database.forms;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.Property;
@@ -9,8 +7,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
 
 public class LineItem
@@ -73,9 +69,10 @@ public class LineItem
     public void recalc()
     {
     	setExtPrice(getUnitPrice() * getQty());
+    	parentForm.retotal();			// binding in line 31 not working??
     }
 //--------------------------------------------------------------------------------------------    
-    public Property getProperty(String name)
+    public Property<?> getProperty(String name)
     {
     	if ("qty".equals(name))  return qty;
     	if ("sku".equals(name))  return sku;
@@ -95,6 +92,7 @@ public class LineItem
     public int getStatus() 				{    return status != null ? statusProperty().get() : 0;  }
     public void setStatus(int q) 		{      statusProperty().set(q);   }
 
+    //--------------------------------------------------------------------------------------------    
     public IntegerProperty qtyProperty() 
     {    
     	if (qty == null)   qty = new SimpleIntegerProperty();  
@@ -103,8 +101,7 @@ public class LineItem
     public int getQty() 				{    return qty != null ? qtyProperty().get() : 0;  }
     public void setQty(int q) 			{      qtyProperty().set(q);   }
 
-    
- 
+    //--------------------------------------------------------------------------------------------    
     public StringProperty skuProperty() {    
     	if (sku == null) {   sku = new SimpleStringProperty();   }
         return sku;
@@ -112,7 +109,7 @@ public class LineItem
     public String getSKU() 				{   	return sku != null ? skuProperty().get() : "";  }
     public void setSKU(String name) 	{      skuProperty().set(name);   }
 
-    
+    //--------------------------------------------------------------------------------------------    
     public StringProperty descProperty() 
     {    
     	if (desc == null)    desc = new SimpleStringProperty();  
@@ -122,6 +119,7 @@ public class LineItem
     public void setDesc(String name) 	{      descProperty().set(name);   }
 
     
+    //--------------------------------------------------------------------------------------------    
     public StringProperty amtProperty() {    
     	if (amt == null) {   amt = new SimpleStringProperty();   }
         return amt;
@@ -130,6 +128,7 @@ public class LineItem
     public void setAmt(String name)	 	{      amtProperty().set(name);   }
 
  
+    //--------------------------------------------------------------------------------------------    
     public DoubleProperty unitPriceProperty() {    
     	if (unitPrice == null) {   unitPrice = new SimpleDoubleProperty();   }
         return unitPrice;
@@ -137,6 +136,7 @@ public class LineItem
     public double getUnitPrice() 		{   	return unitPrice != null ? unitPriceProperty().get() : 0;  }
     public void setUnitPrice(double d) 	{      unitPriceProperty().set(d);   }
 
+    //--------------------------------------------------------------------------------------------    
     public DoubleProperty extPriceProperty() {    
     	if (extPrice == null)    extPrice = new SimpleDoubleProperty();   
         return extPrice;
