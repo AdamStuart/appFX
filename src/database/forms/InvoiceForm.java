@@ -2,18 +2,14 @@ package database.forms;
 
 import java.text.DecimalFormat;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -25,7 +21,7 @@ import javafx.util.converter.IntegerStringConverter;
 import util.FormsUtil;
 import util.NodeUtil;
 
-public class InvoiceForm extends AbstractForm
+public class InvoiceForm extends VBox
 {
 	// ----------------------------------------------------
     public static final String INVOICE_FORM = "Invoice";
@@ -44,6 +40,7 @@ public class InvoiceForm extends AbstractForm
 			getChildren().addAll(createInvoiceHeader(), createInvoiceBody(), createInvoiceFooter());
 		}
 		
+		// ----------------------------------------------------
 		private VBox createInvoiceHeader()
 		{
 			VBox container = new VBox(6);
@@ -116,20 +113,7 @@ public class InvoiceForm extends AbstractForm
 			return container;
 			
 		}
-		//-----------------------------------------------------------------------------
-//
-//		public static HBox createLineItemHeader()
-//		{
-//			HBox container = new HBox();
-//			Label qty = new Label("Qty.");				qty.setPrefWidth(QTY);
-//			Label sku = new Label("SKU");				sku.setPrefWidth(SKU);
-//			Label desc = new Label("Description");		desc.setPrefWidth(DESC);
-//			Label amt = new Label("Amount");			amt.setPrefWidth(AMT);
-//			Label unitPrice = new Label("Price");		unitPrice.setPrefWidth(UNIT);
-//			Label extPrice = new Label("Extended");		extPrice.setPrefWidth(EXT);
-//			container.getChildren().addAll(qty, sku, desc, amt, unitPrice, extPrice);
-//			return container;
-//		}
+
 		//-----------------------------------------------------------------------------
 		
 		static int STATUS = 50;
@@ -266,19 +250,6 @@ public class InvoiceForm extends AbstractForm
 	    
 
 		//-----------------------------------------------------------------------------
-//		public static HBox createLineItem(String prefix)
-//		{
-//			HBox container = new HBox();
-//			TextField qty = new TextField();		qty.setId(prefix + "qty");		qty.setPrefWidth(QTY);
-//			TextField sku = new TextField();		sku.setId(prefix + "sku");		sku.setPrefWidth(SKU);
-//			TextField desc = new TextField();		desc.setId(prefix + "desc");	desc.setPrefWidth(DESC);
-//			TextField amt = new TextField();		amt.setId(prefix + "amt");		amt.setPrefWidth(AMT);
-//			TextField unitPrice = new TextField();	unitPrice.setId(prefix + "unitPrice");	unitPrice.setPrefWidth(UNIT);
-//			TextField extPrice = new TextField();	extPrice.setId(prefix + "extPrice");	extPrice.setPrefWidth(EXT);
-//			container.getChildren().addAll(qty, sku, desc, amt, unitPrice, extPrice);
-//			return container;
-//		}
-
 		private  VBox createInvoiceBody()
 		{
 			Product.makeDummyCatalog();

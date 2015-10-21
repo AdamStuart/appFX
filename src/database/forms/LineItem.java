@@ -143,18 +143,5 @@ public class LineItem
     }
     public double getExtPrice() 		{   return extPrice != null ? extPriceProperty().get() : 0;  }
     public void setExtPrice(double d) 	{   extPriceProperty().set(d);   }
-
-
-   //   
-//    
-//    public BooleanProperty selectedProperty() {   
-//    	if (selected == null) {   selected = new SimpleBooleanProperty();         }
-//        return selected;
-//    }
-//
-//    public boolean isSelected() {   return selected != null ? selectedProperty().get() : false;      }
-//    public void setSelected(boolean selected) {  selectedProperty().set(selected);     }
-//
-
  
 }
