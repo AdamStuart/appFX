@@ -24,19 +24,22 @@ public class DBPerson implements IDBTable
 	static String ADDRESS_COUNTRY_SQL = "Country _SHORT";
 	Region form;
 	
-
+	public Region makeForm()
+	{
+		VBox pane = FormsUtil.makeFormContainer();
+		HBox idBox = FormsUtil.formbox( "ID", "id", 50);
+		HBox line1 = FormsUtil.makeNameHBox();
+		VBox line2 = FormsUtil.makeAddressVBox( 400, true);		// include country
+		HBox line3 = FormsUtil.makeEmailBox();
+		pane.getChildren().addAll(idBox, line1, line3, line2);
+		return pane;
+	
+	}
+	
 	@Override public Region getForm()
 	{
 		if (form == null)
-		{
-			VBox pane = FormsUtil.makeFormContainer();
-			HBox idBox = FormsUtil.formbox( "ID", "id", 50);
-			HBox line1 = FormsUtil.makeNameHBox();
-			VBox line2 = FormsUtil.makeAddressVBox( 400, true);		// include country
-			HBox line3 = FormsUtil.makeEmailBox();
-			pane.getChildren().addAll(idBox, line1, line3, line2);
-			form = pane;
-		}
+			form = makeForm();
 		return form;
 	}
 

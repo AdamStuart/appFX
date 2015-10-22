@@ -34,7 +34,13 @@ import task.IDBTable;
 import util.DBUtil;
 import util.FormsUtil;
 
-//  originates from a JideFXDemo  
+//------------------------------------------------------------------------------------
+//  originates from a JideFXDemo 
+/*
+ * Make a bunch of tabs with structured data types
+ * Be able to create or edit records for event, person, citation, experiment, etc.
+ * This intends to show how to validate input, either on keystroke or focus-lost events.
+ */
 public class AppForms extends Application {
 
     public static void main(String[] args) {       launch(args);    }
@@ -90,6 +96,10 @@ public class AppForms extends Application {
         tabPane = new TabPane();
         tabPane.getStyleClass().add(TabPane.STYLE_CLASS_FLOATING);
 
+        Tab validator = new Tab("Various Validators",FormsGallery.createValidationForm());
+        Tab signup = new Tab("Signup Validation",FormsGallery.createSignUpForm() );
+        Tab multi = new Tab("Multiple Instances", FormsUtil.createMultipleInstanceForm("x"));
+
         personDB = new DBPerson();
         eventDB = new DBEvent();
         protocolDB = new DBProtocol();
@@ -102,14 +112,11 @@ public class AppForms extends Application {
         Tab events = new Tab("Events", eventDB.getForm());
         Tab citations = new Tab("Citations", citationDB.getForm());
         
-        Tab signup = new Tab("Signup Validation",FormsGallery.createSignUpForm() );
-        Tab validator = new Tab("Various Validators",FormsGallery.createValidationForm());
         Tab invoice = new Tab("Invoice", InvoiceForm.createInvoiceForm());
         Tab cyto = new Tab("Cytometry", FormsGallery.createCytometryMLform("CytometryML"));
         Tab experiment = new Tab("Experiment", FormsGallery.createExperimentForm("Experiment"));
-        Tab multi = new Tab("Multiple Instances", FormsUtil.createMultipleInstanceForm("x"));
        
-        tabPane.getTabs().addAll(multi, experiment, cyto, signup, validator, person, group, protocol, events, citations, invoice);
+        tabPane.getTabs().addAll(validator, signup, multi, person, group, events, citations, invoice, protocol, experiment, cyto);
         tabPane.getStylesheets().add(AppForms.class.getResource("Validation.css").toExternalForm());
 
       	Button button = new Button("CRUD");
@@ -132,7 +139,7 @@ public class AppForms extends Application {
 				HBox crudbar = DBUtil.makeCrudBar(db);
 				TextArea console = new TextArea("console of SQL commands");
 
-				Region form = table.getForm();
+				Region form = table.makeForm();
 				if (form != null)
 				{
 					form.setBorder(Borders.etchedBorder);

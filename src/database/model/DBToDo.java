@@ -15,19 +15,20 @@ public class DBToDo implements IDBTable
 	static String TODO_FORM = "ToDo";
 	Region form;
 	// ----------------------------------------------------
-
+	@Override public Region makeForm()
+	{
+		VBox pane = FormsUtil.makeFormContainer();
+		HBox line1 = FormsUtil.makeLabelFieldHBox( "Task", "task");
+		HBox line2 = FormsUtil.makeLabelFieldHBox( "Description", "description");
+		pane.getChildren().addAll(line1, line2);
+		return pane;
+	}
+	
 	@Override public Region getForm()
 	{
 		if (form == null)
-		{
-			VBox pane = FormsUtil.makeFormContainer();
-			HBox line1 = FormsUtil.makeLabelFieldHBox( "Task", "task");
-			HBox line2 = FormsUtil.makeLabelFieldHBox( "Description", "description");
-			pane.getChildren().addAll(line1, line2);
-			form = pane;
-		}
+			form = makeForm();
 		return form;
-
 	}
 
 	@Override public String getTableName()	{		return TODO_FORM;	}

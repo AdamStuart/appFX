@@ -16,21 +16,23 @@ public class DBGroup implements IDBTable
 	static String GROUP_FORM = "DBGroup";
 	Region form;
 
+	@Override public Region makeForm()
+	{
+		VBox pane = FormsUtil.makeFormContainer();
+		HBox idBox = FormsUtil.formbox( "ID", "id", 50);
+		HBox groupname = FormsUtil.makeLabelFieldHBox("Group", "groupname");
+		HBox institution = FormsUtil.makeLabelFieldHBox("Institution", "institution");
+		HBox groupid = FormsUtil.makeLabelFieldHBox("Group Id", "groupid");
+		HBox url = FormsUtil.makeURLBox();
+		HBox email = FormsUtil.makeEmailBox();
+		HBox contact = FormsUtil.makeNameHBox();
+		pane.getChildren().addAll(idBox, groupname, institution, groupid, url, email, contact);
+		return pane;
+	}
 	@Override public Region getForm()
 	{
 		if (form == null)
-		{
-			VBox pane = FormsUtil.makeFormContainer();
-			HBox idBox = FormsUtil.formbox( "ID", "id", 50);
-			HBox groupname = FormsUtil.makeLabelFieldHBox("Group", "groupname");
-			HBox institution = FormsUtil.makeLabelFieldHBox("Institution", "institution");
-			HBox groupid = FormsUtil.makeLabelFieldHBox("Group Id", "groupid");
-			HBox url = FormsUtil.makeURLBox();
-			HBox email = FormsUtil.makeEmailBox();
-			HBox contact = FormsUtil.makeNameHBox();
-			pane.getChildren().addAll(idBox, groupname, institution, groupid, url, email, contact);
-			form = pane;
-		}
+			form = makeForm();
 		return form;
 	}
 

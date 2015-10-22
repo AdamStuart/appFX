@@ -16,23 +16,26 @@ public class DBCitation implements IDBTable
 	static String CITATION_FORM = "Citation";
 	Region form;
 
+	@Override public Region makeForm()
+	{
+		VBox container = new VBox(6);
+		container.setPadding(new Insets(20));
+		HBox idBox = FormsUtil.formbox( "ID", "id", 50);
+		HBox author = FormsUtil.promptedText( "Primary Author", "author", 150);
+		HBox title = FormsUtil.promptedText( "Title", "title", 350);
+		HBox pub = FormsUtil.promptedText( "Published by", "pub", 350);
+		HBox date = FormsUtil.promptedText( "Date", "date", 100);
+		HBox isbn = FormsUtil.promptedText( "ISBN", "isbn", 150);
+		HBox also = FormsUtil.promptedText( "Secondary Authors", "also", 350);
+
+		container.getChildren().addAll(idBox, author, title, date, isbn, pub, also);
+		return container;	
+	}
+	
 	@Override public Region getForm()
 	{
 		if (form == null)
-		{
-			VBox container = new VBox(6);
-			container.setPadding(new Insets(20));
-			HBox idBox = FormsUtil.formbox( "ID", "id", 50);
-			HBox author = FormsUtil.promptedText( "Primary Author", "author", 150);
-			HBox title = FormsUtil.promptedText( "Title", "title", 350);
-			HBox pub = FormsUtil.promptedText( "Published by", "pub", 350);
-			HBox date = FormsUtil.promptedText( "Date", "date", 100);
-			HBox isbn = FormsUtil.promptedText( "ISBN", "isbn", 150);
-			HBox also = FormsUtil.promptedText( "Secondary Authors", "also", 350);
-	
-			container.getChildren().addAll(idBox, author, title, date, isbn, pub, also);
-			form =container;
-		}
+			form =makeForm();
 		return form;
 	}
 

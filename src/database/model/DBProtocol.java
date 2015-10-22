@@ -16,20 +16,24 @@ public class DBProtocol implements IDBTable
 	public static final String Protocol_FORM = "Protocol";
 	Region form;
 
+	@Override public Region makeForm()
+	{
+		VBox pane = FormsUtil.makeFormContainer();
+		HBox idBox = FormsUtil.formbox( "ID", "id", 50);
+		HBox proto = FormsUtil.makeLabelFieldHBox( "Protocol", "description");
+		HBox application = FormsUtil.makeLabelFieldHBox( "Application", "id");
+		HBox name = FormsUtil.makeNameHBox();
+		HBox emailLabel = FormsUtil.makeEmailBox();
+		HBox url = FormsUtil.makeURLBox();
+		pane.getChildren().addAll(idBox, proto, application, name, emailLabel, url);
+		return pane;
+	}	
+	
 	@Override public Region getForm()
+	
 	{
 		if (form == null)
-		{
-			VBox pane = FormsUtil.makeFormContainer();
-			HBox idBox = FormsUtil.formbox( "ID", "id", 50);
-			HBox proto = FormsUtil.makeLabelFieldHBox( "Protocol", "description");
-			HBox application = FormsUtil.makeLabelFieldHBox( "Application", "id");
-			HBox name = FormsUtil.makeNameHBox();
-			HBox emailLabel = FormsUtil.makeEmailBox();
-			HBox url = FormsUtil.makeURLBox();
-			pane.getChildren().addAll(idBox, proto, application, name, emailLabel, url);
-			form = pane;
-		}
+			form = makeForm();
 		return form;
 	}
 

@@ -15,19 +15,21 @@ public class DBEvent implements IDBTable
 	static String EVENT_FORM = "DBEvent";
 	Region form;
 	// ----------------------------------------------------
-
+	@Override public Region makeForm()
+	{
+		VBox pane = FormsUtil.makeFormContainer();
+		HBox idBox = FormsUtil.formbox( "ID", "id", 50);
+		HBox line1 = FormsUtil.makeLabelFieldHBox( "", "Event", "event");
+		HBox line2 = FormsUtil.makeTimeDateDurationBox("", "",  true, true, true);
+		HBox line3 = FormsUtil.makeURLBox("");
+		pane.getChildren().addAll(idBox, line1, line2, line3);
+		return pane;
+	}
+	
 	@Override public Region getForm()
 	{
 		if (form == null)
-		{
-			VBox pane = FormsUtil.makeFormContainer();
-			HBox idBox = FormsUtil.formbox( "ID", "id", 50);
-			HBox line1 = FormsUtil.makeLabelFieldHBox( "", "Event", "event");
-			HBox line2 = FormsUtil.makeTimeDateDurationBox("", "",  true, true, true);
-			HBox line3 = FormsUtil.makeURLBox("");
-			pane.getChildren().addAll(idBox, line1, line2, line3);
-			form = pane;
-		}
+			form = makeForm();
 		return form;
 	}
 

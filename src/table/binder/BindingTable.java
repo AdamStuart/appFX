@@ -30,7 +30,8 @@ public class BindingTable
 	private BindingsController controller;
 	private TableView<Rect> table;
 	
-//  This is the array we get from the controller.  
+//  This is the array we get from the controller.   
+//	TODO: Should be a map, so we don't hard code positions in the array!
 //		public TableColumn[] getCols()	{ return new TableColumn[] {
 //					selectedCol, colorCol, widthCol, widthUnitsCol, 
 //					heightCol, heightUnitsCol, areaCol, areaUnitsCol,heightCol, dueDateCol}; }
@@ -147,12 +148,15 @@ public class BindingTable
 	public int getSelectedIndex()	{		return table.getSelectionModel().getSelectedIndex();			}
 	public Object getSelectedItem()	{		return table.getSelectionModel().getSelectedItem();	}
 
-	// hack to refresh table
+	// HACK to refresh table
 	//http://stackoverflow.com/questions/11272395/javafx-2-1-2-2-tableview-update-issue
 	public void refresh()
 	{
-		table.getColumns().get(0).setVisible(false);
-		table.getColumns().get(0).setVisible(true);
+		TableColumn<?,?> frst = table.getColumns().get(0);
+		if (frst != null)
+		{
+			frst.setVisible(false);		frst.setVisible(true);
+		}
 	}
 
 
