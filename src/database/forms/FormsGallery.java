@@ -106,8 +106,10 @@ public class FormsGallery
 		
 		signUpButton.setId(PREFIX_SIGNUP_FORM + "signUpButton");
 
+		Region zip = FormsUtil.makeValidatedBox("Zip Code", PREFIX_VALIDATION_FORM + "ZIP", ValidationType.ZIP, true);
+
 		pane.getChildren().addAll(email, confirmEmail, new HBox(10, countryLabel, countryChoiceBox));
-		pane.getChildren().add(makeFormField("zip", "Zip Code"));
+		pane.getChildren().add(zip);
 		pane.getChildren().addAll(makePasswordField("pass", "Password", password1), makePasswordField("confirm", "Confirm Password", password2));
 		pane.getChildren().add(new HBox(10, agreeCheckBox, signUpButton, statusLabel));
 		return pane;
