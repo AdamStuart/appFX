@@ -1,8 +1,9 @@
 package database.forms;
 
+import gui.Forms;
+import gui.Forms.ValidationType;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -15,8 +16,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import util.FormsUtil;
-import util.FormsUtil.ValidationType;
 import util.StringUtil;
 
 /*
@@ -32,7 +31,6 @@ import util.StringUtil;
  */
 public class FormsGallery
 {
-	private static String PREFIX_VALIDATION_FORM = "validation_";
 
 	// ----------------------------------------------------
 	// VARIOUS VALIDATORS TAB
@@ -43,17 +41,17 @@ public class FormsGallery
 		pane.setSpacing(8);
 		pane.setPadding(new Insets(8));
 
-		pane.getChildren().add(FormsUtil.makeEmailBox("", "", 200));
-		pane.getChildren().add(FormsUtil.makeURLBox("", "URL", 200, 200, "Internet Resource Location"));
-		pane.getChildren().add(FormsUtil.makeISBNBox(PREFIX_VALIDATION_FORM));
+		pane.getChildren().add(Forms.makeEmailBox("", "", 200, true));
+		pane.getChildren().add(Forms.makeURLBox("", "URL", 200, 200, "Internet Resource Location"));
+		pane.getChildren().add(Forms.makeISBNBox("isbn"));
 
-		Region rgn1 = FormsUtil.makeValidatedBox("IP4", PREFIX_VALIDATION_FORM + "IP4", ValidationType.IP4, false);
-		Region rgn2 = FormsUtil.makeValidatedBox("Integer", PREFIX_VALIDATION_FORM + "int", ValidationType.INT, true);
-		Region rgn3 = FormsUtil.makeValidatedBox("Double", PREFIX_VALIDATION_FORM + "double", ValidationType.DOUBLE, true);
-		Region rgn4 = FormsUtil.makeValidatedBox("Currency", PREFIX_VALIDATION_FORM + "currency", ValidationType.CURRENCY, false);
-		Region rgn5 = FormsUtil.makeValidatedBox("Percent", PREFIX_VALIDATION_FORM + "percent", ValidationType.PERCENT, false);
-		Region rgn6 = FormsUtil.makeValidatedBox("Date", PREFIX_VALIDATION_FORM + "date", ValidationType.DATE, true);
-		Region rgn7 = FormsUtil.makeValidatedBox("CC", PREFIX_VALIDATION_FORM + "cc", ValidationType.CREDITCARD, false);
+		Region rgn1 = Forms.makeValidatedBox("IP4", "IP4", ValidationType.IP4, false, 200, 100);
+		Region rgn2 = Forms.makeValidatedBox("Integer", "int", ValidationType.INT, true, 200, 80);
+		Region rgn3 = Forms.makeValidatedBox("Double", "double", ValidationType.DOUBLE, true, 200, 100);
+		Region rgn4 = Forms.makeValidatedBox("Currency", "currency", ValidationType.CURRENCY, false, 200, 80);
+		Region rgn5 = Forms.makeValidatedBox("Percent", "percent", ValidationType.PERCENT, false, 200, 60);
+		Region rgn6 = Forms.makeValidatedBox("Date", "date", ValidationType.DATE, true, 200, 100);
+		Region rgn7 = Forms.makeValidatedBox("CC", "cc", ValidationType.CREDITCARD, false, 200, 200);
 		pane.getChildren().addAll(rgn1, rgn2, rgn3, rgn4, rgn5, rgn6, rgn7);
 		return pane;
 	}
@@ -61,16 +59,17 @@ public class FormsGallery
 	// ----------------------------------------------------
 	// SIGNUP FORM TAB
 
-	static String PREFIX_SIGNUP_FORM = "signup_";
-		static StringProperty email1 = new SimpleStringProperty();
-		static StringProperty email2 = new SimpleStringProperty();
-		static StringProperty password1 = new SimpleStringProperty();
-		static StringProperty password2 = new SimpleStringProperty();
-		static StringProperty country = new SimpleStringProperty();
-		static StringProperty zip = new SimpleStringProperty();
-		static Button signUpButton = new Button("Sign Up");
-		static CheckBox agreeCheckBox = new CheckBox("Yes, I agree to the term of use");
-		static Label statusLabel = new Label("Form is Empty");
+//	static String PREFIX_SIGNUP_FORM = "signup_";
+	static StringProperty email1 = new SimpleStringProperty();
+	static StringProperty email2 = new SimpleStringProperty();
+	static StringProperty password1 = new SimpleStringProperty();
+	static StringProperty password2 = new SimpleStringProperty();
+	static StringProperty country = new SimpleStringProperty();
+	static StringProperty zip = new SimpleStringProperty();
+	static Button signUpButton = new Button("Sign Up");
+	static CheckBox agreeCheckBox = new CheckBox("Yes, I agree to the term of use");
+	static Label statusLabel = new Label("Form is Empty");
+	
 	public static Region createSignUpForm()
 	{
 		VBox pane = new VBox(); 
@@ -83,30 +82,32 @@ public class FormsGallery
 //		TextField emailField = new TextField();
 //		emailField.setId(PREFIX_SIGNUP_FORM + "emailField");
 		
-		HBox email = FormsUtil.makeEmailBox();
+		HBox email = Forms.makeEmailBox();
 		TextField fld = (TextField) email.lookup("#email");
 		fld.textProperty().bindBidirectional(email1);
 		if (fld != null) fld.textProperty().addListener((obs, old, val) ->	{	setFormValidity(old, val);	});
 
-		HBox confirmEmail = FormsUtil.makeEmailBox();
+		HBox confirmEmail = Forms.makeEmailBox();
 		fld = (TextField) confirmEmail.lookup("#email");
 		if (fld != null) fld.textProperty().addListener((obs, old, val) ->	{	setFormValidity(old, val);	});
 		fld.textProperty().bindBidirectional(email2);
 
 		Label countryLabel = new Label("Country");
 		ChoiceBox<String> countryChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList("United States", "Canada", "Mexico"));
-		countryChoiceBox.setId(PREFIX_SIGNUP_FORM + "countryChoiceBox");
+		countryChoiceBox.setId("countryChoiceBox");
 //		countryChoiceBox.getSelectionModel().selectedItemProperty().bindBidirectional(email2);
 		country.bind(countryChoiceBox.getSelectionModel().selectedItemProperty());
 		countryChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, old, val) ->		{if (val != null && !val.equals(old)) setFormValidity("b", "a");	});
 		
-		agreeCheckBox.setId(PREFIX_SIGNUP_FORM + "agreeCheckBox");
+		agreeCheckBox.setId("agreeCheckBox");
 		agreeCheckBox.setSelected(false);
 		agreeCheckBox.selectedProperty().addListener((obs, old, val) ->	{ if (old != val) setFormValidity("a", "b");	});
 		
-		signUpButton.setId(PREFIX_SIGNUP_FORM + "signUpButton");
+		signUpButton.setId("signUpButton");
 
-		Region zip = FormsUtil.makeValidatedBox("Zip Code", PREFIX_VALIDATION_FORM + "ZIP", ValidationType.ZIP, true);
+		Region zip = Forms.makeValidatedBox("Zip Code",  "ZIP", ValidationType.ZIP, true, 0, 90);
+//		fld = (TextField) zip.lookup("#" + "ZIP");
+//		if (fld != null) fld.setPrefWidth(70);
 
 		pane.getChildren().addAll(email, confirmEmail, new HBox(10, countryLabel, countryChoiceBox));
 		pane.getChildren().add(zip);
@@ -196,28 +197,28 @@ public class FormsGallery
 		for the web pages. The Maintainer_Type must be part of the about_Type, since the user should be provided with a contact, who can provide help.*/
 		
 
-		HBox m = FormsUtil.promptedText("Maintainer", "maintainer", 150, maintainerTip);
-		HBox author = FormsUtil.promptedText("Author", "author", 150, authorTip);
-		HBox src = FormsUtil.promptedText("Source", "source", 100, sourceTip);
-		HBox des = FormsUtil.promptedText("Description", "desc", 500, descTip);
-		HBox disc = FormsUtil.promptedText("Status_Disclaimer", "disclaimer", 200, disclaimerTip);
-		HBox patent = FormsUtil.promptedText("Patent Disclaimer", "patent", 200, patentTip);
-		HBox perm = FormsUtil.promptedText("Permissions", "permission", 100, permissionTip);
-		HBox ack = FormsUtil.promptedText("Acknowledgement", "acknowledgement", 400, acknowledgementTip);
-		HBox future = FormsUtil.promptedText("Future Work", "futureWork", 400, futureTip);
+		HBox m = Forms.promptedText("Maintainer", "maintainer", 150, maintainerTip);
+		HBox author = Forms.promptedText("Author", "author", 150, authorTip);
+		HBox src = Forms.promptedText("Source", "source", 100, sourceTip);
+		HBox des = Forms.promptedText("Description", "desc", 500, descTip);
+		HBox disc = Forms.promptedText("Status_Disclaimer", "disclaimer", 200, disclaimerTip);
+		HBox patent = Forms.promptedText("Patent Disclaimer", "patent", 200, patentTip);
+		HBox perm = Forms.promptedText("Permissions", "permission", 100, permissionTip);
+		HBox ack = Forms.promptedText("Acknowledgement", "acknowledgement", 400, acknowledgementTip);
+		HBox future = Forms.promptedText("Future Work", "futureWork", 400, futureTip);
 		
-		HBox sub = FormsUtil.promptedText("Subject", "subject", 200, subjectTip);
-		HBox ver = FormsUtil.promptedText("Version", "version", 60, versionTip);
-		HBox loc = FormsUtil.makeURLBox("", "Latest Location", 200, 200, locationTip);
-		HBox schema = FormsUtil.makeSchemaStatusBox("Schema Status", schemaStatusTip);
-		HBox reg = FormsUtil.makeRegulatoryStatusChoiceBox(true, regStatusTip);   
-		HBox c = FormsUtil.promptedText("Copyright Holder", "copyright", 80, copyrightHolderTip);
-		HBox curi = FormsUtil.makeURLBox("", "Copyright URI", 200, 200, copyrightLocationTip);
-		HBox perm2 = FormsUtil.promptedText("Permissions", "permission", 50, permTip);
-		HBox release = FormsUtil.makeDateBox( "Release Date", true,  200,releaseDateTip); 
-		HBox info = FormsUtil.promptedText("Supplementary Info", "info", 100, supplementaryTip);
-		HBox keys = FormsUtil.promptedText("Keywords", "keywords", 150, keywordsTip);
-		HBox verif = FormsUtil.promptedText("Verification Value", "verification", 50, verifTip);
+		HBox sub = Forms.promptedText("Subject", "subject", 200, subjectTip);
+		HBox ver = Forms.promptedText("Version", "version", 60, versionTip);
+		HBox loc = Forms.makeURLBox("", "Latest Location", 200, 200, locationTip);
+		HBox schema = Forms.makeSchemaStatusBox("Schema Status", schemaStatusTip);
+		HBox reg = Forms.makeRegulatoryStatusChoiceBox(true, regStatusTip);   
+		HBox c = Forms.promptedText("Copyright Holder", "copyright", 80, copyrightHolderTip);
+		HBox curi = Forms.makeURLBox("", "Copyright URI", 200, 200, copyrightLocationTip);
+		HBox perm2 = Forms.promptedText("Permissions", "permission", 50, permTip);
+		HBox release = Forms.makeDateBox( "Release Date", true,  200,releaseDateTip); 
+		HBox info = Forms.promptedText("Supplementary Info", "info", 100, supplementaryTip);
+		HBox keys = Forms.promptedText("Keywords", "keywords", 150, keywordsTip);
+		HBox verif = Forms.promptedText("Verification Value", "verification", 50, verifTip);
 		
 		VBox top = new VBox(10);
 		VBox container = new VBox(6);		container.setPadding(new Insets(20));
@@ -251,43 +252,43 @@ public class FormsGallery
 
 	public static Region createExperimentForm(String prefix)
 	{
-		HBox expid = FormsUtil.makeFormField("ID", "id", 50, "createdDateTooltip");
-		HBox createdDate = FormsUtil.makeDateBox("Created", true, 80, tooltip);
-		HBox endDate = FormsUtil.makeDateBox("End Date", true, 80, endDateTooltip);
-		HBox organization = FormsUtil.makeFormField("Organization", "orgnization", 100, tooltip);
-		HBox lab = FormsUtil.makeFormField("Lab", "lab", 50, tooltip);
+		HBox expid = Forms.makeFormField("ID", "id", 50, "createdDateTooltip");
+		HBox createdDate = Forms.makeDateBox("Created", true, 80, tooltip);
+		HBox endDate = Forms.makeDateBox("End Date", true, 80, endDateTooltip);
+		HBox organization = Forms.makeFormField("Organization", "orgnization", 100, tooltip);
+		HBox lab = Forms.makeFormField("Lab", "lab", 50, tooltip);
 		HBox title = new HBox(20);
 		title.getChildren().addAll(expid, new VBox(6, createdDate, endDate), lab, organization);
 
-		HBox project = FormsUtil.makeFormField("Project", "project", 400, tooltip);
-		HBox reasearcher = FormsUtil.makeFormField("Primary Researcher", "reasearcher", 150, tooltip);
-		HBox investigator = FormsUtil.makeFormField("Primary Investigator", "investigator", 150, tooltip);
+		HBox project = Forms.makeFormField("Project", "project", 400, tooltip);
+		HBox reasearcher = Forms.makeFormField("Primary Researcher", "reasearcher", 150, tooltip);
+		HBox investigator = Forms.makeFormField("Primary Investigator", "investigator", 150, tooltip);
 		HBox researchers = new HBox(20, reasearcher, investigator);
-		HBox keywords = FormsUtil.makeFormField("Keywords", "keywords", 400, tooltip);
+		HBox keywords = Forms.makeFormField("Keywords", "keywords", 400, tooltip);
 		VBox overview = new VBox(6);
 		overview.getChildren().addAll(project, keywords, researchers);
 
-		HBox description = FormsUtil.makeFormField("Description", "description", 400, tooltip);
-		HBox source = FormsUtil.makeFormField("Source", "source", 150, tooltip);
-		HBox organism = FormsUtil.makeFormField("Organism", "organism", 150, tooltip);
-		HBox age = FormsUtil.makeFormField("Age", "age", 50, tooltip);
-		HBox gender = FormsUtil.makeFormField("Gender", "gender", 40, tooltip);
-		HBox phenotype = FormsUtil.makeFormField("Phenotype", "phenotype", 150, tooltip);
-		HBox characteristics = FormsUtil.makeFormField("Characteristics", "characteristics", 400, tooltip);
-		HBox treatment = FormsUtil.makeFormField("Treatment", "treatment", 400, tooltip);
+		HBox description = Forms.makeFormField("Description", "description", 400, tooltip);
+		HBox source = Forms.makeFormField("Source", "source", 150, tooltip);
+		HBox organism = Forms.makeFormField("Organism", "organism", 150, tooltip);
+		HBox age = Forms.makeFormField("Age", "age", 50, tooltip);
+		HBox gender = Forms.makeFormField("Gender", "gender", 40, tooltip);
+		HBox phenotype = Forms.makeFormField("Phenotype", "phenotype", 150, tooltip);
+		HBox characteristics = Forms.makeFormField("Characteristics", "characteristics", 400, tooltip);
+		HBox treatment = Forms.makeFormField("Treatment", "treatment", 400, tooltip);
 		VBox specimen = new VBox(6);
 		HBox specimenLine1 = new HBox(20,  organism, age, gender, source );
 		specimen.getChildren().addAll(description, specimenLine1, phenotype, characteristics, treatment);
 
-		HBox model = FormsUtil.makeFormField("Instrument", "instrument", 100, tooltip);
-		HBox vendor = FormsUtil.makeFormField("Vendor", "vendor", 100, tooltip);
-		HBox location = FormsUtil.makeFormField("Location", "location", 50, tooltip);
+		HBox model = Forms.makeFormField("Instrument", "instrument", 100, tooltip);
+		HBox vendor = Forms.makeFormField("Vendor", "vendor", 100, tooltip);
+		HBox location = Forms.makeFormField("Location", "location", 50, tooltip);
 		HBox instrumentation = new HBox(20);
 		instrumentation.getChildren().addAll(model, vendor, location);
 
-		HBox protocol = FormsUtil.makeFormField("Protocol", "protocol", 150, tooltip);
-		HBox gating = FormsUtil.makeFormField("Gating", "gates", 150, tooltip);
-		HBox panel = FormsUtil.makeFormField("Panel", "panel", 150, tooltip);
+		HBox protocol = Forms.makeFormField("Protocol", "protocol", 150, tooltip);
+		HBox gating = Forms.makeFormField("Gating", "gates", 150, tooltip);
+		HBox panel = Forms.makeFormField("Panel", "panel", 150, tooltip);
 		VBox analysis = new VBox(6);
 		HBox anal = new HBox(20,  protocol, gating, panel );
 		analysis.getChildren().addAll(anal);

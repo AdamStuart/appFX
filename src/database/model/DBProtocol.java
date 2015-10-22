@@ -1,5 +1,6 @@
 package database.model;
 
+import gui.Forms;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -8,7 +9,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import task.IDBTable;
 import util.DBUtil;
-import util.FormsUtil;
 
 public class DBProtocol implements IDBTable
 {
@@ -18,13 +18,13 @@ public class DBProtocol implements IDBTable
 
 	@Override public Region makeForm()
 	{
-		VBox pane = FormsUtil.makeFormContainer();
-		HBox idBox = FormsUtil.formbox( "ID", "id", 50);
-		HBox proto = FormsUtil.makeLabelFieldHBox( "Protocol", "description");
-		HBox application = FormsUtil.makeLabelFieldHBox( "Application", "id");
-		HBox name = FormsUtil.makeNameHBox();
-		HBox emailLabel = FormsUtil.makeEmailBox();
-		HBox url = FormsUtil.makeURLBox();
+		VBox pane = Forms.makeFormContainer();
+		HBox idBox = Forms.formbox( "ID", "id", 50);
+		HBox proto = Forms.makeLabelFieldHBox( "Protocol", "description");
+		HBox application = Forms.makeLabelFieldHBox( "Application", "id");
+		HBox name = Forms.makeNameHBox();
+		HBox emailLabel = Forms.makeEmailBox();
+		HBox url = Forms.makeURLBox();
 		pane.getChildren().addAll(idBox, proto, application, name, emailLabel, url);
 		return pane;
 	}	

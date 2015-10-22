@@ -1,6 +1,7 @@
 package image.animation;
 
-import javafx.animation.Timeline;
+import animation.Transitions;
+import animation.Transitions.Transition;
 import javafx.application.Application;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
@@ -8,8 +9,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import util.UtilTransitions;
-import util.UtilTransitions.Transition;
 
 public class AppTransitionTester extends Application
 {
@@ -23,7 +22,7 @@ public class AppTransitionTester extends Application
         scene.setCamera(new PerspectiveCamera());
         Image front =  new Image(getClass().getResource("front.png").toExternalForm());
         Image back =  new Image(getClass().getResource("back.png").toExternalForm());
-        UtilTransitions transit = new UtilTransitions(front, back);
+        Transitions transit = new Transitions(front, back);
         pane.getChildren().setAll(transit.getTiles());
     	pane.setPrefSize(front.getWidth(), front.getHeight());
 

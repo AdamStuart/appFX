@@ -3,6 +3,7 @@ package image.animation;
 import java.util.ArrayList;
 import java.util.List;
 
+import animation.SpringInterpolator;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -20,7 +21,6 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import util.SpringInterpolator;
 
 /**
  * Created by

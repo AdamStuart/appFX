@@ -1,5 +1,6 @@
 package database.model;
 
+import gui.Forms;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -8,7 +9,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import task.IDBTable;
 import util.DBUtil;
-import util.FormsUtil;
 
 public class DBGroup implements IDBTable
 {
@@ -18,14 +18,14 @@ public class DBGroup implements IDBTable
 
 	@Override public Region makeForm()
 	{
-		VBox pane = FormsUtil.makeFormContainer();
-		HBox idBox = FormsUtil.formbox( "ID", "id", 50);
-		HBox groupname = FormsUtil.makeLabelFieldHBox("Group", "groupname");
-		HBox institution = FormsUtil.makeLabelFieldHBox("Institution", "institution");
-		HBox groupid = FormsUtil.makeLabelFieldHBox("Group Id", "groupid");
-		HBox url = FormsUtil.makeURLBox();
-		HBox email = FormsUtil.makeEmailBox();
-		HBox contact = FormsUtil.makeNameHBox();
+		VBox pane = Forms.makeFormContainer();
+		HBox idBox = Forms.formbox( "ID", "id", 50);
+		HBox groupname = Forms.makeLabelFieldHBox("Group", "groupname");
+		HBox institution = Forms.makeLabelFieldHBox("Institution", "institution");
+		HBox groupid = Forms.makeLabelFieldHBox("Group Id", "groupid");
+		HBox url = Forms.makeURLBox();
+		HBox email = Forms.makeEmailBox();
+		HBox contact = Forms.makeNameHBox();
 		pane.getChildren().addAll(idBox, groupname, institution, groupid, url, email, contact);
 		return pane;
 	}

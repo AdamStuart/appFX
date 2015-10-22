@@ -1,5 +1,6 @@
 package database.model;
 
+import gui.Forms;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -8,7 +9,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import task.IDBTable;
 import util.DBUtil;
-import util.FormsUtil;
 
 public class DBPerson implements IDBTable
 {
@@ -26,11 +26,11 @@ public class DBPerson implements IDBTable
 	
 	public Region makeForm()
 	{
-		VBox pane = FormsUtil.makeFormContainer();
-		HBox idBox = FormsUtil.formbox( "ID", "id", 50);
-		HBox line1 = FormsUtil.makeNameHBox();
-		VBox line2 = FormsUtil.makeAddressVBox( 400, true);		// include country
-		HBox line3 = FormsUtil.makeEmailBox();
+		VBox pane = Forms.makeFormContainer();
+		HBox idBox = Forms.formbox( "ID", "id", 50);
+		HBox line1 = Forms.makeNameHBox();
+		VBox line2 = Forms.makeAddressVBox( 400, true);		// include country
+		HBox line3 = Forms.makeEmailBox();
 		pane.getChildren().addAll(idBox, line1, line3, line2);
 		return pane;
 	

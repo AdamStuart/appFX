@@ -1,5 +1,6 @@
 package database.model;
 
+import gui.Forms;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -9,7 +10,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import task.IDBTable;
 import util.DBUtil;
-import util.FormsUtil;
 
 public class DBCitation implements IDBTable
 {
@@ -20,13 +20,13 @@ public class DBCitation implements IDBTable
 	{
 		VBox container = new VBox(6);
 		container.setPadding(new Insets(20));
-		HBox idBox = FormsUtil.formbox( "ID", "id", 50);
-		HBox author = FormsUtil.promptedText( "Primary Author", "author", 150);
-		HBox title = FormsUtil.promptedText( "Title", "title", 350);
-		HBox pub = FormsUtil.promptedText( "Published by", "pub", 350);
-		HBox date = FormsUtil.promptedText( "Date", "date", 100);
-		HBox isbn = FormsUtil.promptedText( "ISBN", "isbn", 150);
-		HBox also = FormsUtil.promptedText( "Secondary Authors", "also", 350);
+		HBox idBox = Forms.formbox( "ID", "id", 50);
+		HBox author = Forms.promptedText( "Primary Author", "author", 150);
+		HBox title = Forms.promptedText( "Title", "title", 350);
+		HBox pub = Forms.promptedText( "Published by", "pub", 350);
+		HBox date = Forms.promptedText( "Date", "date", 100);
+		HBox isbn = Forms.promptedText( "ISBN", "isbn", 150);
+		HBox also = Forms.promptedText( "Secondary Authors", "also", 350);
 
 		container.getChildren().addAll(idBox, author, title, date, isbn, pub, also);
 		return container;	

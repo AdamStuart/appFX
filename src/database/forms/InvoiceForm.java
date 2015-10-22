@@ -2,6 +2,7 @@ package database.forms;
 
 import java.text.DecimalFormat;
 
+import gui.Forms;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -18,7 +19,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
-import util.FormsUtil;
 import util.NodeUtil;
 
 public class InvoiceForm extends VBox
@@ -46,11 +46,11 @@ public class InvoiceForm extends VBox
 			VBox container = new VBox(6);
 			Label invPrompt = new Label("Invoice Number");		
 			Label invNumber = new Label();			invNumber.setMinWidth(100);
-			HBox dateBox = FormsUtil.makeDateBox("Date",  false);
-			HBox by = FormsUtil.makeLabelFieldHBox( "by", "Sold By", "soldby", BY);
+			HBox dateBox = Forms.makeDateBox("Date",  false);
+			HBox by = Forms.makeLabelFieldHBox( "by", "Sold By", "soldby", BY);
 			HBox line1 = new HBox(10, invPrompt, invNumber, dateBox, by);
-			HBox nameLine = FormsUtil.makeNameHBox();
-			VBox addrLine = FormsUtil.makeAddressVBox(500, false);
+			HBox nameLine = Forms.makeNameHBox();
+			VBox addrLine = Forms.makeAddressVBox(500, false);
 			Pane spacer = new Pane();  spacer.setPrefSize(30, 30);
 			VBox terms = makeTermsBox(INVOICE_FORM);
 			container.getChildren().addAll(line1, nameLine, addrLine, spacer, terms);
@@ -83,10 +83,10 @@ public class InvoiceForm extends VBox
 			VBox container = new VBox(5);
 
 			HBox trms = makeLabelChoiceBox(INVOICE_FORM, "Terms", InvoiceTerms.values(), TERMS);
-			HBox ship = FormsUtil.makeLabelFieldHBox("ship", "Shipped", "shipDate", SHIP);
-			HBox due = FormsUtil.makeLabelFieldHBox("due", "Due", "dueDate", DUE);
-			HBox paid = FormsUtil.makeLabelFieldHBox("paid", "Paid", "paidDate", DUE);
-			HBox notes = FormsUtil.makeLabelFieldHBox("notes", "Notes", "notes", NOTES);
+			HBox ship = Forms.makeLabelFieldHBox("ship", "Shipped", "shipDate", SHIP);
+			HBox due = Forms.makeLabelFieldHBox("due", "Due", "dueDate", DUE);
+			HBox paid = Forms.makeLabelFieldHBox("paid", "Paid", "paidDate", DUE);
+			HBox notes = Forms.makeLabelFieldHBox("notes", "Notes", "notes", NOTES);
 			Button addRec = new Button("+");
 			addRec.setOnAction(o -> addRecord());
 			container.getChildren().addAll(new HBox(6, trms, ship, due, paid), new HBox(6, notes, addRec), 
@@ -102,7 +102,7 @@ public class InvoiceForm extends VBox
 		}
 		private static HBox makeLabelChoiceBox(String prefix, String string, InvoiceTerms[] invoiceTerms, int width)
 		{
-			HBox container = new HBox(4, FormsUtil.makePrompt(string));
+			HBox container = new HBox(4, Forms.makePrompt(string));
 			ObservableList<InvoiceTerms> terms = FXCollections.observableArrayList();
 			terms.addAll(invoiceTerms);
 			ChoiceBox<InvoiceTerms> chooser = new ChoiceBox<InvoiceTerms>(terms);
@@ -259,10 +259,10 @@ public class InvoiceForm extends VBox
 		
 		private VBox createInvoiceFooter()
 		{
-			HBox subline = FormsUtil.makeLabelNumberFieldHBox("Subtotal", "subtotal", 400, EXT);
-			HBox taxline = FormsUtil.makeLabelNumberFieldHBox("Tax", "tax", 400, EXT);
-			HBox shipline = FormsUtil.makeLabelNumberFieldHBox("Shipping & Handling", "ship", 400, EXT);
-			HBox totalline = FormsUtil.makeLabelNumberFieldHBox("Total", "total", 400, EXT);
+			HBox subline = Forms.makeLabelNumberFieldHBox("Subtotal", "subtotal", 400, EXT);
+			HBox taxline = Forms.makeLabelNumberFieldHBox("Tax", "tax", 400, EXT);
+			HBox shipline = Forms.makeLabelNumberFieldHBox("Shipping & Handling", "ship", 400, EXT);
+			HBox totalline = Forms.makeLabelNumberFieldHBox("Total", "total", 400, EXT);
 			VBox column = new VBox(4, subline, taxline, shipline, totalline);
 
 			subline.setAlignment(Pos.CENTER_RIGHT);

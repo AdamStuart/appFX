@@ -1,17 +1,6 @@
 package table.treetable.fitlered;
 
-	/*******************************************************************************
-	 * Copyright (c) 2014 EM-SOFTWARE and others.
-	 * All rights reserved. This program and the accompanying materials
-	 * are made available under the terms of the Eclipse Public License v1.0
-	 * which accompanies this distribution, and is available at
-	 * http://www.eclipse.org/legal/epl-v10.html
-	 *
-	 * Contributors:
-	 *     Christoph Keimel <c.keimel@emsw.de> - initial API and implementation
-	 *******************************************************************************/
-	import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
+	import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -49,23 +38,23 @@ import javafx.scene.control.TreeItem;
 		public FilterableTreeItem(T value) {
 			super(value);
 			this.filteredList = new FilteredList<>(super.getChildren());
-			this.filteredList.predicateProperty().bind(Bindings.createObjectBinding(() -> {
-				return child -> {
-					// Set the predicate of child items to force filtering
-					if (child instanceof FilterableTreeItem) {
-						FilterableTreeItem<T> filterableChild = (FilterableTreeItem<T>) child;
-						filterableChild.setPredicate(this.predicate.get());
-					}
-					// If there is no predicate, keep this tree item
-					if (this.predicate.get() == null)
-						return true;
-					// If there are children, keep this tree item
-					if (child.getChildren().size() > 0)
-						return true;
-					// Otherwise ask the TreeItemPredicate
-					return this.predicate.get().test(this, child.getValue());
-				};
-			}, this.predicate));
+//			this.filteredList.predicateProperty().bind(Bindings.createObjectBinding(() -> {
+//				return child -> {
+//					// Set the predicate of child items to force filtering
+//					if (child instanceof FilterableTreeItem) {
+//						FilterableTreeItem<T> filterableChild = (FilterableTreeItem<T>) child;
+//						filterableChild.setPredicate(this.predicate.get());
+//					}
+//					// If there is no predicate, keep this tree item
+//					if (this.predicate.get() == null)
+//						return true;
+//					// If there are children, keep this tree item
+//					if (child.getChildren().size() > 0)
+//						return true;
+//					// Otherwise ask the TreeItemPredicate
+//					return this.predicate.get().test(this, child.getValue());
+//				};
+//			}, this.predicate));
 		}
 
 		/**

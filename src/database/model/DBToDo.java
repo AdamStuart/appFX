@@ -1,5 +1,6 @@
 package database.model;
 
+import gui.Forms;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -8,7 +9,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import task.IDBTable;
 import util.DBUtil;
-import util.FormsUtil;
 
 public class DBToDo implements IDBTable
 {
@@ -17,9 +17,9 @@ public class DBToDo implements IDBTable
 	// ----------------------------------------------------
 	@Override public Region makeForm()
 	{
-		VBox pane = FormsUtil.makeFormContainer();
-		HBox line1 = FormsUtil.makeLabelFieldHBox( "Task", "task");
-		HBox line2 = FormsUtil.makeLabelFieldHBox( "Description", "description");
+		VBox pane = Forms.makeFormContainer();
+		HBox line1 = Forms.makeLabelFieldHBox( "Task", "task");
+		HBox line2 = Forms.makeLabelFieldHBox( "Description", "description");
 		pane.getChildren().addAll(line1, line2);
 		return pane;
 	}

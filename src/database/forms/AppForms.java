@@ -15,6 +15,7 @@ import database.model.DBGroup;
 import database.model.DBPerson;
 import database.model.DBProtocol;
 import gui.Borders;
+import gui.Forms;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
@@ -32,7 +33,6 @@ import javafx.stage.Stage;
 import task.DatabaseAccess;
 import task.IDBTable;
 import util.DBUtil;
-import util.FormsUtil;
 
 //------------------------------------------------------------------------------------
 //  originates from a JideFXDemo 
@@ -98,7 +98,7 @@ public class AppForms extends Application {
 
         Tab validator = new Tab("Various Validators",FormsGallery.createValidationForm());
         Tab signup = new Tab("Signup Validation",FormsGallery.createSignUpForm() );
-        Tab multi = new Tab("Multiple Instances", FormsUtil.createMultipleInstanceForm("x"));
+        Tab multi = new Tab("Multiple Instances", Forms.createMultipleInstanceForm("x"));
 
         personDB = new DBPerson();
         eventDB = new DBEvent();

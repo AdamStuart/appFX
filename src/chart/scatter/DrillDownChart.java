@@ -1,11 +1,11 @@
 package chart.scatter;
 
-import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
+import animation.Transitions;
 import gui.Borders;
 import gui.Cursors;
 import javafx.animation.Transition;
@@ -13,7 +13,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -24,9 +23,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.SnapshotResult;
-import javafx.scene.chart.Axis;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.Alert;
@@ -42,12 +39,10 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import util.RectangleUtil;
-import util.UtilTransitions;
 
 
 /*
@@ -98,7 +93,7 @@ public class DrillDownChart extends VBox
 		addData(null);
 		Image curImage = (transitionType == 0) ? null : chartSnapshot();
 		if (transitionType != 0 && curImage != null && prevImage != null)
-			new UtilTransitions(prevImage, curImage).play(util.UtilTransitions.Transition.CUBE);
+			new Transitions(prevImage, curImage).play(Transitions.Transition.CUBE);
 	
 	}
 	private Image chartSnapshot()

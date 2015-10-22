@@ -12,7 +12,7 @@ import javafx.geometry.Point2D;
 //-----------------------------------------------------------------
 import model.XYDataRow;
 import model.XYModel;
-import util.RandomSequenceGenerator;
+import services.RandomSequenceGenerator;
 
 public class SynthFileStream
 {

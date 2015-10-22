@@ -1,5 +1,6 @@
 package database.model;
 
+import gui.Forms;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -8,7 +9,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import task.IDBTable;
 import util.DBUtil;
-import util.FormsUtil;
 
 public class DBEvent implements IDBTable
 {
@@ -17,11 +17,11 @@ public class DBEvent implements IDBTable
 	// ----------------------------------------------------
 	@Override public Region makeForm()
 	{
-		VBox pane = FormsUtil.makeFormContainer();
-		HBox idBox = FormsUtil.formbox( "ID", "id", 50);
-		HBox line1 = FormsUtil.makeLabelFieldHBox( "", "Event", "event");
-		HBox line2 = FormsUtil.makeTimeDateDurationBox("", "",  true, true, true);
-		HBox line3 = FormsUtil.makeURLBox("");
+		VBox pane = Forms.makeFormContainer();
+		HBox idBox = Forms.formbox( "ID", "id", 50);
+		HBox line1 = Forms.makeLabelFieldHBox( "", "Event", "event");
+		HBox line2 = Forms.makeTimeDateDurationBox("", "",  true, true, true);
+		HBox line3 = Forms.makeURLBox("");
 		pane.getChildren().addAll(idBox, line1, line2, line3);
 		return pane;
 	}

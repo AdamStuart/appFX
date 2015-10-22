@@ -1,5 +1,8 @@
 package image.animation;
 
+import animation.Transitions;
+import animation.Transitions.Transition;
+
 /*
  * Copyright (c) 2014 by Gerrit Grunwald
  *
@@ -29,8 +32,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import util.UtilTransitions;
-import util.UtilTransitions.Transition;
 
 public class DemoPaperFold extends Application {
 	
@@ -80,16 +81,16 @@ StackPane root;
         imagePane.setVisible(false);
         pane.setVisible(true);            
     	if (pf == null)
-    		pf = new UtilTransitions(front, back);
+    		pf = new Transitions(front, back);
       pf.play(Transition.PAPER_FOLD);
 	}
-	UtilTransitions	pf;
+	Transitions	pf;
 
     private void hideEffect()
 	{
     	if (pf == null)
     	{
-    		pf = new UtilTransitions(front, back);
+    		pf = new Transitions(front, back);
     		root.getChildren().addAll(pf.getTiles());
     	}
         pf.play(Transition.PAPER_FOLD);
