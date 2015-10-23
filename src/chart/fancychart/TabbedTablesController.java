@@ -28,17 +28,14 @@ public class TabbedTablesController  {
 	{
 		tableControllers = new ArrayList<TabTableController>();
 		for (int i = 0; i < tables.size(); i++) 
-			{
-				TabTableController ttc = new TabTableController(tables.get(i));
-				ttc.setDataSetIndex(i);
-				tableControllers.add(ttc);
-				tables.get(i).getSelectionModel().selectedIndexProperty().addListener(new InvalidationListener() {
-					@Override
-					public void invalidated(final Observable observable) {
-						clearAllTableSelections();
-					}
-				});
-			}
+		{
+			TabTableController ttc = new TabTableController(tables.get(i));
+			ttc.setDataSetIndex(i);
+			tableControllers.add(ttc);
+			tables.get(i).getSelectionModel().selectedIndexProperty().addListener(observable -> {
+					clearAllTableSelections();
+			});
+		}
 	}
 	public void initialize() {
 

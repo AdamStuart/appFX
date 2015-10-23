@@ -69,9 +69,7 @@ public class TabTableController {
 		tableView.scrollTo(dataItemIndex - 5);
 	}
 
-	public void clearTableSelection() {
-		tableView.getSelectionModel().clearSelection();
-	}
+	public void clearTableSelection() {		tableView.getSelectionModel().clearSelection();	}
 
 	private void addSelectionListener() {
 		tableView.getSelectionModel().getSelectedIndices().addListener(new SelectedTableItemsChangeListener(tableView));
@@ -80,17 +78,12 @@ public class TabTableController {
 	private void assignImportExportButtonActions() {
 		if (importExportPanelController != null)
 		{
-			importExportPanelController.getImportButton().setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override public void handle(ActionEvent event) {
+			importExportPanelController.getImportButton().setOnAction(event->  {
 				importFromFile(dataSetIndex, importExportPanelController.getSelectedFileFormat());
-			}
 		});
 
-		importExportPanelController.getExportButton().setOnAction(new EventHandler<ActionEvent>() {
-			@Override public void handle(ActionEvent event) {
+		importExportPanelController.getExportButton().setOnAction(event->  {
 				exportToFile(tableView.getItems(), importExportPanelController.getSelectedFileFormat());
-			}
 		});
 		}
 
@@ -124,20 +117,10 @@ public class TabTableController {
 	}
 
 	private void addCellFactory(final TableColumn<DataItem, Number> xCol, final TableColumn<DataItem, Number> yCol) {
-		final Callback<TableColumn<DataItem, Number>, TableCell<DataItem, Number>> xCellFactory = new Callback<TableColumn<DataItem, Number>, TableCell<DataItem, Number>>() {
-			@Override
-			public TableCell<DataItem, Number> call(final TableColumn<DataItem, Number> p) {
-				return new DoubleEditingCell(0);
-			}
-		};
+		final Callback<TableColumn<DataItem, Number>, TableCell<DataItem, Number>> xCellFactory = p -> {  return new DoubleEditingCell(0);		};
 		xCol.setCellFactory(xCellFactory);
 
-		final Callback<TableColumn<DataItem, Number>, TableCell<DataItem, Number>> vCellFactory = new Callback<TableColumn<DataItem, Number>, TableCell<DataItem, Number>>() {
-			@Override
-			public TableCell<DataItem, Number> call(final TableColumn<DataItem, Number> p) {
-				return new DoubleEditingCell(2);
-			}
-		};
+		final Callback<TableColumn<DataItem, Number>, TableCell<DataItem, Number>> vCellFactory = p -> { return new DoubleEditingCell(2);};
 		yCol.setCellFactory(vCellFactory);
 	}
 

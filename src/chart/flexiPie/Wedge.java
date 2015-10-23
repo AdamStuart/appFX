@@ -9,14 +9,14 @@ import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 
-public class Wedge {
+public class Wedge
+ {
 	
 	private	StringProperty name;
 	private	DoubleProperty length;
 	private	SimpleBooleanProperty locked;
 	private	Color color;
 	private	Arc arc;
-//	private	PieModel model;
 	private int index;
 	
 	public Wedge(String s, Color c, double d, PieModel parent, int idx)
@@ -24,7 +24,6 @@ public class Wedge {
 		name = new SimpleStringProperty(s);
 		color = c;
 		length = new SimpleDoubleProperty(d);			// corresponds to the length of the arc
-//		model = parent;
 		index = idx;
 		locked = new SimpleBooleanProperty(false);
 	}
@@ -47,22 +46,14 @@ public class Wedge {
 	public void setIndex(int i) 			{	index = i;  }				// be able to change index for deletion & insertion
 
 	
-	public Point2D getStartPoint(Point2D center) 
-	{	
-		System.out.println(String.format("angle %.2f", arc.getStartAngle()));
-		return pointAtAngle(center, arc.getStartAngle());
-	}
-	
+	public Point2D getStartPoint(Point2D center) {	return pointAtAngle(center, arc.getStartAngle());	}
+	public Point2D getEndPoint(Point2D center) 	{	return pointAtAngle(center, arc.getStartAngle()+ getLength());	}
+
 	public Point2D pointAtAngle( Point2D center, double angle)
 	{
 		double scalar = 1.1* arc.getRadiusX();		// assumes circle and 10% extension outside the circumference
 		angle *= Math.PI / 180;
 		return new Point2D(center.getX() + (Math.cos(angle)* scalar),center.getY() - (Math.sin(angle)* scalar));	
-	}
-	
-	public Point2D getEndPoint(Point2D center) 
-	{	
-		return pointAtAngle(center, arc.getStartAngle()+ getLength());
 	}
 
 	public void setAngles(double start, double end) 

@@ -22,8 +22,7 @@ public class DoughnutChart extends PieChart {
         innerCircle.setStrokeWidth(3);
     }
 
-    @Override
-    protected void layoutChartChildren(double top, double left, double contentWidth, double contentHeight) {
+    @Override  protected void layoutChartChildren(double top, double left, double contentWidth, double contentHeight) {
         super.layoutChartChildren(top, left, contentWidth, contentHeight);
 
         addInnerCircleIfNotPresent();
@@ -54,8 +53,10 @@ public class DoughnutChart extends PieChart {
             if (bounds.getMaxY() > maxY)    maxY = bounds.getMaxY();
         }
 
-        innerCircle.setCenterX(minX + (maxX - minX) / 2);
-        innerCircle.setCenterY(minY + (maxY - minY) / 2);
+        innerCircle.setCenterX(average(minX , maxX));
+        innerCircle.setCenterY(average(minY, maxY));
         innerCircle.setRadius((maxX - minX) / 4);
     }
+    
+   double average(double a, double b) {  return (a + (b-a)/2); }
 }

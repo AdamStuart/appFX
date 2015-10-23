@@ -16,7 +16,7 @@
                 <TreeTableColumn fx:id="portionColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Portion" />
               </columns>
             </TreeTableView>
-            <Pane fx:id="container" layoutX="40.0" layoutY="40.0" prefHeight="464.0" prefWidth="464.0" />
+            <Pane fx:id="container" layoutX="40.0" layoutY="40.0" prefHeight="320.0" prefWidth="320.0" />
          </children>
       </HBox>
    </children>

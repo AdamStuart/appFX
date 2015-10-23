@@ -20,7 +20,13 @@ public class PieModel
 	double centerX, centerY, radiusX, radiusY;
 	FlexiPieController controller;
 	final Point2D center;
+
+	private Circle handle;
+	private Line connection;
+	double xMouse,yMouse;
+	boolean verbose = false;
 	
+	//---------------------------------------------------------------------------------
 	public PieModel(double cX, double cY, double rX, double rY, FlexiPieController parent)
 	{
 		centerX = cX;
@@ -70,11 +76,7 @@ public class PieModel
 		}
 		return null;
 	}
-
-	private Circle handle;
-	private Line connection;
-	double xMouse,yMouse;
-
+	//---------------------------------------------------------------------------------
 	public Group createHandle() 
 	{
 
@@ -82,7 +84,7 @@ public class PieModel
 	    handle.setRadius(5);    
 	    handle.setStroke(Color.BLACK);
 	    handle.setStrokeWidth(2.5);
-	    handle.setFill(Color.TRANSPARENT);
+	    handle.setFill(Color.BROWN);
 
 	    connection = new Line();
 	    connection.setStrokeWidth(4);
@@ -100,11 +102,11 @@ public class PieModel
 	    return new Group(connection, handle);
 	}
 	
+	//---------------------------------------------------------------------------------
 	void setHandlePosition(double a)
 	{
 		if (activeWedge != null)
 		{
-			
 			double oldAngle = activeWedge.getArc().getStartAngle();
 			double oldEnd = oldAngle + activeWedge.getArc().getLength();
 
@@ -113,7 +115,7 @@ public class PieModel
 	        double tmpDelta = a - oldAngle;
 	        double delta = boundDeltaAngle(tmpDelta);
 	        boolean flipped = delta != tmpDelta;
-	        System.err.println(String.format("Delta: %.2f a: %.2f oldAngle: %.2f oldEnd: %.2f ", delta, a, oldAngle, oldEnd));
+	        if (verbose) System.err.println(String.format("Delta: %.2f a: %.2f oldAngle: %.2f oldEnd: %.2f ", delta, a, oldAngle, oldEnd));
 	        
 			if (!flipped && delta > 0 && a > oldEnd)
 	        	a = oldEnd;
@@ -145,11 +147,11 @@ public class PieModel
 	        	w.setStartAngle(start);
 	        	start += w.getLength();
 	        	while (start > 360) start -= 360;
-        	
 	        }
 	    }
 	}
 	
+	//---------------------------------------------------------------------------------
 	protected double boundDeltaAngle(double delta)
 	{
 		if (Math.abs(delta) > 10)	   
@@ -161,6 +163,7 @@ public class PieModel
 		return delta;
 	}
 
+	//---------------------------------------------------------------------------------
 	private int nUnlocked()
 	{
 		int ct = 0;
@@ -168,25 +171,20 @@ public class PieModel
 			if (!w.isLocked()) ct++;
 		return ct;
 	}
-	enum Distribution
-	{
-		EQUAL, 
-		PROPORTIONAL
-	}
+	//---------------------------------------------------------------------------------
+	enum Distribution	{		EQUAL, 		PROPORTIONAL	}
 	
 	Distribution distrib = Distribution.PROPORTIONAL;
 	
 	private void redistribute(double delta) 
 	{
        if (distrib ==  Distribution.EQUAL)
-    	  {
+       {
     	   double nOthers = nUnlocked() - 1;	
            for (Wedge w: wedgeList)
-           {
            	if (w != activeWedge && !w.isLocked())
            		w.deltaLength(-delta / nOthers);
-           }
-   	  }
+   	  	}
        
        if (distrib ==  Distribution.PROPORTIONAL)
        {
@@ -204,6 +202,7 @@ public class PieModel
    	  }
 	}
 
+	//---------------------------------------------------------------------------------
 	Point2D getStartHandlePoint(Wedge inWedge) 				{	return inWedge.getStartPoint(center);	}
 	private double distanceFromCenter(double x, double y) 	{	return center.distance(x, y);	}
 	
@@ -215,7 +214,7 @@ public class PieModel
 		for (Wedge w : wedgeList)
 		{
 			Arc arc = new Arc(centerX, centerY,  radiusX, radiusY,  startAngle, w.getLength());
-			arc.setFill(w.getColor());
+			arc.setFill(w.getColor());			// TODO use CSS styles
 			arc.setStroke(Color.BLACK);
 			arc.setStrokeWidth(1);
 			arc.setType(ArcType.ROUND);
@@ -227,7 +226,8 @@ public class PieModel
 		return g;
 
 	}
-	Wedge activeWedge;
+	//---------------------------------------------------------------------------------
+	private Wedge activeWedge;
 
 	public void select(Wedge wedge) 
 	{
@@ -239,23 +239,22 @@ public class PieModel
 		handle.setCenterX( pt.getX() );
 		handle.setCenterY( pt.getY() );
 	}
-
+	//---------------------------------------------------------------------------------
 	public void select(int i) 
 	{
 		if (i >= 0 && i < wedgeList.size())
 			select(wedgeList.get(i));
 		
 	}
-
-	public TreeItem createTreeItems() {
-		TreeItem root = new TreeItem(new Wedge("Vertibrates", Color.ALICEBLUE, 360, null, -1));
+	//---------------------------------------------------------------------------------
+	public TreeItem<Wedge> createTreeItems() 
+	{
+		TreeItem<Wedge> root = new TreeItem<Wedge>(new Wedge("Vertibrates", Color.ALICEBLUE, 360, null, -1));
 		for (Wedge w : wedgeList)
-		{
-			TreeItem item = new TreeItem(w);
-			root.getChildren().add(item);
-		}
+			root.getChildren().add(new TreeItem<Wedge>(w));
 		return root;
 	}
+//=====================================================================
 
 
 }

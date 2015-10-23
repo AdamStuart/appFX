@@ -77,20 +77,12 @@ public class HiddenPaneTabTableController {
 	private void assignImportExportButtonActions() {
 		if (importExportPanelController != null)
 		{
-			importExportPanelController.getImportButton().setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
+			importExportPanelController.getImportButton().setOnAction(event -> {
 				importFromFile(dataSetIndex, importExportPanelController.getSelectedFileFormat());
-			}
 		});
 
-		importExportPanelController.getExportButton().setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
+		importExportPanelController.getExportButton().setOnAction(event ->  {
 				exportToFile(tableView.getItems(), importExportPanelController.getSelectedFileFormat());
-			}
 		});
 		}
 

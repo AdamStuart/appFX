@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
+
 import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -37,9 +39,6 @@ import javafx.scene.transform.Transform;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.Duration;
-
-import javax.imageio.ImageIO;
-
 import util.SoundUtility;
 
 
@@ -89,17 +88,9 @@ public class TPController  {
 		
 		vals = new DoubleProperty[] { valA, valB, valC, valD, valE};
 		for (DoubleProperty v : vals)		// all the sliders listen and refresh the pattern string 
-		{
-			v.addListener(new ChangeListener() {
-				@Override public void changed(ObservableValue o, Object oldVal, Object newVal)	{	recalcPatternString(); 	}	});
-		}
-		
-		counterVal.addListener(new ChangeListener() {
-			@Override public void changed(ObservableValue o, Object oldVal, Object newVal)	{	if (counterLabel != null) counterLabel.setText(newVal.toString());	}	});
-			
-		patternStringProperty.addListener(new ChangeListener() {
-			@Override public void changed(ObservableValue o, Object oldVal, Object newVal)	{	if (patternString != null) patternString.setText(newVal.toString());	}	});
-
+			v.addListener((obs, old, val) ->	{	recalcPatternString(); 	});
+		counterVal.addListener((obs, old, val) ->	{	if (counterLabel != null) counterLabel.setText(val.toString());		});
+		patternStringProperty.addListener((obs, old, val) -> {	if (patternString != null) patternString.setText(val.toString()); });
 		
 		getApp().setController(this);
 	}
@@ -111,7 +102,6 @@ public class TPController  {
 	@FXML private Slider sliderD;
 	@FXML private Slider sliderE;
 	//-----------------------------------------------------------------------------------------
-	
 
 	private Callback<TuringPattern, ObservableValue> createSelectionCallback() 
 	{
@@ -201,8 +191,8 @@ public class TPController  {
 			{
 				patternList.setCellFactory(c-> new CheckBoxListCell(createSelectionCallback())); 
 				patternList.setEditable(true);
-				patternList.getSelectionModel().selectedItemProperty().addListener( new ChangeListener() {
-		                    public void changed(ObservableValue ov,  Object old_val, Object new_val) {    setActivePattern((TuringPattern)new_val);       } });
+				patternList.getSelectionModel().selectedItemProperty().addListener(
+					(obs, old, val) ->	{  setActivePattern((TuringPattern)val);  });
 				patternList.setEditable(true);
 				patternList.getItems().addAll(patterns.getList());
 
@@ -326,10 +316,10 @@ public class TPController  {
 	@FXML public void mouseMoved()	{}//		System.out.println("mouseMoved");
 	@FXML public void sliderDragStart()	{		System.out.println("sliderDragStart");	}
 	@FXML public void sliderDragDone()	{		System.out.println("sliderDragDone");	}
-	@FXML public void mouseDragEntered()	{		System.out.println("mouseDragEntered");	}
+	@FXML public void mouseDragEntered(){		System.out.println("mouseDragEntered");	}
 	@FXML public void mouseDragExited()	{		System.out.println("mouseDragExited");	}
 	@FXML public void mouseDragOver()	{		System.out.println("mouseDragOver");	}
-	@FXML public void mouseDragReleased()	{		System.out.println("mouseDragReleased");	}
+	@FXML public void mouseDragReleased(){		System.out.println("mouseDragReleased");	}
 	@FXML public void mousePressed()	{		System.out.println("mousePressed");	}
 	@FXML public void mouseReleased()	{		System.out.println("mouseReleased");	}
 	@FXML public void sliderDragEnd()	{		System.out.println("sliderDragEnd");	}

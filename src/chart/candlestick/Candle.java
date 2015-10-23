@@ -69,11 +69,9 @@ public class Candle extends Group {
         if (candleWidth == -1) {
             candleWidth = bar.prefWidth(-1);
         }
-        if (openAboveClose) {
-            bar.resizeRelocate(-candleWidth / 2, 0, candleWidth, closeOffset);
-        } else {
-            bar.resizeRelocate(-candleWidth / 2, closeOffset, candleWidth, closeOffset * -1);
-        }
+        if (openAboveClose)     bar.resizeRelocate(-candleWidth / 2, 0, candleWidth, closeOffset);
+         else 		            bar.resizeRelocate(-candleWidth / 2, closeOffset, candleWidth, closeOffset * -1);
+        
     }
 
     public void updateTooltip(double open, double close, double high, double low) {

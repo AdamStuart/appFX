@@ -15,11 +15,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class FancyChartViewer extends Application {
+public class AppFancyChart extends Application {
 
-	public static void main(final String[] args) {
-		launch(args);
-	}
+	public static void main(final String[] args) {	launch(args);	}
 
 	@Override
 	public void start(final Stage primaryStage) throws Exception {

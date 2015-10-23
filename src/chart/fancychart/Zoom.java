@@ -76,7 +76,14 @@ public class Zoom {
 		pane.addEventHandler(MouseEvent.MOUSE_PRESSED, new MousePressedHandler());
 		pane.addEventHandler(MouseEvent.MOUSE_DRAGGED, new MouseDraggedHandler());
 		pane.addEventHandler(MouseEvent.MOUSE_RELEASED, new MouseReleasedHandler());
-		pane.addEventHandler(KeyEvent.KEY_RELEASED, new EscapeKeyHandler());
+		pane.setOnKeyReleased(event ->
+		{
+			if (KeyCode.ESCAPE.equals(event.getCode())) {
+				xAxis.setAutoRanging(true);
+				yAxis.setAutoRanging(true);
+				infoLabel.setVisible(false);
+			}
+		});
 	}
 
 	private Point2D computeRectanglePoint(double eventX, double eventY) {
@@ -103,11 +110,8 @@ public class Zoom {
 	private double computeOffsetInChart(Node node, boolean vertical) {
 		double offset = 0;
 		do {
-			if (vertical) {
-				offset += node.getLayoutY();
-			} else {
-				offset += node.getLayoutX();
-			}
+			if (vertical)  	offset += node.getLayoutY();
+			else	  		offset += node.getLayoutX();
 			node = node.getParent();
 		} while (node != chart);
 		return offset;
@@ -331,30 +335,6 @@ public class Zoom {
 
 			double newBound = offset + sign * relativePosition * axisLength;
 			return newBound;
-		}
-	}
-
-	/**
-	 *
-	 */
-	private final class EscapeKeyHandler implements EventHandler<KeyEvent> {
-		@Override
-		public void handle(KeyEvent event) {
-
-			// the ESCAPE key lets the user reset the zoom level
-			if (KeyCode.ESCAPE.equals(event.getCode())) {
-				resetAxisBounds();
-				hideInfo();
-			}
-		}
-
-		private void resetAxisBounds() {
-			xAxis.setAutoRanging(true);
-			yAxis.setAutoRanging(true);
-		}
-
-		private void hideInfo() {
-			infoLabel.setVisible(false);
 		}
 	}
 

@@ -33,9 +33,6 @@ public class AppChartTabs extends Application
 	    }
 	    static public AppChartTabs getInstance()	{ return instance;	}
 
-	    public static void main(String[] args)
-	    {
-	        launch(args);
-	    }
+	    public static void main(String[] args)	    {  launch(args);	    }
 
 }

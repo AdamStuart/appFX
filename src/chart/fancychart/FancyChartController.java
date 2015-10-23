@@ -246,15 +246,12 @@ public class FancyChartController {
 						series.getNode().setStyle(strokeStyle);
 
 						// set data point color
-						for (final Data<Number, Number> data : series.getData()) {
+						for (final Data<Number, Number> data : series.getData()) 
 							data.getNode().setStyle(backgroundColorStyle);
-						}
 
 						// set legend item color
 						final Set<Node> nodes = chart.lookupAll(".chart-legend-item-symbol.default-color" + index);
-						for (final Node n : nodes) {
-							n.setStyle(backgroundColorStyle);
-						}
+						for (final Node n : nodes) 	n.setStyle(backgroundColorStyle);
 						index++;
 					}
 				}
@@ -330,15 +327,11 @@ public class FancyChartController {
 	
 	
 	private void addDataImportListener() {
-		rootPane.addEventHandler(DataItemImportEvent.TYPE, new EventHandler<DataItemImportEvent>() {
-
-			@Override
-			public void handle(DataItemImportEvent event) {
+		rootPane.addEventHandler(DataItemImportEvent.TYPE, event -> {
 				int index = event.getDataSeriesIndex();
 				List<DataItem> importedDataItems = event.getImportedDataItems();
 				ALL_DATA_SETS.get(index).setAll(importedDataItems);
 				setDataItems(importedDataItems, index);
-			}
 		});
 
 	}
@@ -354,14 +347,10 @@ public class FancyChartController {
 //	}
 
 	private void addSelectionListener() {
-		rootPane.addEventHandler(DataItemSelectionEvent.TYPE, new EventHandler<DataItemSelectionEvent>() {
-
-			@Override
-			public void handle(final DataItemSelectionEvent event) {
+		rootPane.addEventHandler(DataItemSelectionEvent.TYPE, event ->  {
 				final int dataSeriesIndex = event.getDataSeriesIndex();
 				final List<Integer> selectedIndices = event.getSelectedIndices();
 				setScale(dataSeriesIndex, selectedIndices);
-			}
 		});
 	}
 
@@ -411,8 +400,7 @@ public class FancyChartController {
 
 						final String colorString = toRGBCode(seriesColors.get(dataSeriesIndex));
 						popup.getContent().setAll(label);
-						label.setStyle("-fx-background-color: " + colorString + "; -fx-border-color: " + colorString
-								+ ";");
+						label.setStyle("-fx-background-color: " + colorString + "; -fx-border-color: " + colorString + ";");
 						label.setText("x=" + data.getXValue() + ", y=" + data.getYValue());
 						popup.show(data.getNode().getScene().getWindow(), event.getScreenX() + X_OFFSET,
 								event.getScreenY() + Y_OFFSET);
@@ -426,25 +414,14 @@ public class FancyChartController {
 
 				}.init());
 
-				node.addEventHandler(MouseEvent.MOUSE_EXITED_TARGET, new EventHandler<MouseEvent>() {
-
-					@Override
-					public void handle(final MouseEvent event) {
-						popup.hide();
-						event.consume();
-					}
-				});
+				node.addEventHandler(MouseEvent.MOUSE_EXITED_TARGET, event ->  {	popup.hide();  event.consume();	});
 
 				// this handler selects the corresponding table item when a data
 				// item in the chart was clicked.
-				node.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-
-					@Override
-					public void handle(final MouseEvent event) {
+				node.addEventHandler(MouseEvent.MOUSE_CLICKED,  event ->  {
 						final int dataItemIndex = series.getData().indexOf(data);
 						tabPaneContainerController.selectDataItem(dataSeriesIndex, dataItemIndex);
 						event.consume();
-					}
 				});
 			}
 		}
@@ -466,7 +443,7 @@ public class FancyChartController {
 			legendLabels.get(i).setText("Data Set " + i);
 			seriesList.add(series);
 		}
-
+		
 		return seriesList;
 
 	}

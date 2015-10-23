@@ -107,30 +107,29 @@ public class BindingTable
 	// macros to customize our value and unit columns in the table, in pairs
 	
 	static ObservableList<Unit> units = FXCollections.observableArrayList(Unit.values());
-	
+	boolean verbose = false;
 	private void setUpCols(String prefix, TableColumn<Rect, Double> colVal, TableColumn<Rect, Unit> colUnits)
 	{
 		colVal.setCellValueFactory(new PropertyValueFactory<>(prefix +"Val"));
-
-		
 		Callback<TableColumn<Rect, Double>, TableCell<Rect, Double>> factory = TextFieldTableCell.<Rect, Double> forTableColumn(new NumberColConverter());
-
 		TableCell<Rect, Double>	cell = factory.call(colVal);
+		colVal.setCellFactory(factory);
 
 		cell.addEventFilter(KeyEvent.KEY_TYPED, event ->
 		{	
-			System.out.println("KEY_TYPED: " + event.getCharacter());
+			if (verbose) System.out.println("KEY_TYPED: " + event.getCharacter());
 			if (!Character.isDigit(event.getCharacter().charAt(0))) event.consume();	});
+		
 		cell.addEventFilter(KeyEvent.KEY_PRESSED, event ->
 		{	
-			System.out.println("KEY_PRESSED: " + event.getCharacter());
+			if (verbose) System.out.println("KEY_PRESSED: " + event.getCharacter());
 			if (!Character.isDigit(event.getCharacter().charAt(0))) event.consume();	});
+		
 		cell.addEventFilter(KeyEvent.KEY_RELEASED, event ->
 		{	
-			System.out.println("KEY_RELEASED: " + event.getCharacter());
+			if (verbose) System.out.println("KEY_RELEASED: " + event.getCharacter());
 			if (!Character.isDigit(event.getCharacter().charAt(0))) event.consume();	});
 	
-		colVal.setCellFactory(factory);
 		colVal.getStyleClass().add("numeric");
 		colVal.setOnEditCommit((CellEditEvent<Rect, Double> t) ->	{	getRect(t).setVal(prefix, t.getNewValue());		});
 		
