@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="418.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="game.iching.IChingController">
+   <children>
+      <HBox spacing="4.0">
+         <children>
+            <VBox>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The I Ching Calculator">
+                     <font>
+                        <Font name="LiSong Pro" size="24.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="50.0" />
+                     </HBox.margin>
+                     <VBox.margin>
+                        <Insets left="20.0" top="4.0" />
+                     </VBox.margin>
+                  </Text>
+               </children>
+            </VBox>
+         </children>
+         <VBox.margin>
+            <Insets left="10.0" top="10.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox prefHeight="32.0" prefWidth="801.0" spacing="10.0">
+         <children>
+            <Label text="Enter your question:" />
+            <TextField fx:id="question" prefHeight="26.0" prefWidth="434.0" />
+            <Button mnemonicParsing="false" onAction="#throwCoins" text="Throw" />
+         </children>
+         <VBox.margin>
+            <Insets left="20.0" top="10.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox prefHeight="335.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+         <children>
+            <StackPane>
+               <children>
+                  <WebView fx:id="iching" minHeight="200.0" minWidth="300.0" prefHeight="-1.0" prefWidth="-1.0" />
+                  <Pane fx:id="hexagram" prefHeight="337.0" prefWidth="1353.0" />
+               </children>
+            </StackPane>
+         </children>
+      </HBox>
+   </children>
+</VBox>

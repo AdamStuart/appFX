@@ -24,9 +24,9 @@ package chart.waterloo.transforms;
 
 import java.util.ArrayList;
 
-import javafx.geometry.Point2D;
 import chart.waterloo.plot.Chart;
-import chart.waterloo.util.GJUtilities;
+import javafx.geometry.Point2D;
+import util.StringUtil;
 
 /**
  *
@@ -64,7 +64,7 @@ public class LogTransform extends AbstractTransform {
         if (val == -0) {
             val = 0;
         }
-        return ("e" + GJUtilities.getSuperscripts(getFormatter().format(val)));
+        return ("e" + StringUtil.getSuperscript(getFormatter().format(val).charAt(0)));
     }
 
     @Override

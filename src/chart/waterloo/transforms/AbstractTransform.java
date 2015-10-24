@@ -40,15 +40,9 @@ public abstract class AbstractTransform extends ObjectBinding<ArrayList<Double>>
     /**
      * @return the axis
      */
-    public AXIS getAxis() {
-        return axis;
-    }
+    public AXIS getAxis() {        return axis;    }
 
-    public enum AXIS {
-
-        HORIZONTAL,
-        VERTICAL
-    }
+    public enum AXIS {        HORIZONTAL,        VERTICAL    }
 
     private NumberFormat formatter = new DecimalFormat();
     final ArrayList<Double> majorTicks = new ArrayList<>();
@@ -56,8 +50,7 @@ public abstract class AbstractTransform extends ObjectBinding<ArrayList<Double>>
     Chart layer;
     private AXIS axis;
 
-    AbstractTransform() {
-    }
+    AbstractTransform() {    }
 
     /**
      * Called to set layer property and associated bindings.
@@ -155,9 +148,8 @@ public abstract class AbstractTransform extends ObjectBinding<ArrayList<Double>>
             if (isAutoUpdate()) {
                 clear();
                 start = Math.floor(start / inc) * inc;
-                for (double s = start; s <= stop; s += inc) {
-                    add(s);
-                }
+                for (double s = start; s <= stop; s += inc)   
+                	add(s);
             }
         }
 

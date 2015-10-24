@@ -45,7 +45,6 @@ public class FlexiPieController {
 		container.getChildren().add(label);
 		model.select(0);
 		setupTable();
-		 
 	}
 	
 	private void setupTable()
@@ -55,20 +54,20 @@ public class FlexiPieController {
 		root.setExpanded(true);
 		categoryColumn.setCellValueFactory(new TreeItemPropertyValueFactory("name"));  
 		portionColumn.setCellValueFactory(new TreeItemPropertyValueFactory("length"));  
-		portionColumn.setCellFactory( p ->
-		{
-			return new TreeTableCell<TreeTableView, Double>()
-			{	@Override protected void updateItem(Double item, boolean empty)
-				{
-					super.updateItem(item, empty);
-					setText(empty ? "" : String.format("%.2f", item));
-			}	};
-		});
-
+		portionColumn.setCellFactory( p ->	{	return new TwoDigitCell();	});
+		
 	}
 	public void setLabel(String s)	{		label.setText(s);	}
 	public void setLabel(double d)	{		setLabel(String.format("%.2f", d));	}
 
+	class TwoDigitCell extends TreeTableCell<TreeTableView, Double>
+	{
+		@Override protected void updateItem(Double item, boolean empty)
+		{
+			super.updateItem(item, empty);
+			setText(empty ? "" : String.format("%.2f", item));
+		}	
+	}
 	
 	// ---------------------------------------------------------------------------
    private    ObservableList<PieChart.Data> data2 =     FXCollections.observableArrayList(

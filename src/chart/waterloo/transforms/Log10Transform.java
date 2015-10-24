@@ -24,9 +24,9 @@ package chart.waterloo.transforms;
 
 import java.util.ArrayList;
 
-import javafx.geometry.Point2D;
 import chart.waterloo.plot.Chart;
-import chart.waterloo.util.GJUtilities;
+import javafx.geometry.Point2D;
+import util.StringUtil;
 
 /**
  *
@@ -36,49 +36,33 @@ public class Log10Transform extends AbstractTransform {
     
     public final Chart.TRANSFORMTYPE type = Chart.TRANSFORMTYPE.LOG10;
 
-    public Log10Transform() {
-    }
+    public Log10Transform() {   }
 
-    @Override
-    public Point2D getData(double x, double y) {
-        if (getAxis().equals(AXIS.HORIZONTAL)) {
-            x = Math.log10(x);
-        } else {
-            y = Math.log10(y);
-        }
+    @Override public Point2D getData(double x, double y) {
+        if (getAxis().equals(AXIS.HORIZONTAL))        x = Math.log10(x); 
+        else           								  y = Math.log10(y);
+        
         return new Point2D(x, y);
     }
 
-    @Override
-    public Point2D getInverse(double x, double y) {
-        if (getAxis().equals(AXIS.HORIZONTAL)) {
-            x = Math.pow(10, x);
-        } else {
-            y = Math.pow(10, y);
-        }
+    @Override public Point2D getInverse(double x, double y) {
+        if (getAxis().equals(AXIS.HORIZONTAL))    	x = Math.pow(10, x);
+         else             							y = Math.pow(10, y);
         return new Point2D(x, y);
     }
 
-    @Override
-    public final String getTickLabel(double val) {
-        if (val == -0) {
-            val = 0;
-        }
-        return ("10" + GJUtilities.getSuperscripts(getFormatter().format(val)));
+    @Override  public final String getTickLabel(double val) {
+        if (val == -0)     val = 0;  
+        return ("10" + StringUtil.getSuperscript(getFormatter().format(val).charAt(0)));
     }
 
-    @Override
-    protected ArrayList<Double> computeValue() {
+    @Override  protected ArrayList<Double> computeValue() {
         majorTicks.clear();     
         for (double k = -15; k < 15; k++) {
             if (getAxis().equals(AXIS.HORIZONTAL)) {
-                if (k >= layer.getXMin() && k <= layer.getXMax()) {
-                    majorTicks.add(k);
-                }
+                if (k >= layer.getXMin() && k <= layer.getXMax())      majorTicks.add(k);          
             } else {
-                if (k >= layer.getXMin() && k <= layer.getYMax()) {
-                    majorTicks.add(k);
-                }
+                if (k >= layer.getXMin() && k <= layer.getYMax())      majorTicks.add(k);
             }
         }
         return majorTicks;

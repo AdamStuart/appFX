@@ -33,6 +33,21 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import chart.waterloo.markers.ArrowHead;
+import chart.waterloo.markers.Asterisk;
+import chart.waterloo.markers.CenteredShapeInterface;
+import chart.waterloo.markers.Cross;
+import chart.waterloo.markers.Diamond;
+import chart.waterloo.markers.Hexagon;
+import chart.waterloo.markers.InvertedTriangle;
+import chart.waterloo.markers.LeftTriangle;
+import chart.waterloo.markers.Pentagon;
+import chart.waterloo.markers.Plus;
+import chart.waterloo.markers.RightTriangle;
+import chart.waterloo.markers.Square;
+import chart.waterloo.markers.Triangle;
+import chart.waterloo.model.DataModel;
+import chart.waterloo.util.GJCyclicArrayList;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -64,21 +79,6 @@ import javafx.scene.shape.Shape3D;
 import javafx.scene.shape.Sphere;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import chart.waterloo.markers.ArrowHead;
-import chart.waterloo.markers.Asterisk;
-import chart.waterloo.markers.CenteredShapeInterface;
-import chart.waterloo.markers.Cross;
-import chart.waterloo.markers.Diamond;
-import chart.waterloo.markers.Hexagon;
-import chart.waterloo.markers.InvertedTriangle;
-import chart.waterloo.markers.LeftTriangle;
-import chart.waterloo.markers.Pentagon;
-import chart.waterloo.markers.Plus;
-import chart.waterloo.markers.RightTriangle;
-import chart.waterloo.markers.Square;
-import chart.waterloo.markers.Triangle;
-import chart.waterloo.model.DataModel;
-import chart.waterloo.util.GJCyclicArrayList;
 
 /**
  * This is the base class for all plots in waterlooFX. An {@code AbstractPlot}

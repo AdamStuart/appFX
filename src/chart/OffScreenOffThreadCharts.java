@@ -110,13 +110,11 @@ public class OffScreenOffThreadCharts {
 //		Image prevImage = (transitionType == 0) ? null : chartSnapshot();
 		final NumberAxis xAxis = new NumberAxis();
 		xAxis.setLabel(xName);
-		xAxis.setOnMouseClicked(ev -> {
-		});
+		xAxis.setOnMouseClicked(ev -> {		});
 		
 		final NumberAxis yAxis = new NumberAxis();
 		yAxis.setLabel(yName);
-		yAxis.setOnMouseClicked(ev -> {
-		});
+		yAxis.setOnMouseClicked(ev -> {		});
 		
 		OverlaidScatterChart<Number, Number> chart = new OverlaidScatterChart<Number, Number>(xAxis, yAxis);
 		// scatter.setTitle("title goes here");
@@ -213,8 +211,7 @@ public class OffScreenOffThreadCharts {
     progressPane.addRow(2, new Label("Save:"),       createBoundProgressBar(saveChartsTask.imagesExportProgressProperty()));
     progressPane.addRow(3, new Label("Processing:"), 
       createBoundProgressBar(
-        Bindings
-          .when(saveChartsTask.stateProperty().isEqualTo(Worker.State.SUCCEEDED))
+        Bindings.when(saveChartsTask.stateProperty().isEqualTo(Worker.State.SUCCEEDED))
             .then(new SimpleDoubleProperty(1))
             .otherwise(new SimpleDoubleProperty(ProgressBar.INDETERMINATE_PROGRESS))
       )
@@ -293,20 +290,11 @@ public class OffScreenOffThreadCharts {
       // render the chart in an offscreen scene (scene is used to allow css processing) and snapshot it to an image.
       // the snapshot is done in runlater as it must occur on the javafx application thread.
       final SimpleObjectProperty<Image> imageProperty = new SimpleObjectProperty();
-      Platform.runLater(new Runnable() {
-        @Override public void run() {
-          Scene snapshotScene = new Scene(chartContainer);
+      Platform.runLater(() -> {
+//          Scene snapshotScene = new Scene(chartContainer);
           final SnapshotParameters params = new SnapshotParameters();
           params.setFill(Color.ALICEBLUE);
-          chartContainer.snapshot( new Callback<SnapshotResult, Void>() {
-              @Override public Void call(SnapshotResult result) 
-              {
-                imageProperty.set(result.getImage());
-                latch.countDown();
-                return null;
-              }
-            }, params,  null );
-        }
+          chartContainer.snapshot( result -> {  imageProperty.set(result.getImage()); latch.countDown(); return null; }, params, null );
       });
       latch.await();
       return imageProperty.get();

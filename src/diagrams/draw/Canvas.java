@@ -432,6 +432,8 @@ public class Canvas
 		}
 	}
 	//---------------------------------------------------------------------------
+	// unmodified keys switch the tool
+	
 	private final class KeyHandler implements EventHandler<KeyEvent> {
 		@Override
 		public void handle(KeyEvent event) {

@@ -133,15 +133,13 @@ public class AppDynamicLineChart extends Application {
               Set<Node> nodes = lineChart.lookupAll(".series" + nSeries);
               for (Node n : nodes) {
                   StringBuilder style = new StringBuilder();
-                  if (event.isBelowAverage(series)) {
+                  if (event.isBelowAverage(series)) 
                       style.append("-fx-stroke: red; -fx-background-color: red, white; ");
-                  } else {
+                  else 
                       style.append("-fx-stroke: blue; -fx-background-color: blue, white; ");
-                  }
-                  if (event.getStrokeDashArray() != null && !event.getStrokeDashArray().isEmpty()) {
+                  
+                  if (event.getStrokeDashArray() != null && !event.getStrokeDashArray().isEmpty()) 
                       style.append("-fx-stroke-dash-array: ").append(event.getStrokeDashArray()).append(";");
-                  }
-
                   n.setStyle(style.toString());
               }
               nSeries++;
@@ -159,7 +157,7 @@ public class AppDynamicLineChart extends Application {
     return series;
   }
   //-----------------------------------------------------------------------------------
-  private class Event {		// an event here is a track event (shot put), not a mouse event
+  private class Event {		// an event here is a track event (e.g., shot put), not a mouse event
     private String name;
     private ObservableList<XYChart.Series<Number, Number>> series;
     private String strokeDashArray;
@@ -171,8 +169,8 @@ public class AppDynamicLineChart extends Application {
     private void setActive(boolean isActive) {      this.isActive = isActive;    }
     public ObservableList<XYChart.Series<Number, Number>> getSeries() {      return series;    }
    
-    public Event(String name, String strokeDashArray, ObservableList<XYChart.Series<Number, Number>> series) {
-      this.name = name; this.strokeDashArray = strokeDashArray; this.series = series;
+    public Event(String nm, String dashArray, ObservableList<XYChart.Series<Number, Number>> srs) {
+      name = nm; strokeDashArray = dashArray; series = srs;
     }
     
     public boolean isBelowAverage(XYChart.Series<Number, Number> checkedSeries) {
@@ -188,9 +186,8 @@ public class AppDynamicLineChart extends Application {
     private double calcSeriesAverage(XYChart.Series<Number, Number> series) {
       double sum = 0;
       int count = series.getData().size();
-      for (XYChart.Data<Number, Number> data: series.getData()) {
+      for (XYChart.Data<Number, Number> data: series.getData()) 
         sum += data.YValueProperty().get().doubleValue();
-      }
       return count != 0 ? sum / count : 0; 
     }
 

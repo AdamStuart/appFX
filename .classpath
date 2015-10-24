@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="src/diagrams/grapheditor/libs/org.eclipse.emf.ecore.xmi-2.9.1-v20131212-0545.jar"/>
 	<classpathentry kind="lib" path="src/diagrams/grapheditor/libs/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="/Users/adam/Downloads/commons-validator-1.4.1/commons-validator-1.4.1.jar"/>
+	<classpathentry kind="lib" path="src/game/json_simple-1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
