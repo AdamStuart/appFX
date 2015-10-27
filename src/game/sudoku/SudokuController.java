@@ -29,7 +29,7 @@ public class SudokuController
 	GridPane[] subGrids = new GridPane[9];
 	Cell[] allCells = new Cell[81];
 	ToggleButton[] numberButtons = new ToggleButton[9];
-	Game game;
+	SudokuGame game;
 	public void initialize()
 	{
 //		numButtons = btn1.getToggleGroup();
@@ -128,7 +128,7 @@ public class SudokuController
 					{
 						game.setNumber(column,row, guess);
 						setCursor(Cursor.NONE);
-						populate();
+						install();
 					}
 					else
 						reportError();
@@ -146,35 +146,34 @@ public class SudokuController
 
 	@FXML private void doNew()  
 	{
-		game = new Game();
+		game = new SudokuGame();
 		for (int i=0; i<9; i++)
 			numberButtons[i].setDisable(false);
-		populate();
+		install();
 		numButtons.selectToggle(numberButtons[0]);			// start with 1 selected
 	}
 
 	@FXML private void doCheck()  
 	{
 		game.solve();
-		populate();
+		install();
 	}
 
 	private void solved()  
 	{
-		System.out.println("YAHOO!" );	
+		System.out.println("YAHOO!  Puzzle is solved." );	
 	}
 
 
 	//------------------------------------------------------
-	
-	void populate()
+	private void install()
 	{
 		for (int i=0; i<9; i++)
 			for (int j=0; j<9; j++)
 			{
-				Label label = getLabel(i,j);   
+				Label label =	allCells[9*i+j].getLabel();   
 				if (label == null) 
-					System.out.println("populate");
+					System.err.println("error: populate");
 				else
 				{
 					int number =  game.getNumber(i, j);
@@ -207,12 +206,4 @@ public class SudokuController
 	
 	}
 
-// a hack to work around the order labels are created (by section, not row and column)
-	private Label getLabel(int  col, int row)
-	{
-//		int section = 3 * (row / 3) + (col / 3);		
-//		int position = 3 * (row % 3) + (col % 3);
-		
-		return allCells[9*row+col].getLabel();
-	}
 }

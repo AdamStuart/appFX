@@ -12,91 +12,56 @@ import java.util.Observable;
  *
  * @author Eric Beijer
  */
-public class Game extends Observable {
+public class SudokuGame {
     private int[][] solution;       // Generated solution.
     private int[][] values;           // Generated game with user input.
     private boolean[][] check;      // Holder for checking validity of game.
     private int selectedNumber;     // Selected number by user.
     private boolean help;           // Help turned on or off.
 
-    /**
-     * Constructor
-     */
-    public Game() {
+     public SudokuGame() {
         newGame();
         check = new boolean[9][9];
         help = true;
     }
 
-    /**
+    /**------------------------------------------------------------------------
      * Generates a new Sudoku game.<br />
-     * All observers will be notified, update action: new game.
      */
     public void newGame() {
         solution = generateSolution(new int[9][9], 0);
         dump(solution);
         values = generateGame(copy(solution));
         dump(values);
-        setChanged();
 //        notifyObservers(UpdateAction.NEW_GAME);
     }
 
     /**
-     * Checks user input agains the solution and puts it into a check matrix.<br />
-     * All observers will be notified, update action: check.
+     * Checks whether all cells for targ are filled.<br />
+     * This lets us disable buttons as they are no longer needed.
      */
-    public void checkGame() {
-        selectedNumber = 0;
-        for (int y = 0; y < 9; y++) {
+	public boolean allFilled(int targ)
+	{
+		int ct = 0;
+		for (int y = 0; y < 9; y++) 
+			for (int x = 0; x < 9; x++)
+		    		if (targ == values[y][x])
+		    			ct++;
+//		System.out.println("filled: " + targ + " = " + ct);
+		return ct == 9;
+	}
+
+    /**
+     * Solves the puzzle by copying the solution into the values.
+     */
+  
+    public void solve()
+    {
+        for (int y = 0; y < 9; y++) 
             for (int x = 0; x < 9; x++)
-                check[y][x] = values[y][x] == solution[y][x];
-        }
-        setChanged();
-//        notifyObservers(UpdateAction.CHECK);
+            	values[y][x] = solution[y][x];
     }
-
-    /**
-     * Sets help turned on or off.<br />
-     * All observers will be notified, update action: help.
-     * 
-     * @param help True for help on, false for help off.
-     */
-    public void setHelp(boolean help) {
-        this.help = help;
-        setChanged();
-//        notifyObservers(UpdateAction.HELP);
-    }
-
-    /**
-     * Sets selected number to user input.<br />
-     * All observers will be notified, update action: selected number.
-     *
-     * @param selectedNumber    Number selected by user.
-     */
-    public void setSelectedNumber(int selectedNumber) {
-        this.selectedNumber = selectedNumber;
-        setChanged();
-//        notifyObservers(UpdateAction.SELECTED_NUMBER);
-    }
-
-    /**
-     * Returns number selected user.
-     *
-     * @return  Number selected by user.
-     */
-    public int getSelectedNumber() {
-        return selectedNumber;
-    }
-
-    /**
-     * Returns whether help is turned on or off.
-     *
-     * @return True if help is turned on, false if help is turned off.
-     */
-    public boolean isHelp() {
-        return help;
-    }
-
+ 
     /**
      * Returns whether selected number is candidate at given position.
      *
@@ -110,63 +75,11 @@ public class Game extends Observable {
                 && isPossibleY(values, x, selectedNumber) && isPossibleBlock(values, x, y, selectedNumber);
     }
 
-    /**
-     * Sets given number on given position in the game.
-     *
-     * @param x         The x position in the game.
-     * @param y         The y position in the game.
-     * @param number    The number to be set.
-     */
-    public void setNumber(int x, int y, int number) {
-        values[y][x] = number;
-    }
+    public void setNumber(int x, int y, int number) {        values[y][x] = number;    }
+    public int getNumber(int x, int y) {        return values[y][x];    }   
+    public int getSolution(int x, int y) {        return solution[y][x];    }
 
-    /**
-     * Returns number of given position.
-     *
-     * @param x     X position in game.
-     * @param y     Y position in game.
-     * @return      Number of given position.
-     */
-    public int getNumber(int x, int y) {
-        return values[y][x];
-    }
-
-    /**
-     * Returns the correct number for this position.
-     *
-     * @param x     X position in game.
-     * @param y     Y position in game.
-     * @return      Solution of given position at this spot.
-     */
-    public int getSolution(int x, int y) {
-        return solution[y][x];
-    }
-
-    /**
-     * Solves the puzzle by copying the solution into the values.
-     *
-     */
-  
-    public void solve()
-    {
-        for (int y = 0; y < 9; y++) 
-            for (int x = 0; x < 9; x++)
-            	values[y][x] = solution[y][x];
-    }
-    /**
-     * Returns whether user input is valid of given position.
-     *
-     * @param x     X position in game.
-     * @param y     Y position in game.
-     * @return      True if user input of given position is valid, false
-     *              otherwise.
-     */
-    public boolean isCheckValid(int x, int y) {
-        return check[y][x];
-    }
-
-    /**
+     /**
      * Returns whether given number is candidate on x axis for given game.
      *
      * @param game      Game to check.
@@ -175,10 +88,9 @@ public class Game extends Observable {
      * @return          True if number is candidate on x axis, false otherwise.
      */
     private boolean isPossibleX(int[][] game, int y, int number) {
-        for (int x = 0; x < 9; x++) {
+        for (int x = 0; x < 9; x++) 
             if (game[y][x] == number)
                 return false;
-        }
         return true;
     }
 
@@ -191,10 +103,9 @@ public class Game extends Observable {
      * @return          True if number is candidate on y axis, false otherwise.
      */
     private boolean isPossibleY(int[][] game, int x, int number) {
-        for (int y = 0; y < 9; y++) {
+        for (int y = 0; y < 9; y++) 
             if (game[y][x] == number)
                 return false;
-        }
         return true;
     }
 
@@ -208,13 +119,12 @@ public class Game extends Observable {
      * @return          True if number is candidate in block, false otherwise.
      */
     private boolean isPossibleBlock(int[][] game, int x, int y, int number) {
-        int x1 = x < 3 ? 0 : x < 6 ? 3 : 6;
-        int y1 = y < 3 ? 0 : y < 6 ? 3 : 6;
+        int x1 = 3 * (x / 3);
+        int y1 = 3 * (y / 3);;
         for (int yy = y1; yy < y1 + 3; yy++) {
-            for (int xx = x1; xx < x1 + 3; xx++) {
+            for (int xx = x1; xx < x1 + 3; xx++) 
                 if (game[yy][xx] == number)
                     return false;
-            }
         }
         return true;
     }
@@ -238,7 +148,6 @@ public class Game extends Observable {
         }
         return -1;
     }
-
     /**
      * Generates Sudoku game solution.
      *
@@ -247,8 +156,7 @@ public class Game extends Observable {
      * @return          Sudoku game solution.
      */
     private int[][] generateSolution(int[][] vals, int index) {
-        if (index > 80)
-            return vals;
+        if (index > 80)            return vals;
 
         int x = index % 9;
         int y = index / 9;
@@ -259,16 +167,13 @@ public class Game extends Observable {
 
         while (numbers.size() > 0) {
             int number = getNextPossibleNumber(vals, x, y, numbers);
-            if (number == -1)
-                return null;
+            if (number == -1)           return null;
 
             vals[y][x] = number;
             int[][] tmpGame = generateSolution(vals, index + 1);
-            if (tmpGame != null)
-                return tmpGame;
+            if (tmpGame != null)        return tmpGame;
             vals[y][x] = 0;
         }
-
         return null;
     }
 
@@ -303,11 +208,9 @@ public class Game extends Observable {
             int y = position / 9;
             int temp = vals[y][x];
             vals[y][x] = 0;
-
             if (!isValid(vals))
                 vals[y][x] = temp;
         }
-
         return vals;
     }
 
@@ -317,9 +220,7 @@ public class Game extends Observable {
      * @param game      Game to check.
      * @return          True if game is valid, false otherwise.
      */
-    private boolean isValid(int[][] game) {
-        return isValid(game, 0, new int[] { 0 });
-    }
+    private boolean isValid(int[][] game) {   return isValid(game, 0, new int[] { 0 });    }
 
     /**
      * Checks whether given game is valid, user should use the other isValid
@@ -332,35 +233,29 @@ public class Game extends Observable {
      * @return                      True if game is valid, false otherwise.
      */
     private boolean isValid(int[][] game, int index, int[] numberOfSolutions) {
-        if (index > 80)
-            return ++numberOfSolutions[0] == 1;
+        if (index > 80)            return ++numberOfSolutions[0] == 1;
 
         int x = index % 9;
         int y = index / 9;
 
         if (game[y][x] == 0) {
             List<Integer> numbers = new ArrayList<Integer>();
-            for (int i = 1; i <= 9; i++)
-                numbers.add(i);
+            for (int i = 1; i <= 9; i++)          numbers.add(i);
 
             while (numbers.size() > 0) {
                 int number = getNextPossibleNumber(game, x, y, numbers);
-                if (number == -1)
-                    break;
+                if (number == -1)              break;
                 game[y][x] = number;
 
                 if (!isValid(game, index + 1, numberOfSolutions)) {
-                    game[y][x] = 0;
-                    return false;
+                    game[y][x] = 0;             return false;
                 }
                 game[y][x] = 0;
             }
         } else if (!isValid(game, index + 1, numberOfSolutions))
             return false;
-
         return true;
     }
-
     /**
      * Copies a game.
      *
@@ -376,10 +271,9 @@ public class Game extends Observable {
         return copy;
     }
     /**
-     * Prints given game to console. Used for debug.
-     *
+     * Prints game to console. Used for debug.
      */
-    
+ 
     public void dump( int ints[][]) {
         System.out.println();
         if (ints == null) ints = values;
@@ -389,16 +283,4 @@ public class Game extends Observable {
             System.out.println();
         }
     }
-
-	public boolean allFilled(int targ)
-	{
-		int ct = 0;
-		for (int y = 0; y < 9; y++) 
-			for (int x = 0; x < 9; x++)
-		    		if (targ == values[y][x])
-		    			ct++;
-		
-		System.out.println("filled: " + targ + " = " + ct);
-		return ct == 9;
-	}
 }
