@@ -105,7 +105,7 @@ public class AppHeatMap extends Application {
         heatMap.setImage(IMAGE);
         heatMap.setFitWidth(winSize);
         heatMap.setFitHeight(winSize);
-        heatMapBox.setBorder(Borders.blueBorder);
+        heatMapBox.setBorder(Borders.blueBorder5);
         heatMapBox.setPadding(new Insets(10,100,10,10));
         pane.getChildren().addAll(line1, line2, heatMapBox);
         

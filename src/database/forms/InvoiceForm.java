@@ -55,20 +55,13 @@ public class InvoiceForm extends VBox
 			VBox terms = makeTermsBox(INVOICE_FORM);
 			container.getChildren().addAll(line1, nameLine, addrLine, spacer, terms);
 			return container;
-
 		}
 
-		enum InvoiceTerms {
-			FREE, COD, NET30, NET60, NET90
-		};
+		enum InvoiceTerms {	FREE, COD, NET30, NET60, NET90		};
 
-		enum ContactType {
-			Phone, WorkPhone, Cell, Email, Twitter, Facebook, Instagram, Other
-		};
+		enum ContactType {	Phone, WorkPhone, Cell, Email, Twitter, Facebook, Instagram, Other	};
 
-		enum AddressType {
-			BillAddress, ShipAddress
-		};
+		enum AddressType {	BillAddress, ShipAddress };
 
 		static int TERMS = 80;
 		static int BY = 60;
@@ -145,8 +138,8 @@ public class InvoiceForm extends VBox
 			int prefWidth;
 			public int getWidth()		{ return prefWidth;	}
 			
-			Class classType;
-			Class getClassType(){ return classType;	}
+			Class<?> classType;
+			Class<?> getClassType(){ return classType;	}
 			
 			static public String findName(String fld)
 			{
@@ -162,7 +155,7 @@ public class InvoiceForm extends VBox
 			}
 			
 			
-			LineItemField(String inHeader, String fldName, Class clazz, int inPrefWidth)
+			LineItemField(String inHeader, String fldName, Class<?> clazz, int inPrefWidth)
 			{
 				name = inHeader;
 				field = fldName;
@@ -180,7 +173,7 @@ public class InvoiceForm extends VBox
 		static String[] colNames;
 		static LineItemField[] flds;
 		TableView<LineItem> tableView;
-		
+		//-------------------------------------------------------------------------------
 		public TableView<LineItem> createLineItemTable()
 		{
 			tableView = new TableView<LineItem>();
@@ -196,7 +189,7 @@ public class InvoiceForm extends VBox
 //			flds = LineItemField.values();
 			cols = new TableColumn[] { status, qtyCol, skuCol, descCol, amtCol, unitPriceCol, extPriceCol };
 			colNames = new String[] { "status", "qty", "sku", "desc", "amt", "unitPrice", "extPrice" };
-			Class[] types = new Class[] { Integer.class, Integer.class, String.class, String.class, String.class, Double.class, Double.class };
+			Class<?>[] types = new Class[] { Integer.class, Integer.class, String.class, String.class, String.class, Double.class, Double.class };
 			
 			tableView.getColumns().addAll(cols);
 			for (int i=0; i<cols.length; i++)
@@ -225,7 +218,6 @@ public class InvoiceForm extends VBox
 
 			tableView.setEditable(true);
 				
-		          
 			tableView.getSelectionModel().selectedItemProperty().addListener((ob, old, newVal) -> {
 		                tableSelectionChanged((LineItem) old, (LineItem) newVal);
 		        });

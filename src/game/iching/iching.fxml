@@ -13,7 +13,7 @@
          <children>
             <VBox>
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The I Ching Calculator">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" I Ching Calculator">
                      <font>
                         <Font name="LiSong Pro" size="24.0" />
                      </font>

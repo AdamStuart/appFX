@@ -122,7 +122,7 @@ public class OffScreenOffThreadCharts {
 		if (chartPlotArea != null)
 		{
 			Region rgn = (Region) chartPlotArea;
-			rgn.setBorder(Borders.blueBorder);
+			rgn.setBorder(Borders.blueBorder5);
 		}
 		SynthGenMetaFileStream input = new SynthGenMetaFileStream(this);
 		ObservableList<SynthGenRecord> observableList = input.readDefFile(summaryFileName);

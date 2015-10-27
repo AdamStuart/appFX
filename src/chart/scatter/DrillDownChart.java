@@ -88,7 +88,7 @@ public class DrillDownChart extends VBox
 		if (chartPlotArea != null)
 		{
 			Region rgn = (Region) chartPlotArea;
-			rgn.setBorder(Borders.blueBorder);
+			rgn.setBorder(Borders.blueBorder5);
 		}
 		addData(null);
 		Image curImage = (transitionType == 0) ? null : chartSnapshot();

@@ -211,6 +211,15 @@ public class NodeFactory
 		return null;
 	}
 	// **-------------------------------------------------------------------------------
+	public Group makeGroup(ObservableList<Node> items)
+	{
+		Group group = new Group();
+		addGroupMouseHandlers(group);
+		group.getChildren().addAll(items);
+		return group;
+	}
+
+	// **-------------------------------------------------------------------------------
 	public StackPane makeBrowser(AttributeMap attrMap)
 	{
 		String url = attrMap.get("url");
@@ -728,13 +737,6 @@ public class NodeFactory
 			event.consume();
 			drawLayer.getController().refreshZoomPane();
 		}
-	}
-	public Group makeGroup(ObservableList<Node> items)
-	{
-		Group group = new Group();
-		addGroupMouseHandlers(group);
-		group.getChildren().addAll(items);
-		return group;
 	}
 
 }
