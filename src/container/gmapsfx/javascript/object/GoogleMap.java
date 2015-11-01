@@ -55,21 +55,10 @@ public class GoogleMap extends JavascriptObject {
         super(GMapObjectType.MAP, new Object[]{divArg, mapOptions});
     }
 
-    public void setZoom(int zoom) {
-        zoomProperty().set(zoom);
-    }
-
-    public int getZoom() {
-        return zoomProperty().get();
-    }
-
-    private int internalGetZoom() {
-        return (int) invokeJavascript("getZoom");
-    }
-
-    private void internalSetZoom(int zoom) {
-        invokeJavascript("setZoom", zoom);
-    }
+    public void setZoom(int zoom) {        zoomProperty().set(zoom);    }
+    public int getZoom() {        return zoomProperty().get();    }
+    private int internalGetZoom() {        return (int) invokeJavascript("getZoom");    }
+    private void internalSetZoom(int zoom) {        invokeJavascript("setZoom", zoom);    }
 
     public IntegerProperty zoomProperty() {
         if (zoom == null) {
@@ -92,61 +81,31 @@ public class GoogleMap extends JavascriptObject {
         return zoom;
     }
 
-    public void setCenter(LatLong latLong) {
-        invokeJavascript("setCenter", latLong);
-    }
+    public void setCenter(LatLong latLong) {        invokeJavascript("setCenter", latLong);    }
+    public LatLong getCenter() {    return new LatLong((JSObject) invokeJavascript("getCenter"));   }
 
-    public LatLong getLatLong() {
-        return getProperty("setCenter", LatLong.class);
-    }
+    public LatLong getLatLong() {        return getProperty("setCenter", LatLong.class);    }
     
-    public void fitBounds( LatLongBounds bounds ) {
-        invokeJavascript("fitBounds", bounds );
-    }
+    public void fitBounds( LatLongBounds bounds ) {        invokeJavascript("fitBounds", bounds );    }
     
-
     public final ReadOnlyObjectProperty<LatLong> centerProperty() {
         if (center == null) {
             center = new ReadOnlyObjectWrapper<>(getCenter());
-            addStateEventHandler(MapStateEventType.center_changed, () -> {
-                center.set(getCenter());
-            });
+            addStateEventHandler(MapStateEventType.center_changed, () -> {  center.set(getCenter());  });
         }
         return center.getReadOnlyProperty();
     }
 
-    public LatLong getCenter() {
-        return new LatLong((JSObject) invokeJavascript("getCenter"));
-    }
-    
-    
-    public void setHeading( double heading ) {
-        invokeJavascript("setHeading", heading);
-    }
-    
-    public double getHeading() {
-        return invokeJavascriptReturnValue("getHeading", Double.class );
-    }
+    public void setHeading( double heading ) {   invokeJavascript("setHeading", heading);   }
+    public double getHeading() {   return invokeJavascriptReturnValue("getHeading", Double.class ); }
 
-    public void addMarker(Marker marker) {
-        marker.setMap(this);
-    }
+    public void addMarker(Marker marker) {        marker.setMap(this);    }
+    public void removeMarker(Marker marker) {        marker.setMap(null);    }
 
-    public void removeMarker(Marker marker) {
-        marker.setMap(null);
-    }
+    public void setMapType(MapTypeIdEnum type) {        invokeJavascript("setMapTypeId", type);    }
 
-    public void setMapType(MapTypeIdEnum type) {
-        invokeJavascript("setMapTypeId", type);
-    }
-
-    public void addMapShape(MapShape shape) {
-        shape.setMap(this);
-    }
-
-    public void removeMapShape(MapShape shape) {
-        shape.setMap(null);
-    }
+    public void addMapShape(MapShape shape) {        shape.setMap(this);    }
+    public void removeMapShape(MapShape shape) {        shape.setMap(null);    }
 
     public Projection getProjection() {
         Object obj = invokeJavascript("getProjection");
@@ -176,25 +135,17 @@ public class GoogleMap extends JavascriptObject {
      * @return
      */
     public Point2D fromLatLngToPoint(LatLong loc) {
-//        System.out.println("GoogleMap.fromLatLngToPoint loc: " + loc);
         Projection proj = getProjection();
-        //System.out.println("map.fromLatLngToPoint Projection: " + proj);
-        LatLongBounds llb = getBounds();
-//        System.out.println("GoogleMap.fromLatLngToPoint Bounds: " + llb);
+        LatLongBounds llb = getBounds();//        System.out.println("GoogleMap.fromLatLngToPoint Bounds: " + llb);
 
         GMapPoint topRight = proj.fromLatLngToPoint(llb.getNorthEast());
-//        System.out.println("GoogleMap.fromLatLngToPoint topRight: " + topRight);
         GMapPoint bottomLeft = proj.fromLatLngToPoint(llb.getSouthWest());
-//        System.out.println("GoogleMap.fromLatLngToPoint bottomLeft: " + bottomLeft);
 
         double scale = Math.pow(2, getZoom());
         GMapPoint worldPoint = proj.fromLatLngToPoint(loc);
-//        System.out.println("GoogleMap.fromLatLngToPoint worldPoint: " + worldPoint);
 
         double x = (worldPoint.getX() - bottomLeft.getX()) * scale;
         double y = (worldPoint.getY() - topRight.getY()) * scale;
-
-//        System.out.println("GoogleMap.fromLatLngToPoint x: " + x + " y: " + y);
         return new Point2D(x, y);
     }
 
@@ -204,10 +155,7 @@ public class GoogleMap extends JavascriptObject {
      * @param x delta x value in pixels.
      * @param y delta y value in pixels.
      */
-    public void panBy(double x, double y) {
-//        System.out.println("panBy x: " + x + ", y: " + y);
-        invokeJavascript("panBy", new Object[]{x, y});
-    }
+    public void panBy(double x, double y) {    invokeJavascript("panBy", new Object[]{x, y});    }
 
     /**
      * Registers an event handler in the repository shared between Javascript
@@ -247,7 +195,6 @@ public class GoogleMap extends JavascriptObject {
         String key = registerEventHandler(h);
         String mcall = "google.maps.event.addListener(" + obj.getVariableName() + ", '" + type.name() + "', "
                 + "function(event) {document.jsHandlers.handleUIEvent('" + key + "', event);});";//.latLng
-        //System.out.println("addUIEventHandler mcall: " + mcall);
         runtime.execute(mcall);
     }
 
@@ -266,9 +213,6 @@ public class GoogleMap extends JavascriptObject {
         String key = registerEventHandler(h);
         String mcall = "google.maps.event.addListener(" + getVariableName() + ", '" + type.name() + "', "
                 + "function() {document.jsHandlers.handleStateEvent('" + key + "');});";
-        //System.out.println("addStateEventHandler mcall: " + mcall);
         runtime.execute(mcall);
-
     }
-
 }

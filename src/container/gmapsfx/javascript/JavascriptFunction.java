@@ -42,19 +42,16 @@ public class JavascriptFunction extends JavascriptObject {
     public String getFunctionAsString() {
         StringBuilder sb = new StringBuilder();
         sb.append(functionName).append("(");
-        if (args.isEmpty()) {
-            sb.append(")");
-        } else {
-            for (String arg : args) {
+        if (!args.isEmpty()) 
+        {
+            for (String arg : args) 
                 sb.append(arg).append(",");
-            }
             sb.deleteCharAt(sb.length() - 1);
-            sb.append(")");
         }
+        sb.append(")");
         sb.append("{\n");
-        for( JavascriptFunctionLine line : functionLines ) {
+        for( JavascriptFunctionLine line : functionLines ) 
             sb.append( line.getFunctionLine() );
-        }
         sb.append("}");
         
         return sb.toString();

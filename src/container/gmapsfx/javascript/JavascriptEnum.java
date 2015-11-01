@@ -33,7 +33,6 @@ public class JavascriptEnum  {
         this.type = type;
         this.name = name;
         runtime = JavascriptRuntime.getInstance();
-
     }
 
     public Object getEnumValue() {
@@ -44,12 +43,7 @@ public class JavascriptEnum  {
         return value;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
-    }
+    public String getType() {        return type;    }
+    public String getName() {        return name;    }
     
 }

@@ -42,16 +42,15 @@ public class JavascriptFunctionLine {
         sb.append( object.getVariableName() ).append(".").append(method);
         sb.append("(");
         for( Object arg : args ) {
-            if( arg instanceof JavascriptObject) {
+            if( arg instanceof JavascriptObject) 
                 sb.append( ((JavascriptObject) arg).getVariableName() );
-            } else {
+            else 
                 sb.append( arg.toString() );
-            }
+            
             sb.append(",");
         }
         sb.deleteCharAt( sb.length()-1);
         sb.append(");\n");
-        
         return sb.toString();
     }
     
