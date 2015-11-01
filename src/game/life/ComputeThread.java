@@ -18,6 +18,7 @@ import javafx.scene.shape.Rectangle;
    * on the grid. Next, update the grid on the view (GameOfLifeView)
    * 
    * @author Martella Massimiliano
+   * @author JavaFX port by Adam Treister
    *
    */
   public class ComputeThread extends Thread {
@@ -52,10 +53,10 @@ import javafx.scene.shape.Rectangle;
 				int poolSize = Runtime.getRuntime().availableProcessors() + 1;
 	
 				/*
-				 * master  calculates the state of the cells. the
-				 * result of all cells counted is saved in Variable result
-				 * (ArrayList < Rectangle >) that it is passed the View to update the 
-				 * grid display 
+				 * master calculates the state of the cells. the
+				 * result of all cells counted is saved in result
+				 * (ArrayList < Rectangle >) that it is passed the  
+				 * View to update the grid display 
 				 */
 				Master master = new Master(view.getLiveCells(), poolSize);
 				ArrayList< Rectangle > result = master.compute();
@@ -80,7 +81,7 @@ import javafx.scene.shape.Rectangle;
   	private List<Rectangle> cells;
   	/**
   	 * 
-  	 * @param set  : model algorithm
+  	 * @param set  : previous state represented by a list of Rectangles
   	 * @param poolSize : number of Thread
   	 * @param stopFlag  : monitor start and stop
   	 */
@@ -151,7 +152,7 @@ import javafx.scene.shape.Rectangle;
 					 * create the object of res futures; that is a
 					 * "promise" of Point ("live" or. "Dead")
 					 */
-					ComputeTask tsk = new ComputeTask( cells, adjoining9, i, j);
+					ComputeTask tsk = new ComputeTask(adjoining9, i, j);
 					Future<Rectangle> res = executor.submit(tsk);
 					nextGen.add(res); 
 	//						System.out.println("addking nextGen at " + res);
@@ -168,9 +169,9 @@ import javafx.scene.shape.Rectangle;
 	  		} catch (Exception ex) {	ex.printStackTrace();	}
 	  	}
 	  
-	  		/*
+	  	/*
 		 * Once you have all the points,  shutdown the executor and
-		 * give back the list of rectangles for the next generation
+		 * return the list of rectangles for the next generation
 		 */
 		executor.shutdown();
 		return outputRects;
@@ -188,13 +189,12 @@ import javafx.scene.shape.Rectangle;
 	  	  
 	  	  	/**
 	  	  	 * Constructor
-	  	  	 * @param set : model of algorithm
 	  	  	 * @param grid9 : neighboring points at T0
 	  	  	 * @param i : x coordinate of the new point in cell coords (not pixels)
 	  	 	 * @param j : y coordinate of the new point
 	  	  	 * @param stopFlag : a monitored property
 	  	  	 */
-	  	  	 ComputeTask(List<Rectangle> set, boolean[][] grid9, int inX, int inY) {
+	  	  	 ComputeTask(boolean[][] grid9, int inX, int inY) {
 	  	  		neighbors = grid9;
 	  	  		i = inX;
 	  	  		j = inY;
@@ -237,7 +237,5 @@ import javafx.scene.shape.Rectangle;
 		  		return (live) ? view.makeCell(i, j) : null;
 		  	}
 	  	  }
-
-
 	  }
 }

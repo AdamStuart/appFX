@@ -4,33 +4,25 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.net.URL;
 
+import chart.usMap.ColorUtil;
 import javafx.animation.Animation.Status;
 import javafx.animation.AnimationTimer;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.util.Callback;
-import javafx.util.Duration;
 
 /*
  //Ref:  Jonathan McCabe's multi-scale Turing pattern.: http://www.jonathanmccabe.com/Cyclic_Symmetric_Multi-Scale_Turing_Patterns.pdf
@@ -138,11 +130,10 @@ public class AppTuringPatternGenerator extends Application {
 
 		timer = new AnimationTimer() {
 			@Override public void handle(long now) {
-				if ((timeline.getStatus() == Status.RUNNING || now < 0) && (canvas != null))
+				if ((timeline.getStatus() == Status.RUNNING || now < 0))
 				{
 //				System.out.println("handle");
 				patterns.step();			// expensive method - should be threaded
-				
 				drawMyPixels();
 				drawColorTableHistogram();
 				controller.incCounter();
@@ -160,6 +151,7 @@ public class AppTuringPatternGenerator extends Application {
 	private void drawMyPixels() 
 	{
 		boolean grays = false;
+		if (canvas == null) return;
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		int w = theGridModel.getWidth();
 		int h = theGridModel.getHeight();
@@ -207,21 +199,21 @@ public class AppTuringPatternGenerator extends Application {
 
 		int poolsize = pool.size();
 		double baseY = h-10; // (int)(canvasH -20);
-		int totalCt = 0;
-		for (int n=0; n< poolsize; n++) 
-		{
-			int ct = counts[n];
-			max = Math.max(max,ct);
-			totalCt += ct;
-		}
-		double meanCt = totalCt / poolsize;
+//		int totalCt = 0;
+//		for (int n=0; n< poolsize; n++) 
+//		{
+//			int ct = counts[n];
+//			max = Math.max(max,ct);
+//			totalCt += ct;
+//		}
+//		double meanCt = totalCt / poolsize;
 		double histoscale = 100 * h / (Math.log(max));
 		if (max != 0) {
 			for (int n = 0; n < poolsize; n++) {
 				double scaledVal = 8 * Math.log(histoscale * counts[n]);
 				double y = baseY - scaledVal;
 				boolean grays = false;
-				gc.setFill(grays ? (new Color(n / poolsize, n / poolsize, n / poolsize, 1)) : pool.get(n));
+				gc.setFill(grays ? ColorUtil.gray(n / poolsize) : pool.get(n));
 				gc.fillRect(baseX + n * hRes, y, hRes + 1, scaledVal);
 			}
 		}

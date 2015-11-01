@@ -103,25 +103,24 @@ public class TPController  {
 	@FXML private Slider sliderE;
 	//-----------------------------------------------------------------------------------------
 
-	TuringPattern activePattern = null;
+	private TuringPattern activePattern = null;
+	public TuringPattern getActivePattern() {		return activePattern;	}
 	public void setActivePattern(TuringPattern newPattern) {
-		activePattern = newPattern;
 		if (newPattern == null)
 		{
 			for (Slider s : sliders) 
 				s.setValue(s.getMin());
 			return;
 		}
+		activePattern = newPattern;
 		sliders[0].setValue(activePattern.getActivatorX());
 		sliders[1].setValue(activePattern.getActivatorY());
 		sliders[2].setValue(activePattern.getInhibitorX());
 		sliders[3].setValue(activePattern.getInhibitorY());
 		sliders[4].setValue(activePattern.getStepSize());
-		
 		patternStringProperty.set(activePattern.toString());
 	
 	}
-	public TuringPattern getActivePattern() {		return activePattern;	}
 	//-----------------------------------------------------------------------------------------
 	private void recalcPatternString() 
 	{
@@ -140,44 +139,44 @@ public class TPController  {
 	//-----------------------------------------------------------------------------------------
 	@FXML private void initialize() 
 	{		
-		   try 		// make sure all the items were injected from the FXML file
-		   {
-		       assert run != null : "run not found";
-		       assert pause != null : "pause not found";
-		       assert step != null : "step not found";
-		       assert search != null : "search not found";
-		       assert reset != null : "reset not found";
-		       assert canvas != null : "canvas not found";
-		       assert colorTableWrapper != null : "colorTableWrapper not found";
-		       assert histogram != null : "histogram not found";
-		       assert counterLabel != null : "counterLabel not found";
-		       assert patternList != null : "patternList not found";
-		       assert capture != null : "capture not found";
-		   }
-		   catch (AssertionError err)	 { 	 System.err.println("Assertion Failed: " + err.getMessage());	} 		
-		  
-		   try 
-		   {
-			colorTableWrapper.getChildren().add(new ColorChooser(getApp().getColorPool()));
-			sliders = new Slider[] { sliderA, sliderB, sliderC, sliderD, sliderE };
-		    assert sliders != null : "sliders not found";
-		    AppTuringPatternGenerator app = getApp();
-		    assert app != null : "Application not found";
-		    app.setHistogramCanvas(histogram);
-		    app.setPatternCanvas(canvas);
+	   try 		// make sure all the items were injected from the FXML file
+	   {
+	       assert run != null : "run not found";
+	       assert pause != null : "pause not found";
+	       assert step != null : "step not found";
+	       assert search != null : "search not found";
+	       assert reset != null : "reset not found";
+	       assert canvas != null : "canvas not found";
+	       assert colorTableWrapper != null : "colorTableWrapper not found";
+	       assert histogram != null : "histogram not found";
+	       assert counterLabel != null : "counterLabel not found";
+	       assert patternList != null : "patternList not found";
+	       assert capture != null : "capture not found";
+	   }
+	   catch (AssertionError err)	 { 	 System.err.println("Assertion Failed: " + err.getMessage());	} 		
+	  
+	   try 
+	   {
+		colorTableWrapper.getChildren().add(new ColorChooser(getApp().getColorPool()));
+		sliders = new Slider[] { sliderA, sliderB, sliderC, sliderD, sliderE };
+	    assert sliders != null : "sliders not found";
+	    AppTuringPatternGenerator app = getApp();
+	    assert app != null : "Application not found";
+	    app.setHistogramCanvas(histogram);
+	    app.setPatternCanvas(canvas);
 
-			TuringPatternList patterns = app.getPatternList();
-			if (patternList != null)
-			{
-				patternList.setCellFactory(c-> new CheckBoxListCell(createSelectionCallback())); 
-				patternList.setEditable(true);
-				patternList.getSelectionModel().selectedItemProperty().addListener(
-					(obs, old, val) ->	{  setActivePattern((TuringPattern)val);  });
-				patternList.setEditable(true);
-				patternList.getItems().addAll(patterns.getList());
-			}
-		   }
-		   catch (AssertionError err)	{  System.err.println("Assertion Failed: Step 2 " + err.getMessage());	} 		
+		TuringPatternList patterns = app.getPatternList();
+		if (patternList != null)
+		{
+			patternList.setCellFactory(c-> new CheckBoxListCell(createSelectionCallback())); 
+			patternList.setEditable(true);
+			patternList.getSelectionModel().selectedItemProperty().addListener(
+				(obs, old, val) ->	{  setActivePattern((TuringPattern)val);  });
+			patternList.setEditable(true);
+			patternList.getItems().addAll(patterns.getList());
+		}
+	   }
+	   catch (AssertionError err)	{  System.err.println("Assertion Failed: Step 2 " + err.getMessage());	} 		
 	}
 	//-----------------------------------------------------------------------------------------
 	private Callback<TuringPattern, ObservableValue> createSelectionCallback() 
@@ -255,8 +254,6 @@ public class TPController  {
 		getApp().getColorPool().nextColorSet();
 	}
 	//-----------------------------------------------------------------------------------------
-	// unused tracking events
-	
 	@FXML public void mouseDragged(MouseEvent event)
 	{
 		if (event.getSource() instanceof Slider)
@@ -267,6 +264,4 @@ public class TPController  {
 			vals[idx].set(val);
 		}
 	}
-
-
 }

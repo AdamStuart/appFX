@@ -147,10 +147,8 @@ class GameOfLifeView extends VBox {
   	 * {@link https://en.wikipedia.org/wiki/Gun_(cellular_automaton)}
   	 */
   	public void reset() {
+  		
   		cells.clear();
-  		gridPanel.getChildren().clear(); 	
-		gridPanel.getChildren().add(grid);
-
   		addPoint(2, 14);  		addPoint(2, 15);  		addPoint(3, 14);  		addPoint(3, 15);
   		//
   		addPoint(12, 14);  		addPoint(12, 15);  		addPoint(12, 16);  		addPoint(13, 13);
