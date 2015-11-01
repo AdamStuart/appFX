@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 
 public class TuringPatternList 
 {
-
 	private static final long serialVersionUID = 1L;
 	private ObservableList<TuringPattern> theModel;
 	PixelGrid theGrid;
@@ -21,7 +20,6 @@ public class TuringPatternList
 	public TuringPatternList(PixelGrid inGrid)
 	{
 		 theModel = FXCollections.observableArrayList();
-//		 Callback<TuringPattern, ObservableValue<Boolean>> getProperty = new CheckBoxCellFactory();
 		 theGrid = inGrid;
 	}
 	
@@ -33,8 +31,6 @@ public class TuringPatternList
 	 {   
 	      TuringPattern best = null;
 	      double minVariation = Double.MAX_VALUE;         
-//	      int lev = (int)(Math.random() * 1);
-//	      return get(lev);
 	      for (int level = 0; level < theModel.size(); level++) 
 	      {
 	         TuringPattern p = theModel.get(level);
@@ -55,9 +51,8 @@ public class TuringPatternList
 	        if (p.isActive()) 
 	        	p.step(theGrid);
 		theGrid.update(this);
-//		System.out.println("step");
-
 	  }
+	  //--------------------------------------------------------------
 	  int BENCHMARK_SIZE = 100;
 	  
 	  public long benchmark()
@@ -70,7 +65,7 @@ public class TuringPatternList
 		  }
 		  return System.currentTimeMillis() - start;
 	  }
-	  
+	  //--------------------------------------------------------------
 	  String dump()
 	  {
 		  StringBuffer s = new StringBuffer();
@@ -78,16 +73,4 @@ public class TuringPatternList
 			  s.append(p.toString() + "\n");
 		  return s.toString();
 	  }
-// this deactivates the first active pattern
-//	public void pop() {
-//		  for (TuringPattern p : theModel) 
-//		  {
-//			  if (p.isActive())
-//			  {
-//				  p.activate(false);
-//				  return;
-//			  }
-//		  }
-//	}
-
 }

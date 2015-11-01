@@ -58,9 +58,6 @@ public class OffScreenOffThreadCharts {
   private static final String CHART_FILE_PREFIX = "chart_";
   private static final String WORKING_DIR = System.getProperty("user.dir");
   
-//  private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
-//  private final Random random = new Random();
-  
   private final static int N_CHARTS     = 80;
   private final int PREVIEW_SIZE = 200;
   private final int CHART_SIZE   = 200;
@@ -144,7 +141,6 @@ public class OffScreenOffThreadCharts {
 	    chart.setPrefSize(CHART_SIZE, CHART_SIZE);
 	    chart.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 	    chart.setStyle("-fx-font-size: 16px;");
-	    
 	    return chartContainer;
 	  }
 	//------------------------------------------------------------------------------

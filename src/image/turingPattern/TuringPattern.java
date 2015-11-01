@@ -3,7 +3,7 @@ package image.turingPattern;
 import java.awt.Dimension;
 import java.awt.Point;
 
-import javafx.beans.property.Property;
+import util.ParseUtil;
 
 public class TuringPattern 
 
@@ -41,7 +41,7 @@ public class TuringPattern
 	// ----------------------------------------------------------------------------
 
 	TuringPattern(String s) {
-		double version = StringTools.readDoubleAfter(s, "version");
+		double version = ParseUtil.readDoubleAfter(s, "version");
 		if (Math.abs(version - 0.1) > 0.001)
 			System.err.println("version wrong");
 		else
@@ -52,8 +52,8 @@ public class TuringPattern
 	public String toString()
 	{
 		StringBuffer s = new StringBuffer("TuringPattern v0.1 ");
-		s.append(StringTools.pointToString(activatorRadius));
-		s.append( StringTools.pointToString(inhibitorRadius));
+		s.append(ParseUtil.pointToString(activatorRadius));
+		s.append( ParseUtil.pointToString(inhibitorRadius));
 //		s.append(getVarSamplingRadius()).append(", ").append(stepsize);
 		return s.toString();
 	}
@@ -61,15 +61,15 @@ public class TuringPattern
 	// ----------------------------------------------------------------------------
 	public void setString(String s)
 	{
-		id = StringTools.readStringAfter(s, "id");
-		name = StringTools.readStringAfter(s, "name");
-		activate(StringTools.readBoolAfter(s, "active"));
-		sz = StringTools.readDimensionAfter(s, "sz");
-		activatorRadius = StringTools.readPointAfter(s, "actvRad");
-		inhibitorRadius = StringTools.readPointAfter(s, "inhibRad");
-		setVarSamplingRadius(StringTools.readIntAfter(s, "varRadius"));
-		setStepSize(StringTools.readDoubleAfter(s, "stepsize"));
-		internalCounter = (StringTools.readIntAfter(s, "counter"));
+		id = ParseUtil.readStringAfter(s, "id");
+		name = ParseUtil.readStringAfter(s, "name");
+		activate(ParseUtil.readBoolAfter(s, "active"));
+		sz = ParseUtil.readDimensionAfter(s, "sz");
+		activatorRadius = ParseUtil.readPointAfter(s, "actvRad");
+		inhibitorRadius = ParseUtil.readPointAfter(s, "inhibRad");
+		setVarSamplingRadius(ParseUtil.readIntAfter(s, "varRadius"));
+		setStepSize(ParseUtil.readDoubleAfter(s, "stepsize"));
+		internalCounter = (ParseUtil.readIntAfter(s, "counter"));
 	}
 	// ----------------------------------------------------------------------------
 	public String getString()
@@ -78,9 +78,9 @@ public class TuringPattern
 		s.append("id: " + id);
 		s.append("name: " + name);
 		s.append("active: " + Boolean.toString(isActive));
-		s.append("sz: " + StringTools.dimToString(sz));
-		s.append("actvRad: " + StringTools.pointToString(activatorRadius));
-		s.append("inhibRad: " + StringTools.pointToString(activatorRadius));
+		s.append("sz: " + ParseUtil.dimToString(sz));
+		s.append("actvRad: " + ParseUtil.pointToString(activatorRadius));
+		s.append("inhibRad: " + ParseUtil.pointToString(activatorRadius));
 		s.append("varRadius: " + getVarSamplingRadius());
 		s.append("stepsize: " + getStepSize());
 		s.append("counter: " + getCount());
@@ -184,8 +184,6 @@ public class TuringPattern
 	void combine(PixelGrid theGrid)
 	{
 		DataArray tempArray = new DataArray(theGrid.getSize());			// this could be a static -- until multithreading 
-//		System.out.println(inputOutput.dump());
-		
 		horlinecombine(tempArray, variationSamplingRadius);
 		vrtlinecombine(variations, variationSamplingRadius);
 		variations.add(tempArray);
@@ -214,7 +212,6 @@ public class TuringPattern
 
 	private void vrtlinecombine(DataArray dest, int radius)
 	{
-
 		for (int i = 0; i < sz.width; ++i)
 		{
 			double total = 0;

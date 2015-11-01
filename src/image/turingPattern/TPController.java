@@ -103,20 +103,8 @@ public class TPController  {
 	@FXML private Slider sliderE;
 	//-----------------------------------------------------------------------------------------
 
-	private Callback<TuringPattern, ObservableValue> createSelectionCallback() 
-	{
-		SimpleBooleanProperty bool = new SimpleBooleanProperty(true);
-		return (param) -> 
-		{
-			bool.addListener(e-> 	{ param.activate(bool.get());	});
-			return bool;
-		};
-	}
-	//-----------------------------------------------------------------------------------------
-
 	TuringPattern activePattern = null;
 	public void setActivePattern(TuringPattern newPattern) {
-//		TuringPattern tmp = new TuringPattern(newPattern.toString());
 		activePattern = newPattern;
 		if (newPattern == null)
 		{
@@ -149,17 +137,11 @@ public class TPController  {
 			patternStringProperty.set(activePattern.toString());
 		}
 	}
-//	//-----------------------------------------------------------------------------------------
-//	@Override public void initialize(URL location, ResourceBundle resources) {
-//		initialize() ;
-//		
-//	}
-
+	//-----------------------------------------------------------------------------------------
 	@FXML private void initialize() 
 	{		
-		   try 
+		   try 		// make sure all the items were injected from the FXML file
 		   {
-//			   assert 2 == 1 : "Assertions work";
 		       assert run != null : "run not found";
 		       assert pause != null : "pause not found";
 		       assert step != null : "step not found";
@@ -172,10 +154,8 @@ public class TPController  {
 		       assert patternList != null : "patternList not found";
 		       assert capture != null : "capture not found";
 		   }
-		   catch (AssertionError err)	
-		   { 
-			   System.err.println("Assertion Failed: " + err.getMessage());
-			} 		
+		   catch (AssertionError err)	 { 	 System.err.println("Assertion Failed: " + err.getMessage());	} 		
+		  
 		   try 
 		   {
 			colorTableWrapper.getChildren().add(new ColorChooser(getApp().getColorPool()));
@@ -195,78 +175,59 @@ public class TPController  {
 					(obs, old, val) ->	{  setActivePattern((TuringPattern)val);  });
 				patternList.setEditable(true);
 				patternList.getItems().addAll(patterns.getList());
-
 			}
 		   }
-		   catch (AssertionError err)	
-		   { 
-			   System.err.println("Assertion Failed: Step 2 " + err.getMessage());
-			} 		
-			   
+		   catch (AssertionError err)	{  System.err.println("Assertion Failed: Step 2 " + err.getMessage());	} 		
+	}
+	//-----------------------------------------------------------------------------------------
+	private Callback<TuringPattern, ObservableValue> createSelectionCallback() 
+	{
+		SimpleBooleanProperty bool = new SimpleBooleanProperty(true);
+		return (param) -> 
+		{
+			bool.addListener(e-> 	{ param.activate(bool.get());	});
+			return bool;
+		};
 	}
 	//-----------------------------------------------------------------------------------------
 
 	public void incCounter()		{		counterVal.setValue(1+counterVal.getValue());	}
 	@FXML public void addPattern()	{		System.out.println("addPattern");	}
 	//-----------------------------------------------------------------------------------------
-	@FXML public void resetPattern()
-	{
-		System.out.println("resetPattern");
-		AppTuringPatternGenerator.getInstance().reset();
-
-	}
-//	//-----------------------------------------------------------------------------------------
-//	@FXML public void runAccordianDemo()
-// {
-//		Runnable r = new Thread() {
-//			public void run() {
-//				new DetectiveGlass().start(new Stage());
-//			}
-//		};
-//		r.run();
-//		Platform.runLater(r);
-//	}
-//
-	
+	@FXML public void resetPattern()	{		AppTuringPatternGenerator.getInstance().reset();	}
 	//-----------------------------------------------------------------------------------------
 	@FXML public void run()
 	{
-		System.out.println("run");
 		if (getApp().getTimeline() != null)
 			getApp().getTimeline().play();
-
 	}
 
 	@FXML public void pause()
 	{
-		System.out.println("pause");
 		if (getApp().getTimeline() != null)
 			getApp().getTimeline().pause();
 	}
 	
 	@FXML public void step()
 	{
-		System.out.println("step");
 		Timeline t = AppTuringPatternGenerator.getInstance().getTimeline();
 		Duration duration = t.getCurrentTime();
 		t.jumpTo(duration.add(new Duration(500)));
-		AppTuringPatternGenerator.getInstance().getTimer().handle(-1);
 
 	}
+	
 	//-----------------------------------------------------------------------------------------
 	@FXML public void capture(ActionEvent ev) throws InterruptedException
 	{
 		try {
 			SoundUtility.playSound("shutter");
-			boolean ctrlDown = true; // (ev.getModifiers() & Event.CTRL_MASK) > 0;  //HOW DO I GET EVENT
 			Dimension outSize = getApp().getCanvasSize();
-			double mult = ctrlDown ? 2.4 : 1.0;
+			double mult =  2.4;
 			 SnapshotParameters parameters = new SnapshotParameters();
 			 Transform transform = new Scale(mult, mult);
 			 parameters.setTransform(transform);
 			WritableImage wi = new WritableImage((int) (mult * outSize.width),(int)( mult * outSize.height));
 			WritableImage snapshot = canvas.snapshot(parameters, wi);
-
 			File output = new File("snapshot" + new Date().getTime() + ".png");
 			ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", output);
 			System.out.println(output.getAbsolutePath());
@@ -286,18 +247,13 @@ public class TPController  {
 		if (f != null) setSeedRef(f);
 	}
 	
-	private void setSeedRef(File f) {
-		seedRef.setText(f.getName());
-		
-	}
+	private void setSeedRef(File f) {		seedRef.setText(f.getName());		}
 	//-----------------------------------------------------------------------------------------
 	@FXML public void nextColors()
 	{
 		System.out.println("nextColors");
 		getApp().getColorPool().nextColorSet();
-		
 	}
-	
 	//-----------------------------------------------------------------------------------------
 	// unused tracking events
 	
@@ -310,19 +266,7 @@ public class TPController  {
 			int idx = slid.getId().charAt(6)-'A';
 			vals[idx].set(val);
 		}
-//		System.out.println("mouseDragged " + event.getSource());
 	}
-
-	@FXML public void mouseMoved()	{}//		System.out.println("mouseMoved");
-	@FXML public void sliderDragStart()	{		System.out.println("sliderDragStart");	}
-	@FXML public void sliderDragDone()	{		System.out.println("sliderDragDone");	}
-	@FXML public void mouseDragEntered(){		System.out.println("mouseDragEntered");	}
-	@FXML public void mouseDragExited()	{		System.out.println("mouseDragExited");	}
-	@FXML public void mouseDragOver()	{		System.out.println("mouseDragOver");	}
-	@FXML public void mouseDragReleased(){		System.out.println("mouseDragReleased");	}
-	@FXML public void mousePressed()	{		System.out.println("mousePressed");	}
-	@FXML public void mouseReleased()	{		System.out.println("mouseReleased");	}
-	@FXML public void sliderDragEnd()	{		System.out.println("sliderDragEnd");	}
 
 
 }

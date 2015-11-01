@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 
 public class AppThreadedCharts extends Application
 {
+	  public static void main(String[] args) { launch(args); }
 	  //----------------------------------------------------------------------------------------
 	 @Override public void start(Stage stage) throws IOException 
 	 {
@@ -22,9 +23,4 @@ public class AppThreadedCharts extends Application
 	  @Override public void stop() throws Exception {
 		  OffScreenOffThreadCharts.shutdown();
 	  }
-	  
-	  
-	  public static void main(String[] args) { launch(args); }
-
-
 }

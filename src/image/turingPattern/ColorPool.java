@@ -21,18 +21,16 @@ public class ColorPool extends ArrayList<Color> {
 	String[] p9 = new String[] {"0x96A10B", "0x6B6EeF", "0xD4B424", "0x7790D9	", "0x0B5AA1" };
 	
 	//-------------------------------------------------------------------------------
-
-	
 	public void nextColorSet()
-{
-	index = (index + 1) % palettes.length;
-	load();
-	Object[] array = toArray();
-	if (array != null && array.length > 0 && chooser != null)
-		chooser.setColors(array);
-}
+	{
+		index = (index + 1) % palettes.length;
+		load();
+		Object[] array = toArray();
+		if (array != null && array.length > 0 && chooser != null)
+			chooser.setColors(array);
+	}
 //-------------------------------------------------------------------------------
-private ColorChooser chooser;
+	private ColorChooser chooser;
 
 	public void setChooser(ColorChooser inChooser )
 	{
@@ -47,20 +45,11 @@ private ColorChooser chooser;
 	public ColorPool()
 	{
 		super();
-//		String[][] s = ColorChooserSample.getWebPalette();
 		palettes = new String[][]{ p0, p1, p2, p3, p4, p5, p6, p7, p8, p9 };
 		index = 0;
 		load();
-		
-//		
-//		int siz = s.length;
-//		for (int i=0; i<siz; i++)
-//		{
-//			String cStr = s[i][1];
-//			Color c= Color.web(cStr);
-//			add(c);
-//		}
 	}
+	
 	public void load()
 	{
 		clear();
@@ -147,10 +136,12 @@ private ColorChooser chooser;
 	double min = 0; 
 	double max = 100;
 	double range = 100;
+	
 	public void setRange(double minVal, double maxVal)
 	{
 		min = minVal; max = maxVal; range = (maxVal - minVal);
 	}
+	
 	public double normalize(double d)
 	{
 		if (d < min)  return 0;

@@ -12,44 +12,38 @@ public class DataArray
 	public int getHeight() { return siz.height;	}
 	public Dimension getSize() {		return siz;	}
 
-	
 	public DataArray(Dimension sz) {
 		d = new double[sz.width][sz.height];
 		siz = sz;
 		for (int i =0; i< siz.width; i++)
 			for (int j =0; j< siz.height; j++)
 				d[i][j] = 0;
-			
 	}
 
 	public double get(int i, int j)
 	{
-		if (i < 0 || j < 0)								return Double.NaN;
-		if (i >= siz.width || j >= siz.height)			return Double.NaN;
-		//		double val = d[i][j];
+		if (i < 0 || j < 0)							return Double.NaN;
+		if (i >= siz.width || j >= siz.height)		return Double.NaN;
 		return d[i][j];
 	}
 
 	public void set(double val, int i, int j)
 	{
-		if (i < 0 || j < 0)								return;
-		if (i >= siz.width || j >= siz.height)			return;
+		if (i < 0 || j < 0)							return;
+		if (i >= siz.width || j >= siz.height)		return;
 		d[i][j] = val;
 	}
 
 	public void add(double val, int i, int j)
 	{
-		if (i < 0 || j < 0)
-			return;
-		if (i >= siz.width || j >= siz.height)
-			return;
+		if (i < 0 || j < 0)							return;
+		if (i >= siz.width || j >= siz.height)		return;
 		d[i][j] += val;
 	}
 
 	public void add(DataArray other)
 	{
-		if (!siz.equals(other.siz))
-			return;
+		if (!siz.equals(other.siz))					return;
 		for (int i = 0; i < siz.width; i++)
 			for (int j = 0; j < siz.height; j++)
 				d[i][j] += other.get(i, j);
@@ -57,40 +51,30 @@ public class DataArray
 
 	public void add(DataArray vals, int i, int j)
 	{
-		if (i < 0 || j < 0)
-			return;
-		if (i >= siz.width || j >= siz.height)
-			return;
+		if (i < 0 || j < 0)							return;
+		if (i >= siz.width || j >= siz.height)		return;
 		d[i][j] += vals.get(i, j);
 	}
 
 	public double diff(DataArray other, int i, int j)
 	{
-		if (i < 0 || j < 0)
-			return Double.NaN;
-		if (i >= siz.width || j >= siz.height)
-			return Double.NaN;
+		if (i < 0 || j < 0)							return Double.NaN;
+		if (i >= siz.width || j >= siz.height)		return Double.NaN;
 		return d[i][j] - other.get(i, j);
 	}
 
-	public double sum()
-	{
-		return sum(0, 0, siz.width, siz.height);
-	}
+	public double sum()	{		return sum(0, 0, siz.width, siz.height);	}
 	
 	public double sum(int x, int y, int w, int h)
-{
-	double total = 0;
-	for (int i = x; i < x + siz.width; i++)
-		for (int j = y; j < y + siz.height; j++)
-			total += get(i, j);
-	return total;
-}
-
-	public String descriptor()
 	{
-		return descriptor(0, 0, siz.width, siz.height);
+		double total = 0;
+		for (int i = x; i < x + siz.width; i++)
+			for (int j = y; j < y + siz.height; j++)
+				total += get(i, j);
+		return total;
 	}
+
+	public String descriptor()	{		return descriptor(0, 0, siz.width, siz.height);	}
 
 	public String descriptor(int x, int y, int w, int h)
 	{
@@ -143,11 +127,8 @@ public class DataArray
 			}
 	}
 
-	public String toString()
-	{
-		return d[0][0] + ", " + d[0][1] + ", " + d[1][0] + ", " + d[1][1] + ", ";
-	}
-	
+	public String toString()	{	return d[0][0] + ", " + d[0][1] + ", " + d[1][0] + ", " + d[1][1];	}
+	// ---------------------------------------------------------------
 	public String dump()
 	{
 		int x = Math.min(siz.width, 20);  
@@ -165,7 +146,4 @@ public class DataArray
 		}
 		return b.toString();
 	}
-	
-	
-	// ---------------------------------------------------------------
 }

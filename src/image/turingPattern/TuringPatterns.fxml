@@ -80,7 +80,7 @@
                         <Label fx:id="patternString" text="Create a new pattern" />
                         <HBox prefHeight="100.0" prefWidth="340.0" spacing="10.0">
                            <children>
-                              <Slider id="sliderA" fx:id="sliderA" onDragDetected="#sliderDragStart" onDragDone="#sliderDragDone" onDragDropped="#sliderDragEnd" onMouseDragEntered="#mouseDragEntered" onMouseDragExited="#mouseDragExited" onMouseDragOver="#mouseDragOver" onMouseDragReleased="#mouseDragReleased" onMouseDragged="#mouseDragged" onMouseMoved="#mouseMoved" onMousePressed="#mousePressed" onMouseReleased="#mouseReleased" orientation="VERTICAL">
+                              <Slider id="sliderA" fx:id="sliderA" onMouseDragOver="#mouseDragOver" onMouseDragged="#mouseDragged" orientation="VERTICAL">
                                  <padding>
                                     <Insets left="20.0" />
                                  </padding>

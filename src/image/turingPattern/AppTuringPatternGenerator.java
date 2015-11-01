@@ -42,8 +42,6 @@ public class AppTuringPatternGenerator extends Application {
 	
 	public static void main(String[] args) {		launch(args);	}
 
-//	private static final long serialVersionUID = 2342342342L;
-
 	private Dimension dim = new Dimension(800, 500);
 	public Dimension getCanvasSize() {		return dim;	}
 
@@ -78,20 +76,12 @@ public class AppTuringPatternGenerator extends Application {
 		initComponents();
 		createAnimation();
 		
-//		Runnable r = new Thread() {
-//			public void run() {
-//				while (true) patterns.step();
-//			}
-//		};
-//		r.run();
-		
 		fStage.show();
 		timer.start();
-		timeline.play();
+//		timeline.play();
 //		timeline.pause();
 	}
 
-//	static public String seed = "/Users/adam/Documents/Processing/turing5/data/cain.png";
 	static public String relativeSeed = "cain.png";
 	private String shortClassname(String class1) 			{		return class1.substring(1 + class1.lastIndexOf('.'));	}
 	public void setController(TPController tpController) 	{		controller = tpController;	}
@@ -103,7 +93,6 @@ public class AppTuringPatternGenerator extends Application {
 	//-----------------------------------------------------------------------------------------
 	private void initModel() 
 	{	
-//		counter = new SimpleIntegerProperty(1);
 		pool = new ColorPool();
 		pool.setRange(0,1);
 		theGridModel = new PixelGrid(dim);
@@ -119,9 +108,6 @@ public class AppTuringPatternGenerator extends Application {
 // a nice config
 //		patterns.add(new TuringPattern(dim, new Point(8, 40), new Point(2, 40), 1, 0.05));
 //		patterns.add(new TuringPattern(dim, new Point(6, 14), new Point(25, 20), 1, 0.34625));
-
-		
-		//		pool.dump();
 	}
 //-----------------------------------------------------------------------------------------
 	private void initComponents() 
@@ -132,7 +118,6 @@ public class AppTuringPatternGenerator extends Application {
 		{
 			if (loc == null)   	throw new Exception("failed: resource not found");	
 			Parent root = FXMLLoader.load(loc);
-//			showKids(root, "");
 			scene = new Scene(root, 500 + dim.width, 100 + dim.height);
 //			System.out.println("[Seed " + seed + "]");
 			fStage.setScene(scene);
@@ -140,27 +125,16 @@ public class AppTuringPatternGenerator extends Application {
 		{		System.err.println("Reading the FXML file failed: " + e.getMessage());		}
 	}
 	//-----------------------------------------------------------------------------------------
-
-	private Callback<TuringPattern, ObservableValue> createSelectionCallback() 
-	{
-		SimpleBooleanProperty sp = new SimpleBooleanProperty(false);
-		return (param) -> 
-		{
-			sp.addListener(e-> 	{		param.activate(sp.get());	});
-			return sp;
-		};
-	}
-	//-----------------------------------------------------------------------------------------
 	private void createAnimation() {
 		
 		DoubleProperty x = new SimpleDoubleProperty();
 		DoubleProperty y = new SimpleDoubleProperty();
 
-		timeline = new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(x, 0), new KeyValue(y, 0)),			// simplify !  no args are needed
-				new KeyFrame(Duration.seconds(1), new KeyValue(x, 50), new KeyValue(y, 150)));
-		timeline.setAutoReverse(true);
-		timeline.setCycleCount(Timeline.INDEFINITE);
-		timeline.setRate(1);
+//		timeline = new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(x, 0), new KeyValue(y, 0)),			// simplify !  no args are needed
+//				new KeyFrame(Duration.seconds(1), new KeyValue(x, 50), new KeyValue(y, 150)));
+//		timeline.setAutoReverse(true);
+//		timeline.setCycleCount(Timeline.INDEFINITE);
+//		timeline.setRate(1);
 
 		timer = new AnimationTimer() {
 			@Override public void handle(long now) {
@@ -178,10 +152,8 @@ public class AppTuringPatternGenerator extends Application {
 		};
 	        }
 
-		
 	double res = 1.0;
 	int[] counts;
-	
 	//-----------------------------------------------------------------------------------------
 	WritableImage pixels =null;
 	
@@ -193,7 +165,6 @@ public class AppTuringPatternGenerator extends Application {
 		int h = theGridModel.getHeight();
 		int poolsize = pool.size();
 		counts = new int[poolsize];
-//		for (int n=0; n< poolsize; n++) counts[n] = 0;
 		
 		if (pixels == null)
 			pixels = new WritableImage(dim.width, dim.height);
@@ -203,7 +174,6 @@ public class AppTuringPatternGenerator extends Application {
 			for (int j= 0; j < h; j++)
 			{
 				double val = theGridModel.get(i, j);
-//				System.out.println(val);
 				double r =  0.5 + val / 2;
 				int bin = (int)(r * poolsize);
 				if (bin < 0) bin = 0; if (bin >= poolsize) bin = poolsize-1;
@@ -213,13 +183,8 @@ public class AppTuringPatternGenerator extends Application {
 				{	
 				 if (grays)    c = new Color(r,r,r,1.0);  
 				else 			c = pool.fromValue(r);
-
 				}
 				pixelWriter.setColor(i,j,c);
-//				gc.setFill(c);
-//				gc.fillRect(res * i, res* j, res, res);
-//				System.out.println(y);
-
 			}
 		gc.drawImage(pixels, 0, 0);
 	}
@@ -241,11 +206,6 @@ public class AppTuringPatternGenerator extends Application {
 		gc.strokeRect(10, h/2 - 10, w-20 ,0.5 );
 
 		int poolsize = pool.size();
-//		double canvasH = ((HBox)(histogramCanvas.getParent())).getHeight();
-//		double imageH = res * h;
-//		int baseY = (int)((res * h) + HISTO_HEIGHT + 10 );
-		
-		
 		double baseY = h-10; // (int)(canvasH -20);
 		int totalCt = 0;
 		for (int n=0; n< poolsize; n++) 
@@ -255,8 +215,6 @@ public class AppTuringPatternGenerator extends Application {
 			totalCt += ct;
 		}
 		double meanCt = totalCt / poolsize;
-		// System.out.println("Total: " + totalCt + ", Mean: " + meanCt +
-		// ", Max: " + max);
 		double histoscale = 100 * h / (Math.log(max));
 		if (max != 0) {
 			for (int n = 0; n < poolsize; n++) {
@@ -267,38 +225,11 @@ public class AppTuringPatternGenerator extends Application {
 				gc.fillRect(baseX + n * hRes, y, hRes + 1, scaledVal);
 			}
 		}
-
 	}
 	//-----------------------------------------------------------------------------------------
-			
 	boolean verbose = true;
-	boolean bypass = true;
-//
-//	private void showKids(Parent parent, String indent) {
-//		if (bypass) return;
-//
-//		String id = parent.getId();
-//		if (verbose) System.out.println(indent + shortClassname(parent.getClass().toString()) + ":  " + (id == null ? "-" : id));
-//		if (parent instanceof SplitPane) {
-//			for (Node n : ((SplitPane) parent).getItems())
-//				if (n instanceof Parent)
-//					showKids((Parent) n, indent + "    ");
-//		} else if (parent instanceof ScrollPane) {
-//			Node content = ((ScrollPane) parent).getContent();
-//			if (content instanceof Parent)
-//				showKids((Parent) content, indent + "    ");
-//			if (verbose) System.out.println(indent + shortClassname(content.getClass().toString()) + ":  "
-//					+ (content.getId() == null ? "-" : content.getId()));
-//		} else
-//			for (Node n : parent.getChildrenUnmodifiable())
-//				if (n instanceof Parent)
-//					showKids((Parent) n, indent + "    ");
-//
-//	}
-	//-----------------------------------------------------------------------------------------
 	public AnimationTimer getTimer()		{ return timer;	}
 	public Timeline getTimeline()		{ return timeline;	}
 	public void reset() {		theGridModel.init(pool, null);	}
 	// -----------------------------------------------------------------------------------------
-
 }

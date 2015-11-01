@@ -29,10 +29,8 @@ public class ColorChooserSample extends Application
     stage.show();					  			 // show the stage.
  
     // monitor the color chooser's chosen color and respond to it.
-    colorChooser.chosenColorProperty().addListener(new ChangeListener<Color>() {
-      @Override public void changed(ObservableValue<? extends Color> observableValue, Color oldColor, Color newColor) {
+    colorChooser.chosenColorProperty().addListener((obs, old, newVal) -> {
         System.out.println("Chose: " + colorChooser.getChosenColorName() + " " + colorChooser.getChosenColor());
-      }
     });
   }
 }
@@ -83,19 +81,12 @@ class ColorChooser extends VBox
 		      final String backgroundStyle = "-fx-background-color: \"" + webstr + "\"; -fx-background-insets: 0; -fx-background-radius: 0;";
 			  ((Button) node).setStyle(backgroundStyle);
 		      final Tooltip tooltip =  ((Button)node).getTooltip();  //		      new Tooltip(webstr);
-//		      tooltip.setStyle("-fx-font-size: 14");
-//		      tooltip.setContentDisplay(ContentDisplay.BOTTOM);
 		      final Rectangle graphic = new Rectangle(30, 30, Color.web(webstr));
-//		      graphic.widthProperty().bind(prefTileSize.multiply(1.5));
-//		      graphic.heightProperty().bind(prefTileSize.multiply(1.5));
 		      tooltip.setGraphic(graphic);
 		      ((Button)node).setTooltip(tooltip);
-		      ((Button)node).setOnMouseEntered(new EventHandler<MouseEvent>() 
-		     {
-		        @Override public void handle(MouseEvent mouseEvent) {
+		      ((Button)node).setOnMouseEntered((mouseEvent) ->     {
 		          final String borderStyle = "-fx-border-color: ladder(" + webstr + ", whitesmoke 49%, darkslategrey 50%); -fx-border-width: 2;";
 		          ((Button)node).setStyle(backgroundStyle + borderStyle);
-		        }
 		      });
 
 		  }
@@ -104,12 +95,12 @@ class ColorChooser extends VBox
   }
   
 //---------------------------------------------------------------------------------------
- public String colorToString(Color c) {
+  	public String colorToString(Color c) {
       int r = (int)Math.round(c.getRed() * 255.0);
       int g = (int)Math.round(c.getGreen() * 255.0);
       int b = (int)Math.round(c.getBlue() * 255.0);
       return String.format("%02x%02x%02x" , r, g, b);
-  }
+  	}
 
 	public ColorChooser(String[][] colors) {
 		super();
@@ -118,18 +109,13 @@ class ColorChooser extends VBox
 		final Label selectedColorName = new Label();
 		HBox.setMargin(selectedColorName, new Insets(2, 0, 2, 10));
 		colorInfo.getChildren().addAll(selectedColorName);
-		chosenColorName.addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observableValue, String oldName, String newName) {
-				if (newName != null && newName.length() > 0) {
-					try {
-						colorInfo.setStyle("-fx-background-color: " + newName + ";");
-						selectedColorName.setText(newName);
-						chosenColor.set(Color.web(newName));
-					} catch (Exception e) {
-						System.err.println("bad color name: " + newName);
-					}
-				}
+		chosenColorName.addListener((obs, old, newVal) -> {
+			if (newVal != null && newVal.length() > 0) {
+				try {
+					colorInfo.setStyle("-fx-background-color: " + newVal + ";");
+					selectedColorName.setText(newVal);
+					chosenColor.set(Color.web(newVal));
+				} catch (Exception e) { System.err.println("bad color name: " + newVal);		}
 			}
 		});
 
@@ -147,16 +133,13 @@ class ColorChooser extends VBox
 		getChildren().addAll(swatch, colorInfo);				//	// layout the color picker.
 		VBox.setVgrow(swatch, Priority.ALWAYS);
 		setStyle("-fx-background-color: black; -fx-font-size: 16;");
-		layoutBoundsProperty().addListener(new ChangeListener<Bounds>() {
-			@Override public void changed(ObservableValue<? extends Bounds> observableValue, Bounds oldBounds, Bounds newBounds) {
-				prefTileSize.set(Math.max(MIN_TILE_SIZE,
-						Math.min(newBounds.getWidth() / nColumns, newBounds.getHeight() / nRows)));
-				for (Node child : swatch.getChildrenUnmodifiable()) {
-					Control tile = (Control) child;
-					final double margin = prefTileSize.get() / 10;
-					tile.setPrefSize(prefTileSize.get() - 2 * margin, prefTileSize.get() - 2 * margin);
-					GridPane.setMargin(child, new Insets(margin));
-				}
+		layoutBoundsProperty().addListener((obs, old, newVal) -> {
+			prefTileSize.set(Math.max(MIN_TILE_SIZE, Math.min(newVal.getWidth() / nColumns, newVal.getHeight() / nRows)));
+			for (Node child : swatch.getChildrenUnmodifiable()) {
+				Control tile = (Control) child;
+				final double margin = prefTileSize.get() / 10;
+				tile.setPrefSize(prefTileSize.get() - 2 * margin, prefTileSize.get() - 2 * margin);
+				GridPane.setMargin(child, new Insets(margin));
 			}
 		});
 	}
@@ -189,32 +172,24 @@ class ColorChooser extends VBox
       colorChoice.setTooltip(tooltip);
  
       // color the button appropriately and change it's hover functionality (doing some of this in a css sheet would be better).
-      final String backgroundStyle = "-fx-background-color: " + colorHex + "; -fx-background-insets: 0; -fx-background-radius: 0;";
+      String backgroundStyle = backgroundStyle(colorHex);
       colorChoice.setStyle(backgroundStyle);
-      colorChoice.setOnMouseEntered(new EventHandler<MouseEvent>() 
-     {
-        @Override public void handle(MouseEvent mouseEvent) {
-          final String borderStyle = "-fx-border-color: ladder(" + colorHex + ", whitesmoke 49%, darkslategrey 50%); -fx-border-width: 2;";
-          colorChoice.setStyle(backgroundStyle + borderStyle);
-        }
-      });
-      colorChoice.setOnMouseExited(new EventHandler<MouseEvent>() {
-        @Override public void handle(MouseEvent mouseEvent) {
-          final String borderStyle = "-fx-border-width: 0; -fx-border-insets: 2;";
-          colorChoice.setStyle(backgroundStyle + borderStyle);
-        }
-      });
- 
+      colorChoice.setOnMouseEntered((mouseEvent) -> {   colorChoice.setStyle(backgroundStyle + mouseEnteredStyle(colorHex));   });
+      colorChoice.setOnMouseExited((mouseEvent) -> {    colorChoice.setStyle(backgroundStyle + borderStyle);    });
       // choose the color when the button is clicked.
-      colorChoice.setOnAction(new EventHandler<ActionEvent>() 
-    		  {     @Override public void handle(ActionEvent actionEvent) {    chosenColorName.set((String) colorChoice.getUserData());     }     });
- 
+      colorChoice.setOnAction((actionEvent) ->  {    chosenColorName.set((String) colorChoice.getUserData());      });
       swatch.getChildren().add(colorChoice);			     // add the color choice to the swatch selection.
  
       i++;
     }
+		
+	
  	
 }
+    final String borderStyle = "-fx-border-width: 0; -fx-border-insets: 2;";
+	private String mouseEnteredStyle(String hex) { return "-fx-border-color: ladder(" +  hex + ", whitesmoke 49%, darkslategrey 50%); -fx-border-width: 2;";  }
+	private String backgroundStyle(String hex) { return "-fx-background-color: " + hex + "; -fx-background-insets: 0; -fx-background-radius: 0;";  }
+
 	//---------------------------------------------------------------------------------------
  /** A palette of colors from http://docs.oracle.com/javafx/2.0/api/javafx/scene/doc-files/cssref.html#typecolor */
   public static final String[][] webPalette = {
