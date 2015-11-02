@@ -18,7 +18,6 @@ package container.gmapsfx.test;
 
 import java.net.URL;
 
-import container.gmapsfx.GoogleMapView;
 import container.gmapsfx.javascript.JavaFxWebEngine;
 import container.gmapsfx.javascript.JavascriptArray;
 import container.gmapsfx.javascript.JavascriptObject;
@@ -50,15 +49,13 @@ public class ArrayTester extends Application {
     	webview = new WebView();
         webengine = new JavaFxWebEngine(webview.getEngine());
         JavascriptRuntime.setDefaultWebEngine( webengine );
-        webengine.getLoadWorker().stateProperty().addListener(
-        	(ov, old, newState) ->   {   
-        		if (newState == Worker.State.SUCCEEDED)    
-        			runTests();    });
+        webengine.getLoadWorker().stateProperty().addListener(	(ov, old, newState) ->   { 	
+        	if (newState == Worker.State.SUCCEEDED)  runTests();    });
      
         BorderPane bp = new BorderPane();
         bp.setCenter(webview);
         
-        URL url = ArrayTester.class.getResource("/html/arrays.html");  //
+        URL url = ArrayTester.class.getResource("arrays.html");
     	String str = url.toExternalForm();
         webengine.load(str);
         
@@ -74,7 +71,6 @@ public class ArrayTester extends Application {
         jsWin.call("displayTest", new Object[]{null});
         
         JavascriptArray ary = new JavascriptArray();
-        
         int len = 0;
         for (int i = 0; i < 6; i++) {
             len = ary.push("String " + i);

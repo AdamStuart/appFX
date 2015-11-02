@@ -47,13 +47,8 @@ public class GoogleMapView extends AnchorPane {
     protected final List<MapReadyListener> mapReadyListeners = new ArrayList<>();
     protected GoogleMap map;
 
-    public GoogleMapView() {
-        this(false);
-    }
-
-    public GoogleMapView(boolean debug) {
-        this(null, debug);
-    }
+    public GoogleMapView() {        this(false);    }
+    public GoogleMapView(boolean debug) {        this(null, debug);    }
 
     /**
      * Allows for the creation of the map using external resources from another
@@ -100,9 +95,7 @@ public class GoogleMapView extends AnchorPane {
      *
      * @param mapResourcePath
      */
-    public GoogleMapView(String mapResourcePath) {
-        this(mapResourcePath, false);
-    }
+    public GoogleMapView(String mapResourcePath) {        this(mapResourcePath, false);    }
 
     /**
      * Creates a new map view and specifies if the FireBug pane should be
@@ -112,16 +105,8 @@ public class GoogleMapView extends AnchorPane {
      * @param debug true if the FireBug pane should be displayed in the WebView.
      */
     public GoogleMapView(String mapResourcePath, boolean debug) {
-        String htmlFile;
-        if (mapResourcePath == null) {
-            if (debug) {
-                htmlFile = "/html/maps-debug.html";
-            } else {
-                htmlFile = "html/maps.html";
-            }
-        } else {
-            htmlFile = mapResourcePath;
-        }
+        
+    	String htmlFile = (mapResourcePath == null) ?  "html/maps.html" : mapResourcePath;
         webview = new WebView();
         webengine = new JavaFxWebEngine(webview.getEngine());
         JavascriptRuntime.setDefaultWebEngine(webengine);
@@ -135,31 +120,17 @@ public class GoogleMapView extends AnchorPane {
         webview.widthProperty().addListener(e -> mapResized());
         webview.heightProperty().addListener(e -> mapResized());
 
-        webview.widthProperty().addListener(e -> mapResized());
-        webview.heightProperty().addListener(e -> mapResized());
-
-        webengine.getLoadWorker().stateProperty().addListener(
-                new ChangeListener<Worker.State>() {
-                    public void changed(ObservableValue ov, Worker.State oldState, Worker.State newState) {
-                        if (newState == Worker.State.SUCCEEDED) {
-                            setInitialized(true);
-                            fireMapInitializedListeners();
-
-                        }
-                    }
-                });
-        
+        webengine.getLoadWorker().stateProperty().addListener((ov, o, newState) -> {
+                if (newState == Worker.State.SUCCEEDED) {
+                    setInitialized(true);
+                    fireMapInitializedListeners();
+                }
+            });
         webengine.load(getClass().getResource(htmlFile).toExternalForm());
-
     }
 
     private void mapResized() {
-        if (initialized) {
-            //map.triggerResized();
-//            System.out.println("GoogleMapView.mapResized: triggering resize event");
-            webengine.executeScript("google.maps.event.trigger(" + map.getVariableName() + ", 'resize')");
-//            System.out.println("GoogleMapView.mapResized: triggering resize event done");
-        }
+        if (initialized)    webengine.executeScript("google.maps.event.trigger(" + map.getVariableName() + ", 'resize')");
     }
 
     public void setZoom(int zoom) {
@@ -187,7 +158,6 @@ public class GoogleMapView extends AnchorPane {
                 fireMapReadyListeners();
             }
         });
-
         return map;
     }
 
@@ -230,9 +200,7 @@ public class GoogleMapView extends AnchorPane {
         map.panBy(x, y);
     }
 
-    protected void init() {
-
-    }
+    protected void init() {    }
 
     protected void setInitialized(boolean initialized) {
         this.initialized = initialized;
@@ -240,17 +208,15 @@ public class GoogleMapView extends AnchorPane {
 
     protected void fireMapInitializedListeners() {
         synchronized (mapInitializedListeners) {
-            for (MapComponentInitializedListener listener : mapInitializedListeners) {
+            for (MapComponentInitializedListener listener : mapInitializedListeners) 
                 listener.mapInitialized();
-            }
         }
     }
 
     protected void fireMapReadyListeners() {
         synchronized (mapReadyListeners) {
-            for (MapReadyListener listener : mapReadyListeners) {
+            for (MapReadyListener listener : mapReadyListeners) 
                 listener.mapReady();
-            }
         }
     }
 
@@ -262,11 +228,9 @@ public class GoogleMapView extends AnchorPane {
     protected String getJavascriptMethod(String methodName, Object... args) {
         StringBuilder sb = new StringBuilder();
         sb.append(methodName).append("(");
-        for (Object arg : args) {
+        for (Object arg : args) 
             sb.append(arg).append(",");
-        }
         sb.replace(sb.length() - 1, sb.length(), ")");
-
         return sb.toString();
     }
 

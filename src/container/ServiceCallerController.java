@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import container.gmapsfx.MapBorderPane;
+import container.gmapsfx.StreetViewBorderPane;
 import diagrams.draw.App;
 import gui.Borders;
 import javafx.fxml.FXML;
@@ -33,6 +34,7 @@ public class ServiceCallerController implements Initializable
 	@FXML TreeTableColumn<TreeTableView, String>  col0;
 	@FXML TreeTableColumn<TreeTableView, String>  col1;
 	@FXML private Pane content;
+	@FXML private Pane streetViewPane;
 	@FXML private TextField address;
 	@FXML private Button search;
 
@@ -41,9 +43,10 @@ public class ServiceCallerController implements Initializable
 	{
 		//setupDropPane();
 		
-		list.setCellFactory(p -> new FileListCell());
+//		list.setCellFactory(p -> new FileListCell());
 		content.setBorder(Borders.blueBorder1);
 		content.getChildren().add(new MapBorderPane());
+//		streetViewPane.getChildren().add(new StreetViewBorderPane());
 	}
 	//--------------------------------------------------------------------------------
 	//--------------------------------------------------------------------------------
@@ -223,19 +226,19 @@ public class ServiceCallerController implements Initializable
 //        	});
 //	}
 //
-	private static class FileListCell extends ListCell<File>
-	{
-		@Override public void updateItem(File item, boolean empty)
-		{
-			super.updateItem(item, empty);
-			if (empty)			{		setGraphic(null);			setText(null);		} 
-			else
-			{
-				Image fxImage = FileUtil.getFileIcon(item.getName());
-				ImageView imageView = new ImageView(fxImage);
-				setGraphic(imageView);
-				setText(item.getName());
-			}
-		}
-	  }
+//	private static class FileListCell extends ListCell<File>
+//	{
+//		@Override public void updateItem(File item, boolean empty)
+//		{
+//			super.updateItem(item, empty);
+//			if (empty)			{		setGraphic(null);			setText(null);		} 
+//			else
+//			{
+//				Image fxImage = FileUtil.getFileIcon(item.getName());
+//				ImageView imageView = new ImageView(fxImage);
+//				setGraphic(imageView);
+//				setText(item.getName());
+//			}
+//		}
+//	  }
 }

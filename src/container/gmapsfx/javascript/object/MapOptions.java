@@ -41,70 +41,69 @@ public class MapOptions extends JavascriptObject {
         super(GMapObjectType.OBJECT);
     }
     
-    
-    public MapOptions center( LatLong center ) {
-        setProperty("center", center);
-        this.center = center;
+    public MapOptions center( LatLong c ) {
+        setProperty("center", c);
+        center = c;
         return this;
     }
     
-    public MapOptions mapMarker( boolean mapMarker ) {
-        setProperty("mapMarker", mapMarker );
-        this.mapMarker = mapMarker;
+    public MapOptions mapMarker( boolean m ) {
+        setProperty("mapMarker", m );
+        mapMarker = m;
         return this;
     }
     
-    public MapOptions mapType( MapTypeIdEnum mapType ) {
-        setProperty( "mapTypeId", mapType );
-        this.mapType = mapType;
+    public MapOptions mapType( MapTypeIdEnum c ) {
+        setProperty( "mapTypeId", c );
+        mapType = c;
         return this;
     }
     
-    public MapOptions overviewMapControl( boolean overviewMapControl ) {
-        setProperty("overviewMapControl", overviewMapControl );
-        this.overviewMapControl = overviewMapControl;
+    public MapOptions overviewMapControl( boolean c ) {
+        setProperty("overviewMapControl", c );
+        overviewMapControl = c;
         return this;
     }
     
     public MapOptions panControl( boolean panControl ) {
         setProperty( "panControl", panControl);
-        this.panControl = panControl;
+        panControl = panControl;
         return this;
     }
     
-    public MapOptions rotateControl( boolean rotateControl ) {
-        setProperty( "rotateControl", rotateControl );
-        this.rotateControl = rotateControl;
+    public MapOptions rotateControl( boolean c ) {
+        rotateControl = c;
+       setProperty( "rotateControl", rotateControl );
         return this;
     }
     
-    public MapOptions scaleControl( boolean scaleControl ) {
-        setProperty( "scaleControl", scaleControl );
-        this.scaleControl = scaleControl;
+    public MapOptions scaleControl( boolean c ) {
+        scaleControl = c;
+        setProperty( "scaleControl", c );
         return this;
     }
     
-    public MapOptions streetViewControl( boolean streetViewControl ) {
-        setProperty( "streetViewControl", streetViewControl );
-        this.streetViewControl = streetViewControl;
+    public MapOptions streetViewControl( boolean c ) {
+        streetViewControl = c;
+        setProperty( "streetViewControl", c );
         return this;
     }
     
-    public MapOptions zoom( int zoom ) {
-        setProperty( "zoom", zoom );
-        this.zoom = zoom;
+    public MapOptions zoom( int z ) {
+        setProperty( "zoom", z );
+        this.zoom = z;
         return this;
     }
     
-    public MapOptions zoomControl( boolean zoomControl ) {
-        setProperty( "zoomControl", zoomControl );
-        this.zoomControl = zoomControl;
+    public MapOptions zoomControl( boolean c ) {
+        setProperty( "zoomControl", c );
+        zoomControl = c;
         return this;
     }
     
-    public MapOptions mapTypeControl( boolean mapTypeControl ) {
-        setProperty( "mapTypeControl", mapTypeControl);
-        this.mapTypeControl = mapTypeControl;
+    public MapOptions mapTypeControl( boolean c ) {
+        setProperty( "mapTypeControl", c);
+        mapTypeControl = c;
         return this;
     }
     

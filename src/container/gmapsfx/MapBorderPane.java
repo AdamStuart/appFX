@@ -33,8 +33,8 @@ public class MapBorderPane extends BorderPane implements MapComponentInitialized
     private ComboBox<MapTypeIdEnum> mapTypeCombo;
 	private Button btnHideMarker;
 	private Button btnDeleteMarker;
-	GoogleMap map;
-	GoogleMapView mapview;
+	private GoogleMap map;
+	private GoogleMapView mapview;
 	
 	public MapBorderPane()
 	{
@@ -114,7 +114,7 @@ public class MapBorderPane extends BorderPane implements MapComponentInitialized
 		        });
 	        
 			mapTypeCombo.setOnAction(e ->{	map.setMapType(mapTypeCombo.getSelectionModel().getSelectedItem());	});
-//	        map.setHeading(123.2);
+	        map.setHeading(123.2);
 //	        System.out.println("Heading is: " + map.getHeading() );
 	        addMarkers(center);
 	        
@@ -158,12 +158,12 @@ public class MapBorderPane extends BorderPane implements MapComponentInitialized
 	        
 		
 	      lblCenter.setText(map.getCenter().toString());
-        map.centerProperty().addListener((ObservableValue<? extends LatLong> obs, LatLong o, LatLong n) -> {
+        map.centerProperty().addListener( (obs,  o,  n) -> {
             lblCenter.setText(n.toString());
         });
 
         lblZoom.setText(Integer.toString(map.getZoom()));
-        map.zoomProperty().addListener((ObservableValue<? extends Number> obs, Number o, Number n) -> {
+        map.zoomProperty().addListener((obs,  o,  n) -> {
             lblZoom.setText(n.toString());
         });
 
@@ -188,7 +188,7 @@ public class MapBorderPane extends BorderPane implements MapComponentInitialized
 
 	}
 	
-		private MarkerOptions markerOptions2;
+//		private MarkerOptions markerOptions2;
 		private Marker myMarker2;
 
 		private MarkerOptions markerOptions3;
