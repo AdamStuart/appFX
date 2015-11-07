@@ -7,14 +7,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class AppContainer extends Application
+public class AppPublish extends Application
 {
     public static void main(String[] args)    {        launch(args);    }
-	private static AppContainer instance;
+	private static AppPublish instance;
 	static final String RESOURCE = "publish.fxml";
 
-	public AppContainer() {	           instance = this;	}
-	public static AppContainer getInstance() {       return instance;	}
+	public AppPublish() {	           instance = this;	}
+	public static AppPublish getInstance() {       return instance;	}
 	//-----------------------------------------------------------------------------------------
 	public void start(Stage primaryStage) throws Exception 
 	{
@@ -26,12 +26,11 @@ public class AppContainer extends Application
 	{
         URL resource = getClass().getResource(RESOURCE);
         Scene scene = new Scene(FXMLLoader.load(resource));
-        stage.setTitle("A Container of Files");
+        stage.setTitle("A Biology Article Editor");
         stage.setX(20);
 		stage.setWidth(1100);
 		stage.setHeight(650);
 		stage.setScene(scene);
 		stage.show();
 	}
-
 }

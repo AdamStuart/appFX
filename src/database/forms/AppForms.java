@@ -111,12 +111,13 @@ public class AppForms extends Application {
         Tab protocol = new Tab("Protocols", protocolDB.getForm());
         Tab events = new Tab("Events", eventDB.getForm());
         Tab citations = new Tab("Citations", citationDB.getForm());
+        Tab entrez = new Tab("Entrez", new EntrezForm());
         
         Tab invoice = new Tab("Invoice", InvoiceForm.createInvoiceForm());
         Tab cyto = new Tab("Cytometry", FormsGallery.createCytometryMLform("CytometryML"));
         Tab experiment = new Tab("Experiment", FormsGallery.createExperimentForm("Experiment"));
        
-        tabPane.getTabs().addAll(validator, signup, multi, person, group, events, citations, invoice, protocol, experiment, cyto);
+        tabPane.getTabs().addAll(validator, signup, multi, person, group, events, citations, entrez, invoice, protocol, experiment, cyto);
         tabPane.getStylesheets().add(AppForms.class.getResource("Validation.css").toExternalForm());
 
       	Button button = new Button("CRUD");

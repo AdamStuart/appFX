@@ -41,30 +41,30 @@ import util.FileUtil;
 import util.StringUtil;
 
   
-public class ContainerController implements Initializable
+public class PublishController implements Initializable
 {
-	@FXML private ListView<File> list;
-	@FXML private AnchorPane anchor;
-	@FXML private TreeTableView<String> xmlTree;
+//	@FXML private ListView<File> list;
+//	@FXML private AnchorPane anchor;
+//	@FXML private TreeTableView<String> xmlTree;
 	@FXML private VBox fileContainer;
-	@FXML TreeTableColumn<TreeTableView, String>  col0;
-	@FXML TreeTableColumn<TreeTableView, String>  col1;
-	private Label description;
-	private FileSystemTree fileTree;
+//	@FXML TreeTableColumn<TreeTableView, String>  col0;
+//	@FXML TreeTableColumn<TreeTableView, String>  col1;
+//	private Label description;
+//	private FileSystemTree fileTree;
 	@FXML TabPane tocTabPane;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		description = new Label("You can drop files here.");
-		AnchorPane.setRightAnchor(description, new Double(20));
-		AnchorPane.setTopAnchor(description, new Double(50));
-		anchor.getChildren().add(description);
-		setupDropPane();
-		fileTree = new FileSystemTree(null);
+//		description = new Label("You can drop files here.");
+//		AnchorPane.setRightAnchor(description, new Double(20));
+//		AnchorPane.setTopAnchor(description, new Double(50));
+//		anchor.getChildren().add(description);
+//		setupDropPane();
+//		fileTree = new FileSystemTree(null);
 		
-		fileContainer.getChildren().add(fileTree);
-		VBox.setVgrow(fileTree, Priority.ALWAYS);
+//		fileContainer.getChildren().add(fileTree);
+//		VBox.setVgrow(fileTree, Priority.ALWAYS);
 //		xmlTree.setRoot(TreeTableModel.getCodeModuleView());
 //		col0.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
 ////		col0.setCellValueFactory( cell -> cell.getValue());//		xmlTree.setCellFactory(new PropertyValueFactory("value"));
@@ -75,76 +75,76 @@ public class ContainerController implements Initializable
 //		(xmlTree, param) -> {   
 //			new ReadOnlyStringWrapper(param.getValue().getValue().getId());}   
 //		);
-		list.setCellFactory(p -> new FileListCell());
+//		list.setCellFactory(p -> new FileListCell());
 		TabPaneDetacher.create().makeTabsDetachable(tocTabPane);
 
 }
 	//--------------------------------------------------------------------------------
-
-	private void setupDropPane()
-	{
-		anchor.setOnDragEntered(e ->
-		{
-			anchor.setEffect(Effects.innershadow);
-			anchor.setBackground(Backgrounds.tan);
-			e.consume();
-		});
-		// drops don't work without this line!
-		anchor.setOnDragOver(e ->	{	e.acceptTransferModes(TransferMode.ANY);  e.consume();	});
-		
-		anchor.setOnDragExited(e ->
-		{
-			anchor.setEffect(null);
-			anchor.setBackground(Backgrounds.white);
-			e.consume();
-		});
-		
-		anchor.setOnDragDropped(e -> {	e.acceptTransferModes(TransferMode.ANY);
-			Dragboard db = e.getDragboard();
-			Set<DataFormat> formats = db.getContentTypes();
-			formats.forEach(a -> System.out.println("getContentTypes " + a.toString()));
-			anchor.setEffect(null);
-			anchor.setBackground(Backgrounds.white);
-			if (db.hasFiles())  addFiles(e);
-		});
-	}
+//
+//	private void setupDropPane()
+//	{
+//		anchor.setOnDragEntered(e ->
+//		{
+//			anchor.setEffect(Effects.innershadow);
+//			anchor.setBackground(Backgrounds.tan);
+//			e.consume();
+//		});
+//		// drops don't work without this line!
+//		anchor.setOnDragOver(e ->	{	e.acceptTransferModes(TransferMode.ANY);  e.consume();	});
+//		
+//		anchor.setOnDragExited(e ->
+//		{
+//			anchor.setEffect(null);
+//			anchor.setBackground(Backgrounds.white);
+//			e.consume();
+//		});
+//		
+//		anchor.setOnDragDropped(e -> {	e.acceptTransferModes(TransferMode.ANY);
+//			Dragboard db = e.getDragboard();
+//			Set<DataFormat> formats = db.getContentTypes();
+//			formats.forEach(a -> System.out.println("getContentTypes " + a.toString()));
+//			anchor.setEffect(null);
+//			anchor.setBackground(Backgrounds.white);
+//			if (db.hasFiles())  addFiles(e);
+//		});
+//	}
 	//--------------------------------------------------------------------------------
-
-	void addFiles(DragEvent ev)
-	{
-		Dragboard db = ev.getDragboard();
-		double x = ev.getX();
-		double y = ev.getY();
-		List<File> files = db.getFiles();
-		for (File f : files)
-		{
-			Label label = new Label(f.getName());
-			AnchorPane.setLeftAnchor(label, x);
-			AnchorPane.setTopAnchor(label, y);
-			y += 20;
-			label.setPadding(new Insets(10,10,10,10));
-			label.setBorder(Borders.etchedBorder);
-			anchor.getChildren().add(label);
-			list.getItems().add(f);
-			if (FileUtil.isXML(f))
-			{
-//				TreeItem<String> xml = FileUtil.getXMLtree(f);
-//				xmlTree.setRoot(xml);
-			}
-			makeDraggable(label);
-			makeDoubleClickOpen(label);
-			addTooltip(label, f);
-			if (f.isDirectory())        label.setGraphic(GlyphsDude.createIcon(FontAwesomeIcons.FOLDER_ALT,"32"));
-			else
-			{
-	            Image fxImage = FileUtil.getFileIcon(f.getName());
-	            ImageView imageView = new ImageView(fxImage);
-	            imageView.setFitHeight(32);
-	            imageView.setFitWidth(32);
-	            label.setGraphic(imageView);
-			}
-		}
-	}
+//
+//	void addFiles(DragEvent ev)
+//	{
+//		Dragboard db = ev.getDragboard();
+//		double x = ev.getX();
+//		double y = ev.getY();
+//		List<File> files = db.getFiles();
+//		for (File f : files)
+//		{
+//			Label label = new Label(f.getName());
+//			AnchorPane.setLeftAnchor(label, x);
+//			AnchorPane.setTopAnchor(label, y);
+//			y += 20;
+//			label.setPadding(new Insets(10,10,10,10));
+//			label.setBorder(Borders.etchedBorder);
+//			anchor.getChildren().add(label);
+//			list.getItems().add(f);
+//			if (FileUtil.isXML(f))
+//			{
+////				TreeItem<String> xml = FileUtil.getXMLtree(f);
+////				xmlTree.setRoot(xml);
+//			}
+//			makeDraggable(label);
+//			makeDoubleClickOpen(label);
+//			addTooltip(label, f);
+//			if (f.isDirectory())        label.setGraphic(GlyphsDude.createIcon(FontAwesomeIcons.FOLDER_ALT,"32"));
+//			else
+//			{
+//	            Image fxImage = FileUtil.getFileIcon(f.getName());
+//	            ImageView imageView = new ImageView(fxImage);
+//	            imageView.setFitHeight(32);
+//	            imageView.setFitWidth(32);
+//	            label.setGraphic(imageView);
+//			}
+//		}
+//	}
 	//--------------------------------------------------------------------------------
 	
 	double dragX, dragY;
@@ -185,9 +185,9 @@ public class ContainerController implements Initializable
                  {
 					Label lab = (Label) t;
 					setBackground(lab,"white");
-					File f = findFile(lab.getText());
-					if (f != null)
-						openFile(f);
+//					File f = findFile(lab.getText());
+//					if (f != null)
+//						openFile(f);
                  }
         	});
 	}
@@ -264,14 +264,14 @@ public class ContainerController implements Initializable
 		}
 		catch (Exception e){}
 	}
-	
-	private File findFile(String name)
-	{
-		for (File f : list.getItems())
-			if (f.getName().toLowerCase().equals(name.toLowerCase()))	
-				return f;
-		return null;
-	}
+//	
+//	private File findFile(String name)
+//	{
+//		for (File f : list.getItems())
+//			if (f.getName().toLowerCase().equals(name.toLowerCase()))	
+//				return f;
+//		return null;
+//	}
 	// --------------------------------------------------------------------------------
 
 	private static class FileListCell extends ListCell<File>
