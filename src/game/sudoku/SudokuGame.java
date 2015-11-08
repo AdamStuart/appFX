@@ -14,7 +14,7 @@ import java.util.Observable;
  */
 public class SudokuGame {
     private int[][] solution;       // Generated solution.
-    private int[][] values;           // Generated game with user input.
+    private int[][] values;         // Generated game with user input.
     private boolean[][] check;      // Holder for checking validity of game.
     private int selectedNumber;     // Selected number by user.
     private boolean help;           // Help turned on or off.

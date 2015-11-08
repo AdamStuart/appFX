@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import database.forms.EntrezForm;
 import diagrams.draw.App;
 import gui.Backgrounds;
 import gui.Borders;
@@ -52,6 +53,8 @@ public class PublishController implements Initializable
 //	private Label description;
 //	private FileSystemTree fileTree;
 	@FXML TabPane tocTabPane;
+	@FXML AnchorPane research;
+	EntrezForm querier = new EntrezForm();
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
@@ -77,6 +80,15 @@ public class PublishController implements Initializable
 //		);
 //		list.setCellFactory(p -> new FileListCell());
 		TabPaneDetacher.create().makeTabsDetachable(tocTabPane);
+		research.getChildren().add(querier);
+		research.prefWidthProperty().bind(tocTabPane.widthProperty());
+		research.prefHeightProperty().bind(tocTabPane.heightProperty());
+		AnchorPane.setBottomAnchor(querier, 10d);
+		AnchorPane.setTopAnchor(querier, 10d);
+		AnchorPane.setLeftAnchor(querier, 10d);
+		AnchorPane.setRightAnchor(querier, 10d);
+		
+		
 
 }
 	//--------------------------------------------------------------------------------
