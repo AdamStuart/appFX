@@ -13,6 +13,7 @@ import gui.Effects;
 import gui.TabPaneDetacher;
 import icon.FontAwesomeIcons;
 import icon.GlyphsDude;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.event.EventTarget;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,6 +24,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.image.Image;
@@ -45,12 +47,12 @@ public class ContainerController implements Initializable
 {
 	@FXML private ListView<File> list;
 	@FXML private AnchorPane anchor;
-	@FXML private TreeTableView<String> xmlTree;
+	@FXML private TreeTableView<org.w3c.dom.Node> xmlTree;
 	@FXML private VBox fileContainer;
 	@FXML TreeTableColumn<TreeTableView, String>  col0;
 	@FXML TreeTableColumn<TreeTableView, String>  col1;
 	private Label description;
-	private FileSystemTree fileTree;
+	private XMLFileTree fileTree;
 	@FXML TabPane tocTabPane;
 
 	@Override
@@ -61,24 +63,198 @@ public class ContainerController implements Initializable
 		AnchorPane.setTopAnchor(description, new Double(50));
 		anchor.getChildren().add(description);
 		setupDropPane();
-		fileTree = new FileSystemTree(null);
+		fileTree = new XMLFileTree(null);
 		
 		fileContainer.getChildren().add(fileTree);
 		VBox.setVgrow(fileTree, Priority.ALWAYS);
-//		xmlTree.setRoot(TreeTableModel.getCodeModuleView());
+//		setupXMLTree();
 //		col0.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
 ////		col0.setCellValueFactory( cell -> cell.getValue());//		xmlTree.setCellFactory(new PropertyValueFactory("value"));
-//		col0.setCellValueFactory((CellDataFeatures<TreeTableView<?>, String> p) -> 
-//			new ReadOnlyStringWrapper(p.getValue().getValue().getValue()));  
+//		col0.setCellValueFactory((CellDataFeatures<TreeTableView<?>, org.w3c.dom.Node> p) -> 
+//			new ReadOnlyStringWrapper(p.getValue().getValue().accessibleTextProperty().get()));  
 
 //		 
 //		(xmlTree, param) -> {   
 //			new ReadOnlyStringWrapper(param.getValue().getValue().getId());}   
 //		);
 		list.setCellFactory(p -> new FileListCell());
-		TabPaneDetacher.create().makeTabsDetachable(tocTabPane);
+//		TabPaneDetacher.create().makeTabsDetachable(tocTabPane);
 
 }
+//
+//	private void setupXMLTree()
+//	{
+////		xmlTree.setRoot(null);
+//	//
+//		xmlTree.setFixedCellSize(30);
+//		xmlTree.setShowRoot(false);
+//	// --- name column---------------------------------------------------------
+//	TreeTableColumn<org.w3c.dom.Node, String> nameColumn = new TreeTableColumn<org.w3c.dom.Node, String>("Name");
+//	nameColumn.setPrefWidth(220);
+//	TreeTableColumn<org.w3c.dom.Node, String> idCol = new TreeTableColumn<org.w3c.dom.Node, String>("Id");
+//	idCol.setPrefWidth(100);
+////	nameColumn.setCellValueFactory(new TreeItemPropertyValueFactory("name"));
+////	sizeColumn.setCellValueFactory(new TreeItemPropertyValueFactory("id"));
+//	nameColumn.setCellValueFactory(p ->
+//	{
+//		org.w3c.dom.Node f = p.getValue().getValue();
+//		String text = "error";
+//		if (f != null)
+//		{
+//			text = lookup(f.getNodeName());
+//
+//			if (text.equals("Object"))
+//			{
+//				org.w3c.dom.Node n = f.getAttributes().getNamedItem("Type");
+//				if (n != null)
+//					text = n.getTextContent();
+//			}
+//
+//			if (text.length() > 24)
+//				text = text.substring(0,24) + "...";
+//			org.w3c.dom.Node n = f.getAttributes().getNamedItem("Name");
+//			if (n != null)
+//			{
+//				String cont = n.getTextContent();
+//				text = lookup(cont);
+//			}
+//			
+//		}
+//		return new ReadOnlyObjectWrapper<String>(text);
+//	});
+//	
+//	
+//	idCol.setCellValueFactory(p ->
+//	{
+//		org.w3c.dom.Node f = p.getValue().getValue();
+//		String text = "error";
+//		if (f != null)
+//		{
+//			if (f.getNodeName().equals("Restriction"))
+//			{
+//				org.w3c.dom.Node n = f.getAttributes().getNamedItem("MinOccur");
+//				if (n != null)
+//					text = n.getTextContent();
+//				n = f.getAttributes().getNamedItem("MaxOccur");
+//				if (n != null)
+//					text += ", " + n.getTextContent();
+//			}
+//			else
+//			{
+//			text = f.getTextContent();
+//			if (text.length() > 64)
+//				text = text.substring(0,64) + "...";
+//			
+//			org.w3c.dom.Node n = f.getAttributes().getNamedItem("UID");
+//			if (n != null)
+//				text = n.getTextContent();
+//			n = f.getAttributes().getNamedItem("Value");
+//			if (n != null)
+//			{
+//				text = n.getTextContent();
+//				n = f.getAttributes().getNamedItem("Unit");
+//				if (n != null)
+//					text += " " + n.getTextContent();
+//			}
+//			}
+//			
+//			
+//		}
+//		return new ReadOnlyObjectWrapper<String>(text);
+//	});
+//	xmlTree.getColumns().setAll(new TreeTableColumn[] {nameColumn, idCol});
+////	xmlTree.setRowFactory(value);
+////	xmlTree.set
+//
+//	}
+//	
+//	String lookup(String orig)
+//	{
+//		if (orig == null) return "";
+//		if (orig.equals("Inputobjects"))	return "Input";
+//		if (orig.equals("Outputobjects"))	return "Output";
+//		if (orig.equals("EncapsulatedObjects"))	return "Objects";
+//		if (orig.equals("EncapsulatedMethods"))	return "Methods";
+//		if (orig.equals("SpecificParameter"))	return "Parameter";
+//		if (orig.equals("SpecificParameters"))	return "Parameters";
+//		if (orig.equals("ObjectConnector"))	return "Connection";
+//		if (orig.equals("EncapsulatedObjectsRef"))	return "References";
+//		if (orig.equals("EncapsulatedMethodsRef"))	return "References";
+//		if (orig.equals("Meth"))	return "Method";
+//		if (orig.equals("MethRef"))	return "Reference";
+//		if (orig.equals("MethodHistory"))	return "History";
+//		if (orig.equals("ObjRef"))	return "Reference";
+//		if (orig.equals("Obj"))	return "Object";
+//		if (orig.equals("PrimaryContainer"))	return "Container";
+//		return orig;
+//	}
+//	
+	
+//	
+//	
+//	nameColumn.setCellValueFactory(p ->
+//	{
+//		org.w3c.dom.Node f = p.getValue().getValue();
+//		String text = f.getNodeName();
+//		setOnMouseClicked(ev -> {	if (ev.getClickCount() == 2) 	
+//		{
+//			TreeItem<File> tree = getSelectionModel().getSelectedItem();
+//			if (tree != null)
+//			{
+//				File file = tree.getValue();
+//				if (file != null)	ContainerController.openFile(file);
+//			}	
+//		}
+//		});
+//			
+//		return new ReadOnlyObjectWrapper<String>(text);
+//	} );
+//		// --- size column---------------------------------------------------------
+//
+//	sizeColumn.setCellValueFactory( p ->	{	return new ReadOnlyObjectWrapper<Node>(p.getValue().getValue());  });
+//	
+//	sizeColumn.setCellFactory( p ->
+//	{
+//		return new TreeTableCell<Node, Node>()
+//		{
+//			@Override protected void updateItem(File item, boolean empty)
+//			{
+//				super.updateItem(item, empty);
+//				TreeTableView treeTable = p.getTreeTableView();
+//				TreeItem<File> treeItem = treeTable.getTreeItem(getIndex());
+//
+//				String txt = null;
+//				if (item == null || empty || treeItem == null || treeItem.getValue() == null)
+//					txt = "";
+//				else if (treeItem.getValue().isDirectory())
+//					txt = getNChildren(treeItem) + " files";
+//				else
+//				{
+//					if (item.length() > 10000000)
+//						txt = (item.length() / (1024 * 1024) + " MB");
+//					else if (item.length() > 10000)
+//						txt = (item.length() / 1024 + " KB");
+//					else 		txt = item.length() + " bytes";
+//				}
+//				setText(txt);
+//			}
+//		};
+//	});
+//	sizeColumn.setComparator(new Comparator<Node>()
+//	{
+//		@Override public int compare(Node f1, Node f2)
+//		{
+////			long s1 = f1.isDirectory() ? 0 : f1.length();
+////			long s2 = f2.isDirectory() ? 0 : f2.length();
+////			long result = s1 - s2;
+////			if (result < 0)		return -1;
+////			if (result == 0)	return 0;
+//			return 1;
+//		}
+//	});
+//
+//	}
+
 	//--------------------------------------------------------------------------------
 
 	private void setupDropPane()
@@ -128,8 +304,8 @@ public class ContainerController implements Initializable
 			list.getItems().add(f);
 			if (FileUtil.isXML(f))
 			{
-//				TreeItem<String> xml = FileUtil.getXMLtree(f);
-//				xmlTree.setRoot(xml);
+				TreeItem<org.w3c.dom.Node> xml = FileUtil.getXMLtree(f, null);
+				xmlTree.setRoot(xml);
 			}
 			makeDraggable(label);
 			makeDoubleClickOpen(label);

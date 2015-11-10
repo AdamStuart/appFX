@@ -8,21 +8,21 @@ import gui.Borders;
 import gui.WindowSizeAnimator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.VPos;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import util.FileUtil;
@@ -37,7 +37,7 @@ public class EntrezForm extends VBox
 	RadioButton r1;
 	TableView<EntrezRecord> resultsTable;
 	VBox queryContent = new VBox(10);
-
+	TextArea abstField = new TextArea();
 	public EntrezForm()
 	{
 		super(SPACING);
@@ -51,7 +51,7 @@ public class EntrezForm extends VBox
 		
 		queryContent.setPadding(new Insets(10, 10, 10, 10));
 		queryContent.getChildren().addAll(search, line, line2);
-
+		abstField.setWrapText(true);
 		resultsTable = new TableView<EntrezRecord>();
 		resultsTable.setPadding(new Insets(10, 10, 10, 10));
 		TableColumn<EntrezRecord, TableView> col0 = new TableColumn<EntrezRecord, TableView>("PMID");
@@ -65,7 +65,7 @@ public class EntrezForm extends VBox
 		resultsTable.getColumns().addAll(col0, col1, col2, col3, col5);		//col4, , col6
 		// TODO init columns
 	
-		
+		resultsTable.getSelectionModel().selectedIndexProperty().addListener((obs, old, val) -> {selChanged(val);});
 		col0.setCellValueFactory(new PropertyValueFactory<EntrezRecord, TableView>("pmid"));
 		col1.setCellValueFactory(new PropertyValueFactory<EntrezRecord, TableView>("author"));
 		col2.setCellValueFactory(new PropertyValueFactory<EntrezRecord, TableView>("title"));
@@ -75,11 +75,23 @@ public class EntrezForm extends VBox
 //		col6.setCellValueFactory(new PropertyValueFactory<EntrezRecord, TableView>("issue"));
 
 //		Region.layoutInArea(resultsTable, 10d, 10d, 0d, 0d, 0d, 10d, null, true, true, HPos.CENTER,  VPos.CENTER, true);
-		getChildren().addAll(queryContent, resultsTable);
+		SplitPane split =  new SplitPane(resultsTable, abstField);
+		getChildren().addAll(queryContent, split);
+		split.setOrientation(Orientation.VERTICAL);
+		split.setDividerPosition(0, 0.8);
+		
 		VBox.setVgrow(resultsTable, Priority.ALWAYS);
 		
 	}
 		//------------------------------------------------------------------------------
+
+	private void selChanged(Number val)
+	{
+		EntrezRecord rec = resultsTable.getItems().get((int)val);
+		if (rec != null)
+			rec.fetch();
+		abstField.setText(rec.getAbstract());
+	}
 
 	public void search()
 	{

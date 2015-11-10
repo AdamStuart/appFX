@@ -4,9 +4,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import game.bookclub.StringUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+//http://www.ncbi.nlm.nih.gov/books/NBK25501/
 public class EntrezRecord
 {
 	private SimpleStringProperty pmid = new SimpleStringProperty();
@@ -58,6 +60,16 @@ public class EntrezRecord
 		else if (name.equals("Issue"))					issue.set(content);
 		else if (name.equals("Pages"))					pages.set(content);
 		else if (name.equals("PubDate")) 				pubdate.set(content);
+	}
+	String base = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
+	
+	public void fetch()
+	{
+		String cmd =  "efetch.fcgi?db=pubmed&id=" + getPMID() + "&retmode=text&rettype=abstract";
+		System.out.println(cmd);
+		String result = StringUtil.callURL(base + cmd);
+		System.out.println(result);
+		abst.set(result);
 	}
 	
 	

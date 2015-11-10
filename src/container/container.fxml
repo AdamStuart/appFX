@@ -14,7 +14,7 @@
          <content>
             <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="639.0" prefWidth="963.0">
                <center>
-                  <AnchorPane fx:id="anchor" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                  <AnchorPane fx:id="anchor" prefHeight="610.0" prefWidth="267.0" BorderPane.alignment="CENTER" />
                </center>
                <top>
                   <MenuBar BorderPane.alignment="CENTER">
@@ -53,12 +53,12 @@
                      <tabs>
                         <Tab>
                            <content>
-                              <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+                              <SplitPane dividerPositions="0.7244367417677643" orientation="VERTICAL" prefWidth="400.0">
                                  <items>
                                     <TreeTableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" fx:id="xmlTree">
                                       <columns>
-                                        <TreeTableColumn fx:id="col0" prefWidth="126.0" text="Element" />
-                                        <TreeTableColumn fx:id="col1" prefWidth="65.0" text="C2" />
+                                        <TreeTableColumn fx:id="col0" prefWidth="285.0" text="Name" />
+                                        <TreeTableColumn fx:id="col1" minWidth="0.0" prefWidth="105.0" text="Id" />
                                       </columns>
                                     </TreeTableView>
                                     <ListView fx:id="list" prefHeight="200.0" prefWidth="200.0" />
@@ -70,86 +70,10 @@
                   </TabPane>
                </left>
                <right>
-                  <VBox fx:id="fileContainer" minWidth="300.0" prefWidth="500.0" BorderPane.alignment="CENTER" />
+                  <VBox fx:id="fileContainer" minWidth="293.0" prefHeight="610.0" prefWidth="293.0" BorderPane.alignment="CENTER" />
                </right>
             </BorderPane>
          </content>
-      </Tab>
-      <Tab closable="false" text="Abstract">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <HTMLEditor htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="7.0" layoutY="220.0" prefHeight="412.0" prefWidth="954.0" />
-                  <Label layoutX="14.0" layoutY="14.0" prefHeight="30.0" prefWidth="905.0" text="The purpose of the abstract is to provide enough informations that either a human or agent can determine if the article is interesting." />
-                  <Label layoutX="20.0" layoutY="86.0" text="Keywords" />
-                  <TextArea layoutX="14.0" layoutY="103.0" prefHeight="115.0" prefWidth="687.0" />
-                  <Label layoutX="20.0" layoutY="53.0" text="Species" />
-                  <Label layoutX="191.0" layoutY="53.0" text="Cell Type" />
-                  <ChoiceBox layoutX="75.0" layoutY="48.0" prefHeight="27.0" prefWidth="99.0" />
-                  <ChoiceBox layoutX="259.0" layoutY="48.0" prefHeight="27.0" prefWidth="146.0" />
-               </children>
-            </AnchorPane>
-        </content>
-      </Tab>
-      <Tab closable="false" text="Methods">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <Label layoutX="26.0" layoutY="21.0" prefHeight="25.0" prefWidth="351.0" text="A Hierarchical Display of Biological Methods" />
-                  <ListView layoutX="34.0" layoutY="50.0" prefHeight="527.0" prefWidth="191.0" />
-                  <TreeTableView layoutX="234.0" layoutY="46.0" prefHeight="534.0" prefWidth="695.0">
-                    <columns>
-                      <TreeTableColumn prefWidth="75.0" text="C1" />
-                      <TreeTableColumn prefWidth="75.0" text="C2" />
-                    </columns>
-                  </TreeTableView>
-               </children>
-            </AnchorPane>
-        </content>
-      </Tab>
-      <Tab closable="false" text="Results">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <ListView layoutX="20.0" layoutY="26.0" prefHeight="207.0" prefWidth="200.0" />
-                  <ListView layoutX="21.0" layoutY="451.0" prefHeight="158.0" prefWidth="200.0" />
-                  <Label layoutX="21.0" layoutY="6.0" text="Protocols" />
-                  <Label layoutX="19.0" layoutY="429.0" text="Data Sets" />
-                  <Label layoutX="19.0" layoutY="239.0" text="Groups" />
-                  <ListView layoutX="21.0" layoutY="262.0" prefHeight="158.0" prefWidth="200.0" />
-               </children>
-            </AnchorPane>
-        </content>
-      </Tab>
-      <Tab closable="false" text="Conclusions">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <HTMLEditor htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="4.0" layoutY="111.0" prefHeight="514.0" prefWidth="956.0" />
-                  <Label layoutX="14.0" layoutY="9.0" text="Prompts" />
-                  <Label layoutX="14.0" layoutY="44.0" text="Explain how this work is novel and innovative" />
-                  <Label layoutX="14.0" layoutY="69.0" text="Explain how this work extends our understanding of the subject" />
-                  <Label layoutX="501.0" layoutY="69.0" text="Describe Future work that might extend these results" />
-               </children>
-            </AnchorPane>
-        </content>
-      </Tab>
-      <Tab closable="false" text="References">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <TableView layoutX="14.0" layoutY="21.0" prefHeight="489.0" prefWidth="925.0">
-                    <columns>
-                      <TableColumn prefWidth="132.0" text="Author" />
-                      <TableColumn prefWidth="142.0" text="Title" />
-                        <TableColumn minWidth="0.0" prefWidth="227.0" text="Journal" />
-                        <TableColumn minWidth="8.0" prefWidth="153.0" text="Date" />
-                        <TableColumn prefWidth="122.0" text="PMID" />
-                    </columns>
-                  </TableView>
-               </children>
-            </AnchorPane>
-        </content>
       </Tab>
    </tabs>
 </TabPane>

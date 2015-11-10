@@ -16,9 +16,9 @@ import util.FileUtil;
 
 
 //https://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/TreeTableView.html
-public class FileSystemTree extends TreeTableView<File>
+public class XMLFileTree extends TreeTableView<File>
 {
-	public FileSystemTree(String path)
+	public XMLFileTree(String path)
 		{
 			super();
 			if (path == null) path = ".";
@@ -103,61 +103,10 @@ public class FileSystemTree extends TreeTableView<File>
 				return 1;
 			}
 		});
+		getColumns().setAll(nameColumn, sizeColumn);
 
-		// --- modified column ---------------------------------------------------------
-		// TODO   Date is an obsolete class, and this makes assumptions about the format of Date.toString
-		
-		TreeTableColumn<File, Date> lastModifiedColumn = new TreeTableColumn<File, Date>("Last Modified");
-		lastModifiedColumn.setPrefWidth(130);
-		lastModifiedColumn.setCellValueFactory(p ->
-		{
-			return new ReadOnlyObjectWrapper<Date>(new Date(p.getValue().getValue().lastModified()));
-		});
-		lastModifiedColumn.setCellFactory(p -> {
-			return new TreeTableCell<File, Date>()
-			{
-				@Override protected void updateItem(Date item, boolean empty)
-				{
-					super.updateItem(item, empty);
-					if (item == null || empty)		setText(null);
-					else	
-					{
-						String dateTxt = item.toString();  //setText("" + item);
-						String day = dateTxt.substring(0,4);
-						String date = dateTxt.substring(4,11);
-						String time = dateTxt.substring(11,20).substring(0, 5) + " ";
-						String zone = dateTxt.substring(20,24);
-						String year = dateTxt.substring(24,28);
-						
-						if (overAYear(item))
-							dateTxt = date + year;
-						if (overAWeek(item))
-							dateTxt = date + time;
-						else	
-							dateTxt = day + time;
-						setText(dateTxt);
-					}
-				}
-			};
-		});
-		getColumns().setAll(nameColumn, sizeColumn, lastModifiedColumn);
 	}
 
-	final int AWEEK = 1000 * 60 * 60 * 24 * 7;
-	final int AYEAR = 1000 * 60 * 60 * 24 * 365;
-
-	private boolean overAWeek(Date date)
-	{
-		  Date today = new Date(); 
-		  final int AWEEK = 1000 * 60 * 60 * 24 * 7;
-		  return (today.getTime() - date.getTime() > AWEEK);
-	}
-	  
-	private boolean overAYear(Date date)
-	{
-		return (new Date().getTime() - date.getTime() > AYEAR);
-	}
-	
 	
 	private TreeItem<File> createNode(final File f)
 	{

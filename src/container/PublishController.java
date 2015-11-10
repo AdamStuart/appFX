@@ -1,6 +1,7 @@
 package container;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -9,21 +10,24 @@ import java.util.Set;
 import database.forms.EntrezForm;
 import diagrams.draw.App;
 import gui.Backgrounds;
-import gui.Borders;
 import gui.Effects;
 import gui.TabPaneDetacher;
-import icon.FontAwesomeIcons;
-import icon.GlyphsDude;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventTarget;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.image.Image;
@@ -34,114 +38,161 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import model.TableData;
 import util.FileUtil;
 import util.StringUtil;
 
   
 public class PublishController implements Initializable
 {
-//	@FXML private ListView<File> list;
-//	@FXML private AnchorPane anchor;
-//	@FXML private TreeTableView<String> xmlTree;
-	@FXML private VBox fileContainer;
-//	@FXML TreeTableColumn<TreeTableView, String>  col0;
-//	@FXML TreeTableColumn<TreeTableView, String>  col1;
-//	private Label description;
-//	private FileSystemTree fileTree;
 	@FXML TabPane tocTabPane;
 	@FXML AnchorPane research;
+	@FXML AnchorPane abstractAnchor;
+	@FXML AnchorPane methodsAnchor;
+	@FXML AnchorPane resultsAnchor;
+	@FXML ImageView image;
 	EntrezForm querier = new EntrezForm();
+	@FXML  ChoiceBox<String> species;
+	@FXML  ChoiceBox<String> celltype;
+	@FXML  ChoiceBox<String> technology;
+	
+	@FXML ListView<ScanJob> scans;
+	@FXML ListView<Segment> segments;
+	@FXML private TreeTableView<org.w3c.dom.Node> xmlTree;
+	
+	@FXML private VBox fileTreeBox;
+	private XMLFileTree fileTree;
+	@FXML SplitPane methodsplitter;
+	@FXML TableView<Segment> csvtable;
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources)
+	ObservableList<String> speciesList = FXCollections.observableArrayList("Mouse", "Human", "More...");
+	ObservableList<String> cellTypes = FXCollections.observableArrayList("T Cells", "B Cells", "NK Cells", "More...");
+	ObservableList<String> technologyList = FXCollections.observableArrayList("ChipCytometry", "PCR", "Mass Spec", "HPLC", "More...");
+
+	static String[] suppressNames = new String[]{ "SpecificParameters", "Environment", "Machine", "MethodHistory"};
+
+	@Override public void initialize(URL location, ResourceBundle resources)
 	{
-//		description = new Label("You can drop files here.");
-//		AnchorPane.setRightAnchor(description, new Double(20));
-//		AnchorPane.setTopAnchor(description, new Double(50));
-//		anchor.getChildren().add(description);
-//		setupDropPane();
-//		fileTree = new FileSystemTree(null);
-		
-//		fileContainer.getChildren().add(fileTree);
-//		VBox.setVgrow(fileTree, Priority.ALWAYS);
-//		xmlTree.setRoot(TreeTableModel.getCodeModuleView());
-//		col0.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
-////		col0.setCellValueFactory( cell -> cell.getValue());//		xmlTree.setCellFactory(new PropertyValueFactory("value"));
-//		col0.setCellValueFactory((CellDataFeatures<TreeTableView<?>, String> p) -> 
-//			new ReadOnlyStringWrapper(p.getValue().getValue().getValue()));  
-
-//		 
-//		(xmlTree, param) -> {   
-//			new ReadOnlyStringWrapper(param.getValue().getValue().getId());}   
-//		);
-//		list.setCellFactory(p -> new FileListCell());
 		TabPaneDetacher.create().makeTabsDetachable(tocTabPane);
 		research.getChildren().add(querier);
-		research.prefWidthProperty().bind(tocTabPane.widthProperty());
-		research.prefHeightProperty().bind(tocTabPane.heightProperty());
 		AnchorPane.setBottomAnchor(querier, 10d);
 		AnchorPane.setTopAnchor(querier, 10d);
 		AnchorPane.setLeftAnchor(querier, 10d);
 		AnchorPane.setRightAnchor(querier, 10d);
-		
-		
+		species.setItems(speciesList);
+		species.getSelectionModel().selectFirst();
+		celltype.setItems(cellTypes);
+		celltype.getSelectionModel().selectFirst();
+		technology.setItems(technologyList);
+		technology.getSelectionModel().selectFirst();
+		setupXMLTree();
+//		scans.getItems().addAll(new ScanJob("Pos 1", null), new ScanJob("Pos 2", null),  new ScanJob("Pos 3", null));
+//		segments.getItems().addAll("Cells", "Values", "Gate1");
+		fileTree = new XMLFileTree(null);
+		fileTreeBox.getChildren().add(fileTree);
+		fileTree.getSelectionModel().selectedItemProperty().addListener((obs, old, val) ->
+		{
+			File f = val.getValue();
+			TreeItem<org.w3c.dom.Node> xml = FileUtil.getXMLtree(f, suppressNames);
+			xmlTree.setRoot(xml);
+		});
+		setupDropPane();
+		scans.getSelectionModel().selectedItemProperty().addListener((obs, old, val)-> {
+			image.setImage(val.getImage());
+			image.setVisible(true);
+			csvtable.setVisible(false);
+		});
+		segments.getSelectionModel().selectedItemProperty().addListener((obs, old, val)-> {
+//			csvtable.setData(val.getData());
+			image.setVisible(false);
+			csvtable.setVisible(true);
+		});
+	}
+	//--------------------------------------------------------------------------------
 
-}
+	private void setupDropPane()
+	{
+		fileTreeBox.setOnDragEntered(e ->
+		{
+			fileTreeBox.setEffect(Effects.innershadow);
+			fileTreeBox.setBackground(Backgrounds.tan);
+			e.consume();
+		});
+		// drops don't work without this line!
+		fileTreeBox.setOnDragOver(e ->	{	e.acceptTransferModes(TransferMode.ANY);  e.consume();	});
+		
+		fileTreeBox.setOnDragExited(e ->
+		{
+			fileTreeBox.setEffect(null);
+			fileTreeBox.setBackground(Backgrounds.white);
+			e.consume();
+		});
+		
+		fileTreeBox.setOnDragDropped(e -> {	e.acceptTransferModes(TransferMode.ANY);
+			Dragboard db = e.getDragboard();
+			Set<DataFormat> formats = db.getContentTypes();
+			formats.forEach(a -> System.out.println("getContentTypes " + a.toString()));
+			fileTreeBox.setEffect(null);
+			fileTreeBox.setBackground(Backgrounds.white);
+			if (db.hasFiles())  addFiles(e);
+		});
+	}
 	//--------------------------------------------------------------------------------
-//
-//	private void setupDropPane()
-//	{
-//		anchor.setOnDragEntered(e ->
-//		{
-//			anchor.setEffect(Effects.innershadow);
-//			anchor.setBackground(Backgrounds.tan);
-//			e.consume();
-//		});
-//		// drops don't work without this line!
-//		anchor.setOnDragOver(e ->	{	e.acceptTransferModes(TransferMode.ANY);  e.consume();	});
-//		
-//		anchor.setOnDragExited(e ->
-//		{
-//			anchor.setEffect(null);
-//			anchor.setBackground(Backgrounds.white);
-//			e.consume();
-//		});
-//		
-//		anchor.setOnDragDropped(e -> {	e.acceptTransferModes(TransferMode.ANY);
-//			Dragboard db = e.getDragboard();
-//			Set<DataFormat> formats = db.getContentTypes();
-//			formats.forEach(a -> System.out.println("getContentTypes " + a.toString()));
-//			anchor.setEffect(null);
-//			anchor.setBackground(Backgrounds.white);
-//			if (db.hasFiles())  addFiles(e);
-//		});
-//	}
-	//--------------------------------------------------------------------------------
-//
-//	void addFiles(DragEvent ev)
-//	{
-//		Dragboard db = ev.getDragboard();
-//		double x = ev.getX();
-//		double y = ev.getY();
-//		List<File> files = db.getFiles();
-//		for (File f : files)
-//		{
+
+	void addFiles(DragEvent ev)
+	{
+		Dragboard db = ev.getDragboard();
+		double x = ev.getX();
+		double y = ev.getY();
+		List<File> files = db.getFiles();
+		
+		for (File f : files)
+		{
+			if (f.isDirectory())
+			{
+				fileTree.setRoot(f);
+				for (File child : f.listFiles())
+				{
+					if (child.isDirectory())
+					{
+						String chName = child.getName().toLowerCase();
+						if ("scanjobs".equals(chName))
+						{
+							scans.getItems().clear();
+							addScanJobsDirectory(child);
+						}
+						if ("segments".equals(chName))
+						{
+							segments.getItems().clear();
+							addSegmentsDirectory(child);
+						}
+					}
+					else if (FileUtil.isXML(child))
+					{
+						// do nothing as the entire tree was added in whole
+					}
+				}
+				
+				break;
+			}
+		}
+			
+			
 //			Label label = new Label(f.getName());
 //			AnchorPane.setLeftAnchor(label, x);
 //			AnchorPane.setTopAnchor(label, y);
 //			y += 20;
 //			label.setPadding(new Insets(10,10,10,10));
 //			label.setBorder(Borders.etchedBorder);
-//			anchor.getChildren().add(label);
-//			list.getItems().add(f);
+//			fileTreeBox.getChildren().add(label);
+////			list.getItems().add(f);
 //			if (FileUtil.isXML(f))
 //			{
-////				TreeItem<String> xml = FileUtil.getXMLtree(f);
-////				xmlTree.setRoot(xml);
+//				TreeItem<String> xml = FileUtil.getXMLtree(f);
+//				xmlTree.setRoot(xml);
 //			}
 //			makeDraggable(label);
 //			makeDoubleClickOpen(label);
@@ -156,9 +207,153 @@ public class PublishController implements Initializable
 //	            label.setGraphic(imageView);
 //			}
 //		}
-//	}
-	//--------------------------------------------------------------------------------
+	}
+	private void addScanJobsDirectory(File f)
+	{
+		for (File kid : f.listFiles())
+		{
+			if (FileUtil.isImageFile(kid))
+				addJob(kid);
+			else if (kid.isDirectory())
+				addScanJobsDirectory(kid);
+		}
+	}
 	
+	
+	private void addJob(File kid)
+	{
+		String id = kid.getParentFile().getParentFile().getParentFile().getName();
+		scans.getItems().add(new ScanJob(id, kid));
+	}
+
+	private void addSegmentsDirectory(File f)
+	{
+		File[] kids = f.listFiles();
+		for (File kid : kids)
+		{
+			String id = kid.getName();
+			if (kid.isDirectory())
+			{
+				File[] grandkids = kid.listFiles();
+				for (File gkid : grandkids)
+					if (FileUtil.isCSV(gkid))
+						addSegmentFile(id, gkid);
+			}
+		}
+	}
+	
+	
+
+	private void addSegmentFile(String id, File gkid)
+	{
+		segments.getItems().add(new Segment(id, gkid));
+	}
+	//--------------------------------------------------------------------------------
+
+	private void setupXMLTree()
+	{
+		
+		assert (xmlTree != null);
+		xmlTree.setFixedCellSize(30);
+		xmlTree.setShowRoot(false);
+	// --- name column---------------------------------------------------------
+	TreeTableColumn<org.w3c.dom.Node, String> nameColumn = new TreeTableColumn<org.w3c.dom.Node, String>("Name");
+	nameColumn.setPrefWidth(220);
+	TreeTableColumn<org.w3c.dom.Node, String> idCol = new TreeTableColumn<org.w3c.dom.Node, String>("Id");
+	idCol.setPrefWidth(100);
+
+	nameColumn.setCellValueFactory(p ->
+	{
+		org.w3c.dom.Node f = p.getValue().getValue();
+		String text = "error";
+		if (f != null)
+		{
+			text = lookup(f.getNodeName());
+
+			if (text.equals("Object") || text.equals("Method")|| text.equals("Machine"))
+			{
+				org.w3c.dom.Node n = f.getAttributes().getNamedItem("Type");
+				if (n != null)
+					text = n.getTextContent();
+			} else
+			{
+				org.w3c.dom.Node n = f.getAttributes().getNamedItem("Name");
+				if (n != null)
+					text = n.getTextContent();
+			}
+			
+		}
+		text = lookup(text);
+		if (text.length() > 64)
+			text = text.substring(0,64) + "...";
+		return new ReadOnlyObjectWrapper<String>(text);
+	});
+	
+	
+	idCol.setCellValueFactory(p ->
+	{
+		org.w3c.dom.Node f = p.getValue().getValue();
+		String text = "error";
+		if (f != null)
+		{
+			if (f.getNodeName().equals("Restriction"))
+			{
+				org.w3c.dom.Node n = f.getAttributes().getNamedItem("MinOccur");
+				if (n != null)
+					text = n.getTextContent();
+				n = f.getAttributes().getNamedItem("MaxOccur");
+				if (n != null)
+					text += ", " + n.getTextContent();
+			}
+			else
+			{
+				text = f.getTextContent();
+				if (text.length() > 64)
+					text = text.substring(0,64) + "...";
+				
+				org.w3c.dom.Node n = f.getAttributes().getNamedItem("UID");
+				if (n != null)
+					text = n.getTextContent();
+				n = f.getAttributes().getNamedItem("Value");
+				if (n != null)
+				{
+					text = n.getTextContent();
+					n = f.getAttributes().getNamedItem("Unit");
+					if (n != null)
+						text += " " + n.getTextContent();
+				}
+			}
+		}
+		return new ReadOnlyObjectWrapper<String>(text);
+	});
+	xmlTree.getColumns().setAll(new TreeTableColumn[] {nameColumn, idCol});
+//	xmlTree.setRowFactory(value);
+//	xmlTree.set
+
+	}
+	
+	String lookup(String orig)
+	{
+		if (orig == null) return "";
+		if (orig.equals("Inputobjects"))	return "Input";
+		if (orig.equals("Outputobjects"))	return "Output";
+		if (orig.equals("EncapsulatedObjects"))	return "Objects";
+		if (orig.equals("EncapsulatedMethods"))	return "Steps";
+		if (orig.equals("SpecificParameter"))	return "Parameter";
+		if (orig.equals("SpecificParameters"))	return "Parameters";
+		if (orig.equals("ObjectConnector"))	return "Connection";
+		if (orig.equals("EncapsulatedObjectsRef"))	return "References";
+		if (orig.equals("EncapsulatedMethodsRef"))	return "References";
+		if (orig.equals("Meth"))	return "Method";
+		if (orig.equals("MethRef"))	return "Reference";
+		if (orig.equals("MethodHistory"))	return "History";
+		if (orig.equals("ObjRef"))	return "Reference";
+		if (orig.equals("Obj"))	return "Object";
+		if (orig.equals("PrimaryContainer"))	return "Container";
+		return orig;
+	}
+		
+	//--------------------------------------------------------------------------------
 	double dragX, dragY;
 	void makeDraggable(Node n)
 	{
@@ -203,6 +398,48 @@ public class PublishController implements Initializable
                  }
         	});
 	}
+	//--------------------------------------------------------------------------------
+	class Segment
+	{
+		String id;
+		File csvFile;
+		TableData data;
+		
+		Segment(String inID, File inFile)
+		{
+			id = inID;
+			csvFile = inFile;
+			if (csvFile != null)
+				; // read table
+		}
+		public String toString()		{	return id + ": " + csvFile.getName();		}
+		public TableData getData()		{	return data;		}
+	}
+	//--------------------------------------------------------------------------------
+	class ScanJob
+	{
+		String id;
+		File imageFile;
+		Image image;
+		
+		ScanJob(String inID, File inFile)
+		{
+			id = inID;
+			imageFile = inFile;
+			if ((inFile == null || !FileUtil.isImageFile(inFile)))
+				image =  null;
+			else
+				try{
+					String path = inFile.getCanonicalPath();
+					image =  new Image(new FileInputStream(path));
+
+				}
+			catch (Exception e) { System.out.println(inFile.getAbsolutePath());   e.printStackTrace(); }
+		}
+		public String toString()		{	return id;		}
+		public Image getImage()		{	return image;		}
+	}
+	
 	//--------------------------------------------------------------------------------
 
 	@FXML void doNew()

@@ -11,7 +11,7 @@ public class AppContainer extends Application
 {
     public static void main(String[] args)    {        launch(args);    }
 	private static AppContainer instance;
-	static final String RESOURCE = "publish.fxml";
+	static final String RESOURCE = "container.fxml";
 
 	public AppContainer() {	           instance = this;	}
 	public static AppContainer getInstance() {       return instance;	}
