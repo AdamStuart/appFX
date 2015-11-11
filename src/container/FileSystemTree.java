@@ -22,12 +22,17 @@ public class FileSystemTree extends TreeTableView<File>
 		{
 			super();
 			if (path == null) path = ".";
-			TreeItem<File> root = createNode(new File(path));  
-			root.setExpanded(true);
-			setShowRoot(true);
-			setRoot(root);
+			setRoot(new File(path));
 			setupTableColumns();
 		}
+	
+	public void setRoot(File f)
+	{
+		TreeItem<File> root = createNode(f);  
+		root.setExpanded(true);
+		setShowRoot(true);
+		setRoot(root);
+	}
 	
 	private void setupTableColumns()
 	{	

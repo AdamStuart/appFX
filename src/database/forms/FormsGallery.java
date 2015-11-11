@@ -2,20 +2,30 @@ package database.forms;
 
 import gui.Forms;
 import gui.Forms.ValidationType;
+import gui.WindowSizeAnimator;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import util.StringUtil;
 
 /*
@@ -59,7 +69,6 @@ public class FormsGallery
 	// ----------------------------------------------------
 	// SIGNUP FORM TAB
 
-//	static String PREFIX_SIGNUP_FORM = "signup_";
 	static StringProperty email1 = new SimpleStringProperty();
 	static StringProperty email2 = new SimpleStringProperty();
 	static StringProperty password1 = new SimpleStringProperty();
@@ -77,10 +86,6 @@ public class FormsGallery
 		pane.setPadding(new Insets(8));
 		pane.setPrefHeight(200);
 		pane.setPrefWidth(300);
-//		Label emailLabel = new Label("Your Email");
-//		emailLabel.setId(PREFIX_SIGNUP_FORM + "emailLabel");
-//		TextField emailField = new TextField();
-//		emailField.setId(PREFIX_SIGNUP_FORM + "emailField");
 		
 		HBox email = Forms.makeEmailBox();
 		TextField fld = (TextField) email.lookup("#email");
@@ -322,7 +327,6 @@ public class FormsGallery
 	        pane.getChildren().addAll(new HBox(6, taskLabel, taskField), new HBox(6, descLabel, descField));
 			return pane;
 		}
-
 
 
 }

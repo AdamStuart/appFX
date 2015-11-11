@@ -1,7 +1,5 @@
 package image.animation;
 
-import animation.Transitions;
-import animation.Transitions.Transition;
 import javafx.application.Application;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
@@ -9,6 +7,8 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import util.UtilTransitions.Transition;
+import animation.Transitions;
 
 public class AppTransitionTester extends Application
 {

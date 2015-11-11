@@ -3,6 +3,7 @@
 	<name>appFX</name>
 	<comment></comment>
 	<projects>
+		<project>libFX</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
