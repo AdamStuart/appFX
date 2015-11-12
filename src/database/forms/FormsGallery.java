@@ -69,7 +69,6 @@ public class FormsGallery
 	// ----------------------------------------------------
 	// SIGNUP FORM TAB
 
-//	static String PREFIX_SIGNUP_FORM = "signup_";
 	static StringProperty email1 = new SimpleStringProperty();
 	static StringProperty email2 = new SimpleStringProperty();
 	static StringProperty password1 = new SimpleStringProperty();
@@ -87,10 +86,6 @@ public class FormsGallery
 		pane.setPadding(new Insets(8));
 		pane.setPrefHeight(200);
 		pane.setPrefWidth(300);
-//		Label emailLabel = new Label("Your Email");
-//		emailLabel.setId(PREFIX_SIGNUP_FORM + "emailLabel");
-//		TextField emailField = new TextField();
-//		emailField.setId(PREFIX_SIGNUP_FORM + "emailField");
 		
 		HBox email = Forms.makeEmailBox();
 		TextField fld = (TextField) email.lookup("#email");
