@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -15,15 +15,17 @@ import diagrams.draw.App;
 import gui.Backgrounds;
 import gui.Effects;
 import gui.TabPaneDetacher;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -34,7 +36,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DataFormat;
@@ -46,6 +47,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.CSVTableData;
+import model.Histogram1D;
+import model.Range;
 import util.FileUtil;
 import util.StringUtil;
 
@@ -76,8 +79,11 @@ public class PublishController implements Initializable
 	ObservableList<String> cellTypes = FXCollections.observableArrayList("T Cells", "B Cells", "NK Cells", "More...");
 	ObservableList<String> technologyList = FXCollections.observableArrayList("ChipCytometry", "PCR", "Mass Spec", "HPLC", "More...");
 
+	@FXML Button plotButton;
+
 	static String[] suppressNames = new String[]{ "SpecificParameters", "Environment", "Machine", "MethodHistory"};
 
+	//-------------------------------------------------------------------------------------------
 	@Override public void initialize(URL location, ResourceBundle resources)
 	{
 		TabPaneDetacher.create().makeTabsDetachable(tocTabPane);
@@ -135,15 +141,17 @@ public class PublishController implements Initializable
 		csvtable.getColumns().clear();
 		if (inData.getColumnNames().size() == 0)
 			for (int i=0;i<nCols;i++)
-				inData.getColumnNames().add("Col" + i);
+				inData.getColumnNames().add("#" + i);
 
+        TableColumn<DataRow, Integer> rowNumColumn = new TableColumn<>("Row#");  
+        rowNumColumn.setCellValueFactory(cellData -> cellData.getValue().getRowNum().asObject());
+		csvtable.getColumns().add(rowNumColumn);
 		for (int i=0;i<nCols;i++)
 		{
-//			TableColumn col = new TableColumn(inData.getColumnNames().get(i));
-            TableColumn<DataRow, String> newColumn = new TableColumn<>("#" + i);  
+            String name = inData.getColumnNames().get(i);
+            TableColumn<DataRow, Integer> newColumn = new TableColumn<>(name);  
             final int j = i;
-            newColumn.setCellValueFactory(cellData -> cellData.getValue().get(j));
-//            newColumn.setCellFactory(TextFieldTableCell.<DataRow, String>forTableColumn(null));
+            newColumn.setCellValueFactory(cellData -> cellData.getValue().get(j).asObject());
 			csvtable.getColumns().add(newColumn);
 		}
 		csvtable.getItems().clear();
@@ -152,47 +160,127 @@ public class PublishController implements Initializable
 		for (int row=0; row<nRows; row++)
 		{
 			DataRow newRow = new DataRow(nCols);
+			newRow.setRowNum(row);
 			for (int i=0;i<nCols;i++)
 			{
 				String s = inData.getData(i).get(row);
-				newRow.set(i, s);
+				Integer k = StringUtil.toInteger(s);
+				newRow.set(i, k);
 			}
 			csvtable.getItems().add(newRow);
-	
 		}
 	}
 
+	//--------------------------------------------------------------------------------
+	@FXML private void doPlot()
+	{
+		System.out.println("doPlot");
+		ObservableList<DataRow> data = csvtable.getItems();
+		if (data == null) return;
+		int nRows = data.size();
+		if (nRows == 0) return;
+		DataRow row0 = data.get(0);
+		int nCols = row0.getWidth();
+		
+		int[] mins = new int[nCols];
+		int[] maxs = new int[nCols];
+		for (int row=0; row<nRows; row++)		// scan for ranges of all columns
+		{
+			DataRow aRow = data.get(row);
+			for (int i=0;i<nCols;i++)
+			{
+				Integer s = aRow.get(i).get();
+				mins[i] = Math.min(mins[i],  s);
+				maxs[i] = Math.max(maxs[i],  s);
+			}
+		}
+
+		List<Histogram1D> histos = new ArrayList<Histogram1D>();
+		for (int i=0;i<nCols; i++)
+		{
+			if (i < 2) continue;		// first two columns are postion info, I think
+			Histogram1D hist = new Histogram1D(200, new Range(mins[i], maxs[i]), false);
+			for (int row=0; row<nRows; row++)
+			{
+				DataRow aRow = data.get(row);
+				Integer s = aRow.get(i).get();
+				hist.count(s);
+			}
+			// chop of the tails on both sides and remake the histogram
+			double percentile1 = hist.getPercentile(1);
+			double percentile99 = hist.getPercentile(99);
+			if (percentile1 == percentile99) continue;
+			hist = new Histogram1D(200, new Range(percentile1,percentile99), false);
+			for (int row=0; row<nRows; row++)
+			{
+				DataRow aRow = data.get(row);
+				Integer s = aRow.get(i).get();
+				hist.count(s);
+			}
+			histos.add(hist);
+		}
+		fillChartBox(histos);
+	}
+	
+	private void fillChartBox(List<Histogram1D> histos)
+	{
+		if (chartBox != null) resultsAnchor.getChildren().remove(chartBox);
+		chartBox = new VBox(8);
+		for (Histogram1D histo : histos)
+		{
+			Range r = histo.getRange();
+			System.out.println("Histogram has range of " + r.min() + " - " + r.max());
+			if (r.width() < 35) continue;
+			
+//			double roundedMin = ((int) r.min() / 100 ) * 100;
+//			double roundedMax = ((int) r.max() / 100 ) * 100;
+//			double unit = (roundedMax - roundedMin) / 5;
+			NumberAxis  xAxis = new NumberAxis();		//roundedMin, roundedMax, unit
+			NumberAxis  yAxis = new NumberAxis();
+			LineChart<Number, Number>  chart = new LineChart<Number, Number>(xAxis, yAxis);
+			chart.setTitle("Histogram Chart");
+			chart.setCreateSymbols(false);
+			chart.getData().add( histo.getDataSeries());	
+			chart.setTitle("");
+			chart.setLegendVisible(false);
+			chart.setPrefHeight(100);
+			chartBox.getChildren().add(chart);
+		}
+		resultsAnchor.getChildren().add(0,chartBox);
+		AnchorPane.setRightAnchor(chartBox, 50.);
+	}
+	VBox chartBox;
 //--------------------------------------------------------------------------------
 
 	private void setupDropPane()
 	{
-		fileTreeBox.setOnDragEntered(e ->
+		tocTabPane.setOnDragEntered(e ->
 		{
-			fileTreeBox.setEffect(Effects.innershadow);
-			fileTreeBox.setBackground(Backgrounds.tan);
+			tocTabPane.setEffect(Effects.innershadow);
+			tocTabPane.setBackground(Backgrounds.tan);
 			e.consume();
 		});
 		// drops don't work without this line!
-		fileTreeBox.setOnDragOver(e ->	{	e.acceptTransferModes(TransferMode.ANY);  e.consume();	});
+		tocTabPane.setOnDragOver(e ->	{	e.acceptTransferModes(TransferMode.ANY);  e.consume();	});
 		
-		fileTreeBox.setOnDragExited(e ->
+		tocTabPane.setOnDragExited(e ->
 		{
-			fileTreeBox.setEffect(null);
-			fileTreeBox.setBackground(Backgrounds.white);
+			tocTabPane.setEffect(null);
+			tocTabPane.setBackground(Backgrounds.white);
 			e.consume();
 		});
 		
-		fileTreeBox.setOnDragDropped(e -> {	e.acceptTransferModes(TransferMode.ANY);
+		tocTabPane.setOnDragDropped(e -> {	e.acceptTransferModes(TransferMode.ANY);
 			Dragboard db = e.getDragboard();
 			Set<DataFormat> formats = db.getContentTypes();
 			formats.forEach(a -> System.out.println("getContentTypes " + a.toString()));
-			fileTreeBox.setEffect(null);
-			fileTreeBox.setBackground(Backgrounds.white);
+			tocTabPane.setEffect(null);
+			tocTabPane.setBackground(Backgrounds.white);
 			if (db.hasFiles())  addFiles(e);
 		});
 	}
 	//--------------------------------------------------------------------------------
-
+	// specifically adding an experiment folder with xmls and subfolders
 	void addFiles(DragEvent ev)
 	{
 		Dragboard db = ev.getDragboard();
@@ -221,13 +309,9 @@ public class PublishController implements Initializable
 							addSegmentsDirectory(child);
 						}
 					}
-					else if (FileUtil.isXML(child))
-					{
-						// do nothing as the entire tree was added in whole
-					}
 				}
 				
-				break;
+				break;			// only adds the first directory, then breaks
 			}
 		}
 			
@@ -309,89 +393,24 @@ public class PublishController implements Initializable
 	private void setupCSVTable()
 	{
 		assert (csvtable != null);
-		for (int i=0; i< csvtable.getColumns().size(); i++)
-		{
-
-            TableColumn<DataRow, String> newColumn = new TableColumn<>("#" + i);  
-            final int j = i;
-            newColumn.setCellValueFactory(cellData -> cellData.getValue().get(j));
-            newColumn.setCellFactory(TextFieldTableCell.<DataRow, String>forTableColumn(null));
-
-//            
-//            tableColumn.setCellValueFactory(cellData
-//                    -> {
-//                        return cellData.getValue();
-//                    }
-//            );
-//            tableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-//
-
-//            tableColumn.setCellFactory(tableCol -> {
-//                ComboBoxTableCell<String, String> ct = new ComboBoxTableCell<>();
-//                ct.getItems().addAll("1", "2");
-//                ct.setComboBoxEditable(true);
- //            TableColumn<DataRow, ?> col  = csvtable.getColumns().get(i);
-//			col.setCellValueFactory(cellData
-//                            -> {
-//                                return new SimpleStringProperty("foo");
-//                            }
-//                    );
-//			col.setCellValueFactory(celldata -> { celldata.getValue().get(i); } );		
-//			col.setCellFactory(
-//			{
-//				return new TableCell<DataRow, String>()
-//				{
-//					@Override
-//					protected void updateItem(DataRow item, boolean empty)
-//					{
-//						super.updateItem(item, empty);
-//
-//						if (item == null || empty)
-//						{
-//							setText(null);
-//							setStyle("");
-//						} else
-//							setText(item.vals[0]);
-//					}
-//				}
-//			});
-		}
-//	}
 	}
+	
 	public class DataRow 	 // public because you get access to properties
 	{
-	    private ObservableList<SimpleStringProperty> vals = FXCollections.observableArrayList();
+	    IntegerProperty rowNum = new SimpleIntegerProperty(0);
+	    private ObservableList<SimpleIntegerProperty> vals = FXCollections.observableArrayList();
 		
 	    public DataRow(int nCols)
 		{
 	        for(int i=0; i<nCols; ++i)
-	        	vals.add(new SimpleStringProperty("aa" ));
+	        	vals.add(new SimpleIntegerProperty(0));
 		}
-	    public void set(int i, String s)	{ vals.get(i).set(s);	} 
-	    public StringProperty get(int i) { return vals.get(i); }
+	    public IntegerProperty getRowNum()	{	return rowNum;		}
+		public void setRowNum(int row)		{ 	rowNum.set(row); } 
+		public void set(int i, Integer s)	{ 	vals.get(i).set(s);	} 
+	    public IntegerProperty get(int i) 	{ 	return vals.get(i); }
+	    public int getWidth()				{ 	return vals.size();	}
 	}
-
-		//*******************************************************************
-//		public class MyData{
-//		    private ObservableList<SimpleIntegerProperty> cellValue = FXCollections.observableArrayList();
-//
-//		    public MyData(int howManyColumns) {
-//		        for(int i=0; i<howManyColumns; ++i)
-//		           this.cellValue.add(new SimpleIntegerProperty(new Random().nextInt(10)));
-//		    }
-//
-//		    public SimpleIntegerProperty getCellValue(int whichOne) {
-//		        return cellValue.get(whichOne);
-//		    }
-//
-//		    public void setCellValue(int cellValue, int whichOne) {
-//		        this.cellValue.set(whichOne, new SimpleIntegerProperty(cellValue));
-//		    }
-//
-//		    public void addNew(int numberOfNewElement){ //ads another variable for another column
-//		        cellValue.add(new SimpleIntegerProperty(new Random().nextInt(10)));
-//		    }
-//		}
 	
 	//--------------------------------------------------------------------------------
 
@@ -402,7 +421,7 @@ public class PublishController implements Initializable
 		xmlTree.setShowRoot(false);
 		// --- name column---------------------------------------------------------
 		TreeTableColumn<org.w3c.dom.Node, String> nameColumn = new TreeTableColumn<org.w3c.dom.Node, String>("Name");
-		nameColumn.setPrefWidth(220);
+		nameColumn.setPrefWidth(500);
 		TreeTableColumn<org.w3c.dom.Node, String> idCol = new TreeTableColumn<org.w3c.dom.Node, String>("Id");
 		idCol.setPrefWidth(100);
 	
@@ -476,21 +495,21 @@ public class PublishController implements Initializable
 	String lookup(String orig)
 	{
 		if (orig == null) return "";
-		if (orig.equals("Inputobjects"))	return "Input";
-		if (orig.equals("Outputobjects"))	return "Output";
-		if (orig.equals("EncapsulatedObjects"))	return "Objects";
-		if (orig.equals("EncapsulatedMethods"))	return "Steps";
-		if (orig.equals("SpecificParameter"))	return "Parameter";
-		if (orig.equals("SpecificParameters"))	return "Parameters";
-		if (orig.equals("ObjectConnector"))	return "Connection";
+		if (orig.equals("Inputobjects"))			return "Input";
+		if (orig.equals("Outputobjects"))			return "Output";
+		if (orig.equals("EncapsulatedObjects"))		return "Objects";
+		if (orig.equals("EncapsulatedMethods"))		return "Steps";
+		if (orig.equals("SpecificParameter"))		return "Parameter";
+		if (orig.equals("SpecificParameters"))		return "Parameters";
+		if (orig.equals("ObjectConnector"))			return "Connection";
 		if (orig.equals("EncapsulatedObjectsRef"))	return "References";
 		if (orig.equals("EncapsulatedMethodsRef"))	return "References";
-		if (orig.equals("Meth"))	return "Method";
-		if (orig.equals("MethRef"))	return "Reference";
-		if (orig.equals("MethodHistory"))	return "History";
-		if (orig.equals("ObjRef"))	return "Reference";
-		if (orig.equals("Obj"))	return "Object";
-		if (orig.equals("PrimaryContainer"))	return "Container";
+		if (orig.equals("Meth"))					return "Method";
+		if (orig.equals("MethRef"))					return "Reference";
+		if (orig.equals("MethodHistory"))			return "History";
+		if (orig.equals("ObjRef"))					return "Reference";
+		if (orig.equals("Obj"))						return "Object";
+		if (orig.equals("PrimaryContainer"))		return "Container";
 		return orig;
 	}
 		

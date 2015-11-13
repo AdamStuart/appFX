@@ -57,7 +57,7 @@
       </Tab>
       <Tab closable="false" text="Results">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+          <AnchorPane fx:id="resultsAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
                   <ListView fx:id="scans" layoutX="20.0" layoutY="26.0" prefHeight="207.0" prefWidth="200.0" />
                   <Label layoutX="21.0" layoutY="6.0" text="Scans" />
@@ -74,6 +74,7 @@
                         </TableView>
                      </children>
                   </StackPane>
+                  <Button fx:id="plotButton" layoutX="20.0" layoutY="427.0" mnemonicParsing="false" onAction="#doPlot" text="Plot" />
                </children>
             </AnchorPane>
         </content>
@@ -87,23 +88,6 @@
                   <Label layoutX="14.0" layoutY="44.0" text="Explain how this work is novel and innovative" />
                   <Label layoutX="14.0" layoutY="69.0" text="Explain how this work extends our understanding of the subject" />
                   <Label layoutX="466.0" layoutY="69.0" text="Describe Future work that might extend these results" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="69.0" />
-               </children>
-            </AnchorPane>
-        </content>
-      </Tab>
-      <Tab closable="false" text="References">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <TableView layoutX="7.0" layoutY="14.0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="14.0">
-                    <columns>
-                      <TableColumn prefWidth="132.0" text="Author" />
-                      <TableColumn prefWidth="142.0" text="Title" />
-                        <TableColumn minWidth="0.0" prefWidth="227.0" text="Journal" />
-                        <TableColumn minWidth="8.0" prefWidth="153.0" text="Date" />
-                        <TableColumn prefWidth="122.0" text="PMID" />
-                    </columns>
-                  </TableView>
                </children>
             </AnchorPane>
         </content>
