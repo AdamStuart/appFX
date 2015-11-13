@@ -612,7 +612,7 @@ public class PublishController implements Initializable
 			return tableData;
 		}
 		public String toString()		{	return id + ": " + csvFile.getName();		}
-		public CSVTableData getData()		{	return data;		}
+		public CSVTableData getData()	{	return data;		}
 	}
 	//--------------------------------------------------------------------------------
 	class ScanJob
