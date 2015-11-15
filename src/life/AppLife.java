@@ -1,4 +1,4 @@
-package game.life;
+package life;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

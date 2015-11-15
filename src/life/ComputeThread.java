@@ -1,4 +1,4 @@
-package game.life;
+package life;
 
 import java.util.ArrayList;
 import java.util.List;

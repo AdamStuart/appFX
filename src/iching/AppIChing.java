@@ -1,4 +1,4 @@
-package game.iching;
+package iching;
 
 import java.net.URL;
 

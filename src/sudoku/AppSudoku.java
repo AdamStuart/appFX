@@ -1,4 +1,4 @@
-package game.sudoku;
+package sudoku;
 
 import java.net.URL;
 
