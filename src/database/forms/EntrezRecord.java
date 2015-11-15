@@ -4,9 +4,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import bookclub.StringUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import util.StringUtil;
 import xml.XMLElement;
 
 //http://www.ncbi.nlm.nih.gov/books/NBK25501/
