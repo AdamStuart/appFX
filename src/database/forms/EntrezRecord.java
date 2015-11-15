@@ -7,6 +7,7 @@ import org.w3c.dom.NodeList;
 import game.bookclub.StringUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import xml.XMLElement;
 
 //http://www.ncbi.nlm.nih.gov/books/NBK25501/
 public class EntrezRecord
@@ -21,6 +22,7 @@ public class EntrezRecord
 	private SimpleStringProperty issue = new SimpleStringProperty();
 	private SimpleStringProperty pages = new SimpleStringProperty();
 	private SimpleStringProperty abst = new SimpleStringProperty();
+	String rawItem;
 	
 	public StringProperty pmidProperty()	{ return pmid;	}
 	public StringProperty authorProperty()	{ return author;	}
@@ -35,6 +37,7 @@ public class EntrezRecord
 	public EntrezRecord(Element xml)
 	{
 		this();
+		rawItem = xml.toString();
 		NodeList items = xml.getChildNodes();
 		int sz = items.getLength();
 		for (int i=0; i< sz; i++)
@@ -83,4 +86,10 @@ public class EntrezRecord
 	public String getAbstract()	{ return abst.get();		}		// TODO
 	
 	public String toString()	{ return getAuthor() + ", " + getTitle() + ": " + getSource() + ": " + getPMID() + ": " + getPubDate() + ".";}
+	
+	public XMLElement getElement()
+	{
+		XMLElement elem = new XMLElement(rawItem);
+		return elem;
+	}
 }

@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import container.publish.CriterionBox;
 import gui.Borders;
 import gui.WindowSizeAnimator;
 import javafx.collections.FXCollections;
@@ -27,6 +28,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import util.FileUtil;
 import util.StringUtil;
+import xml.XMLElement;
 
 //http://www.ncbi.nlm.nih.gov/books/NBK25501/
 // A form that can send queries to a public bibliographic database
@@ -45,9 +47,12 @@ public class EntrezForm extends VBox
 		Button search = new Button("Search");
 		search.setOnAction(e -> {  search();  });
 //		dialogPane.setContent(dlogContent);
+		ObservableList<String> fieldList = FXCollections.observableArrayList(fields);
 
-		HBox line = makeCriteriaLine(fields, 0);	
-		HBox line2 = makeCriteriaLine(fields, 1);	
+		CriterionBox line = new CriterionBox(fieldList, true, queryContent);	
+		CriterionBox line2 = new CriterionBox(fieldList, false, queryContent);	
+		line.set("Author", "Hennig");
+		line2.set("Journal", "Cytometry");
 		
 		queryContent.setPadding(new Insets(10, 10, 10, 10));
 		queryContent.getChildren().addAll(search, line, line2);
@@ -74,7 +79,6 @@ public class EntrezForm extends VBox
 		col5.setCellValueFactory(new PropertyValueFactory<EntrezRecord, TableView>("source"));
 //		col6.setCellValueFactory(new PropertyValueFactory<EntrezRecord, TableView>("issue"));
 
-//		Region.layoutInArea(resultsTable, 10d, 10d, 0d, 0d, 0d, 10d, null, true, true, HPos.CENTER,  VPos.CENTER, true);
 		SplitPane split =  new SplitPane(resultsTable, abstField);
 		getChildren().addAll(queryContent, split);
 		split.setOrientation(Orientation.VERTICAL);
@@ -84,6 +88,25 @@ public class EntrezForm extends VBox
 		
 	}
 		//------------------------------------------------------------------------------
+	public XMLElement getXML()
+	{
+		XMLElement elem = new XMLElement("Entrez");
+		for (EntrezRecord rec : resultsTable.getItems())
+			elem.addElement(rec.getElement());
+		return null;
+	}
+	
+	public void setXML(XMLElement e)
+	{
+		NodeList nodes = e.getChildNodes();
+		for (int i=0; i< nodes.getLength(); i++)
+		{
+			EntrezRecord rec = new EntrezRecord((Element)e);
+			System.out.println("TEST ME");
+			resultsTable.getItems().add(rec);
+		}
+	}
+	//------------------------------------------------------------------------------
 
 	private void selChanged(Number val)
 	{
@@ -196,55 +219,6 @@ public class EntrezForm extends VBox
 	}
 
 	//------------------------------------------------------------------------------
-	HBox makeCriteriaLine(String[] fieldList, final int index)
-	{
-		HBox line = new HBox(6);
-		ObservableList<String> strs = FXCollections.observableArrayList(fieldList);
-		ChoiceBox<String> fieldBox = new ChoiceBox<String>(strs);
-		fieldBox.getSelectionModel().clearAndSelect(1);
-		ComboBox<String> contentBox  = new ComboBox<String>();
-		contentBox.setEditable(true);
-		Button plusButton = new Button("+");
-		plusButton.setStyle("-fx-background-radius: 20; ");
-		plusButton.setOnAction(event -> {	addLine(line); });
-		Pane spacer = new Pane();
-		spacer.setPrefSize(40,20);
-		contentBox.setPrefWidth(150);
-		line.getChildren().addAll(fieldBox, contentBox, spacer, plusButton );  //verbBox, 
-		if (index > 0)  
-		{
-			Button minusButton = new Button("-");
-			minusButton.setStyle("-fx-background-radius: 20; ");
-			minusButton.setOnAction(event -> {	removeLine(line); });
-			line.getChildren().addAll(minusButton);
-		}
-		return line;
-	}
-	//------------------------------------------------------------------------------
-
-	private void addLine(HBox predecessor)
-	{
-		int idx = 1 + queryContent.getChildren().indexOf(predecessor);
-		HBox line = makeCriteriaLine(fields, idx);	
-		getChildren().add(idx, line);
-	
-		double lineheight = 36;  
-		Stage stage = (Stage)(queryContent.getScene().getWindow());
-		double curHght = 20 + getHeight();
-		WindowSizeAnimator anim = new WindowSizeAnimator(stage, curHght, curHght+lineheight);
-		anim.play();
-	
-	}
-	
-	private void removeLine(HBox line)
-	{
-		queryContent.getChildren().remove(line);
-		double lineheight = line.getHeight() + SPACING;
-		Stage stage = (Stage) getScene().getWindow();
-		double curHght = 20 + getHeight();
-		WindowSizeAnimator anim = new WindowSizeAnimator(stage, curHght, curHght-lineheight);
-		anim.play();
-	}
 
 	//http://www.ncbi.nlm.nih.gov/books/NBK25501/
 	String[] fields = new String[] {"Affiliation",
