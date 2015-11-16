@@ -1,4 +1,4 @@
-package container.publish;
+package publish;
 
 import java.io.File;
 import java.io.FileOutputStream;

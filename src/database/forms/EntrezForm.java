@@ -4,7 +4,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import container.publish.CriterionBox;
 import gui.Borders;
 import gui.WindowSizeAnimator;
 import javafx.collections.FXCollections;
@@ -26,6 +25,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import publish.CriterionBox;
 import util.FileUtil;
 import util.StringUtil;
 import xml.XMLElement;

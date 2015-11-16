@@ -1,4 +1,4 @@
-package container.publish;
+package publish;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -18,7 +17,6 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import database.forms.EntrezForm;
@@ -29,24 +27,22 @@ import gui.Effects;
 import gui.TabPaneDetacher;
 import javafx.application.Application;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -93,6 +89,7 @@ public class PublishController implements Initializable
 	@FXML private VBox fileTreeBox;
 	private XMLFileTree fileTree;
 	@FXML SplitPane methodsplitter;
+	@FXML SplitPane resultsplitter;
 	@FXML TableView<DataRow> csvtable;
 	ObservableList<String> speciesList = FXCollections.observableArrayList("Mouse", "Human", "More...");
 	ObservableList<String> cellTypes = FXCollections.observableArrayList("T Cells", "B Cells", "NK Cells", "More...");
@@ -100,13 +97,13 @@ public class PublishController implements Initializable
 
 	@FXML Button plotButton;
 
-	static String[] suppressNames = new String[]{ "SpecificParameters", "Environment", "Machine", "MethodHistory"};
+	static String[] suppressNames = new String[]{ "SpecificParameters", "Environment", "Machine", "MethodHistory"};		// close the disclosure triangle, as they may be big
 	public static Application getApplication()	{		return AppPublish.getInstance();	}
-	public static Stage getStage()		{		return AppPublish.getStage();	}
-	PublishDocument doc;
-	PublishDocument getDocument()		{ return doc;	}
+	public static Stage getStage()				{		return AppPublish.getStage();	}
+	private PublishDocument doc;
+//	private PublishDocument getDocument()		{ return doc;	}
 
-	class NodeTreeItem extends TreeItem<org.w3c.dom.Node> {};
+	@FXML void showMethodsTree()	{		new MethodsTree(fileTree.getRoot());	}
 
 	//-------------------------------------------------------------------------------------------
 	@Override public void initialize(URL location, ResourceBundle resources)
@@ -151,19 +148,21 @@ public class PublishController implements Initializable
 		scans.getSelectionModel().selectedItemProperty().addListener((obs, old, val)-> {
 			image.setImage(val.getImage());
 			image.setVisible(true);
-			csvtable.setVisible(false);
+			resultsplitter.setVisible(false);
 		});
 		segments.getSelectionModel().selectedItemProperty().addListener((obs, old, val)-> {
 			installSegmentTable(val.getData());
 			image.setVisible(false);
-			csvtable.setVisible(true);
+			resultsplitter.setVisible(true);
 		});
 	}
 
 	//-------------------------------------------------------------------------------------------
+	// TODO -- persistance is not finished.  Questions about enclosing data vs. referring to it.
+	
 	List<XMLEvent> steps;
 	XMLOutputFactory factory      = XMLOutputFactory.newInstance();
-	XMLEventFactory  eventFactory = XMLEventFactory.newInstance();
+	XMLEventFactory  werk = XMLEventFactory.newInstance();
 
 	public void saveas()		
 	{ 	
@@ -171,69 +170,90 @@ public class PublishController implements Initializable
 		save();	
 	}
 	
-	public void save()
+	@FXML private void save()
 	{
 		File f = doc.getSaveDestination();
 		if (f != null)
 		{
 			steps = new ArrayList<XMLEvent>();
+			steps.add(werk.createStartElement( "", "", "Publication"));
 			extractState(); 
 			extractHypothesis();
 			extractResearch();
 			extractMethods();
 			extractResults();
 			extractDiscussion();
+			steps.add(werk.createEndElement( "", "", "Publication"));
 			XMLFactory.writeEvents(steps, f.getAbsolutePath());
 		}
 	}
 	private void extractState()
 	{
 		// window positions, active tab, selections, etc
-		steps.add(eventFactory.createStartElement( "", "", "State"));
-		steps.add(eventFactory.createAttribute( "active", "Methods"));
-		steps.add(eventFactory.createAttribute( "x", "300"));
-		steps.add(eventFactory.createAttribute( "y", "400"));
-		steps.add(eventFactory.createEndElement( "", "", "State"));
+		steps.add(werk.createStartElement( "", "", "State"));
+		steps.add(werk.createAttribute( "active", "Methods"));
+		steps.add(werk.createAttribute( "x", "300"));
+		steps.add(werk.createAttribute( "y", "400"));
+		steps.add(werk.createEndElement( "", "", "State"));
 	}
-	
 	
 	private void extractHypothesis()
 	{
-		steps.add(eventFactory.createStartElement( "", "", "Hypothesis"));
-		steps.add(eventFactory.createAttribute("species", species.getSelectionModel().getSelectedItem()));
-		steps.add(eventFactory.createAttribute("celltype", celltype.getSelectionModel().getSelectedItem()));
-		steps.add(eventFactory.createAttribute("technology", technology.getSelectionModel().getSelectedItem()));
-		steps.add(eventFactory.createStartElement( "", "", "Keywords"));
-		steps.add(eventFactory.createCData(keywords.getText()));
-		steps.add(eventFactory.createEndElement( "", "", "Keywords"));
+		steps.add(werk.createStartElement( "", "", "Hypothesis"));
+		steps.add(werk.createAttribute("species", species.getSelectionModel().getSelectedItem()));
+		steps.add(werk.createAttribute("celltype", celltype.getSelectionModel().getSelectedItem()));
+		steps.add(werk.createAttribute("technology", technology.getSelectionModel().getSelectedItem()));
+		steps.add(werk.createStartElement( "", "", "Keywords"));
+		steps.add(werk.createCData(keywords.getText()));
+		steps.add(werk.createEndElement( "", "", "Keywords"));
+		steps.add(werk.createStartElement( "", "", "Content"));
+		steps.add(werk.createCData(hypothesis.getHtmlText()));
+		steps.add(werk.createEndElement( "", "", "Content"));
+		steps.add(werk.createEndElement( "", "", "Hypothesis"));
 	}
 	
 	private void extractResearch()
 	{
-		steps.add(eventFactory.createStartElement( "", "", "Research"));
-		steps.add(eventFactory.createEndElement( "", "", "Research"));
+		steps.add(werk.createStartElement( "", "", "Research"));
+		steps.add(werk.createEndElement( "", "", "Research"));
 	}
 	
 	private void extractMethods()
 	{
-		steps.add(eventFactory.createStartElement( "", "", "Methods"));
-		steps.add(eventFactory.createEndElement( "", "", "Methods"));
+		steps.add(werk.createStartElement( "", "", "Methods"));
+		steps.add(werk.createStartElement( "", "", "File"));
+		steps.add(werk.createAttribute("path", getMethodsFilePath()));
+		steps.add(werk.createEndElement( "", "", "File"));
+		steps.add(werk.createEndElement( "", "", "Methods"));
 	}
+	
+	String methodsPath;
+	private String getMethodsFilePath()			{		return methodsPath;	}
+	private void setMethodsFilePath(String inS)	{		methodsPath = inS;	}
 	
 	private void extractResults()
 	{
-		steps.add(eventFactory.createStartElement( "", "", "Results"));
-		steps.add(eventFactory.createEndElement( "", "", "Results"));
+		steps.add(werk.createStartElement( "", "", "Results"));
+		steps.add(werk.createEndElement( "", "", "Results"));
 	}
 	
 	private void extractDiscussion()
 	{
-		steps.add(eventFactory.createStartElement( "", "", "Discussion"));
-		steps.add(eventFactory.createCData(discussion.getHtmlText()));
-		steps.add(eventFactory.createEndElement( "", "", "Discussion"));
+		steps.add(werk.createStartElement( "", "", "Discussion"));
+		steps.add(werk.createCData(discussion.getHtmlText()));
+		steps.add(werk.createEndElement( "", "", "Discussion"));
 	}
 	
 	//-------------------------------------------------------------------------------------------
+	private void setActiveTab(String active)
+	{
+		for (Tab tab : tocTabPane.getTabs())
+			if (tab.getText().equals(active))	
+			{
+				tocTabPane.getSelectionModel().select(tab);
+				break;
+			}
+	}
 
 
 	public void install(Document doc)
@@ -254,14 +274,70 @@ public class PublishController implements Initializable
 		// window positions, active tab, selections, etc
 		if (elem != null)
 		{
-			
+			String active = getAttribute(elem, "active");
+			setActiveTab(active);
+			double x = getDoubleAttribute(elem, "x");
+			double y = getDoubleAttribute(elem, "y");
+			Stage stage = getStage();
+			stage.setX(x);
+			stage.setY(x);
 		}
 	}
+	
+	public double getDoubleAttribute(org.w3c.dom.Node elem, String attrName)
+	{
+		return StringUtil.toDouble(getAttribute(elem, attrName));
+	}
+	
+	public String getAttribute(org.w3c.dom.Node elem, String attrName)
+	{
+		if (elem == null) return null;
+		org.w3c.dom.Node item = elem.getAttributes().getNamedItem(attrName);
+		return (item == null) ? null : item.getTextContent();
+	}
+	
+	public org.w3c.dom.Node getChild(org.w3c.dom.Node elem, String childName)
+	{
+		if (elem == null) return null;
+		NodeList children = elem.getChildNodes();
+		int sz = children.getLength();
+		for (int i=0; i<sz; i++)
+		{
+			org.w3c.dom.Node child = children.item(i);
+			if (child == null)  continue;
+			if (childName.equals(child.getTextContent()))
+			return child;
+		}
+		return null;
+	}
+	
 	private void setHypothesis(org.w3c.dom.Node elem)
 	{
 		if (elem != null)
 		{
-			
+			String Species = getAttribute(elem, "species");
+			String Celltype = getAttribute(elem, "celltype");
+			String Technology = getAttribute(elem, "technology");
+			species.getSelectionModel().select(Species);
+			celltype.getSelectionModel().select(Celltype);
+			technology.getSelectionModel().select(Technology);
+
+			NodeList children = elem.getChildNodes();
+			int sz = children.getLength();
+			for (int i=0; i<sz; i++)
+			{
+				org.w3c.dom.Node child = children.item(i);
+				if (child == null)  continue;
+				if ("Keywords".equals(child.getTextContent()))
+				{
+					
+				}
+				if ("Content".equals(child.getTextContent()))
+				{
+					
+				}
+			}
+					
 		}
 	}
 	
@@ -295,15 +371,13 @@ public class PublishController implements Initializable
 			if (elem instanceof Element)
 				discussion.setHtmlText(((Element)elem).getTextContent());
 	}
-	
-	
+
 	//-------------------------------------------------------------------------------------------
 	public void installSegmentTable(CSVTableData inData)
 	{
-		if (inData != null)
-			System.out.println("install table here " + inData.getData().size());
-		
+		if (inData == null) return;
 		int nCols = inData.getData().size();
+		System.out.println("installing table with " + nCols + " columns");
 		
 		csvtable.getColumns().clear();
 		if (inData.getColumnNames().size() == 0)
@@ -365,9 +439,9 @@ public class PublishController implements Initializable
 		List<Histogram1D> histos = new ArrayList<Histogram1D>();
 		for (int i=0;i<nCols; i++)
 		{
-			if (i < 2) continue;		// first two columns are position info, I think
-			Histogram1D hist = new Histogram1D("#" + i, 100, new Range(mins[i], maxs[i]), false);
-			for (int row=0; row<nRows; row++)
+			if (i < 2) continue;		// first two columns are position info, I think. skip them
+			Histogram1D hist = new Histogram1D("temp" , new Range(mins[i], maxs[i]));
+			for (int row=0; row<nRows; row++)		// first pass to calculate tails
 			{
 				DataRow aRow = data.get(row);
 				Integer s = aRow.get(i).get();
@@ -377,7 +451,7 @@ public class PublishController implements Initializable
 			double percentile1 = hist.getPercentile(1);
 			double percentile99 = hist.getPercentile(99);
 			if (percentile1 == percentile99) continue;
-			hist = new Histogram1D("#" + i, 200, new Range(percentile1,percentile99), false);
+			hist = new Histogram1D("#" + i, new Range(percentile1,percentile99));
 			for (int row=0; row<nRows; row++)
 			{
 				DataRow aRow = data.get(row);
@@ -391,34 +465,18 @@ public class PublishController implements Initializable
 	
 	private void fillChartBox(List<Histogram1D> histos)
 	{
-//		if (chartBox != null) resultsAnchor.getChildren().remove(chartBox);
-//		chartBox = new VBox(8);
 		graphVBox.getChildren().clear();
 		for (Histogram1D histo : histos)
 		{
 			Range r = histo.getRange();
 			System.out.println("Histogram has range of " + r.min() + " - " + r.max());
 			if (r.width() < 50) continue;
-			
-//			double roundedMin = ((int) r.min() / 100 ) * 100;
-//			double roundedMax = ((int) r.max() / 100 ) * 100;
-//			double unit = (roundedMax - roundedMin) / 5;
-			NumberAxis  xAxis = new NumberAxis();		//roundedMin, roundedMax, unit
-			NumberAxis  yAxis = new NumberAxis();
-			LineChart<Number, Number>  chart = new LineChart<Number, Number>(xAxis, yAxis);
-			chart.setTitle(histo.getName());
-			chart.setCreateSymbols(false);
-			chart.getData().add( histo.getDataSeries());	
-			chart.setLegendVisible(false);
-			chart.setPrefHeight(100);
+			LineChart<Number, Number> chart = histo.makeChart();
 			graphVBox.getChildren().add(chart);
 			VBox.setVgrow(chart, Priority.ALWAYS);
 		}
-//		resultsAnchor.getChildren().add(0,graphVBox);
-//		AnchorPane.setRightAnchor(chartBox, 50.);
 	}
-	VBox chartBox;
-//--------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------
 
 	private void setupDropPane()
 	{
@@ -459,75 +517,72 @@ public class PublishController implements Initializable
 		for (File f : files)
 		{
 			if (f.isDirectory())
-			{
-				fileTree.setRoot(f);
-				for (File child : f.listFiles())
-				{
-					if (child.isDirectory())
-					{
-						String chName = child.getName().toLowerCase();
-						if ("scanjobs".equals(chName))
-						{
-							scans.getItems().clear();
-							addScanJobsDirectory(child);
-						}
-						if ("segments".equals(chName))
-						{
-							segments.getItems().clear();
-							addSegmentsDirectory(child);
-						}
-					}
-				}
-				
-				break;			// only adds the first directory, then breaks
+			{		
+				setEDLDirectory(f);
+				break;			//  add the first directory, then break
 			}
 		}
 	}
 	//--------------------------------------------------------------------------------
+	private void setEDLDirectory(File f)
+	{
+		setMethodsFilePath(f.getAbsolutePath());
+		fileTree.setRoot(f);	// traverse down the file system tree, adding everything	
+		
+		for (File child : f.listFiles())
+		{
+			if (child.isDirectory())		// add sub-directories to the results tab
+			{
+				String chName = child.getName().toLowerCase();
+				if ("scanjobs".equals(chName))
+				{
+					scans.getItems().clear();
+					addScanJobsDirectory(child);
+				}
+				if ("segments".equals(chName))
+				{
+					segments.getItems().clear();
+					addSegmentsDirectory(child);
+				}
+			}
+		}
+	}
+	
 	private void addScanJobsDirectory(File f)
 	{
 		for (File kid : f.listFiles())
 		{
 			if (FileUtil.isImageFile(kid))
-				addJob(kid);
+			{
+				String id = kid.getParentFile().getParentFile().getParentFile().getName();
+				scans.getItems().add(new ScanJob(id, kid));
+			}
 			else if (kid.isDirectory())
 				addScanJobsDirectory(kid);
 		}
-	}
-	
-	
-	private void addJob(File kid)
-	{
-		String id = kid.getParentFile().getParentFile().getParentFile().getName();
-		scans.getItems().add(new ScanJob(id, kid));
 	}
 
 	//--------------------------------------------------------------------------------
 	private void addSegmentsDirectory(File f)
 	{
-		File[] kids = f.listFiles();
-		for (File kid : kids)
-		{
-			String id = kid.getName();
-			if (kid.isDirectory())
-			{
-				File[] grandkids = kid.listFiles();
-				for (File gkid : grandkids)
-					if (FileUtil.isCSV(gkid))
-						addSegmentFile(id, gkid);
-			}
-		}
-	}
-	
-	private void addSegmentFile(String id, File gkid)
-	{
 		try
 		{
-			Segment seg = new Segment(id, gkid);		// read the file, build the table
-			segments.getItems().add(seg);
+			File[] kids = f.listFiles();
+			for (File kid : kids)
+			{
+				String id = kid.getName();
+				if (kid.isDirectory())
+				{
+					File[] grandkids = kid.listFiles();
+					for (File gkid : grandkids)
+						if (FileUtil.isCSV(gkid))
+							segments.getItems().add(new Segment(id, gkid));		// read the file, build the table
+				}
+			}
 		}
 		catch (Exception e) {			e.printStackTrace();		}
 	}
+	
 	//--------------------------------------------------------------------------------
 
 	private void setupCSVTable()
@@ -553,121 +608,14 @@ public class PublishController implements Initializable
 	}
 	
 	//--------------------------------------------------------------------------------
-	@FXML void showMethodsTree()
-	{	
-		new MethodsTree(fileTree.getRoot());
-		
-	}
-
 	private void setupXMLTree()
 	{
 		assert (xmlTree != null);
 		xmlTree.setFixedCellSize(30);
 		xmlTree.setShowRoot(false);
-		// --- name column---------------------------------------------------------
-		TreeTableColumn<org.w3c.dom.Node, String> nameColumn = new TreeTableColumn<org.w3c.dom.Node, String>("Name");
-		nameColumn.setPrefWidth(500);
-		TreeTableColumn<org.w3c.dom.Node, String> idCol = new TreeTableColumn<org.w3c.dom.Node, String>("Id");
-		idCol.setPrefWidth(100);
-	
-		nameColumn.setCellValueFactory(p ->
-		{
-			org.w3c.dom.Node f = p.getValue().getValue();
-			String text = "error";
-			if (f != null)
-			{
-				text = lookup(f.getNodeName());
-	
-				if (text.equals("Object") || text.equals("Method")|| text.equals("Machine"))
-				{
-					org.w3c.dom.Node n = f.getAttributes().getNamedItem("Type");
-					if (n != null)
-						text = n.getTextContent();
-				} else
-				{
-					org.w3c.dom.Node n = f.getAttributes().getNamedItem("Name");
-					if (n != null)
-						text = n.getTextContent();
-				}
-				
-			}
-			text = lookup(text);
-			if (text.length() > 100)
-				text = text.substring(0,100) + "...";
-			return new ReadOnlyObjectWrapper<String>(text);
-		});
-		
-		
-		idCol.setCellValueFactory(p ->
-		{
-			org.w3c.dom.Node f = p.getValue().getValue();
-			String text = "error";
-			if (f != null)
-			{
-				if (f.getNodeName().equals("Restriction"))
-				{
-					org.w3c.dom.Node n = f.getAttributes().getNamedItem("MinOccur");
-					if (n != null)
-						text = n.getTextContent();
-					n = f.getAttributes().getNamedItem("MaxOccur");
-					if (n != null)
-						text += ", " + n.getTextContent();
-				}
-				else
-				{
-					text = f.getTextContent();
-					if (text.length() > 64)
-						text = text.substring(0,64) + "...";
-					
-					org.w3c.dom.Node n = f.getAttributes().getNamedItem("UID");
-					if (n != null)
-						text = n.getTextContent();
-					n = f.getAttributes().getNamedItem("Value");
-					if (n != null)
-					{
-						text = n.getTextContent();
-						n = f.getAttributes().getNamedItem("Unit");
-						if (n != null)
-							text += " " + n.getTextContent();
-					}
-				}
-			}
-			return new ReadOnlyObjectWrapper<String>(text);
-		});
-		xmlTree.getColumns().setAll(new TreeTableColumn[] {nameColumn, idCol});
-		setupDictionary();
+		EDLParsingHelper helper = new EDLParsingHelper(xmlTree);
+		helper.setupDictionary();
 	}
-	
-	static Map<String,String> lookupMap = new HashMap<String,String>();
-	
-	
-	void setupDictionary()
-	{
-		lookupMap.put("Inputobjects", "Input");
-		lookupMap.put("Outputobjects", "Output");
-		lookupMap.put("PrimaryContainer", "Container");
-		lookupMap.put("ObjRef", "Reference");
-		lookupMap.put("Obj", "Object");
-		lookupMap.put("SpecificParameter", "Parameter");
-		lookupMap.put("SpecificParameters", "Parameters");
-		lookupMap.put("ObjectConnector", "Connection");
-		lookupMap.put("EncapsulatedObjects", "Objects");
-		lookupMap.put("EncapsulatedMethods", "Steps");
-		lookupMap.put("EncapsulatedObjectsRef", "References");
-		lookupMap.put("EncapsulatedMethodsRef", "References");
-		lookupMap.put("Meth", "Method");
-		lookupMap.put("MethRef", "Reference");
-		lookupMap.put("MethodHistory", "History");
-	}
-		
-		
-	String lookup(String orig)
-	{
-		if (orig == null) return "";
-		String val = lookupMap.get(orig);
-		return (val == null) ? orig : val;
-	}
-		
 
 	//--------------------------------------------------------------------------------
 	class Segment
@@ -681,9 +629,7 @@ public class PublishController implements Initializable
 			id = inID;
 			csvFile = inFile;
 			if (csvFile != null)		// read table
-			{
 				data = readBadCSVfile(csvFile);		// its actually tab-separated
-			} 
 		}
 		
 		private CSVTableData readBadCSVfile(File f)
@@ -697,7 +643,7 @@ public class PublishController implements Initializable
 				List<ObservableList<String>> idata = tableData.getData();
 				String line = null;
 				
-				line = br.readLine();
+				line = br.readLine();		// first line is text labels, but not in columns
 				line = br.readLine();
 				String[] row = line.split("\t"); 
 				int len = row.length;
@@ -752,6 +698,7 @@ public class PublishController implements Initializable
 	
 	//--------------------------------------------------------------------------------
 
+	// TODO -- There's no menu bar at this point, but here are placeholders we'll need
 	@FXML void doNew()
 	{
 		try
@@ -759,7 +706,6 @@ public class PublishController implements Initializable
 			AppPublish.getInstance().doNew(new Stage());
 		} 
 		catch (Exception e)		{		e.printStackTrace();	}
-		
 	}
 	
 	@FXML void doOpen()
@@ -770,17 +716,10 @@ public class PublishController implements Initializable
 		if (file != null)		open(file);
 	}
 	
-	void open(File f)
-	{
-		
-	}
-	@FXML void doClose()
-	{
-		
-	}
-	@FXML void doZip()
-	{
-	}
+	void open(File f)	{			}		//TODO
+	@FXML void doClose(){	save();		}	//TODO -- pbly obsolete if we install a close handler!
+	@FXML void doZip()	{	}	//TODO
+	
 	@FXML void doUnzip()
 	{
        FileChooser fileChooser = new FileChooser();
@@ -793,24 +732,10 @@ public class PublishController implements Initializable
     		+ "\nsee folder at: " + StringUtil.chopExtension(f.getAbsolutePath()));
        }
 	}
-	//--------------------------------------------------------------------------------------
-	@FXML void doUndo()
-	{	
-	}
-	@FXML void doRedo()
-	{
-	}
-	@FXML void doCut()
-	{
-	}
-	@FXML void doCopy()
-	{
-	}
-	@FXML void doPaste()
-	{
-	}
-	//--------------------------------------------------------------------------------
-	@FXML void doCompare()
-	{ 
-	}
+	@FXML void doUndo()	{		}
+	@FXML void doRedo()	{	}
+	@FXML void doCut()	{	}
+	@FXML void doCopy()	{	}
+	@FXML void doPaste()	{	}
+	@FXML void doCompare()	{ 	}
 }

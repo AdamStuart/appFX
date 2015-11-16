@@ -1,4 +1,4 @@
-package container.publish;
+package publish;
 
 import icon.GlyphsDude;
 import javafx.collections.ObservableList;

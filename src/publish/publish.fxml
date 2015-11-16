@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<TabPane fx:id="tocTabPane" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="container.publish.PublishController">
+<TabPane fx:id="tocTabPane" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="publish.PublishController">
    <tabs>
       <Tab closable="false" text="Hypothesis">
         <content>
@@ -26,6 +26,7 @@
                   <Label layoutX="16.0" layoutY="-2.0" prefHeight="46.0" prefWidth="646.0" text="The purpose of the hypothesis is to assert the connections or correlations you intend to demonstrate. Provide specific enough informations that we can search for similar work in the literature." wrapText="true" />
                   <Label layoutX="429.0" layoutY="61.0" text="Technology" />
                   <ChoiceBox fx:id="technology" layoutX="508.0" layoutY="56.0" prefHeight="27.0" prefWidth="146.0" />
+                  <Button layoutX="718.0" layoutY="14.0" mnemonicParsing="false" onAction="#saveas" text="Save" />
                </children>
             </AnchorPane>
         </content>
@@ -67,7 +68,7 @@
                   <StackPane layoutX="238.0" layoutY="22.0" prefHeight="424.0" prefWidth="549.0" AnchorPane.bottomAnchor="21.0" AnchorPane.leftAnchor="238.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="22.0">
                      <children>
                         <ImageView fx:id="image" fitHeight="305.0" fitWidth="526.0" layoutX="238.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
-                        <SplitPane dividerPositions="0.5">
+                        <SplitPane fx:id="resultsplitter" dividerPositions="0.5">
                            <items>
                               <TableView fx:id="csvtable" prefHeight="107.0" prefWidth="549.0">
                                 <columns>

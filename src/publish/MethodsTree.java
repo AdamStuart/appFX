@@ -1,4 +1,4 @@
-package container.publish;
+package publish;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -126,7 +126,8 @@ public class MethodsTree
 		}
 		return null;
 	}
-
+	// inNode is either Inputobjects or Outputobjects.  Iterate thru the Obj list
+	// and get the Identity element and then the UID attribute
 	private void extractObjects(String id, Node inNode, Map<String, List<String>> map)
 	{
 		NodeList children = inNode.getChildNodes();
