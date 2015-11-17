@@ -40,6 +40,7 @@ public class EntrezForm extends VBox
 	TableView<EntrezRecord> resultsTable;
 	VBox queryContent = new VBox(10);
 	TextArea abstField = new TextArea();
+	public ObservableList<EntrezRecord> getItems() { return resultsTable.getItems();	}
 	public EntrezForm()
 	{
 		super(SPACING);
@@ -91,7 +92,7 @@ public class EntrezForm extends VBox
 	public XMLElement getXML()
 	{
 		XMLElement elem = new XMLElement("Entrez");
-		for (EntrezRecord rec : resultsTable.getItems())
+		for (EntrezRecord rec : getItems())
 			elem.addElement(rec.getElement());
 		return null;
 	}
@@ -103,14 +104,14 @@ public class EntrezForm extends VBox
 		{
 			EntrezRecord rec = new EntrezRecord((Element)e);
 			System.out.println("TEST ME");
-			resultsTable.getItems().add(rec);
+			getItems().add(rec);
 		}
 	}
 	//------------------------------------------------------------------------------
 
 	private void selChanged(Number val)
 	{
-		EntrezRecord rec = resultsTable.getItems().get((int)val);
+		EntrezRecord rec = getItems().get((int)val);
 		if (rec != null)
 			rec.fetch();
 		abstField.setText(rec.getAbstract());
@@ -169,7 +170,7 @@ public class EntrezForm extends VBox
 				org.w3c.dom.Node aSum = sums.item(m);
 				if (aSum.getNodeName().equals("eSummaryResult"))
 				{
-					resultsTable.getItems().clear();
+					getItems().clear();
 					NodeList docSum = aSum.getChildNodes();
 					for (int n=0; n< docSum.getLength(); n++)
 					{
@@ -178,7 +179,7 @@ public class EntrezForm extends VBox
 						{
 							EntrezRecord rec = new EntrezRecord((Element)e);
 							System.out.println(rec.toString());
-							resultsTable.getItems().add(rec);
+							getItems().add(rec);
 						}
 					}
 				}
@@ -187,10 +188,27 @@ public class EntrezForm extends VBox
 	}
 
 	//-----------------------------------------------------------------
+	// first option is for the search function, the second is persistence
 	public static String EUTILS = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
 	private String extract()
 	{
 		StringBuffer buf = new StringBuffer(EUTILS + "esearch.fcgi?db=pubmed&term=");
+		collectSearchTerms(buf);
+		System.out.println(buf.toString());
+		return buf.toString();
+	}
+
+	public String extractPlain()		// for saving, we don't want the full url
+	{
+		StringBuffer buf = new StringBuffer();
+		collectSearchTerms(buf);
+		return buf.toString();
+	}
+	
+	//------------------------------------------------------------------------------
+
+	private void collectSearchTerms(StringBuffer buf)
+	{
 		for (Node line : queryContent.getChildren())
 		{
 			if (line instanceof HBox)
@@ -213,12 +231,8 @@ public class EntrezForm extends VBox
 				catch( Exception e) {}
 			}
 		}
-		buf.setLength(buf.length()-1);		// remove trailing +
-		System.out.println(buf.toString());
-		return buf.toString();
+		buf.setLength(buf.length()-1);		// remove trailing +		
 	}
-
-	//------------------------------------------------------------------------------
 
 	//http://www.ncbi.nlm.nih.gov/books/NBK25501/
 	String[] fields = new String[] {"Affiliation",

@@ -20,6 +20,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import database.forms.EntrezForm;
+import database.forms.EntrezRecord;
 import diagrams.draw.App;
 import gui.Backgrounds;
 import gui.Borders;
@@ -158,7 +159,7 @@ public class PublishController implements Initializable
 	}
 
 	//-------------------------------------------------------------------------------------------
-	// TODO -- persistance is not finished.  Questions about enclosing data vs. referring to it.
+	// TODO -- persistence is not finished.  Questions about enclosing data vs. referring to it.
 	
 	List<XMLEvent> steps;
 	XMLOutputFactory factory      = XMLOutputFactory.newInstance();
@@ -215,19 +216,40 @@ public class PublishController implements Initializable
 	private void extractResearch()
 	{
 		steps.add(werk.createStartElement( "", "", "Research"));
+		String query = querier.extractPlain();
+		if (!StringUtil.isEmpty(query) )
+		{
+			steps.add(werk.createStartElement( "", "", "Query"));
+			steps.add(werk.createCData(query));
+			steps.add(werk.createEndElement( "", "", "Query"));
+
+		}
+		ObservableList<EntrezRecord> items = querier.getItems();
+		for (EntrezRecord item : items)
+		{
+			if (item.getPMID() != null) 
+			{
+				steps.add(werk.createStartElement( "", "", "Item"));
+				steps.add(werk.createAttribute("PMID", item.getPMID()));
+				steps.add(werk.createEndElement( "", "", "Item"));
+			}
+		}
 		steps.add(werk.createEndElement( "", "", "Research"));
 	}
 	
 	private void extractMethods()
 	{
 		steps.add(werk.createStartElement( "", "", "Methods"));
-		steps.add(werk.createStartElement( "", "", "File"));
-		steps.add(werk.createAttribute("path", getMethodsFilePath()));
-		steps.add(werk.createEndElement( "", "", "File"));
+		if (methodsPath != null) 
+		{
+			steps.add(werk.createStartElement( "", "", "File"));
+			steps.add(werk.createAttribute("path", getMethodsFilePath()));
+			steps.add(werk.createEndElement( "", "", "File"));
+		}
 		steps.add(werk.createEndElement( "", "", "Methods"));
 	}
 	
-	String methodsPath;
+	String methodsPath = null;
 	private String getMethodsFilePath()			{		return methodsPath;	}
 	private void setMethodsFilePath(String inS)	{		methodsPath = inS;	}
 	
