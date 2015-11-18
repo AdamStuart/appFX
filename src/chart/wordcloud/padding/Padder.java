@@ -1,6 +1,6 @@
 package chart.wordcloud.padding;
 
-import chart.wordcloud.Word;
+import chart.wordcloud.nlp.Word;
 
 /**
  * Created by kenny on 7/2/14.

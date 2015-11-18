@@ -1,0 +1,29 @@
+
+
+Capital Structure
+
+        The articles usually contain a description of the capital structure of the cooperative. If stock is issued, the number of shares authorized and the par value of each share of each class of stock (common, preferred) are set forth. The rights granted owners of each class of stock, the restrictions on owners of each class, and the dividends to which each class is entitled are also explained.
+        If stock is not issued, a description must be included of how the rights and interests of the members will be determined. Sample language for both a stock and a nonstock association is provided below.
+        The capital stock example provides for both voting common and nonvoting preferred stock. Nonvoting preferred stock is a useful way to account for additional nonpatronage investments by members. It has also been used as a way of raising equity from nonmembers, such as other members of the community interested in supporting the cooperative. If any interest in the cooperative is being sold to nonmembers, counsel must be retained to advise the association on applicable securities law requirements.
+        The sample language also assumes that the organization limits each member to one vote. If proportional voting based on patronage is utilized, counsel will have to prepare a description of how votes will be accumulated and any limit on the number of votes any one member can amass.
+        All of the information in the example below is important and should be included somewhere in the organizational documents. However, not all incorporation laws require that all of it be in the articles. It may be possible to place some of these provisions in the bylaws.
+
+ARTICLE VII. CAPITAL STOCK (stock cooperative)
+
+               Section 1. Classes and Authorized Amounts. The capital stock of the association shall consist of shares of common stock with a par value of $_____ per share, and ______shares of preferred stock with a par value of $____ per share.
+
+                Section 2. Common Stock. The common stock of this association may be purchased, owned, or held only by agricultural producers who (1) patronize the association in accordance with uniform terms and conditions prescribed by it, and (2) have been approved by the board of directors.
+                'Producer' shall mean and include persons (natural or corporate) engaged in the production of_________ (product), or other agricultural products, including tenants of land used for the production of any such product, and lessors of such land who receive as rent therefore part of any such product of such land, and cooperative associations (corporate or otherwise) of such producers.
+                Each member shall hold only one share of common stock and each eligible holder of common stock shall be entitled to only one vote in any meeting of the stockholders upon each matter submitted to vote at a meeting of the stockholders.
+                In the event the board of directors of the association shall find, following a hearing, that any of the common stock of this association has come into the hands of any person who is not eligible for membership, or that the holder thereof has ceased to be an eligible member, such holder shall have no rights or privileges on account of such stock, or vote or voice in the management or affairs of the association other than the right to participate in accordance with law in case of dissolution. The association shall repurchase such stock for par value. If such holder fails to deliver any certificate evidencing the stock, the association may cancel such certificate on its books and records, and the certificate is thereby null and void.
+                The common stock of this association may be transferred only with the consent of the board of directors of the association and on the books of the association, and then only to persons eligible to hold it. No purported assignment or transfer of common stock shall pass to any person not eligible to hold it, nor the rights or privileges on account of such stock, nor a vote or voice in the management of the affairs of the association.
+                This association shall have a lien on all of its issued common stock for all indebtedness of the holders thereof to the association.
+                No dividends shall be paid on the common stock.
+
+                Section 3. Preferred Stock. The preferred stock of this association may be issued to any person, association, partnership, or corporation.
+                Preferred stock shall carry no voting rights.
+                Noncumulative dividends not to exceed percent (___%) per year may be paid on preferred stock at the absolute discretion of the board of directors.
+                Preferred stock may be transferred only on the books of the association. It may be redeemed in whole or in part on a pro rata basis at par, plus any dividends declared and unpaid, at any time on thirty (30) days' notice by the association, provided said stock is redeemed in the same order as originally issued by years. If the owner fails to deliver any certificate evidencing such stock, the association may cancel the stock on its books.
+                This association shall have a lien on all of its issued preferred stock for all indebtedness of the holders thereof to the association.
+                Upon dissolution or distribution of the assets of the association, the holders of all preferred stock shall be entitled to receive the par value of their stock, plus any dividend declared and unpaid, before any distribution is made on the common stock.
+

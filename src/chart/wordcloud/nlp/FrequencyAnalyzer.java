@@ -15,7 +15,6 @@ import java.util.Set;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import chart.wordcloud.WordFrequency;
 import chart.wordcloud.nlp.filter.CompositeFilter;
 import chart.wordcloud.nlp.filter.Filter;
 import chart.wordcloud.nlp.filter.StopWordFilter;
@@ -51,9 +50,9 @@ public class FrequencyAnalyzer {
     private long urlLoadTimeout = DEFAULT_URL_LOAD_TIMEOUT;
 
     public FrequencyAnalyzer() {
-        this.normalizers.add(new TrimToEmptyNormalizer());
-        this.normalizers.add(new CharacterStrippingNormalizer());
-        this.normalizers.add(new LowerCaseNormalizer());
+        normalizers.add(new TrimToEmptyNormalizer());
+        normalizers.add(new CharacterStrippingNormalizer());
+        normalizers.add(new LowerCaseNormalizer());
     }
 
     public List<WordFrequency> load(File file) throws IOException {
@@ -62,8 +61,8 @@ public class FrequencyAnalyzer {
 
     public List<WordFrequency> load(String url) throws IOException 
     {
-    	  final Document doc = Jsoup.connect(url).get();
-    	  return load(Collections.singletonList(doc.body().text()));
+    	final Document doc = Jsoup.connect(url).get();
+    	return load(Collections.singletonList(doc.body().text()));
     }
 
     public List<WordFrequency> load(final List<String> texts) {

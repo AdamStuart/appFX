@@ -7,20 +7,14 @@ import java.awt.*;
  */
 public class CloudFont {
 
-    private static final int DEFAULT_WEIGHT = 10;
-
+    private static final int DEFAULT_SIZE = 10;
     private final Font font;
 
     public CloudFont(String type, FontWeight weight) {
-        this.font = new Font(type, weight.getWeight(), DEFAULT_WEIGHT);
+        font = new Font(type, weight.getWeight(), DEFAULT_SIZE);
     }
 
-    public CloudFont(Font font) {
-        this.font = font;
-    }
-
-    public Font getFont() {
-        return this.font;
-    }
+    public CloudFont(Font f) {        font = f;    }
+    public Font getFont() {        return font;    }
 
 }

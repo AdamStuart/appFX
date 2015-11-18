@@ -8,13 +8,12 @@ import chart.wordcloud.collide.Vector2d;
  */
 public class RectangleBackground implements Background {
 
-    private final int width;
+    private final double width;
+    private final double height;
 
-    private final int height;
-
-    public RectangleBackground(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public RectangleBackground(double w, double h) {
+        width = w;
+        height = h;
     }
 
     @Override

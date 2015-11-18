@@ -109,5 +109,34 @@
             </AnchorPane>
          </content>
       </Tab>
+      <Tab text="Word Cloud">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <StackPane fx:id="wordcloudContainer" layoutX="219.0" layoutY="14.0" prefHeight="556.0" prefWidth="647.0" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="219.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="14.0" />
+                  <Button layoutX="16.0" layoutY="9.0" mnemonicParsing="false" onAction="#create" text="Create" />
+                  <RadioButton fx:id="circular" layoutX="51.0" layoutY="48.0" mnemonicParsing="false" selected="true" text="Circular">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="shape" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="rectangular" layoutX="51.0" layoutY="76.0" mnemonicParsing="false" text="Rectangular" toggleGroup="$shape" />
+                  <RadioButton fx:id="custom" layoutX="51.0" layoutY="106.0" mnemonicParsing="false" text="Custom" toggleGroup="$shape" />
+                  <RadioButton fx:id="layered" layoutX="51.0" layoutY="202.0" mnemonicParsing="false" text="Layered">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="layout" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="polar" layoutX="51.0" layoutY="172.0" mnemonicParsing="false" text="Polar" toggleGroup="$layout" />
+                  <RadioButton fx:id="normal" layoutX="51.0" layoutY="144.0" mnemonicParsing="false" selected="true" text="Normal" toggleGroup="$layout" />
+                  <ListView fx:id="textfileList" layoutX="6.0" layoutY="264.0" prefHeight="315.0" prefWidth="182.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="264.0" />
+                  <Button layoutX="82.0" layoutY="232.0" mnemonicParsing="false" onAction="#addfile" prefHeight="26.0" prefWidth="23.0" text="+" />
+                  <Label layoutX="9.0" layoutY="237.0" text="Text Files" />
+                  <Button layoutX="114.0" layoutY="232.0" mnemonicParsing="false" onAction="#addurl" prefHeight="26.0" prefWidth="73.0" text="Add URL" />
+                  <Label layoutX="272.0" layoutY="571.0" text="http://kennycason.com/posts/2014-07-03-kumo-wordcloud.html" />
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
   </tabs>
 </TabPane>

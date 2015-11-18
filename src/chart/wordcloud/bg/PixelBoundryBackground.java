@@ -16,21 +16,19 @@ import chart.wordcloud.image.CollisionRaster;
 public class PixelBoundryBackground implements Background {
 
     private final CollisionRaster collisionRaster;
-
     private final RectangleBackground rectangleBackground;
 
     public PixelBoundryBackground(final InputStream imageInputStream) throws IOException {
         final BufferedImage bufferedImage = ImageIO.read(imageInputStream);
-        this.collisionRaster = new CollisionRaster(bufferedImage);
-        this.rectangleBackground = new RectangleBackground(bufferedImage.getWidth(), bufferedImage.getHeight());
+        collisionRaster = new CollisionRaster(bufferedImage);
+        rectangleBackground = new RectangleBackground(bufferedImage.getWidth(), bufferedImage.getHeight());
     }
 
     @Override
     public boolean isInBounds(Collidable collidable) {
         // check if bounding boxes intersect
-        if(!this.rectangleBackground.isInBounds(collidable)) {
-            return false;
-        }
+        if(!this.rectangleBackground.isInBounds(collidable))      return false;
+        
         final Vector2d position = collidable.getPosition();
         // get the overlapping box
         int startX = Math.max(position.getX(), 0);

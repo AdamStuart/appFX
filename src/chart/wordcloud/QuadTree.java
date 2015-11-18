@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import chart.wordcloud.nlp.Word;
+
 /**
  * Created by kenny on 7/2/14.
  */

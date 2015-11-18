@@ -10,22 +10,12 @@ import javafx.scene.paint.Color;
 public class ColorPalette {
 
     private static final Random RANDOM = new Random();
-
-
     private final Color[] colors;
-
     private int next = 0;
 
-    public ColorPalette(Color... colors) {
-        this.colors = colors;
-    }
+    public ColorPalette(Color... c) {        colors = c;    }
 
-    public Color next() {
-        return colors[next++ % colors.length];
-    }
-
-    public Color randomNext() {
-        return colors[RANDOM.nextInt(colors.length)];
-    }
+    public Color next() 			{        return colors[next++ % colors.length];    }
+    public Color randomNext() 		{        return colors[RANDOM.nextInt(colors.length)];    }
 
 }

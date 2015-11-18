@@ -3,7 +3,7 @@ package chart.wordcloud.padding;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-import chart.wordcloud.Word;
+import chart.wordcloud.nlp.Word;
 
 /**
  * Created by kenny on 7/2/14.

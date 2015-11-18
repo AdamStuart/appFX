@@ -4,8 +4,10 @@ import java.io.File;
 import java.util.List;
 
 import chart.wordcloud.bg.CircleBackground;
+import chart.wordcloud.collide.CollisionMode;
 import chart.wordcloud.font.scale.LinearFontScalar;
 import chart.wordcloud.nlp.FrequencyAnalyzer;
+import chart.wordcloud.nlp.WordFrequency;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;

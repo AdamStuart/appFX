@@ -16,5 +16,8 @@
 	<classpathentry kind="lib" path="/Users/adam/Downloads/commons-validator-1.4.1/commons-validator-1.4.1.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/libFX"/>
 	<classpathentry kind="lib" path="/libFX/json_simple-1.1.jar"/>
+	<classpathentry kind="lib" path="src/chart/wordcloud/jsoup-1.8.3.jar"/>
+	<classpathentry kind="lib" path="src/chart/wordcloud/nlp/stanford-corenlp-3.5.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

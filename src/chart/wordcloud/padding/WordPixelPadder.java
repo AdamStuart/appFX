@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
 
-import chart.wordcloud.Word;
 import chart.wordcloud.collide.Vector2d;
 import chart.wordcloud.image.CollisionRaster;
+import chart.wordcloud.nlp.Word;
 
 /**
  * Created by kenny on 7/1/14.
@@ -32,14 +32,12 @@ public class WordPixelPadder implements Padder {
 
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
-                if(shouldPad(collisionRaster, x, y, padding)) {
+                if(shouldPad(collisionRaster, x, y, padding)) 
                     toPad.add(new Vector2d(x, y));
-                }
             }
         }
-        for(Vector2d padPoint : toPad) {
+        for(Vector2d padPoint : toPad) 
             collisionRaster.setRGB(padPoint.getX(), padPoint.getY(), PAD_COLOR.getRGB());
-        }
     }
 
     private boolean shouldPad(final CollisionRaster collisionRaster, final int cx, final int cy, final int padding) {
@@ -47,12 +45,9 @@ public class WordPixelPadder implements Padder {
 
         for(int y = cy - padding; y <= cy + padding; y++) {
             for(int x = cx - padding; x <= cx + padding; x++) {
-                if(x == cx && y == cy) { continue; }
-                if(inBounds(collisionRaster, x, y)) {
-                    if(!collisionRaster.isTransparent(x, y)) {
-                        return true;
-                    }
-                }
+                if(x == cx && y == cy)  continue; 
+                if(inBounds(collisionRaster, x, y)) 
+                    if(!collisionRaster.isTransparent(x, y))       return true;
             }
         }
         return false;

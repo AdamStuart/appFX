@@ -8,11 +8,9 @@ import chart.wordcloud.collide.Vector2d;
  */
 public class CircleBackground implements Background {
 
-    private final int radius;
+    private final double radius;
 
-    public CircleBackground(int radius) {
-        this.radius = radius;
-    }
+    public CircleBackground(double r) {       radius = r;    }
 
     @Override
     public boolean isInBounds(Collidable collidable) {

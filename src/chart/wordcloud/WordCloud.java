@@ -20,7 +20,9 @@ import javax.imageio.ImageIO;
 
 import chart.wordcloud.bg.Background;
 import chart.wordcloud.bg.RectangleBackground;
+import chart.wordcloud.collide.CollisionMode;
 import chart.wordcloud.collide.RectanglePixelCollidable;
+import chart.wordcloud.collide.Vector2d;
 import chart.wordcloud.collide.checkers.CollisionChecker;
 import chart.wordcloud.collide.checkers.RectangleCollisionChecker;
 import chart.wordcloud.collide.checkers.RectanglePixelCollisionChecker;
@@ -31,6 +33,8 @@ import chart.wordcloud.font.scale.LinearFontScalar;
 import chart.wordcloud.image.AngleGenerator;
 import chart.wordcloud.image.CollisionRaster;
 import chart.wordcloud.image.ImageRotation;
+import chart.wordcloud.nlp.Word;
+import chart.wordcloud.nlp.WordFrequency;
 import chart.wordcloud.padding.Padder;
 import chart.wordcloud.padding.RectanglePadder;
 import chart.wordcloud.padding.WordPixelPadder;
@@ -46,8 +50,8 @@ public class WordCloud {
 
     protected static final Random RANDOM = new Random();
 
-    protected final int width;
-    protected final int height;
+    protected final double width;
+    protected final double height;
 
     protected final CollisionMode collisionMode;
     protected final CollisionChecker collisionChecker;
@@ -71,7 +75,7 @@ public class WordCloud {
 
     protected ColorPalette colorPalette = new ColorPalette(Color.ORANGE, Color.WHITE, Color.YELLOW, Color.GRAY, Color.GREEN);
 
-    public WordCloud(int width, int height, CollisionMode collisionMode) {
+    public WordCloud(double width, double height, CollisionMode collisionMode) {
         this.width = width;
         this.height = height;
         this.collisionMode = collisionMode;
@@ -87,18 +91,18 @@ public class WordCloud {
                 this.collisionChecker = new RectangleCollisionChecker();
                 break;
         }
-        this.collisionRaster = new CollisionRaster(width, height);
-        this.bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        this.backgroundCollidable = new RectanglePixelCollidable(collisionRaster, 0, 0);
-        this.background = new RectangleBackground(width, height);
+        collisionRaster = new CollisionRaster((int)width, (int)height);
+       bufferedImage = new BufferedImage((int)width,(int) height, BufferedImage.TYPE_INT_ARGB);
+        backgroundCollidable = new RectanglePixelCollidable(collisionRaster, 0, 0);
+        background = new RectangleBackground(width, height);
     }
 
     public void build(List<WordFrequency> wordFrequencies) {
         Collections.sort(wordFrequencies);
 
         for(final Word word : buildwords(wordFrequencies, this.colorPalette)) {
-            final int startX = RANDOM.nextInt(Math.max(width - word.getWidth(), width));
-            final int startY = RANDOM.nextInt(Math.max(height - word.getHeight(), height));
+            final int startX = RANDOM.nextInt((int)Math.max(width - word.getWidth(), width));
+            final int startY = RANDOM.nextInt((int)Math.max(height - word.getHeight(), height));
             place(word, startX, startY);
 
         }
@@ -153,14 +157,14 @@ public class WordCloud {
     protected void drawForgroundToBackground() {
         if(backgroundColor == null) { return; }
 
-        final BufferedImage backgroundBufferedImage = new BufferedImage(width, height, this.bufferedImage.getType());
+        final BufferedImage backgroundBufferedImage = new BufferedImage((int)width,(int) height, this.bufferedImage.getType());
         final Graphics graphics = backgroundBufferedImage.getGraphics();
 
         // draw current color
         // AST 
         java.awt.Color awtColor = new java.awt.Color((int)(backgroundColor.getRed() * 256), (int)(backgroundColor.getGreen() * 256), (int)(backgroundColor.getBlue() * 256));
         graphics.setColor(awtColor);
-        graphics.fillRect(0, 0, width, height);
+        graphics.fillRect(0, 0, (int)width,(int) height);
         graphics.drawImage(bufferedImage, 0, 0, null);
 
         // draw back to original
@@ -172,11 +176,14 @@ public class WordCloud {
      * try to place in center, build out in a spiral trying to place words for N steps
      * @param word
      */
-    protected void place(final Word word, final int startX, final int startY) {
+    protected void place(final Word word, Vector2d start ) {
+    	place(word,  start.getX(),start.getY());
+   }
+    
+    protected void place(final Word word, final int startX, final int startY ) {
         final Graphics graphics = this.bufferedImage.getGraphics();
 
-        final int maxRadius = width;
-
+        final int maxRadius = (int)width;
         for(int r = 0; r < maxRadius; r += 2) {
             for(int x = -r; x <= r; x++) {
                 if(startX + x < 0) { continue; }
@@ -210,21 +217,18 @@ public class WordCloud {
     }
 
     private boolean tryToPlace(final Word word) {
-        if(!background.isInBounds(word)) { return false; }
+        if(!background.isInBounds(word))  return false;
 
-        switch(this.collisionMode) {
+        switch(collisionMode) {
             case RECTANGLE:
-                for(Word placeWord : this.placedWords) {
-                    if(placeWord.collide(word)) {
-                        return false;
-                    }
-                }
+                for(Word placeWord : this.placedWords) 
+                    if(placeWord.collide(word))    return false;
                 LOGGER.info("place: " + word.getWord());
                 placedWords.add(word);
                 return true;
 
             case PIXEL_PERFECT:
-                if(backgroundCollidable.collide(word)) { return false; }
+                if(backgroundCollidable.collide(word))  return false; 
                 LOGGER.info("place: " + word.getWord());
                 placedWords.add(word);
                 return true;
@@ -238,6 +242,7 @@ public class WordCloud {
 
         final List<Word> words = new ArrayList<>();
         for(final WordFrequency wordFrequency : wordFrequencies) {
+            if (wordFrequency.getWord().length() < 5) continue;
             words.add(buildWord(wordFrequency, maxFrequency, colorPalette));
         }
         return words;

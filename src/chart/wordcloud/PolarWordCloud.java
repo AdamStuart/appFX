@@ -4,12 +4,17 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import chart.wordcloud.collide.CollisionMode;
 import chart.wordcloud.collide.Vector2d;
+import chart.wordcloud.nlp.Word;
+import chart.wordcloud.nlp.WordFrequency;
 import javafx.scene.paint.Color;
 
 /**
  * Created by kenny on 6/29/14.
  */
+enum PolarBlendMode {  EVEN,  BLUR  };
+
 public class PolarWordCloud extends WordCloud {
 
     private static final ColorPalette DEFAULT_POSITIVE_COLORS = new ColorPalette(Color.web("1BE000FF"), 
@@ -60,18 +65,10 @@ public class PolarWordCloud extends WordCloud {
 
         while(wordIterator.hasNext() || wordIterator2.hasNext()) {
 
-            if(wordIterator.hasNext()) {
-                final Word word = wordIterator.next();
-                final Vector2d startPosition = getStartPosition(pole1);
-
-                place(word, startPosition.getX(), startPosition.getY());
-            }
-            if(wordIterator2.hasNext()) {
-                final Word word = wordIterator2.next();
-                final Vector2d startPosition = getStartPosition(pole2);
-
-                place(word, startPosition.getX(), startPosition.getY());
-            }
+            if(wordIterator.hasNext()) 
+                place(wordIterator.next(), getStartPosition(pole1));           
+            if(wordIterator2.hasNext()) 
+                place(wordIterator2.next(), getStartPosition(pole2));
         }
 
         drawForgroundToBackground();
@@ -80,15 +77,14 @@ public class PolarWordCloud extends WordCloud {
     private Vector2d getStartPosition(Vector2d pole) {
         switch(polarBlendMode) {
             case BLUR:
-                final int blurX = width / 2;
-                final int blurY = height / 2;
+                final int blurX = (int)width / 2;
+                final int blurY = (int)height / 2;
                 return new Vector2d(
                     pole.getX() + -blurX + RANDOM.nextInt(blurX * 2),
                     pole.getY() + -blurY + RANDOM.nextInt(blurY * 2)
                 );
             case EVEN:
-            default:
-                return pole;
+            default:       return pole;
         }
     }
 
@@ -96,10 +92,10 @@ public class PolarWordCloud extends WordCloud {
         final Vector2d[] max = new Vector2d[2];
         double maxDistance = 0.0;
         for(int i = 0; i < 100; i++) {
-            final int x = RANDOM.nextInt(width);
-            final int y = RANDOM.nextInt(height);
-            final int x2 = RANDOM.nextInt(width);
-            final int y2 = RANDOM.nextInt(height);
+            final int x = RANDOM.nextInt((int)width);
+            final int y = RANDOM.nextInt((int)height);
+            final int x2 = RANDOM.nextInt((int)width);
+            final int y2 = RANDOM.nextInt((int)height);
             final double distance = Math.sqrt(Math.pow(x - x2, 2) + Math.pow(y - y2, 2));
             if(distance > maxDistance) {
                 maxDistance = distance;
@@ -110,8 +106,6 @@ public class PolarWordCloud extends WordCloud {
         return max;
     }
 
-    public void setColorPalette2(ColorPalette colorPalette2) {
-        this.colorPalette2 = colorPalette2;
-    }
+    public void setColorPalette2(ColorPalette cp) {    colorPalette2 = cp;    }
 
 }
