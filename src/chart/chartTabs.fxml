@@ -133,7 +133,7 @@
                   <Button layoutX="82.0" layoutY="232.0" mnemonicParsing="false" onAction="#addfile" prefHeight="26.0" prefWidth="23.0" text="+" />
                   <Label layoutX="9.0" layoutY="237.0" text="Text Files" />
                   <Button layoutX="114.0" layoutY="232.0" mnemonicParsing="false" onAction="#addurl" prefHeight="26.0" prefWidth="73.0" text="Add URL" />
-                  <Label layoutX="272.0" layoutY="571.0" text="http://kennycason.com/posts/2014-07-03-kumo-wordcloud.html" />
+                  <Label layoutX="272.0" layoutY="571.0" text="http://kennycason.com/posts/2014-07-03-kumo-wordcloud.html" AnchorPane.bottomAnchor="6.0" />
                </children>
             </AnchorPane>
         </content>

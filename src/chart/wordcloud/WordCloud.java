@@ -108,29 +108,29 @@ public class WordCloud {
         }
         drawForgroundToBackground();
     }
-
-    public void writeToFile(final String outputFileName) {
-        String extension = "";
-        int i = outputFileName.lastIndexOf('.');
-        if (i > 0) {
-            extension = outputFileName.substring(i + 1);
-        }
-        try {
-            LOGGER.info("Saving WordCloud to " + outputFileName);
-            ImageIO.write(bufferedImage, extension, new File(outputFileName));
-        } catch (IOException e) {
-            LOGGER.severe(e.getMessage() + e.getMessage());
-        }
-    }
+//
+//    public void writeToFile(final String outputFileName) {
+//        String extension = "";
+//        int i = outputFileName.lastIndexOf('.');
+//        if (i > 0) {
+//            extension = outputFileName.substring(i + 1);
+//        }
+//        try {
+//            LOGGER.info("Saving WordCloud to " + outputFileName);
+//            ImageIO.write(bufferedImage, extension, new File(outputFileName));
+//        } catch (IOException e) {
+//            LOGGER.severe(e.getMessage() + e.getMessage());
+//        }
+//    }
 
     /**
      * Write to output stream as PNG
      *
      * @param outputStream the output stream to write the image data to
-     */
-    public void writeToStreamAsPNG(final OutputStream outputStream) {
-        writeToStream("png", outputStream);
-    }
+//     */
+//    public void writeToStreamAsPNG(final OutputStream outputStream) {
+//        writeToStream("png", outputStream);
+//    }
 
     /**
      * Write wordcloud image data to stream in the given format
@@ -138,16 +138,16 @@ public class WordCloud {
      * @param format       the image format
      * @param outputStream the output stream to write image data to
      */
-    public void writeToStream(final String format, final OutputStream outputStream) {
-        try {
-            LOGGER.info("Writing WordCloud image data to output stream");
-            ImageIO.write(bufferedImage, format, outputStream);
-            LOGGER.info("Done writing WordCloud image data to output stream");
-        } catch (IOException e) {
-            LOGGER.info(e.getMessage() + e.getMessage());
-            throw new RuntimeException("Could not write wordcloud to outputstream due to an IOException", e);
-        }
-    }
+//    public void writeToStream(final String format, final OutputStream outputStream) {
+//        try {
+//            LOGGER.info("Writing WordCloud image data to output stream");
+//            ImageIO.write(bufferedImage, format, outputStream);
+//            LOGGER.info("Done writing WordCloud image data to output stream");
+//        } catch (IOException e) {
+//            LOGGER.info(e.getMessage() + e.getMessage());
+//            throw new RuntimeException("Could not write wordcloud to outputstream due to an IOException", e);
+//        }
+//    }
 
     /**
      * create background, then draw current word cloud on top of it.
@@ -242,8 +242,8 @@ public class WordCloud {
 
         final List<Word> words = new ArrayList<>();
         for(final WordFrequency wordFrequency : wordFrequencies) {
-            if (wordFrequency.getWord().length() < 5) continue;
-            words.add(buildWord(wordFrequency, maxFrequency, colorPalette));
+            if (wordFrequency.getWord().length() > 3) 
+            	words.add(buildWord(wordFrequency, maxFrequency, colorPalette));
         }
         return words;
     }

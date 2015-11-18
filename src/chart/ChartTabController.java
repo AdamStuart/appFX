@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import chart.boxWhiskers.BoxWhiskersController;
 import chart.flexiPie.FlexiPieController;
 import chart.wordcloud.ColorPalette;
-import chart.wordcloud.PolarWordCloud;
 import chart.wordcloud.WordCloud;
+import chart.wordcloud.WordcloudController;
+import chart.wordcloud.bg.Background;
+import chart.wordcloud.bg.CircleBackground;
 import chart.wordcloud.bg.RectangleBackground;
 import chart.wordcloud.collide.CollisionMode;
 import chart.wordcloud.font.scale.LinearFontScalar;
@@ -33,7 +34,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.StackPane;
@@ -60,6 +60,7 @@ public class ChartTabController implements Initializable
 	@FXML private RadioButton normal;
 	@FXML private RadioButton polar;
 	@FXML private RadioButton layered;
+	private WordcloudController wcc;
 
     static private String FXML = "";
 	@Override
@@ -83,10 +84,7 @@ public class ChartTabController implements Initializable
 	    try
 		{
 			histogramContainer.getChildren().add(fxmlLoader.load());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		} catch (IOException e)		{	e.printStackTrace();	}
 		
 //		new HistogramChartController(histogramContainer);
 	    
@@ -102,10 +100,7 @@ public class ChartTabController implements Initializable
 	    try
 		{
 	    	fancyContainer.getChildren().add(fxmlLoader.load());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		} catch (IOException e)		{	e.printStackTrace();	}
 
 	    fxmlLoader = new FXMLLoader();
 	    url = getClass().getResource("usMap/us-map.fxml");
@@ -113,10 +108,7 @@ public class ChartTabController implements Initializable
 	    try
 		{
 	    	usMapContainer.getChildren().add(fxmlLoader.load());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		} catch (IOException e)		{	e.printStackTrace();}
 	    addDropHandler(textfileList);
 	    textfileList.setBorder(Borders.thinGold);
 	    textfileList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -131,8 +123,9 @@ public class ChartTabController implements Initializable
 			};
 		});
 	    
+//	    wcc = new WordcloudController();
+	    
 	}
-
 	private void addDropHandler(ListView<File> fileList)
 	{
 		fileList.setOnDragEntered(e ->
@@ -153,8 +146,8 @@ public class ChartTabController implements Initializable
 		
 		fileList.setOnDragDropped(e -> {	e.acceptTransferModes(TransferMode.ANY);
 			Dragboard db = e.getDragboard();
-			Set<DataFormat> formats = db.getContentTypes();
-			formats.forEach(a -> System.out.println("getContentTypes " + a.toString()));
+//			Set<DataFormat> formats = db.getContentTypes();
+//			formats.forEach(a -> System.out.println("getContentTypes " + a.toString()));
 			fileList.setEffect(null);
 			fileList.setBackground(Backgrounds.white);
 			if (db.hasFiles())  addFiles(db.getFiles());
@@ -185,17 +178,20 @@ public class ChartTabController implements Initializable
 //			if (wordFrequencies == null || wordFrequencies.isEmpty())
 //				System.out.println("frequencyAnalizer.load failed");
 			
-			final WordCloud wordCloud = new PolarWordCloud(400, 400, CollisionMode.RECTANGLE);
+			final WordCloud wordCloud = new WordCloud(600, 600, CollisionMode.RECTANGLE);
 			wordCloud.setPadding(2);
-			wordCloud.setBackground(new RectangleBackground(300, 400));
+			boolean isCircular = circular.isSelected();
+			Background bg = isCircular ? new CircleBackground(300) : new RectangleBackground(600, 600);
+			wordCloud.setBackground(bg);
 			wordCloud.setColorPalette(COLORS);
-			wordCloud.setFontScalar(new LinearFontScalar(10, 72));
+			wordCloud.setFontScalar(new LinearFontScalar(6, 48));
 			wordCloud.build(wordFrequencies);
 			
 			WritableImage wimg = new WritableImage(600,  600);
 			wimg = SwingFXUtils.toFXImage(wordCloud.getBufferedImage(), wimg);
 			
 			ImageView view = new ImageView(wimg);
+			wordcloudContainer.getChildren().clear();
 			wordcloudContainer.getChildren().add(view);
 		}
 	}
@@ -204,9 +200,9 @@ public class ChartTabController implements Initializable
 		System.out.println("addFiles");
 		if (inFiles != null)
 		{
-		for(File f : inFiles)			System.out.println(f.getName());
-		for(File f : inFiles)
-			textfileList.getItems().add(f);
+//			for(File f : inFiles)			System.out.println(f.getName());
+			for(File f : inFiles)
+				textfileList.getItems().add(f);
 		}
 	}
 	
@@ -216,6 +212,7 @@ public class ChartTabController implements Initializable
 		File file = chooser.showOpenDialog(AppChartTabs.getInstance().getStage());
 		addFiles(FXCollections.observableArrayList(file));
 	}
+	
 	@FXML public void addurl()
 	{
 		System.out.println("addurl");

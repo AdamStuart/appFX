@@ -28,7 +28,6 @@ class OverlaidScatterChart<X, Y> extends ScatterChart<X, Y> {
    public void addRectangleOverlay(Rectangle gate) {
        Objects.requireNonNull(gate, "the gate must not be null");
        getPlotChildren().add(gate);
-//       horizontalMarkers.add(marker);
    }
 
    /**
@@ -38,18 +37,15 @@ class OverlaidScatterChart<X, Y> extends ScatterChart<X, Y> {
     */
    public void removeRectangleOverlay(Rectangle gate) {
        Objects.requireNonNull(gate, "the gate must not be null");
-       if (gate != null) {
+       if (gate != null) 
            getPlotChildren().remove(gate);
-       }
-//       horizontalMarkers.remove(marker);
    }
+   
    public void removeGates() {
    	ObservableList<Node> kids = getPlotChildren();
        for (int i = kids.size()-1; i>0; i--)
-       {
        	if (kids.get(i).getStyleClass().contains("gate"))
        		kids.remove(i);
-       }
    }
 
    /**
@@ -60,11 +56,9 @@ class OverlaidScatterChart<X, Y> extends ScatterChart<X, Y> {
     */
    public void addHorizontalValueMarker(Data<X, Y> marker) {
        Objects.requireNonNull(marker, "the marker must not be null");
-//       if (horizontalMarkers.contains(marker)) return;
        Line line = new Line();
        marker.setNode(line );
        getPlotChildren().add(line);
-//       horizontalMarkers.add(marker);
    }
 
    /**
@@ -78,36 +72,6 @@ class OverlaidScatterChart<X, Y> extends ScatterChart<X, Y> {
            getPlotChildren().remove(marker.getNode());
            marker.setNode(null);
        }
-//       horizontalMarkers.remove(marker);
    }
 
-   /**
-    * Overridden to layout the value markers.
-    */
-   @Override
-   protected void layoutPlotChildren() {
-       super.layoutPlotChildren();
-//       	ObservableList<Node>children = getPlotChildren();
-//       	removeGates();
-//       	Rectangle frame = getPlotFrame();
-//			rescaleRect(selectionRectangleDef, frame, selectionRectangle);
-//       	for (Rectangle gate : gateDefs)			
-//       		makeGate(getScaleRect(gate, frame));
-   	
-//	        System.out.println("layoutPlotChildren");
-  	
-
-//       for (Data<X, Y> horizontalMarker : horizontalMarkers) {
-//           double lower = ((ValueAxis) getXAxis()).getLowerBound();
-//           X lowerX = getXAxis().toRealValue(lower);
-//           double upper = ((ValueAxis) getXAxis()).getUpperBound();
-//           X upperX = getXAxis().toRealValue(upper);
-//           Line line = (Line) horizontalMarker.getNode();
-//           line.setStartX(getXAxis().getDisplayPosition(lowerX));
-//           line.setEndX(getXAxis().getDisplayPosition(upperX));
-//           line.setStartY(getYAxis().getDisplayPosition(horizontalMarker.getYValue()));
-//           line.setEndY(line.getStartY());
-//
-//       }
-   }
 }
