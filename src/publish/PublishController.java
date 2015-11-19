@@ -137,12 +137,12 @@ public class PublishController implements Initializable
 		VBox.setVgrow(fileTree, Priority.ALWAYS);
 		AnchorPane.setBottomAnchor(fileTreeBox, 30d);
 
-		fileTree.getSelectionModel().selectedItemProperty().addListener((obs, old, val) ->
-		{
-			File f = val.getValue();
-			TreeItem<org.w3c.dom.Node> xml = FileUtil.getXMLtree(f, suppressNames);
-			xmlTree.setRoot(xml);
-		});
+//		fileTree.getSelectionModel().selectedItemProperty().addListener((obs, old, val) ->
+//		{
+//			File f = val.getValue();
+//			TreeItem<org.w3c.dom.Node> xml = FileUtil.getXMLtree(f, suppressNames);
+//			xmlTree.setRoot(xml);
+//		});
 		
 		//Results --------- there is an overlay of an ImageView and TableView, so show/hide on selection change
 		setupCSVTable();
@@ -183,6 +183,7 @@ public class PublishController implements Initializable
 			extractResearch();
 			extractMethods();
 			extractResults();
+			extractAnalysis();
 			extractDiscussion();
 			steps.add(werk.createEndElement( "", "", "Publication"));
 			XMLFactory.writeEvents(steps, f.getAbsolutePath());
@@ -259,6 +260,12 @@ public class PublishController implements Initializable
 		steps.add(werk.createEndElement( "", "", "Results"));
 	}
 	
+	private void extractAnalysis()
+	{
+		steps.add(werk.createStartElement( "", "", "Analysis"));
+		steps.add(werk.createEndElement( "", "", "Analysis"));
+	}
+	
 	private void extractDiscussion()
 	{
 		steps.add(werk.createStartElement( "", "", "Discussion"));
@@ -277,7 +284,6 @@ public class PublishController implements Initializable
 			}
 	}
 
-
 	public void install(Document doc)
 	{
 		if (doc == null) return;
@@ -288,6 +294,7 @@ public class PublishController implements Initializable
 		setResearch(partMap.get("Research"));
 		setMethods(partMap.get("Methods"));
 		setResults(partMap.get("Results"));
+		setAnalysis(partMap.get("Analysis"));
 		setDiscussion(partMap.get("Discussion"));
 	}
 	
@@ -380,6 +387,15 @@ public class PublishController implements Initializable
 	}
 	
 	private void setResults(org.w3c.dom.Node elem)
+	{
+		if (elem != null)
+		{
+			
+		}
+	}
+	
+	
+	private void setAnalysis(org.w3c.dom.Node elem)
 	{
 		if (elem != null)
 		{
@@ -546,8 +562,65 @@ public class PublishController implements Initializable
 		}
 	}
 	//--------------------------------------------------------------------------------
+	File findFile(File[] dir, String idName)
+	{
+		for (File child : dir)
+			if (StringUtil.chopExtension(child.getName()).equals(idName))
+				return child;
+		return null;
+	}
+	
+	TreeItem<org.w3c.dom.Node> getChildTreeItem(TreeItem<org.w3c.dom.Node> parent, String elemName)
+	{
+		for (TreeItem<org.w3c.dom.Node> child : parent.getChildren())
+		{	
+			org.w3c.dom.Node node = child.getValue();
+			String name = node.getNodeName();
+			if (name.equals(elemName))
+			
+				return child;
+		}
+		return null;
+	}
+	
 	private void setEDLDirectory(File f)
 	{
+		File objectFile = null;
+		File[] topLevelFiles = f.listFiles();
+		
+		objectFile = findFile(topLevelFiles, f.getName());
+		if (objectFile == null) return;
+		TreeItem<org.w3c.dom.Node> root = FileUtil.getXMLtree(objectFile, null);
+		xmlTree.setRoot(root);
+		TreeItem<org.w3c.dom.Node> obj = getChildTreeItem(root, "Obj");
+		if (obj != null)
+		{
+			TreeItem<org.w3c.dom.Node> history = getChildTreeItem(obj, "MethodHistory");
+			if (history != null)
+			{
+				List<TreeItem<org.w3c.dom.Node>> steps = history.getChildren();
+				int siz = steps.size();
+				for (int i=0; i<siz; i++)
+				{
+					TreeItem<org.w3c.dom.Node> step = steps.get(i);
+					org.w3c.dom.Node attr = null;
+					if (step != null) 
+						attr = step.getValue().getAttributes().getNamedItem("UID");
+					if (attr != null) 
+					{
+						String id = attr.getTextContent();
+						File methodFile = findFile(topLevelFiles, id);
+						if (methodFile != null)
+						{
+							TreeItem<org.w3c.dom.Node> methodroot = FileUtil.getXMLtree(methodFile);
+							methodroot = methodroot.getChildren().get(0);
+							step.getChildren().addAll(methodroot.getChildren());
+						}
+					}
+				}
+			}
+		}
+		
 		setMethodsFilePath(f.getAbsolutePath());
 		fileTree.setRoot(f);	// traverse down the file system tree, adding everything	
 		
@@ -569,6 +642,9 @@ public class PublishController implements Initializable
 			}
 		}
 	}
+	
+
+	//--------------------------------------------------------------------------------
 	
 	private void addScanJobsDirectory(File f)
 	{

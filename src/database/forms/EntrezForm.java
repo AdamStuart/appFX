@@ -111,6 +111,7 @@ public class EntrezForm extends VBox
 
 	private void selChanged(Number val)
 	{
+		if (val.intValue() < 0) return;
 		EntrezRecord rec = getItems().get((int)val);
 		if (rec != null)
 			rec.fetch();

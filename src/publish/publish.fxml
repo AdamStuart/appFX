@@ -43,7 +43,20 @@
                   <Label layoutX="14.0" layoutY="2.0" prefHeight="25.0" prefWidth="351.0" text="A Hierarchical Display of Biological Methods" />
                   <SplitPane fx:id="methodsplitter" dividerPositions="0.4" layoutY="27.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
                      <items>
-                        <VBox fx:id="fileTreeBox" prefHeight="438.0" prefWidth="416.0" />
+                        <SplitPane dividerPositions="0.3" orientation="VERTICAL">
+                           <items>
+                              <VBox prefHeight="200.0" prefWidth="100.0">
+                                 <children>
+                                    <Label text="Server Connections" />
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="fileTreeBox" prefHeight="388.0" prefWidth="315.0">
+                                 <children>
+                                    <Label text="File Cache" />
+                                 </children>
+                              </VBox>
+                           </items>
+                        </SplitPane>
                         <TreeTableView layoutX="190.0" layoutY="27.0" prefHeight="438.0" prefWidth="443.0" fx:id="xmlTree">
                           <columns>
                             <TreeTableColumn prefWidth="75.0" text="C1" />
@@ -88,6 +101,11 @@
                   <Button fx:id="plotButton" layoutX="20.0" layoutY="427.0" mnemonicParsing="false" onAction="#doPlot" text="Plot" />
                </children>
             </AnchorPane>
+        </content>
+      </Tab>
+      <Tab text="Analysis">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
         </content>
       </Tab>
       <Tab closable="false" text="Discussion">

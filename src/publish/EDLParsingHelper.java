@@ -115,9 +115,9 @@ public class EDLParsingHelper
 		lookupMap.put("EncapsulatedObjects", "Objects");
 		lookupMap.put("EncapsulatedMethods", "Steps");
 		lookupMap.put("EncapsulatedObjectsRef", "References");
-		lookupMap.put("EncapsulatedMethodsRef", "References");
+		lookupMap.put("EncapsulatedMethodsRef", "Method References");
 		lookupMap.put("Meth", "Method");
-		lookupMap.put("MethRef", "Reference");
+		lookupMap.put("MethRef", "Method Reference");
 		lookupMap.put("MethodHistory", "History");
 	}
 		
