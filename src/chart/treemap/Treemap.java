@@ -1,13 +1,11 @@
 package chart.treemap;
 
-import java.util.SortedSet;
+import java.util.List;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Parent;
-import chart.treemap.paint.ColorBucket;
 
 /**
  * @author Tadas Subonis <tadas.subonis@gmail.com>
@@ -27,19 +25,26 @@ public class Treemap extends Parent {
     private TreemapElementFactory elementFactory = new TreemapElementFactory();
     private final TreemapLayout treemapLayouter;
 
-    public Treemap(Item root) {
-        this.root = root;
-        final SortedSet<Item> items = root.getItems();
+    void dump(Item item)
+    {
+    	System.out.println("Item: " + item.toString());
+    	for (Item i : item.getItems())
+    		dump(i);
+    }
+    
+    public Treemap(Item item) {
+        root = item;
+        
+        dump(root);
+        final List<Item> items = root.getItems();
         treemapLayouter = elementFactory.createTreemapLayout(width.doubleValue(), height.doubleValue(), items);
-        ChangeListener<Number> changeListener = new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+        ChangeListener<Number> changeListener = (obs, old, val) -> {
                 treemapLayouter.update(width.doubleValue(), height.doubleValue(), items);
-            }
         };
         width.addListener(changeListener);
         height.addListener(changeListener);
-        this.getChildren().add(treemapLayouter);
+        
+        getChildren().add(treemapLayouter);
     }
 
     public void update() {      treemapLayouter.update(width.doubleValue(), height.doubleValue(), root.getItems());    }

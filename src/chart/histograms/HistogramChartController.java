@@ -29,8 +29,7 @@ public class HistogramChartController implements Initializable
 //	  histogramChart = new LineChart<Number, Number>(xAxis, yAxis);
 //	  initialize(null, null);
 //  }
-	@Override
-	public void initialize(URL url, ResourceBundle rb)
+	@Override public void initialize(URL url, ResourceBundle rb)
 	{
 	    System.out.println("HistogramChartController.initialize");
 		assert (histogramChart != null);
@@ -45,14 +44,14 @@ public class HistogramChartController implements Initializable
 		histogramChart.setTitle("DATA LOAD ERROR!");
 		String path = "/Users/adam/Desktop/SBS00045.A04 DEC16 D1.2.fcs";
 		Histogram1D h1 = null, h2 = null;
-		if (path == null)
-		{
-			FileChooser choose = new FileChooser();
-			File f = choose.showOpenDialog(AppHistograms.getInstance().getStage().getOwner());
-			if (f != null)
-				path = f.getAbsolutePath();
-			System.out.println("Path: " + path);
-		}
+//		if (path == null)
+//		{
+//			FileChooser choose = new FileChooser();
+//			File f = choose.showOpenDialog(AppHistograms.getStage());		// TODO doesn't work in ChrtTabs
+//			if (f != null)
+//				path = f.getAbsolutePath();
+//			System.out.println("Path: " + path);
+//		}
 		File f = new File(path);
 		try
 		{

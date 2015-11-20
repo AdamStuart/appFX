@@ -34,16 +34,12 @@ class TreemapRectangle extends Parent {
     }
 
     private class NodeTooltip extends Tooltip {
-
-        public NodeTooltip(final TreemapDtoElement child) {
-            setText(child.getLabel());
-        }
+        public NodeTooltip(final TreemapDtoElement child) {  setText(child.getLabel());  }
     }
 
     private class HoverOnEventHandler implements EventHandler<Event> {
 
-        @Override
-        public void handle(Event t) {
+        @Override public void handle(Event t) {
             Color brighter = rectangleColor.brighter();
             TreemapRectangle.this.rectangle.setFill(brighter);
         }
@@ -51,8 +47,7 @@ class TreemapRectangle extends Parent {
 
     private class HoverOffEventHandler implements EventHandler<Event> {
 
-        @Override
-        public void handle(Event t) {
+        @Override public void handle(Event t) {
             TreemapRectangle.this.rectangle.setFill(rectangleColor);
         }
     }

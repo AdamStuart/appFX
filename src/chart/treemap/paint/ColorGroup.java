@@ -13,8 +13,8 @@ public class ColorGroup {
     private final List<Color> groupColors = new LinkedList<>();
     private final Deque<Color> availableColors = new ArrayDeque<>();
 
-    public ColorGroup(Color mainColor, int size) {
-        this.mainColor = mainColor;
+    public ColorGroup(Color c, int size) {
+        mainColor = c;
         size += 1;
         double rangeStart = 0.5;
         double rangeEnd = 1.2;
@@ -25,18 +25,14 @@ public class ColorGroup {
             brightness += step;
             groupColors.add(mainColor.deriveColor(1.0, 1.0, brightness, 1.0));
         }
-
         availableColors.addAll(groupColors);
     }
 
     public Color fetchColor() {
-        if (availableColors.isEmpty()) {
+        if (availableColors.isEmpty()) 
             availableColors.addAll(groupColors);
-        }
         return availableColors.pop();
     }
 
-    public Color getMainColor() {
-        return mainColor;
-    }
+    public Color getMainColor() {        return mainColor;    }
 }

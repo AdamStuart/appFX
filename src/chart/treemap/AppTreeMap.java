@@ -8,7 +8,8 @@ import javafx.stage.Stage;
 
 public class AppTreeMap extends Application 
 {
- 
+	 public static void main(final String[] args) {     Application.launch(args); }
+
     @Override public  void start(Stage stage) throws Exception 
     {
     	me = this;
@@ -23,8 +24,5 @@ public class AppTreeMap extends Application
  static private Stage theStage;
  public Stage getStage() { return theStage;  }
  
- public static void main(final String[] args) {
-     Application.launch(args);
- }
  
 }

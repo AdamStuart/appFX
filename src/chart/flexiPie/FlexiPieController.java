@@ -26,7 +26,7 @@ public class FlexiPieController {
 	@FXML TreeTableColumn<TreeTableView, Wedge>  colorColumn;
 	@FXML TreeTableColumn<TreeTableView, Wedge>  categoryColumn;
 	@FXML TreeTableColumn<TreeTableView, Double>  portionColumn;
-	private Label label;
+//	private Label label;
 	private PieModel model;
 	
 	public void initialize()
@@ -41,8 +41,8 @@ public class FlexiPieController {
 		container.getChildren().add(g);
 		container.getChildren().add(model.createHandle());
 		
-		label = new Label("0.0");
-		container.getChildren().add(label);
+//		label = new Label("0.0");
+//		container.getChildren().add(label);
 		model.select(0);
 		setupTable();
 	}
@@ -57,7 +57,7 @@ public class FlexiPieController {
 		portionColumn.setCellFactory( p ->	{	return new TwoDigitCell();	});
 		
 	}
-	public void setLabel(String s)	{		label.setText(s);	}
+	public void setLabel(String s)	{ /*label.setText(s);*/	}
 	public void setLabel(double d)	{		setLabel(String.format("%.2f", d));	}
 
 	class TwoDigitCell extends TreeTableCell<TreeTableView, Double>

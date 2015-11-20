@@ -24,19 +24,25 @@
             <Label prefHeight="16.0" prefWidth="95.0" text="Chart Type: " />
             <VBox prefHeight="58.0" prefWidth="100.0" spacing="8.0">
                <children>
-                  <RadioButton fx:id="rbLine" mnemonicParsing="false" text="Line" />
-                  <RadioButton fx:id="rbBar" mnemonicParsing="false" text="Bar" />
+                  <RadioButton fx:id="rbLine" mnemonicParsing="false" text="Line">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="chartType" />
+                     </toggleGroup></RadioButton>
+                  <RadioButton fx:id="rbBar" mnemonicParsing="false" text="Bar" toggleGroup="$chartType" />
                </children>
             </VBox>
             <Label prefHeight="16.0" prefWidth="105.0" text="Aggregate by" />
             <VBox prefHeight="143.0" prefWidth="151.0" spacing="8.0">
                <children>
-                  <RadioButton fx:id="rbMin" mnemonicParsing="false" text="Minute" />
-                  <RadioButton fx:id="rbHour" mnemonicParsing="false" text="Hour" />
-                  <RadioButton fx:id="rbDay" layoutX="10.0" layoutY="28.0" mnemonicParsing="false" text="Day" />
-                  <RadioButton fx:id="rbWeek" layoutX="10.0" layoutY="46.0" mnemonicParsing="false" text="Week" />
-                  <RadioButton fx:id="rbMonth" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" text="Month" />
-                  <RadioButton fx:id="rbYear" layoutX="10.0" layoutY="82.0" mnemonicParsing="false" text="Year" />
+                  <RadioButton fx:id="rbMin" mnemonicParsing="false" text="Minute">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="aggLevel" />
+                     </toggleGroup></RadioButton>
+                  <RadioButton fx:id="rbHour" mnemonicParsing="false" text="Hour" toggleGroup="$aggLevel" />
+                  <RadioButton fx:id="rbDay" layoutX="10.0" layoutY="28.0" mnemonicParsing="false" text="Day" toggleGroup="$aggLevel" />
+                  <RadioButton fx:id="rbWeek" layoutX="10.0" layoutY="46.0" mnemonicParsing="false" text="Week" toggleGroup="$aggLevel" />
+                  <RadioButton fx:id="rbMonth" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" text="Month" toggleGroup="$aggLevel" />
+                  <RadioButton fx:id="rbYear" layoutX="10.0" layoutY="82.0" mnemonicParsing="false" text="Year" toggleGroup="$aggLevel" />
                </children>
             </VBox>
             <VBox prefHeight="148.0" prefWidth="277.0">
@@ -65,9 +71,9 @@
             </VBox>
          </children>
       </HBox>
-      <HBox prefHeight="89.0" prefWidth="743.0" spacing="30.0">
+      <HBox prefHeight="89.0" prefWidth="743.0" spacing="30.0" VBox.vgrow="SOMETIMES">
          <children>
-            <ListView fx:id="listFile" prefHeight="96.0" prefWidth="246.0" />
+            <ListView fx:id="listFile" minWidth="-Infinity" prefHeight="89.0" prefWidth="348.0" />
             <Button mnemonicParsing="false" onAction="#handleBrowse" text="Browse..." />
             <CheckBox fx:id="multiChart" mnemonicParsing="false" text="Multi Line" />
             <Button mnemonicParsing="false" onAction="#handleDraw" text="Draw" />

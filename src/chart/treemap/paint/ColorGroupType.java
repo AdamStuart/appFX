@@ -20,12 +20,9 @@ public enum ColorGroupType {
     private List<Color> colorList = new LinkedList<>();
 
     private ColorGroupType(String colors) {
-        for (String color : colors.split(" ")) {
+        for (String color : colors.split(" ")) 
             colorList.add(Color.web(color));
-        }
     }
 
-    public List<Color> getColorList() {
-        return Collections.unmodifiableList(colorList);
-    }
+    public List<Color> getColorList() {  return Collections.unmodifiableList(colorList);   }
 }

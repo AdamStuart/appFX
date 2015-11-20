@@ -10,6 +10,9 @@ import java.util.ResourceBundle;
 
 import chart.boxWhiskers.BoxWhiskersController;
 import chart.flexiPie.FlexiPieController;
+import chart.timeseries.AppTimeSeries;
+import chart.treemap.BudgetItem;
+import chart.treemap.Treemap;
 import chart.wordcloud.ColorPalette;
 import chart.wordcloud.WordCloud;
 import chart.wordcloud.WordcloudController;
@@ -32,6 +35,11 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableCell;
+import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableView;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.Dragboard;
@@ -52,7 +60,12 @@ public class ChartTabController implements Initializable
 	@FXML private StackPane timeSeriesContainer;
 	@FXML private StackPane usMapContainer;
 	@FXML private StackPane wordcloudContainer;
+	@FXML private StackPane treemapContainer;
 	@FXML private ListView<File> textfileList;
+	@FXML private TreeTableView<BudgetItem> budgetTable;
+	@FXML private TreeTableColumn<TreeTableView<BudgetItem>, BudgetItem> categoryColumn;
+	@FXML private TreeTableColumn<TreeTableView<BudgetItem>, Double> budgetColumn;
+    
 
 	@FXML private RadioButton circular;
 	@FXML private RadioButton rectangular;
@@ -76,8 +89,13 @@ public class ChartTabController implements Initializable
 		Objects.requireNonNull(timeSeriesContainer);
 		Objects.requireNonNull(usMapContainer);
 		Objects.requireNonNull(wordcloudContainer);
+		Objects.requireNonNull(treemapContainer);
+		Objects.requireNonNull(budgetTable);
+		Objects.requireNonNull(categoryColumn);
+		Objects.requireNonNull(budgetColumn);
 		
 		
+	    //----------------------------------------- Histograms
 	    FXMLLoader fxmlLoader = new FXMLLoader();
 	    URL url = getClass().getResource(FXML + "histograms/HistogramChart.fxml");
 	    fxmlLoader.setLocation(url);
@@ -86,14 +104,15 @@ public class ChartTabController implements Initializable
 			histogramContainer.getChildren().add(fxmlLoader.load());
 		} catch (IOException e)		{	e.printStackTrace();	}
 		
-//		new HistogramChartController(histogramContainer);
-	    
+	    //----------------------------------------- Box Whiskers
 	    BoxWhiskersController contl = new BoxWhiskersController();
 	    contl.createContent(whiskersContainer);
 	    
+	    //----------------------------------------- FlexiPie
 	    FlexiPieController pieCon = new FlexiPieController();
 	    pieContainer.getChildren().add( pieCon.createContent());
 	    
+	    //----------------------------------------- FancyChart
 	    fxmlLoader = new FXMLLoader();
 	    url = getClass().getResource("fancychart/FancyChart.fxml");
 	    fxmlLoader.setLocation(url);
@@ -102,6 +121,7 @@ public class ChartTabController implements Initializable
 	    	fancyContainer.getChildren().add(fxmlLoader.load());
 		} catch (IOException e)		{	e.printStackTrace();	}
 
+	    //----------------------------------------- US Map
 	    fxmlLoader = new FXMLLoader();
 	    url = getClass().getResource("usMap/us-map.fxml");
 	    fxmlLoader.setLocation(url);
@@ -109,6 +129,8 @@ public class ChartTabController implements Initializable
 		{
 	    	usMapContainer.getChildren().add(fxmlLoader.load());
 		} catch (IOException e)		{	e.printStackTrace();}
+	    
+	    //----------------------------------------- Word Map
 	    addDropHandler(textfileList);
 	    textfileList.setBorder(Borders.thinGold);
 	    textfileList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -122,9 +144,39 @@ public class ChartTabController implements Initializable
 				}
 			};
 		});
+	    //----------------------------------------- Tree Map
+	    addDropHandler(textfileList);
+	    BudgetItem root = BudgetItem.makeBudget();
+	    treemapContainer.getChildren().add(new Treemap(root));
+	    treemapContainer.layout();
+		TreeItem<BudgetItem> tree = BudgetItem.createTreeItems(root);
+		budgetTable.setRoot(tree);
+		tree.setExpanded(true);
+		categoryColumn.setCellValueFactory(new TreeItemPropertyValueFactory("label"));  
+		budgetColumn.setCellValueFactory(new TreeItemPropertyValueFactory("amount"));  
+		budgetColumn.setCellFactory( p ->	{	return new TwoDigitCell();	});
+		
+
+	    //----------------------------------------- Time Series
+	    fxmlLoader = new FXMLLoader();
+	    url = AppTimeSeries.class.getResource(FXML + "TimeSeries.fxml");
+	    fxmlLoader.setLocation(url);
+	    try
+		{
+	    	timeSeriesContainer.getChildren().add(fxmlLoader.load());
+		} catch (IOException e)		{	e.printStackTrace();}
 	    
+
 //	    wcc = new WordcloudController();
 	    
+	}
+	class TwoDigitCell extends TreeTableCell<TreeTableView<BudgetItem>, Double>
+	{
+		@Override protected void updateItem(Double item, boolean empty)
+		{
+			super.updateItem(item, empty);
+			setText(item == null || empty ? "" : String.format("%.2f", item));
+		}	
 	}
 	private void addDropHandler(ListView<File> fileList)
 	{

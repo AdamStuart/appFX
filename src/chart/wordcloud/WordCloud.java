@@ -92,7 +92,7 @@ public class WordCloud {
                 break;
         }
         collisionRaster = new CollisionRaster((int)width, (int)height);
-       bufferedImage = new BufferedImage((int)width,(int) height, BufferedImage.TYPE_INT_ARGB);
+        bufferedImage = new BufferedImage((int)width,(int) height, BufferedImage.TYPE_INT_ARGB);
         backgroundCollidable = new RectanglePixelCollidable(collisionRaster, 0, 0);
         background = new RectangleBackground(width, height);
     }

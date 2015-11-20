@@ -16,12 +16,12 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <Label layoutX="14.0" layoutY="14.0" text="Hover Chart - data point tips show image and record information about that point">
+                  <Label layoutX="8.0" layoutY="1.0" text="Hover Chart - data point tips show image and record information about that point">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <StackPane fx:id="hoverContainer" layoutX="42.0" layoutY="58.0" prefHeight="471.0" prefWidth="543.0" />
+                  <StackPane fx:id="hoverContainer" layoutX="9.0" layoutY="30.0" prefHeight="554.0" prefWidth="859.0" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="30.0" />
                </children></AnchorPane>
       </content>
     </Tab>
@@ -85,7 +85,7 @@
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <StackPane fx:id="timeSeriesContainer" layoutX="42.0" layoutY="41.0" prefHeight="471.0" prefWidth="543.0" />
+                  <StackPane fx:id="timeSeriesContainer" layoutX="42.0" layoutY="41.0" prefHeight="522.0" prefWidth="801.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="42.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="41.0" />
                   <Label layoutX="8.0" layoutY="14.0" text="Time Series plots with data aggregaion">
                      <font>
                         <Font size="16.0" />
@@ -134,6 +134,21 @@
                   <Label layoutX="9.0" layoutY="237.0" text="Text Files" />
                   <Button layoutX="114.0" layoutY="232.0" mnemonicParsing="false" onAction="#addurl" prefHeight="26.0" prefWidth="73.0" text="Add URL" />
                   <Label layoutX="272.0" layoutY="571.0" text="http://kennycason.com/posts/2014-07-03-kumo-wordcloud.html" AnchorPane.bottomAnchor="6.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
+      <Tab text="Tree Map">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TreeTableView fx:id="budgetTable" layoutX="14.0" layoutY="14.0" prefHeight="565.0" prefWidth="231.0" AnchorPane.bottomAnchor="14.0" AnchorPane.topAnchor="14.0">
+                    <columns>
+                      <TreeTableColumn fx:id="categoryColumn" prefWidth="140.0" text="Category" />
+                      <TreeTableColumn fx:id="budgetColumn" prefWidth="88.0" text="Budget ($B)" />
+                    </columns>
+                  </TreeTableView>
+                  <StackPane fx:id="treemapContainer" layoutX="257.0" layoutY="22.0" prefHeight="480.0" prefWidth="640.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="257.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="22.0" />
                </children>
             </AnchorPane>
         </content>

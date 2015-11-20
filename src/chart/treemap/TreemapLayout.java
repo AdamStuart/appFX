@@ -4,12 +4,11 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.SortedSet;
 import java.util.logging.Logger;
 
+import chart.treemap.paint.ColorGroup;
 import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
-import chart.treemap.paint.ColorGroup;
 
 /**
  * Squarified Treemaps 
@@ -35,15 +34,16 @@ class TreemapLayout extends Parent {
     private LayoutOrient layoutOrient = LayoutOrient.VERTICAL;
     private List<TreemapDtoElement> children = new ArrayList<>();
 
-    public TreemapLayout(double w, double h, SortedSet<Item> children, ColorGroup colors, TreemapElementFactory f) {
+    public TreemapLayout(double w, double h, List<Item> children, ColorGroup colors, TreemapElementFactory f) {
         colorGroup = colors;
         elementFactory = f;
         getChildren().add(anchorPane);
         update(w, h, children);
+//        anchorPane.setBorder(Borders.thinGold);
     }
 
 
-    public void update(double w, double h, SortedSet<Item> kids) {
+    public void update(double w, double h, List<Item> kids) {
         width = w;
         height = h;
         left = top = 0.0;
@@ -62,8 +62,8 @@ class TreemapLayout extends Parent {
     private void doLayout() 
     {
     	System.out.println("doLayout");
-        heightLeft = this.height;
-        widthLeft = this.width;
+        heightLeft = height;
+        widthLeft = width;
         AnchorPane.clearConstraints(anchorPane);
         anchorPane.getChildren().clear();
         squarify(new ArrayDeque<>(children), new ArrayDeque<TreemapDtoElement>(), minimumSide());
@@ -143,9 +143,9 @@ class TreemapLayout extends Parent {
 
                 topItem += h;
             }
-            this.widthLeft -= rowWidth;
+            widthLeft -= rowWidth;
             //this.heightLeft -= w;
-            this.left += rowWidth;
+            left += rowWidth;
             double minimumSide = minimumSide();
             if (!isDoubleEqual(minimumSide, heightLeft)) {
                 changeLayout();
@@ -166,23 +166,18 @@ class TreemapLayout extends Parent {
                 rowLeft += wi;
             }
             //this.widthLeft -= rowHeight;
-            this.heightLeft -= rowHeight;
-            this.top += rowHeight;
+            heightLeft -= rowHeight;
+            top += rowHeight;
 
             double minimumSide = minimumSide();
-            if (!isDoubleEqual(minimumSide, widthLeft)) {
+            if (!isDoubleEqual(minimumSide, widthLeft)) 
                 changeLayout();
-            }
         }
-
     }
 
     private void changeLayout() {
-        if (layoutOrient.equals(LayoutOrient.HORIZONTAL)) {
-            layoutOrient = LayoutOrient.VERTICAL;
-        } else {
-            layoutOrient = LayoutOrient.HORIZONTAL;
-        }
+        layoutOrient = (layoutOrient.equals(LayoutOrient.HORIZONTAL)) ? 
+            	LayoutOrient.VERTICAL : LayoutOrient.HORIZONTAL;
     }
 
     private boolean isDoubleEqual(double one, double two) {

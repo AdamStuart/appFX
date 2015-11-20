@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import chart.AppChartTabs;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -70,8 +71,13 @@ public class TimeSeriesController implements Initializable
 	@FXML private LineChart<String, Number> timeSeriesChart;
 	
 	ObservableList<String> fileNames =        FXCollections.observableArrayList();
-	ToggleGroup aggLevelGroup = new ToggleGroup();
+	ToggleGroup aggLevelGroup;
 	ToggleGroup chartTypeGroup = new ToggleGroup();
+	private Object getApplication()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
@@ -80,24 +86,25 @@ public class TimeSeriesController implements Initializable
 		dataSeries = new ArrayList<XYChart.Series<String, Number>>();
 		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		multiChart = new CheckBox("Multi Line Enabled");
+		aggLevelGroup = rbDay.getToggleGroup();
 		data = new FileData();
 		minDate = null;
 		maxDate = null;
 
 		AssertAll(timeSeriesChart);
-		rbLine.setToggleGroup(chartTypeGroup);
-		rbBar.setToggleGroup(chartTypeGroup);
+//		rbLine.setToggleGroup(chartTypeGroup);
+//		rbBar.setToggleGroup(chartTypeGroup);
 		rbLine.setSelected(true);
 		
-		RadioButton[] buttons = new RadioButton[] { rbMin, rbHour, rbMonth, rbYear, rbWeek, rbDay};
-		for (RadioButton b : buttons)
-			b.setToggleGroup(aggLevelGroup);
+//		RadioButton[] buttons = new RadioButton[] { rbMin, rbHour, rbMonth, rbYear, rbWeek, rbDay};
+//		for (RadioButton b : buttons)
+//			b.setToggleGroup(aggLevelGroup);		// define within fxml
 		rbDay.setSelected(true);
 		
-		String path = "/Users/adam/Desktop/logfile.csv";
+		String path = "/Users/adam/Desktop/timeSample.csv";
 		fileNames.add(path);
-		listFile.setPrefSize(100, 100);
-		int yPos = 0;
+//		listFile.setPrefSize(100, 100);
+//		int yPos = 0;
 
 //		aggLevelGroup.selectedToggleProperty().addListener(
 //				new ChangeListener<Toggle>() {
@@ -126,53 +133,48 @@ public class TimeSeriesController implements Initializable
 	public void handleDraw(ActionEvent event) {
 //	xAxis = new CategoryAxis();
 //	yAxis = new NumberAxis();
-
-	String aggLevelVal =((RadioButton)aggLevelGroup.getSelectedToggle()).getText(); 
-	String chartTypeVal =((RadioButton)chartTypeGroup.getSelectedToggle()).getText(); 
-	LocalDate fromDateVal = fromDate.getValue();
-	LocalDate endDateVal = endDate.getValue();				
-	CategoryAxis xAxis= (CategoryAxis) timeSeriesChart.getXAxis();
 	
+		String aggLevelVal =((RadioButton)rbDay.getToggleGroup().getSelectedToggle()).getText(); 
+		String chartTypeVal =((RadioButton)rbLine.getToggleGroup().getSelectedToggle()).getText(); 
+		LocalDate fromDateVal = fromDate.getValue();
+		LocalDate endDateVal = endDate.getValue();				
+		CategoryAxis xAxis= (CategoryAxis) timeSeriesChart.getXAxis();
+		
+		
+		if (aggLevelVal.equalsIgnoreCase("Day"))		setAggregationLevel(AggregationLevel.DAY);
+		if (aggLevelVal.equalsIgnoreCase("Minute"))		setAggregationLevel(AggregationLevel.MINUTES);	
+		
+		if (aggLevelVal.equalsIgnoreCase("Month"))
+		{
+			fromDateVal = fromDateVal.withDayOfMonth(1);
+			endDateVal = endDateVal.plusMonths(1).withDayOfMonth(1).minusDays(1);
+			setAggregationLevel(AggregationLevel.MONTH);
+		}
 	
-	if (aggLevelVal.equalsIgnoreCase("Day"))
-		setAggregationLevel(AggregationLevel.DAY);
+		if (aggLevelVal.equalsIgnoreCase("Week"))
+		{
+			int dayWeek = fromDateVal.getDayOfWeek().getValue();
+			fromDateVal = fromDateVal.minusDays(dayWeek-1);
+			dayWeek = endDateVal.getDayOfWeek().getValue();
+			endDateVal = endDateVal.plusDays(7-dayWeek);
+			setAggregationLevel(AggregationLevel.WEEK);
+		}
+		
+		if (aggLevelVal.equalsIgnoreCase("Year"))
+		{
+			fromDateVal = fromDateVal.withDayOfYear(1);
+			endDateVal = endDateVal.plusYears(1).withDayOfYear(1).minusDays(1);		
+			setAggregationLevel(AggregationLevel.YEAR);
+		}
 	
-	if (aggLevelVal.equalsIgnoreCase("Minute"))
-		setAggregationLevel(AggregationLevel.MINUTES);	
-	
-	if (aggLevelVal.equalsIgnoreCase("Month"))
-	{
-		fromDateVal = fromDateVal.withDayOfMonth(1);
-		endDateVal = endDateVal.plusMonths(1).withDayOfMonth(1).minusDays(1);
-		setAggregationLevel(AggregationLevel.MONTH);
-	}
-
-	if (aggLevelVal.equalsIgnoreCase("Week"))
-	{
-		int dayWeek = fromDateVal.getDayOfWeek().getValue();
-		fromDateVal = fromDateVal.minusDays(dayWeek-1);
-		dayWeek = endDateVal.getDayOfWeek().getValue();
-		endDateVal = endDateVal.plusDays(7-dayWeek);
-		setAggregationLevel(AggregationLevel.WEEK);
-	}
-	
-	if (aggLevelVal.equalsIgnoreCase("Year"))
-	{
-		fromDateVal = fromDateVal.withDayOfYear(1);
-		endDateVal = endDateVal.plusYears(1).withDayOfYear(1).minusDays(1);		
-		setAggregationLevel(AggregationLevel.YEAR);
-	}
-
-	if (aggLevelVal.equalsIgnoreCase("Hour"))
-	{
+		if (aggLevelVal.equalsIgnoreCase("Hour"))
 			setAggregationLevel(AggregationLevel.HOUR);
-	}
-
+	
+		if (inputFile.isEmpty()) return;
 		data.setFiles(inputFile);
 		if (validateData())
 		{
 			String firstFile = inputFile.get(0).getName();
-
 			data.collectData(fromDateVal, endDateVal, multiChart.isSelected());
 			// timeSeriesChart = new LineChart<String, Number>(xAxis, yAxis);
 			timeSeriesChart.setTitle(firstFile);
@@ -198,7 +200,8 @@ public class TimeSeriesController implements Initializable
 		FileChooser fileChooser = new FileChooser();
 		configureFileChooser(fileChooser);
 
-		Stage stage = AppTimeSeries.getInstance().getStage();
+		
+		Stage stage = AppChartTabs.getInstance().getStage();		// TODO assumes parent application!
 
 		inputFile = fileChooser.showOpenMultipleDialog(stage);
 		if (inputFile != null)
@@ -212,6 +215,7 @@ public class TimeSeriesController implements Initializable
 
 	}
 	
+
 	//------------------------------------------------------------------------------------
 	 private void setToolTips()
 	 {
@@ -248,10 +252,12 @@ public class TimeSeriesController implements Initializable
 		final  String TRY_AGAIN = "Please select other Aggregation period";
 		final  String UNDER6MO = "Please select Days less than 6 months";
 		final  String LESSER = "Please select lesser duration";
+		final  String MISSING = "Please enter both start and end dates";
 		
 		RadioButton chk = (RadioButton) rbDay.getToggleGroup().getSelectedToggle(); 
 		LocalDate fromDateVal = fromDate.getValue();
 		LocalDate endDateVal = endDate.getValue();
+		if (fromDateVal == null || endDateVal == null )  return MISSING;
 		Period difference = Period.between(fromDateVal, endDateVal);
 		if (chk.getText().equalsIgnoreCase("Day"))
 		{
@@ -259,9 +265,11 @@ public class TimeSeriesController implements Initializable
 			if (difference.getYears() > 0)				return TRY_AGAIN;
 		}
 		if (chk.getText().equalsIgnoreCase("Minute"))
-		if (difference.getDays() > 0) 					return TRY_AGAIN;
-		if (difference.getYears() > 0) 					return TRY_AGAIN;
-		if (difference.getMonths() > 0)					return TRY_AGAIN;
+		{
+			if (difference.getDays() > 0) 					return TRY_AGAIN;
+			if (difference.getYears() > 0) 					return TRY_AGAIN;
+			if (difference.getMonths() > 0)					return TRY_AGAIN;
+		}
 		
 		if (chk.getText().equalsIgnoreCase("Month"))
 			if (difference.getYears() > 20)				return LESSER;
@@ -275,9 +283,9 @@ public class TimeSeriesController implements Initializable
 	// reads the first and last record to establish the date range
 	// while loop in middle skips all records, leaving last in prevLine
 	
-	public void setDate() {
-		FileInputStream finStream = null;
+	public void setDate() {		FileInputStream finStream = null;
 		BufferedReader buffReader = null;
+		if (inputFile == null || inputFile.isEmpty()) return;
 		for(File file:inputFile)
 		{
 		try {
@@ -307,7 +315,7 @@ public class TimeSeriesController implements Initializable
 			{
 				points = prevLine.split(csvSplitBy);
 				LocalDate date;
-				final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy");		
+				final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("M/dd/yyyy");		
 				date = LocalDate.parse(points[0],dtf);
 				if(maxDate==null)	maxDate = date;
 				if(Period.between(date,maxDate).isNegative())
