@@ -41,7 +41,10 @@ import chart.heatmap.HeatMap.OpacityFn;
  * Created by * User: hansolo  27.12.12
  */
 public class AppHeatMap extends Application {
-    private HeatMap                     heatMap;			// the key ImageView subclass
+	
+	public static void main(String[] args) {        launch(args);    }
+
+	private HeatMap                     heatMap;			// the key ImageView subclass
     private HBox						heatMapBox;
     private VBox                      	pane;
     private Slider                      sliderOpacity;
@@ -56,21 +59,20 @@ public class AppHeatMap extends Application {
 
     static int winSize = 600;
 
-    public static void main(String[] args) {        launch(args);    }
-
+ 
     // ******************** Initialization ************************************
     @Override public void init() {
-        pane                         = new VBox(10);
-        heatMap                      = new HeatMap(winSize, winSize, ColorMapping.BLUE_CYAN_GREEN_YELLOW_RED);
-        heatMapBox 					= new HBox(heatMap);       		 pane.setBorder(Borders.greenBorder);
-        button                		= new Button("Add 1000");
-        sliderOpacity                = new Slider();
-        choiceBoxMapping             = new ChoiceBox<>();
-        checkBoxFadeColors           = new CheckBox("Fade colors");
-        sliderRadius                 = new Slider();
-        choiceBoxOpacityFn = new ChoiceBox<>();
-        clearHeatMap                 = new Button("Clear");
-        handler                      = EVENT -> {				// TODO strange way to assign handlers 
+        pane                = new VBox(10);
+        heatMap             = new HeatMap(winSize, winSize, ColorMapping.BLUE_CYAN_GREEN_YELLOW_RED);
+        heatMapBox 			= new HBox(heatMap);       		 //pane.setBorder(Borders.greenBorder);
+        button              = new Button("Add 1000");
+        sliderOpacity       = new Slider();
+        choiceBoxMapping    = new ChoiceBox<>();
+        checkBoxFadeColors  = new CheckBox("Fade colors");
+        sliderRadius        = new Slider();
+        choiceBoxOpacityFn  = new ChoiceBox<>();
+        clearHeatMap        = new Button("Clear");
+        handler             = EVENT -> {				// TODO strange way to assign handlers 
             final Object SRC = EVENT.getSource();
             if (SRC.equals(choiceBoxMapping)) 
             {
@@ -105,11 +107,10 @@ public class AppHeatMap extends Application {
         heatMap.setImage(IMAGE);
         heatMap.setFitWidth(winSize);
         heatMap.setFitHeight(winSize);
-        heatMapBox.setBorder(Borders.blueBorder5);
+        heatMapBox.setBorder(Borders.blueBorder1);
         heatMapBox.setPadding(new Insets(10,100,10,10));
         pane.getChildren().addAll(line1, line2, heatMapBox);
         
-
         Scene scene = new Scene(pane, winSize, winSize, Color.GRAY);
         stage.setTitle("JavaFX HeatMap Demo");
         stage.setScene(scene);
@@ -173,10 +174,8 @@ public class AppHeatMap extends Application {
    }
 	
 	private void registerListeners() {
-		
-//    	heatMap.setOnMousePressed(event -> {System.out.println("MousePressed");});
-        
-    	heatMapBox.setOnMouseClicked(event -> {
+
+		heatMapBox.setOnMouseClicked(event -> {
     		System.out.println("setOnMouseClicked");
             double r = heatMap.getEventRadius();
             double x = PIN(event.getX() - r / 2, r, heatMap.getLayoutBounds().getWidth() - r);
