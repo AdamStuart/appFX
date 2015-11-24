@@ -7,12 +7,11 @@
  */
 package chart.fancychart;
 
-import gui.BorderPaneAnimator;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import animation.BorderPaneAnimator;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;

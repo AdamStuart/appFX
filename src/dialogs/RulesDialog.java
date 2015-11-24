@@ -1,9 +1,8 @@
 package dialogs;
 
-import gui.WindowSizeAnimator;
-
 import java.net.URL;
 
+import animation.WindowSizeAnimator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;

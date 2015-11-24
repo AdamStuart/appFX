@@ -71,6 +71,7 @@ public class EntrezRecord
 		String cmd =  "efetch.fcgi?db=pubmed&id=" + getPMID() + "&retmode=text&rettype=abstract";
 		System.out.println(cmd);
 		String result = StringUtil.callURL(base + cmd);
+		result = result.replace(".",  ".\n");
 		System.out.println(result);
 		abst.set(result);
 	}

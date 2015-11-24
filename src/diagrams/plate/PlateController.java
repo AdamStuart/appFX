@@ -3,7 +3,7 @@ package diagrams.plate;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import gui.BorderPaneAnimator;
+import animation.BorderPaneAnimator;
 import icon.FontAwesomeIcons;
 import javafx.animation.Transition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -34,6 +34,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import model.AttributeValue;
+import model.Population;
 import model.RandomAttributeValueData;
 import table.codeOrganizer.TreeTableModel;
 import threeD.Xform;
@@ -51,7 +52,7 @@ public class PlateController implements Initializable {
 	@FXML private TreeTableView<String> protocolList;  
 	@FXML private ListView<String> sets;
 	@FXML private ListView<AttributeValue> attributes;
-	@FXML private TreeTableView<String> analysisTable;
+	@FXML private TreeTableView<Population> analysisTable;
 	
 	@FXML private MenuItem saveSelection;
 	@FXML private TextArea attrText;
@@ -76,7 +77,7 @@ public class PlateController implements Initializable {
 	@FXML	private TableColumn<AttributeValue, String> attributeCol;
 	@FXML	private TableColumn<AttributeValue, String> valueCol;
 	@FXML	private TableView<AttributeValue> tableView;
-	@FXML	private TreeTableColumn<String, String> treeTablePopulation;
+	@FXML	private TreeTableColumn<Population, String> treeTablePopulation;
 	@FXML	private TreeTableColumn<String, String> treeTableCount;
 	@FXML	private TreeTableColumn<String, String> treeTableName;
 	@FXML	private TreeTableColumn<String, String> treeTableDate;
@@ -239,8 +240,7 @@ public class PlateController implements Initializable {
 		tableView.getSelectionModel().clearSelection();
 		tableView.getSelectionModel().setCellSelectionEnabled(false);//  row selection only
 
-		analysisTable.setRoot(TreeTableModel.getCellPopulationTree());
-		
+		analysisTable.setRoot(TreeTableModel.getCellPopulationTree());		
 	}
 	private void setAttributeValueCellValueFactories()
 	{
@@ -256,8 +256,8 @@ public class PlateController implements Initializable {
 		// --- population column
 	    treeTablePopulation.setPrefWidth(300);	 
 	    treeTablePopulation.setCellValueFactory(p -> {
-	            String text = p.getValue().getValue();  
-	            return new ReadOnlyObjectWrapper<String>(text);
+	            Population pop = p.getValue().getValue();  
+	            return new ReadOnlyObjectWrapper<String>(pop.getName());
 	    });
 	}
 

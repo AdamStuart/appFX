@@ -26,16 +26,21 @@ import gui.Backgrounds;
 import gui.Borders;
 import gui.Effects;
 import gui.TabPaneDetacher;
+import icon.FontAwesomeIcons;
+import icon.GlyphsDude;
 import javafx.application.Application;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -44,6 +49,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -54,12 +60,16 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.CSVTableData;
 import model.Histogram1D;
+import model.Population;
 import model.Range;
+import table.codeOrganizer.TreeTableModel;
 import util.FileUtil;
 import util.StringUtil;
 import xml.XMLFactory;
@@ -75,13 +85,19 @@ public class PublishController implements Initializable
 	@FXML AnchorPane resultsAnchor;
 	@FXML VBox graphVBox;
 	@FXML ImageView image;
-	EntrezForm querier = new EntrezForm();
 	@FXML  ChoiceBox<String> species;
 	@FXML  ChoiceBox<String> celltype;
 	@FXML  ChoiceBox<String> technology;
 	@FXML  TextArea keywords;
 	@FXML  HTMLEditor hypothesis;
 	@FXML  HTMLEditor discussion;
+	@FXML  ListView<String> normalizeList;
+	@FXML  ListView<String> interrogateList;
+	@FXML  ListView<String> visualizeList;
+	@FXML private TreeTableView<Population> classifyTree;
+
+	EntrezForm querier = new EntrezForm();
+
 	
 	@FXML ListView<ScanJob> scans;
 	@FXML ListView<Segment> segments;
@@ -111,8 +127,6 @@ public class PublishController implements Initializable
 	{
 //		discussion.setId("id");
 		doc = new PublishDocument(this);
-		TabPaneDetacher.create().makeTabsDetachable(tocTabPane);
-
 		//Hypothesis---------
 		species.setItems(speciesList);
 		species.getSelectionModel().selectFirst();
@@ -156,8 +170,20 @@ public class PublishController implements Initializable
 			image.setVisible(false);
 			resultsplitter.setVisible(true);
 		});
+		//Analysis --------- 
+		setupAnalysis();
 	}
 
+	public void start()
+	{
+		TabPaneDetacher tabManager = TabPaneDetacher.create().makeTabsDetachable(tocTabPane);
+		Scene scene = tocTabPane.getScene();
+		if (scene != null)
+		{
+			String[] strs = (String[])scene.getStylesheets().toArray();
+			tabManager.stylesheets(strs);
+		}
+	}
 	//-------------------------------------------------------------------------------------------
 	// TODO -- persistence is not finished.  Questions about enclosing data vs. referring to it.
 	
@@ -794,6 +820,55 @@ public class PublishController implements Initializable
 		public Image getImage()		{	return image;		}
 	}
 	
+	//--------------------------------------------------------------------------------
+// Analysis commands
+	
+	String[] strs = new String[] { "Filter Samples", "Organize Files", "Image Processing", "Edge Detection", "Feature Recognition", "Quantification", "Parametric Normalization", "Labeling"};
+	String[] interrog = new String[] { "Activation", "Stimulation", "Memory", "Expression", "Regulation", "Promotion", "Inhibition", "Apoptosis" };
+	String[] viz = new String[] { "QC Montage", "Stats Panel", "Backgating", "Correlation", "Heat Map", "Hover Plot", "Drill Down Chart", "Tree Map", "Anova", "Cytoscape", "VISNE", "SPADE"};
+	@FXML	private TreeTableColumn<Population, String> nameColumn;
+	@FXML	private TreeTableColumn<Population, String> countColumn;
+
+	private void setupAnalysis()
+	{
+		normalizeList.setItems(FXCollections.observableArrayList(strs));
+		normalizeList.setCellFactory(item -> new StepCell());
+		visualizeList.setItems(FXCollections.observableArrayList(viz));
+		classifyTree.setRoot(TreeTableModel.getCellPopulationTree());
+		nameColumn.setPrefWidth(200);	 
+		nameColumn.setCellValueFactory(p -> {
+            Population pop = p.getValue().getValue();  
+            return new ReadOnlyObjectWrapper<String>(pop.getName());
+		});
+		countColumn.setCellValueFactory(p -> {
+            Population pop = p.getValue().getValue();  
+            return new ReadOnlyObjectWrapper(pop.getCount());
+		});
+		
+		interrogateList.setItems(FXCollections.observableArrayList(interrog));
+	}
+	 public class StepCell extends ListCell<String> {
+
+	     public StepCell() {    }
+	       
+	     @Override protected void updateItem(String item, boolean empty) {
+	         // calling super here is very important - don't skip this!
+	         super.updateItem(item, empty);
+	           
+	         setText(item == null ? "" : item);
+	         Text icon = GlyphsDude.createIcon(FontAwesomeIcons.CHECK);
+	         icon.setFill(Color.GREEN);
+	         setGraphic(item == null ? null : icon);
+
+	     }
+	 }
+
+	
+	@FXML void doExplore()	{	System.out.println("doExplore: ");	}
+	@FXML void doBatch()	{	System.out.println("doBatch: ");	}
+	@FXML void doMonitor()	{	System.out.println("doMonitor: ");	}
+	@FXML void doConfigure(){  	System.out.println("doConfigure: ");		}
+
 	//--------------------------------------------------------------------------------
 
 	// TODO -- There's no menu bar at this point, but here are placeholders we'll need

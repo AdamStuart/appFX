@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import animation.BorderPaneAnimator;
 import database.model.DBCitation;
 import database.model.DBEvent;
 import database.model.DBGroup;
@@ -15,7 +16,6 @@ import dialogs.ConnectDialog;
 import dialogs.FindDialog;
 import dialogs.LoginDialog;
 import dialogs.RulesDialog;
-import gui.BorderPaneAnimator;
 import icon.FontAwesomeIcons;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;

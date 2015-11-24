@@ -5,12 +5,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
+import animation.BorderPaneAnimator;
+import animation.NodeVisAnimator;
 import diagrams.draw.Action.ActionType;
 import diagrams.draw.App.Tool;
-import gui.BorderPaneAnimator;
 import gui.BorderPaneRulers;
 import gui.Borders;
-import gui.NodeVisAnimator;
 import icon.FontAwesomeIcons;
 import icon.GlyphIcon;
 import icon.GlyphsDude;

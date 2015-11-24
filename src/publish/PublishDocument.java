@@ -41,7 +41,7 @@ public class PublishDocument
 			FileChooser chooser = new FileChooser();	
 			chooser.setTitle("Save Experiment");
 			file = chooser.showSaveDialog(PublishController.getStage());
-			if (file == null) 
+			if (file != null) 
 				PublishController.getStage().setTitle(file.getName());
 		}
 		return file;

@@ -1,8 +1,8 @@
 package database.forms;
 
+import animation.WindowSizeAnimator;
 import gui.Forms;
 import gui.Forms.ValidationType;
-import gui.WindowSizeAnimator;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;

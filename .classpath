@@ -19,5 +19,13 @@
 	<classpathentry kind="lib" path="src/chart/wordcloud/jsoup-1.8.3.jar"/>
 	<classpathentry kind="lib" path="src/chart/wordcloud/nlp/stanford-corenlp-3.5.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="src/container/libs/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="src/container/libs/jackson-annotations-2.4.4.jar"/>
+	<classpathentry kind="lib" path="src/container/libs/jackson-core-2.4.4.jar"/>
+	<classpathentry kind="lib" path="src/container/libs/jackson-databind-2.4.4.jar"/>
+	<classpathentry kind="lib" path="src/container/libs/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="src/container/libs/pivot-core-2.0.4.jar"/>
+	<classpathentry kind="lib" path="src/container/libs/pivot-wtk-2.0.4.jar"/>
+	<classpathentry kind="lib" path="src/container/libs/pivot-wtk-terra-2.0.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

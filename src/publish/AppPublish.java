@@ -11,6 +11,7 @@ public class AppPublish extends Application
 {
     public static void main(String[] args)    {        launch(args);    }
 	static final String RESOURCE = "publish.fxml";
+    static final String STYLE = "publish.css";
 
 	public AppPublish() 					{	   instance = this;	}
 	public static AppPublish getInstance() 	{       return instance;	}
@@ -28,6 +29,7 @@ public class AppPublish extends Application
 	{
         URL resource = getClass().getResource(RESOURCE);
         Scene scene = new Scene(FXMLLoader.load(resource));
+		scene.getStylesheets().add(getClass().getResource(STYLE).toExternalForm());
         stage.setTitle("A Biological Investigation Editor");
         stage.setX(20);
 		stage.setWidth(1100);

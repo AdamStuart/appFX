@@ -4,8 +4,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import animation.WindowSizeAnimator;
 import gui.Borders;
-import gui.WindowSizeAnimator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -67,7 +67,9 @@ public class EntrezForm extends VBox
 //		TableColumn<EntrezRecord, TableView> col4 = new TableColumn<EntrezRecord, TableView>("Status");
 		TableColumn<EntrezRecord, TableView> col5 = new TableColumn<EntrezRecord, TableView>("Source");
 //		TableColumn<EntrezRecord, TableView> col6 = new TableColumn<EntrezRecord, TableView>("Location");
-		col2.setPrefWidth(300);
+		col1.setPrefWidth(150);
+		col2.setPrefWidth(500);
+		col3.setPrefWidth(150);
 		resultsTable.getColumns().addAll(col0, col1, col2, col3, col5);		//col4, , col6
 		// TODO init columns
 	
@@ -84,7 +86,8 @@ public class EntrezForm extends VBox
 		getChildren().addAll(queryContent, split);
 		split.setOrientation(Orientation.VERTICAL);
 		split.setDividerPosition(0, 0.8);
-		
+		VBox.setVgrow(split, Priority.ALWAYS);
+
 		VBox.setVgrow(resultsTable, Priority.ALWAYS);
 		
 	}
@@ -189,13 +192,13 @@ public class EntrezForm extends VBox
 	}
 
 	//-----------------------------------------------------------------
-	// first option is for the search function, the second is persistence
+	// first option is for the search function, the second (extractPlain) is persistence only
 	public static String EUTILS = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
 	private String extract()
 	{
 		StringBuffer buf = new StringBuffer(EUTILS + "esearch.fcgi?db=pubmed&term=");
 		collectSearchTerms(buf);
-		System.out.println(buf.toString());
+//		System.out.println(buf.toString());
 		return buf.toString();
 	}
 
