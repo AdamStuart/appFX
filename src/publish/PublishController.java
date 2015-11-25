@@ -177,12 +177,12 @@ public class PublishController implements Initializable
 	public void start()
 	{
 		TabPaneDetacher tabManager = TabPaneDetacher.create().makeTabsDetachable(tocTabPane);
-		Scene scene = tocTabPane.getScene();
-		if (scene != null)
-		{
-			String[] strs = (String[])scene.getStylesheets().toArray();
-			tabManager.stylesheets(strs);
-		}
+//		Scene scene = tocTabPane.getScene();
+//		if (scene != null)
+//		{
+//			String[] strs = (String[])scene.getStylesheets().toArray();
+//			tabManager.stylesheets(strs);
+//		}
 	}
 	//-------------------------------------------------------------------------------------------
 	// TODO -- persistence is not finished.  Questions about enclosing data vs. referring to it.

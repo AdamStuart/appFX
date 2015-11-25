@@ -14,8 +14,8 @@ public class AppPublish extends Application
     static final String STYLE = "publish.css";
 
 	public AppPublish() 					{	   instance = this;	}
-	public static AppPublish getInstance() 	{       return instance;	}
-	public static Stage getStage() 			{       return stage;	}
+	public static AppPublish getInstance() 	{      return instance;	}
+	public static Stage getStage() 			{      return stage;	}
 	static Stage stage;
 	private static AppPublish instance;
 	//-----------------------------------------------------------------------------------------
@@ -28,12 +28,15 @@ public class AppPublish extends Application
 	public void doNew(Stage stage) throws Exception 
 	{
         URL resource = getClass().getResource(RESOURCE);
-        Scene scene = new Scene(FXMLLoader.load(resource));
+        FXMLLoader loader = new FXMLLoader(resource);
+        Scene scene = new Scene(loader.load());
+        PublishController controller = (PublishController) loader.getController();
 		scene.getStylesheets().add(getClass().getResource(STYLE).toExternalForm());
         stage.setTitle("A Biological Investigation Editor");
         stage.setX(20);
 		stage.setWidth(1100);
 		stage.setHeight(650);
+		controller.start();
 		stage.setScene(scene);
 		stage.show();
 	}
