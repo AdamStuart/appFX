@@ -10,183 +10,244 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<TabPane fx:id="tocTabPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="publish.PublishController">
-   <tabs>
-      <Tab closable="false" text="Hypothesis">
-        <content>
-          <AnchorPane fx:id="abstractAnchor">
-               <children>
-                  <VBox fillWidth="false" layoutX="8.0" layoutY="5.0" spacing="8.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="10.0">
-                     <children>
-                        <VBox prefHeight="191.0" spacing="8.0" VBox.vgrow="NEVER">
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="publish.PublishController">
+   <children>
+      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <TabPane fx:id="tocTabPane" BorderPane.alignment="CENTER">
+               <tabs>
+                  <Tab closable="false" text="Hypothesis">
+                    <content>
+                      <AnchorPane fx:id="abstractAnchor">
                            <children>
-                              <HBox layoutX="42.0" layoutY="4.0" spacing="8.0">
+                              <VBox fillWidth="false" layoutX="8.0" layoutY="5.0" spacing="8.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="10.0">
                                  <children>
-                                    <Label minHeight="-Infinity" prefHeight="113.0" prefWidth="631.0" text="The purpose of the hypothesis is to assert the connections or correlations you intend to demonstrate. Provide specific enough informations that we can search for similar work in the literature." wrapText="true">
-                                       <padding>
-                                          <Insets left="20.0" />
-                                       </padding>
-                                    </Label>
-                                    <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#saveas" prefWidth="80.0" text="Save" HBox.hgrow="NEVER" />
+                                    <VBox prefHeight="191.0" spacing="8.0" VBox.vgrow="NEVER">
+                                       <children>
+                                          <HBox layoutX="42.0" layoutY="4.0" spacing="8.0">
+                                             <children>
+                                                <Label minHeight="-Infinity" prefHeight="113.0" prefWidth="631.0" text="The purpose of the hypothesis is to assert the connections or correlations you intend to demonstrate. Provide specific enough informations that we can search for similar work in the literature." wrapText="true">
+                                                   <padding>
+                                                      <Insets left="20.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Button mnemonicParsing="false" onAction="#saveas" text="Save" HBox.hgrow="NEVER" />
+                                                <Button layoutX="649.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#doOpen" text="Open..." />
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="8.0">
+                                             <children>
+                                                <Label layoutX="20.0" layoutY="60.0" text="Species" />
+                                                <ChoiceBox fx:id="species" prefHeight="26.0" prefWidth="118.0" />
+                                                <Label text="Cell Type" />
+                                                <ChoiceBox fx:id="celltype" prefHeight="26.0" prefWidth="176.0" />
+                                                <Label text="Technology" />
+                                                <ChoiceBox fx:id="technology" prefHeight="27.0" prefWidth="189.0" />
+                                             </children>
+                                          </HBox>
+                                          <Label text="Keywords" />
+                                          <TextArea fx:id="keywords" prefHeight="45.0" prefWidth="763.0" />
+                                       </children>
+                                    </VBox>
+                                    <HTMLEditor fx:id="hypothesis" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutY="223.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="223.0" />
                                  </children>
-                              </HBox>
-                              <HBox spacing="8.0">
-                                 <children>
-                                    <Label layoutX="20.0" layoutY="60.0" text="Species" />
-                                    <ChoiceBox fx:id="species" prefHeight="26.0" prefWidth="118.0" />
-                                    <Label text="Cell Type" />
-                                    <ChoiceBox fx:id="celltype" prefHeight="26.0" prefWidth="176.0" />
-                                    <Label text="Technology" />
-                                    <ChoiceBox fx:id="technology" prefHeight="27.0" prefWidth="189.0" />
-                                 </children>
-                              </HBox>
-                              <Label text="Keywords" />
-                              <TextArea fx:id="keywords" prefHeight="45.0" prefWidth="763.0" />
+                              </VBox>
                            </children>
-                        </VBox>
-                        <HTMLEditor fx:id="hypothesis" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutY="223.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="223.0" />
-                     </children>
-                  </VBox>
-               </children>
-            </AnchorPane>
-        </content>
-      </Tab>
-      <Tab text="Research">
-        <content>
-          <AnchorPane fx:id="research" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-        </content>
-      </Tab>
-      <Tab closable="false" text="Methods">
-        <content>
-          <AnchorPane fx:id="methodsAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <Label layoutX="14.0" layoutY="2.0" text="A Hierarchical Display of Biological Methods" />
-                  <SplitPane fx:id="methodsplitter" dividerPositions="0.4" layoutY="27.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
-                     <items>
-                        <SplitPane dividerPositions="0.3" orientation="VERTICAL">
-                           <items>
-                              <VBox prefHeight="200.0" prefWidth="100.0">
-                                 <children>
-                                    <Label text="Server Connections" />
-                                 </children>
-                              </VBox>
-                              <VBox fx:id="fileTreeBox" prefHeight="388.0" prefWidth="315.0">
-                                 <children>
-                                    <Label text="File Cache" />
-                                 </children>
-                              </VBox>
-                           </items>
-                        </SplitPane>
-                        <TreeTableView layoutX="190.0" layoutY="27.0" prefHeight="438.0" prefWidth="443.0" fx:id="xmlTree">
-                          <columns>
-                            <TreeTableColumn prefWidth="75.0" text="C1" />
-                            <TreeTableColumn prefWidth="75.0" text="C2" />
-                          </columns>
-                        </TreeTableView>
-                     </items>
-                  </SplitPane>
-                  <Button layoutX="307.0" layoutY="1.0" mnemonicParsing="false" onAction="#showMethodsTree" text="Show Methods Tree" AnchorPane.rightAnchor="20.0" />
-               </children>
-            </AnchorPane>
-        </content>
-      </Tab>
-      <Tab closable="false" text="Results">
-        <content>
-          <AnchorPane fx:id="resultsAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <ListView fx:id="scans" layoutX="20.0" layoutY="26.0" prefHeight="207.0" prefWidth="200.0" />
-                  <Label layoutX="21.0" layoutY="6.0" text="Scans" />
-                  <Label layoutX="19.0" layoutY="239.0" text="Segments" />
-                  <ListView fx:id="segments" layoutX="21.0" layoutY="262.0" prefHeight="158.0" prefWidth="200.0" />
-                  <StackPane layoutX="238.0" layoutY="22.0" prefHeight="424.0" prefWidth="549.0" AnchorPane.bottomAnchor="21.0" AnchorPane.leftAnchor="238.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="22.0">
-                     <children>
-                        <ImageView fx:id="image" fitHeight="305.0" fitWidth="526.0" layoutX="238.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
-                        <SplitPane fx:id="resultsplitter" dividerPositions="0.5">
-                           <items>
-                              <TableView fx:id="csvtable" prefHeight="107.0" prefWidth="549.0">
-                                <columns>
-                                  <TableColumn prefWidth="75.0" text="C1" />
-                                  <TableColumn prefWidth="75.0" text="C2" />
-                                </columns>
-                              </TableView>
-                              <ScrollPane>
-                                 <content>
-                                    <VBox fx:id="graphVBox" prefWidth="265.0" />
-                                 </content>
-                              </ScrollPane>
-                           </items>
-                        </SplitPane>
-                     </children>
-                  </StackPane>
-                  <Button fx:id="plotButton" layoutX="20.0" layoutY="427.0" mnemonicParsing="false" onAction="#doPlot" text="Plot" />
-               </children>
-            </AnchorPane>
-        </content>
-      </Tab>
-      <Tab text="Analysis">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="413.0" prefWidth="800.0">
-               <children>
-                  <VBox layoutX="-1.0" layoutY="46.0" prefHeight="421.0" prefWidth="800.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="46.0">
-                     <children>
-                        <SplitPane dividerPositions="0.24874371859296482, 0.5954773869346733, 0.7713567839195979" layoutX="31.0" layoutY="46.0" prefHeight="355.0" prefWidth="766.0" AnchorPane.bottomAnchor="174.0" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="46.0" VBox.vgrow="ALWAYS">
-                           <items>
-                              <VBox spacing="8.0">
-                                 <children>
-                                    <Label text="Digest" />
-                                    <ListView fx:id="normalizeList" layoutX="31.0" layoutY="48.0" prefHeight="243.0" prefWidth="189.0" VBox.vgrow="ALWAYS" />
-                                 </children>
-                              </VBox>
-                              <VBox spacing="8.0">
-                                 <children>
-                                    <Label text="Classify" />
-                                    <TreeTableView fx:id="classifyTree" layoutX="232.0" layoutY="48.0" prefHeight="243.0" prefWidth="312.0" VBox.vgrow="ALWAYS">
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab text="Research">
+                    <content>
+                      <AnchorPane fx:id="research" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    </content>
+                  </Tab>
+                  <Tab closable="false" text="Methods">
+                    <content>
+                      <AnchorPane fx:id="methodsAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Label layoutX="14.0" layoutY="2.0" text="A Hierarchical Display of Biological Methods" />
+                              <SplitPane fx:id="methodsplitter" dividerPositions="0.4" layoutY="27.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+                                 <items>
+                                    <SplitPane dividerPositions="0.3" orientation="VERTICAL">
+                                       <items>
+                                          <VBox prefHeight="200.0" prefWidth="100.0">
+                                             <children>
+                                                <Label text="Server Connections" />
+                                             </children>
+                                          </VBox>
+                                          <VBox fx:id="fileTreeBox" prefHeight="388.0" prefWidth="315.0">
+                                             <children>
+                                                <Label text="File Cache" />
+                                             </children>
+                                          </VBox>
+                                       </items>
+                                    </SplitPane>
+                                    <TreeTableView layoutX="190.0" layoutY="27.0" prefHeight="438.0" prefWidth="443.0" fx:id="xmlTree">
                                       <columns>
-                                        <TreeTableColumn fx:id="nameColumn" prefWidth="75.0" text="C1" />
-                                        <TreeTableColumn fx:id="countColumn" prefWidth="75.0" text="C2" />
+                                        <TreeTableColumn prefWidth="75.0" text="C1" />
+                                        <TreeTableColumn prefWidth="75.0" text="C2" />
                                       </columns>
                                     </TreeTableView>
-                                 </children>
-                              </VBox>
-                              <VBox spacing="8.0">
-                                 <children>
-                                    <Label text="Interrogate" />
-                                    <ListView fx:id="interrogateList" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                                 </children>
-                              </VBox>
-                              <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0">
-                                 <children>
-                                    <Label text="Visualize" />
-                                    <ListView fx:id="visualizeList" prefHeight="245.0" prefWidth="220.0" VBox.vgrow="ALWAYS" />
-                                 </children>
-                              </VBox>
-                           </items>
-                        </SplitPane>
-                        <HBox spacing="8.0">
-                           <children>
-                              <Button layoutX="32.0" layoutY="315.0" mnemonicParsing="false" onAction="#doExplore" text="Explore" />
-                              <Button mnemonicParsing="false" onAction="#doBatch" text="Batch" />
-                              <Button mnemonicParsing="false" onAction="#doMonitor" text="Monitor" />
-                              <Button mnemonicParsing="false" onAction="#doConfigure" text="Configure" />
+                                 </items>
+                              </SplitPane>
+                              <Button layoutX="307.0" layoutY="1.0" mnemonicParsing="false" onAction="#showMethodsTree" text="Show Methods Tree" AnchorPane.rightAnchor="20.0" />
                            </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-               </children></AnchorPane>
-        </content>
-      </Tab>
-      <Tab closable="false" text="Discussion">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <HTMLEditor fx:id="discussion" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="5.0" layoutY="17.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="104.0" />
-                  <Label layoutX="14.0" layoutY="9.0" text="Prompts" />
-                  <Label layoutX="14.0" layoutY="44.0" text="Explain how this work is novel and innovative" />
-                  <Label layoutX="14.0" layoutY="69.0" text="Explain how this work extends our understanding of the subject" />
-                  <Label layoutX="466.0" layoutY="69.0" text="Describe Future work that might extend these results" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="69.0" />
-               </children>
-            </AnchorPane>
-        </content>
-      </Tab>
-   </tabs>
-</TabPane>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab closable="false" text="Results">
+                    <content>
+                      <AnchorPane fx:id="resultsAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <ListView fx:id="scans" layoutX="20.0" layoutY="26.0" prefHeight="207.0" prefWidth="200.0" />
+                              <Label layoutX="21.0" layoutY="6.0" text="Scans" />
+                              <Label layoutX="19.0" layoutY="239.0" text="Segments" />
+                              <ListView fx:id="segments" layoutX="21.0" layoutY="262.0" prefHeight="158.0" prefWidth="200.0" />
+                              <StackPane layoutX="238.0" layoutY="22.0" prefHeight="424.0" prefWidth="549.0" AnchorPane.bottomAnchor="21.0" AnchorPane.leftAnchor="238.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="22.0">
+                                 <children>
+                                    <ImageView fx:id="image" fitHeight="305.0" fitWidth="526.0" layoutX="238.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
+                                    <SplitPane fx:id="resultsplitter" dividerPositions="0.5">
+                                       <items>
+                                          <TableView fx:id="csvtable" prefHeight="107.0" prefWidth="549.0">
+                                            <columns>
+                                              <TableColumn prefWidth="75.0" text="C1" />
+                                              <TableColumn prefWidth="75.0" text="C2" />
+                                            </columns>
+                                          </TableView>
+                                          <ScrollPane>
+                                             <content>
+                                                <VBox fx:id="graphVBox" prefWidth="265.0" />
+                                             </content>
+                                          </ScrollPane>
+                                       </items>
+                                    </SplitPane>
+                                 </children>
+                              </StackPane>
+                              <Button fx:id="plotButton" layoutX="20.0" layoutY="427.0" mnemonicParsing="false" onAction="#doPlot" text="Plot" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab text="Analysis">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="413.0" prefWidth="800.0">
+                           <children>
+                              <VBox layoutX="-1.0" layoutY="46.0" prefHeight="421.0" prefWidth="800.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="46.0">
+                                 <children>
+                                    <SplitPane dividerPositions="0.24874371859296482, 0.5954773869346733, 0.7713567839195979" layoutX="31.0" layoutY="46.0" prefHeight="355.0" prefWidth="766.0" AnchorPane.bottomAnchor="174.0" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="46.0" VBox.vgrow="ALWAYS">
+                                       <items>
+                                          <VBox spacing="8.0">
+                                             <children>
+                                                <Label text="Digest" />
+                                                <ListView fx:id="normalizeList" layoutX="31.0" layoutY="48.0" prefHeight="243.0" prefWidth="189.0" VBox.vgrow="ALWAYS" />
+                                             </children>
+                                          </VBox>
+                                          <VBox spacing="8.0">
+                                             <children>
+                                                <Label text="Classify" />
+                                                <TreeTableView fx:id="classifyTree" layoutX="232.0" layoutY="48.0" prefHeight="243.0" prefWidth="312.0" VBox.vgrow="ALWAYS">
+                                                  <columns>
+                                                    <TreeTableColumn fx:id="nameColumn" prefWidth="75.0" text="C1" />
+                                                    <TreeTableColumn fx:id="countColumn" prefWidth="75.0" text="C2" />
+                                                  </columns>
+                                                </TreeTableView>
+                                             </children>
+                                          </VBox>
+                                          <VBox spacing="8.0">
+                                             <children>
+                                                <Label text="Interrogate" />
+                                                <ListView fx:id="interrogateList" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                             </children>
+                                          </VBox>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0">
+                                             <children>
+                                                <Label text="Visualize" />
+                                                <ListView fx:id="visualizeList" prefHeight="245.0" prefWidth="220.0" VBox.vgrow="ALWAYS" />
+                                             </children>
+                                          </VBox>
+                                       </items>
+                                    </SplitPane>
+                                    <HBox spacing="8.0">
+                                       <children>
+                                          <Button layoutX="32.0" layoutY="315.0" mnemonicParsing="false" onAction="#doExplore" text="Explore" />
+                                          <Button mnemonicParsing="false" onAction="#doBatch" text="Batch" />
+                                          <Button mnemonicParsing="false" onAction="#doMonitor" text="Monitor" />
+                                          <Button mnemonicParsing="false" onAction="#doConfigure" text="Configure" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab closable="false" text="Discussion">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <HTMLEditor fx:id="discussion" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="5.0" layoutY="17.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="104.0" />
+                              <Label layoutX="14.0" layoutY="9.0" text="Prompts" />
+                              <Label layoutX="14.0" layoutY="44.0" text="Explain how this work is novel and innovative" />
+                              <Label layoutX="14.0" layoutY="69.0" text="Explain how this work extends our understanding of the subject" />
+                              <Label layoutX="466.0" layoutY="69.0" text="Describe Future work that might extend these results" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="69.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+               </tabs>
+            </TabPane>
+         </center>
+         <top>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#doNew" text="New" />
+                        <MenuItem mnemonicParsing="false" onAction="#doOpen" text="Open" />
+                        <MenuItem fx:id="recentMenu" mnemonicParsing="false" text="Open Recent..." />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
+                        <MenuItem mnemonicParsing="false" onAction="#saveas" text="Save As...." />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#doClose" text="Close" />
+                        <MenuItem mnemonicParsing="false" onAction="#doQuit" text="Quit" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#doUndo" text="Undo" />
+                        <MenuItem mnemonicParsing="false" onAction="#doRedo" text="Redo" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#doCut" text="Cut" />
+                        <MenuItem mnemonicParsing="false" onAction="#doCopy" text="Copy" />
+                        <MenuItem mnemonicParsing="false" onAction="#doPaste" text="Paste" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Duplicate" />
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                        <MenuItem mnemonicParsing="false" text="Select All" />
+                  </items>
+                </Menu>
+                  <Menu mnemonicParsing="false" text="View">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Hypothesis" />
+                        <MenuItem mnemonicParsing="false" text="Research" />
+                        <MenuItem mnemonicParsing="false" text="Methods" />
+                        <MenuItem mnemonicParsing="false" text="Results" />
+                        <MenuItem mnemonicParsing="false" text="Analysis" />
+                        <MenuItem mnemonicParsing="false" text="Discussion" />
+                        <MenuItem mnemonicParsing="false" text="Use Tear-off Tabs" />
+                        <MenuItem mnemonicParsing="false" text="Use Scrolling list" />
+                    </items>
+                  </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </top>
+      </BorderPane>
+   </children>
+</AnchorPane>

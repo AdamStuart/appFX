@@ -56,8 +56,7 @@ public class TableViewSample extends Application {
         firstNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
         firstNameCol.setOnEditCommit(
             new EventHandler<CellEditEvent<Person, String>>() {
-                @Override
-                public void handle(CellEditEvent<Person, String> t) {
+                @Override public void handle(CellEditEvent<Person, String> t) {
                     ((Person) t.getTableView().getItems().get(
                             t.getTablePosition().getRow())
                             ).setFirstName(t.getNewValue());
@@ -110,17 +109,12 @@ public class TableViewSample extends Application {
         addEmail.setPromptText("Email");
  
         final Button addButton = new Button("Add");
-        addButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                data.add(new Person(
-                        addFirstName.getText(),
-                        addLastName.getText(),
-                        addEmail.getText()));
-                addFirstName.clear();
-                addLastName.clear();
-                addEmail.clear();
-            }
+        addButton.setOnAction(e -> {
+            data.add(new Person(
+            addFirstName.getText(), addLastName.getText(), addEmail.getText()));
+            addFirstName.clear();
+            addLastName.clear();
+            addEmail.clear();
         });
  
         hb.getChildren().addAll(addFirstName, addLastName, addEmail, addButton);
@@ -143,34 +137,18 @@ public class TableViewSample extends Application {
         private final SimpleStringProperty lastName;
         private final SimpleStringProperty email;
  
-        private Person(String fName, String lName, String email) {
-            this.firstName = new SimpleStringProperty(fName);
-            this.lastName = new SimpleStringProperty(lName);
-            this.email = new SimpleStringProperty(email);
+        private Person(String fName, String lName, String mail) {
+            firstName = new SimpleStringProperty(fName);
+            lastName = new SimpleStringProperty(lName);
+            email = new SimpleStringProperty(mail);
         }
  
-        public String getFirstName() {
-            return firstName.get();
-        }
+        public String getFirstName() {     return firstName.get();  }        public void setFirstName(String fName) {     firstName.set(fName);   }
  
-        public void setFirstName(String fName) {
-            firstName.set(fName);
-        }
+        public String getLastName() {      return lastName.get();    }
+        public void setLastName(String fName) {   lastName.set(fName); }
  
-        public String getLastName() {
-            return lastName.get();
-        }
- 
-        public void setLastName(String fName) {
-            lastName.set(fName);
-        }
- 
-        public String getEmail() {
-            return email.get();
-        }
- 
-        public void setEmail(String fName) {
-            email.set(fName);
-        }
+        public String getEmail() {    return email.get(); }
+        public void setEmail(String fName) {    email.set(fName);   }
     }
 }

@@ -1,10 +1,14 @@
 package database.forms;
 
+import java.util.List;
+
+import javax.xml.stream.XMLEventFactory;
+import javax.xml.stream.events.XMLEvent;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import animation.WindowSizeAnimator;
 import gui.Borders;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +18,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
@@ -21,17 +26,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import publish.CriterionBox;
 import util.FileUtil;
 import util.StringUtil;
 import xml.XMLElement;
 
-//http://www.ncbi.nlm.nih.gov/books/NBK25501/
 // A form that can send queries to a public bibliographic database
+// http://www.ncbi.nlm.nih.gov/books/NBK25501/
 
 public class EntrezForm extends VBox
 {
@@ -40,7 +43,9 @@ public class EntrezForm extends VBox
 	TableView<EntrezRecord> resultsTable;
 	VBox queryContent = new VBox(10);
 	TextArea abstField = new TextArea();
+	ListView<EntrezQuery> savedSearches = new ListView<EntrezQuery>();
 	public ObservableList<EntrezRecord> getItems() { return resultsTable.getItems();	}
+	
 	public EntrezForm()
 	{
 		super(SPACING);
@@ -58,6 +63,13 @@ public class EntrezForm extends VBox
 		queryContent.setPadding(new Insets(10, 10, 10, 10));
 		queryContent.getChildren().addAll(search, line, line2);
 		abstField.setWrapText(true);
+		savedSearches.setOnMouseClicked(ev -> {
+			if (ev.getClickCount() ==2)
+			{
+				EntrezQuery query = savedSearches.getSelectionModel().getSelectedItem();
+				search(query);
+			}
+		});
 		resultsTable = new TableView<EntrezRecord>();
 		resultsTable.setPadding(new Insets(10, 10, 10, 10));
 		TableColumn<EntrezRecord, TableView> col0 = new TableColumn<EntrezRecord, TableView>("PMID");
@@ -82,8 +94,9 @@ public class EntrezForm extends VBox
 		col5.setCellValueFactory(new PropertyValueFactory<EntrezRecord, TableView>("source"));
 //		col6.setCellValueFactory(new PropertyValueFactory<EntrezRecord, TableView>("issue"));
 
+		SplitPane headersplit =  new SplitPane(queryContent, savedSearches);
 		SplitPane split =  new SplitPane(resultsTable, abstField);
-		getChildren().addAll(queryContent, split);
+		getChildren().addAll(headersplit, split);
 		split.setOrientation(Orientation.VERTICAL);
 		split.setDividerPosition(0, 0.8);
 		VBox.setVgrow(split, Priority.ALWAYS);
@@ -100,7 +113,7 @@ public class EntrezForm extends VBox
 		return null;
 	}
 	
-	public void setXML(XMLElement e)
+	public void setXML(org.w3c.dom.Element e)
 	{
 		NodeList nodes = e.getChildNodes();
 		for (int i=0; i< nodes.getLength(); i++)
@@ -123,7 +136,15 @@ public class EntrezForm extends VBox
 
 	public void search()
 	{
-		String url = extract();
+//		String url = extract();
+		EntrezQuery query = new EntrezQuery(extract());
+		savedSearches.getItems().add(query);
+		search(query);
+	}
+	
+	public void search(EntrezQuery query)
+	{	
+		String url = EUTILS + "esearch.fcgi?db=pubmed&term=" + query.getName();
 		String result = StringUtil.callURL(url);
 		System.out.println(result);
 		Document doc = FileUtil.convertStringToDocument(result);
@@ -192,17 +213,10 @@ public class EntrezForm extends VBox
 	}
 
 	//-----------------------------------------------------------------
-	// first option is for the search function, the second (extractPlain) is persistence only
 	public static String EUTILS = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
-	private String extract()
-	{
-		StringBuffer buf = new StringBuffer(EUTILS + "esearch.fcgi?db=pubmed&term=");
-		collectSearchTerms(buf);
-//		System.out.println(buf.toString());
-		return buf.toString();
-	}
 
-	public String extractPlain()		// for saving, we don't want the full url
+
+	public String extract()		// for saving, we don't want the full url
 	{
 		StringBuffer buf = new StringBuffer();
 		collectSearchTerms(buf);
@@ -238,6 +252,73 @@ public class EntrezForm extends VBox
 		buf.setLength(buf.length()-1);		// remove trailing +		
 	}
 
+	//------------------------------------------------------------------------------
+	public void setXML( XMLEventFactory  werk, List<XMLEvent> steps)
+	{
+		String query = extract();
+		if (!StringUtil.isEmpty(query) )
+		{
+			steps.add(werk.createStartElement( "", "", "Active"));
+			steps.add(werk.createCData(query));
+			steps.add(werk.createEndElement( "", "", "Active"));
+		}
+		if (savedSearches.getItems().size() > 0)
+		{
+			steps.add(werk.createStartElement( "", "", "History"));
+			for (EntrezQuery q : savedSearches.getItems())
+				q.addXML(werk, steps);
+			steps.add(werk.createEndElement( "", "", "History"));
+		}
+		
+		if (getItems().size() > 0)
+		{
+			ObservableList<EntrezRecord> items = getItems();
+			for (EntrezRecord item : items)
+			{
+				if (item.getPMID() != null) 
+				{
+					steps.add(werk.createStartElement( "", "", "Item"));
+					steps.add(werk.createAttribute("PMID", item.getPMID()));
+					steps.add(werk.createEndElement( "", "", "Item"));
+				}
+			}
+		}
+	}
+	public void setXML(org.w3c.dom.Node elem)
+	{
+		// set Active fields
+		// set saved search history
+		NodeList nodes = elem.getChildNodes();
+		int sz = nodes.getLength();
+		for (int i=0; i<sz; i++)
+		{
+			org.w3c.dom.Node child = nodes.item(i);
+			if ("Query".equals(child.getNodeName()))
+			{
+				EntrezQuery q = new EntrezQuery(child.getAttributes());
+				// set actvie field from this
+			}
+			if ("History".equals(child.getNodeName()))
+			{
+				NodeList historynodes = child.getChildNodes();
+				int sz2 = historynodes.getLength();
+				for (int j=0; j<sz2; j++)
+				{
+					org.w3c.dom.Node query = nodes.item(j);
+					if ("Query".equals(query.getNodeName()))
+					{
+						EntrezQuery q = new EntrezQuery(query.getAttributes());
+						savedSearches.getItems().add(q);
+					}
+
+				}
+			}
+		}
+		// restore PMIDs to records
+		
+	}
+
+	//------------------------------------------------------------------------------
 	//http://www.ncbi.nlm.nih.gov/books/NBK25501/
 	String[] fields = new String[] {"Affiliation",
 	"All Fields",

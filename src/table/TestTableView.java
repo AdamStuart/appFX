@@ -31,44 +31,21 @@ public class TestTableView extends Application {
 		private final SimpleStringProperty lastName;
 		private final SimpleStringProperty email;
 
-		private Record(int id, String name, String lastName, String email) {
-			this.id = new SimpleIntegerProperty(id);
-			this.name = new SimpleStringProperty(name);
-			this.lastName = new SimpleStringProperty(lastName);
-			this.email = new SimpleStringProperty(email);
+		private Record(int x, String s, String last, String mail) {
+			id = new SimpleIntegerProperty(x);
+			name = new SimpleStringProperty(s);
+			lastName = new SimpleStringProperty(last);
+			email = new SimpleStringProperty(mail);
 		}
 
-		public int getId() {
-			return this.id.get();
-		}
-
-		public void setId(int id) {
-			this.id.set(id);
-		}
-
-		public String getName() {
-			return this.name.get();
-		}
-
-		public void setName(String name) {
-			this.name.set(name);
-		}
-
-		public String getLastName() {
-			return this.lastName.get();
-		}
-
-		public void setLastName(String lastName) {
-			this.lastName.set(lastName);
-		}
-
-		public String getEmail() {
-			return this.email.get();
-		}
-
-		public void setEmail(String email) {
-			this.email.set(email);
-		}
+		public int getId() {	return this.id.get();		}
+		public void setId(int id) {			this.id.set(id);		}
+		public String getName() {			return this.name.get();		}
+		public void setName(String name) {			this.name.set(name);		}
+		public String getLastName() {			return this.lastName.get();		}
+		public void setLastName(String lastName) {			this.lastName.set(lastName);		}
+		public String getEmail() {			return this.email.get();		}
+		public void setEmail(String email) {			this.email.set(email);		}
 	}
 
 	private TableView<Record> tableView = new TableView<>();
@@ -143,45 +120,35 @@ public class TestTableView extends Application {
 		primaryStage.show();
 	}
 
-	public static void main(String[] args) {
-		launch(args);
-	}
+	public static void main(String[] args) {	launch(args);	}
 
 	class MyIntegerTableCell extends TableCell<Record, Integer> {
 
-		@Override
-		public void updateItem(Integer item, boolean empty) {
+		@Override public void updateItem(Integer item, boolean empty) {
 			super.updateItem(item, empty);
 			setText(empty ? null : getString());
 			setGraphic(null);
 		}
 
-		private String getString() {
-			return getItem() == null ? "" : getItem().toString();
-		}
+		private String getString() {return getItem() == null ? "" : getItem().toString();	}
 	}
 
 	class MyStringTableCell extends TableCell<Record, String> {
 
-		@Override
-		public void updateItem(String item, boolean empty) {
+		@Override	public void updateItem(String item, boolean empty) {
 			super.updateItem(item, empty);
 			setText(empty ? null : getString());
 			setGraphic(null);
 		}
 
-		private String getString() {
-			return getItem() == null ? "" : getItem().toString();
-		}
+		private String getString() {return getItem() == null ? "" : getItem().toString();	}
 	}
 
 	class MyEventHandler implements EventHandler<MouseEvent> {
 
-		@Override
-		public void handle(MouseEvent t) {
+		@Override	public void handle(MouseEvent t) {
 			TableCell c = (TableCell) t.getSource();
 			int index = c.getIndex();
-
 			try {
 				Record item = recordList.get(index);
 				System.out.println("id = " + item.getId());
@@ -191,7 +158,6 @@ public class TestTableView extends Application {
 			} catch (IndexOutOfBoundsException exception) {
 				// ...
 			}
-
 		}
 	}
 }

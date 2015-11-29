@@ -23,14 +23,14 @@ public class PublishDocument
 		controller = inDC;
 	}
 	// **-------------------------------------------------------------------------------
-	public void open()		
+	static public Document open()		
 	{ 	
 		FileChooser chooser = new FileChooser();	
-		chooser.setTitle("Open Drawing");
-		file = chooser.showOpenDialog(PublishController.getStage());
-		if (file == null)			return;			// open was canceled
+		chooser.setTitle("Open Document");
+		File file = chooser.showOpenDialog(PublishController.getStage());
+		if (file == null)			return null;			// open was canceled
 		Document doc = FileUtil.openXML(file);
-		controller.install(doc);					//  parse XML to sceneGraph
+		return doc;
 	}
 	
 	// **-------------------------------------------------------------------------------
@@ -50,10 +50,10 @@ public class PublishDocument
 	// **-------------------------------------------------------------------------------
 	boolean fileDirty = false;
 	
-	public void close()		{ 			file = null;	}
-	public void reset()	{		file = null;		}
+	public void close()	{ 	file = null;	}
+	public void reset()	{	file = null;	}
 	// **-------------------------------------------------------------------------------
-	// TODO:  only prints first page, without scaling it.
+	// TODO:  only a shell of a print job
 	
 	public void print()
 	{

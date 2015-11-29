@@ -1,12 +1,19 @@
 package publish;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.w3c.dom.Node;
+
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
-import org.w3c.dom.Node;
+import util.FileUtil;
+import util.StringUtil;
 
 public class EDLParsingHelper
 {
@@ -120,7 +127,123 @@ public class EDLParsingHelper
 		lookupMap.put("MethRef", "Method Reference");
 		lookupMap.put("MethodHistory", "History");
 	}
+	//--------------------------------------------------------------------------------
+	static private File findFile(File[] dir, String idName)
+	{
+		for (File child : dir)
+			if (StringUtil.chopExtension(child.getName()).equals(idName))
+				return child;
+		return null;
+	}
+	
+	static  private TreeItem<org.w3c.dom.Node> getChildTreeItem(TreeItem<org.w3c.dom.Node> parent, String elemName)
+	{
+		for (TreeItem<org.w3c.dom.Node> child : parent.getChildren())
+		{	
+			org.w3c.dom.Node node = child.getValue();
+			String name = node.getNodeName();
+			if (name.equals(elemName))
+			
+				return child;
+		}
+		return null;
+	}
+	
+	
+	static public void setEDLDirectory(File f, TreeTableView<org.w3c.dom.Node> xmlTree, ListView<ScanJob> scans, ListView<Segment> segments)
+	{
+		File objectFile = null;
+		File[] topLevelFiles = f.listFiles();
 		
-		
+		objectFile = findFile(topLevelFiles, f.getName());
+		if (objectFile == null) return;
+		TreeItem<org.w3c.dom.Node> root = FileUtil.getXMLtree(objectFile, null);
+		xmlTree.setRoot(root);
+		TreeItem<org.w3c.dom.Node> obj = getChildTreeItem(root, "Obj");
+		if (obj != null)
+		{
+			TreeItem<org.w3c.dom.Node> history = getChildTreeItem(obj, "MethodHistory");
+			if (history != null)
+			{
+				List<TreeItem<org.w3c.dom.Node>> steps = history.getChildren();
+				int siz = steps.size();
+				for (int i=0; i<siz; i++)
+				{
+					TreeItem<org.w3c.dom.Node> step = steps.get(i);
+					org.w3c.dom.Node attr = null;
+					if (step != null) 
+						attr = step.getValue().getAttributes().getNamedItem("UID");
+					if (attr != null) 
+					{
+						String id = attr.getTextContent();
+						File methodFile = findFile(topLevelFiles, id);
+						if (methodFile != null)
+						{
+							TreeItem<org.w3c.dom.Node> methodroot = FileUtil.getXMLtree(methodFile);
+							methodroot = methodroot.getChildren().get(0);
+							step.getChildren().addAll(methodroot.getChildren());
+						}
+					}
+				}
+			}
+		}
+			
+		for (File child : f.listFiles())
+		{
+			if (child.isDirectory())		// add sub-directories to the results tab
+			{
+				String chName = child.getName().toLowerCase();
+				if ("scanjobs".equals(chName))
+				{
+					scans.getItems().clear();
+					addScanJobsDirectory(child, scans);
+				}
+				if ("segments".equals(chName))
+				{
+					segments.getItems().clear();
+					addSegmentsDirectory(child, segments);
+				}
+			}
+		}
+	}
+	
+
+	//--------------------------------------------------------------------------------
+	
+	static private void addScanJobsDirectory(File f,ListView<ScanJob> scans)
+	{
+		for (File kid : f.listFiles())
+		{
+			if (FileUtil.isImageFile(kid))
+			{
+				String id = kid.getParentFile().getParentFile().getParentFile().getName();
+				scans.getItems().add(new ScanJob(id, kid));
+			}
+			else if (kid.isDirectory())
+				addScanJobsDirectory(kid, scans);
+		}
+	}
+
+		//--------------------------------------------------------------------------------
+	static private void addSegmentsDirectory(File f,ListView<Segment> segments)
+	{
+		try
+		{
+			File[] kids = f.listFiles();
+			for (File kid : kids)
+			{
+				String id = kid.getName();
+				if (kid.isDirectory())
+				{
+					File[] grandkids = kid.listFiles();
+					for (File gkid : grandkids)
+						if (FileUtil.isCSV(gkid))
+							segments.getItems().add(new Segment(id, gkid));		// read the file, build the table
+				}
+			}
+		}
+		catch (Exception e) {			e.printStackTrace();		}
+	}
+	
 
 }

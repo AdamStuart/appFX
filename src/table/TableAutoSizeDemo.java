@@ -23,53 +23,50 @@ import javafx.util.Callback;
 
 public class TableAutoSizeDemo extends Application {
 
-        Stage stage;
-        Scene scene;
-        StackPane root;
-        public static void main(String[] args) {
-                Application.launch(args);
-        }
+    public static void main(String[] args) {   Application.launch(args);  }
+
+    private 	Stage stage;
+    private     Scene scene;
+    private     StackPane root;
         
-        @Override
-        public void start(Stage stage) throws Exception {
-                this.stage = stage;
-                configureScene();
-                configureStage();
-                configureTable();
+    @Override public void start(Stage s) throws Exception {
+            stage = s;
+            configureScene();
+            configureStage();
+            configureTable();
         }
 
-        private void configureTable() {
+    //------------------------------------------------------------------
+      private void configureTable() {
                 
-                StackPane sp1 = new StackPane();
-                sp1.getChildren().add(new Label("Hel"));
-                sp1.setStyle("-fx-border-width:1px;-fx-border-color:red;");
-                StackPane sp2 = new StackPane();
-                sp2.getChildren().add(new Label("Hel"));
-                sp2.setStyle("-fx-border-width:1px;-fx-border-color:green;");
-                
-                GridPane gp = new GridPane();
-                gp.setGridLinesVisible(true);
-                ColumnConstraints c1 = new ColumnConstraints();
-                c1.setPercentWidth(25);
-                ColumnConstraints c2 = new ColumnConstraints();
-                c2.setPercentWidth(75);
-                gp.getColumnConstraints().addAll(c1, c2);
-                gp.addRow(0, sp1 , sp2);
-                root.getChildren().add(gp);
-                
-                
-                final ObservableList<MyDomain> data = FXCollections.observableArrayList(
-                                 new MyDomain("Sai","This is to check a long cell content."),
-                                 new MyDomain("Adam","a."),
-                                 new MyDomain("Bob","b."),
-                                 new MyDomain("Fred","dr check."),
-                                 new MyDomain("Ned","Thezheck."),
-                                 new MyDomain("Ed","sdf.")
-                         );
+        StackPane sp1 = new StackPane();
+        sp1.getChildren().add(new Label("Hel"));
+        sp1.setStyle("-fx-border-width:1px;-fx-border-color:red;");
+        StackPane sp2 = new StackPane();
+        sp2.getChildren().add(new Label("Hel"));
+        sp2.setStyle("-fx-border-width:1px;-fx-border-color:green;");
+        
+        GridPane gp = new GridPane();
+        gp.setGridLinesVisible(true);
+        ColumnConstraints c1 = new ColumnConstraints();
+        c1.setPercentWidth(25);
+        ColumnConstraints c2 = new ColumnConstraints();
+        c2.setPercentWidth(75);
+        gp.getColumnConstraints().addAll(c1, c2);
+        gp.addRow(0, sp1 , sp2);
+        root.getChildren().add(gp);
+        
+        
+        final ObservableList<MyDomain> data = FXCollections.observableArrayList(
+                         new MyDomain("Sai","This is to check a long cell content."),
+                         new MyDomain("Adam","a."),
+                         new MyDomain("Bob","b."),
+                         new MyDomain("Fred","dr check."),
+                         new MyDomain("Ned","Thezheck."),
+                         new MyDomain("Ed","sdf.")
+                 );
                 
         TableView<MyDomain> table = new TableView<MyDomain>();
-        
-        
         table.setTranslateY(30);
         table.getStyleClass().add("myTable");
         
@@ -79,24 +76,20 @@ public class TableAutoSizeDemo extends Application {
         titleColumn.setCellValueFactory(new PropertyValueFactory<MyDomain,String>("name"));
         
         Callback<TableColumn<MyDomain,String>, TableCell<MyDomain,String>> cellFactory = new Callback<TableColumn<MyDomain,String>, TableCell<MyDomain,String>>() {
-
-                @Override
-                public TableCell<MyDomain, String> call( TableColumn<MyDomain, String> param) {
-                        final TableCell<MyDomain, String> cell = new TableCell<MyDomain, String>() {
-                                private Text label;
-                                @Override
-                                public void updateItem(String item, boolean empty) {
-                                        super.updateItem(item, empty);
-                                        if (!isEmpty()) {
-                                                label = new Text(item.toString());
-                                                label.setWrappingWidth(70);
-                                                setGraphic(label);
-                                        }
-                                }
-                        };
-                        return cell;
+        @Override  public TableCell<MyDomain, String> call( TableColumn<MyDomain, String> param) {
+           final TableCell<MyDomain, String> cell = new TableCell<MyDomain, String>() {
+            private Text label;
+            @Override  public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (!isEmpty()) {
+                            label = new Text(item.toString());
+                            label.setWrappingWidth(70);
+                            setGraphic(label);
+                    }
                 }
-                
+           };
+           	return cell;
+        }
         };
         titleColumn.setCellFactory(cellFactory);
         
@@ -106,12 +99,10 @@ public class TableAutoSizeDemo extends Application {
         
         Callback<TableColumn<MyDomain,String>, TableCell<MyDomain,String>> cellFactory2 = new Callback<TableColumn<MyDomain,String>, TableCell<MyDomain,String>>() {
 
-                @Override
-                public TableCell<MyDomain, String> call( TableColumn<MyDomain, String> param) {
+          @Override  public TableCell<MyDomain, String> call( TableColumn<MyDomain, String> param) {
                         final TableCell<MyDomain, String> cell = new TableCell<MyDomain, String>() {
                                 private Text label;
-                                @Override
-                                public void updateItem(String item, boolean empty) {
+                                @Override public void updateItem(String item, boolean empty) {
                                         super.updateItem(item, empty);
                                         if (!isEmpty()) {
                                                 label = new Text(item.toString());
@@ -138,10 +129,11 @@ public class TableAutoSizeDemo extends Application {
                         
                 
         }
+        //------------------------------------------------------------------
 
         private void configureStage(){
-                stage.setTitle("TableAutoSizeDemo");
-                stage.setX(0);
+            stage.setTitle("TableAutoSizeDemo");
+            stage.setX(0);
             stage.setY(0);
             stage.setWidth(700);
             stage.setHeight(400);
@@ -150,40 +142,27 @@ public class TableAutoSizeDemo extends Application {
         }
         
         private void configureScene(){
-                root = new StackPane();
-                root.autosize();
-                this.scene = new Scene(root, Color.LINEN);
-                scene.getStylesheets().add("styles/template.css");
+            root = new StackPane();
+            root.autosize();
+            scene = new Scene(root, Color.LINEN);
+            scene.getStylesheets().add("styles/template.css");
         }
-
+        //------------------------------------------------------------------
         public class MyDomain{
-                private SimpleStringProperty name = new SimpleStringProperty();
-                private SimpleStringProperty description = new SimpleStringProperty();
-                MyDomain(String name, String desc){
-                        this.name.set(name);
-                        this.description.set(desc);
-                        
-                }
-                public MyDomain(String desc){
-                        this.description.set(desc);
-                }
-                public MyDomain(){}
-                
-                public String getDescription() {
-                return description.get();
+            private SimpleStringProperty name = new SimpleStringProperty();
+            private SimpleStringProperty description = new SimpleStringProperty();
+            MyDomain(String n, String d)
+            {
+                name.set(n);
+                description.set(d);
             }
+            public MyDomain(String desc){       description.set(desc);  }
+            public MyDomain(){}
             
-            public SimpleStringProperty descriptionProperty(){
-                return description;
-            }
-            
-            public String getName() {
-                return name.get();
-            }
-            
-            public SimpleStringProperty nameProperty(){
-                return name;
-            }
+            public String getDescription() {   return description.get();   }
+            public SimpleStringProperty descriptionProperty(){    return description;  }
+            public String getName() {    return name.get();  }
+            public SimpleStringProperty nameProperty(){     return name;   }
 
         }
 }

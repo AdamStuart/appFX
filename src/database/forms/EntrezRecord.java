@@ -1,5 +1,10 @@
 package database.forms;
 
+import java.util.List;
+
+import javax.xml.stream.XMLEventFactory;
+import javax.xml.stream.events.XMLEvent;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -64,6 +69,19 @@ public class EntrezRecord
 		else if (name.equals("Pages"))					pages.set(content);
 		else if (name.equals("PubDate")) 				pubdate.set(content);
 	}
+	public void writeItem( XMLEventFactory  werk, List<XMLEvent> steps)
+	{
+		steps.add(werk.createStartElement( "", "", "Entrez"));
+		steps.add(werk.createAttribute("PMID", getPMID()));
+		steps.add(werk.createAttribute("LastAuthor", getAuthor()));
+		steps.add(werk.createAttribute("Title", getTitle()));
+		steps.add(werk.createAttribute("PubStatus", getStatus()));
+		steps.add(werk.createAttribute("Volume",getLocation()));
+		steps.add(werk.createAttribute("Issue", getIssue()));
+		steps.add(werk.createAttribute("Pages", getPages()));
+		steps.add(werk.createAttribute("PubDate", getPubDate()));
+		steps.add(werk.createEndElement( "", "", "Entrez"));
+	}
 	String base = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
 	
 	public void fetch()
@@ -82,6 +100,9 @@ public class EntrezRecord
 	public String getTitle()	{ return title.get();		}
 	public String getSource()	{ return source.get();		}
 	public String getLocation()	{ return volume.get() + ": " + issue.get() + ": " + pages.get();		}
+	public String getVolume()	{ return volume.get();		}
+	public String getIssue()	{ return issue.get();		}
+	public String getPages()	{ return pages.get();		}
 	public String getStatus()	{ return status.get();		}
 	public String getPubDate()	{ return pubdate.get();		}
 	public String getAbstract()	{ return abst.get();		}		// TODO

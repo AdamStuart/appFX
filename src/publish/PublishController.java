@@ -1,9 +1,6 @@
 package publish;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +9,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.xml.stream.XMLEventFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.events.XMLEvent;
 
 import org.w3c.dom.Document;
@@ -20,8 +16,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import database.forms.EntrezForm;
-import database.forms.EntrezRecord;
-import diagrams.draw.App;
 import gui.Backgrounds;
 import gui.Borders;
 import gui.Effects;
@@ -36,22 +30,20 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
@@ -85,15 +77,15 @@ public class PublishController implements Initializable
 	@FXML AnchorPane resultsAnchor;
 	@FXML VBox graphVBox;
 	@FXML ImageView image;
-	@FXML  ChoiceBox<String> species;
-	@FXML  ChoiceBox<String> celltype;
-	@FXML  ChoiceBox<String> technology;
-	@FXML  TextArea keywords;
-	@FXML  HTMLEditor hypothesis;
-	@FXML  HTMLEditor discussion;
-	@FXML  ListView<String> normalizeList;
-	@FXML  ListView<String> interrogateList;
-	@FXML  ListView<String> visualizeList;
+	@FXML ChoiceBox<String> species;
+	@FXML ChoiceBox<String> celltype;
+	@FXML ChoiceBox<String> technology;
+	@FXML TextArea keywords;
+	@FXML HTMLEditor hypothesis;
+	@FXML HTMLEditor discussion;
+	@FXML ListView<String> normalizeList;
+	@FXML ListView<String> interrogateList;
+	@FXML ListView<String> visualizeList;
 	@FXML private TreeTableView<Population> classifyTree;
 
 	EntrezForm querier = new EntrezForm();
@@ -150,13 +142,6 @@ public class PublishController implements Initializable
 		fileTreeBox.setBorder(Borders.greenBorder);
 		VBox.setVgrow(fileTree, Priority.ALWAYS);
 		AnchorPane.setBottomAnchor(fileTreeBox, 30d);
-
-//		fileTree.getSelectionModel().selectedItemProperty().addListener((obs, old, val) ->
-//		{
-//			File f = val.getValue();
-//			TreeItem<org.w3c.dom.Node> xml = FileUtil.getXMLtree(f, suppressNames);
-//			xmlTree.setRoot(xml);
-//		});
 		
 		//Results --------- there is an overlay of an ImageView and TableView, so show/hide on selection change
 		setupCSVTable();
@@ -176,20 +161,13 @@ public class PublishController implements Initializable
 
 	public void start()
 	{
-		TabPaneDetacher tabManager = TabPaneDetacher.create().makeTabsDetachable(tocTabPane);
-//		Scene scene = tocTabPane.getScene();
-//		if (scene != null)
-//		{
-//			String[] strs = (String[])scene.getStylesheets().toArray();
-//			tabManager.stylesheets(strs);
-//		}
+		TabPaneDetacher.create().makeTabsDetachable(tocTabPane);
 	}
 	//-------------------------------------------------------------------------------------------
 	// TODO -- persistence is not finished.  Questions about enclosing data vs. referring to it.
 	
-	List<XMLEvent> steps;
-	XMLOutputFactory factory      = XMLOutputFactory.newInstance();
-	XMLEventFactory  werk = XMLEventFactory.newInstance();
+	private List<XMLEvent> steps;
+	private XMLEventFactory  werk = 	XMLEventFactory.newInstance();
 
 	public void saveas()		
 	{ 	
@@ -215,13 +193,14 @@ public class PublishController implements Initializable
 			XMLFactory.writeEvents(steps, f.getAbsolutePath());
 		}
 	}
+	String getActiveTab()	{ return tocTabPane.getSelectionModel().getSelectedItem().getText(); }
 	private void extractState()
 	{
 		// window positions, active tab, selections, etc
 		steps.add(werk.createStartElement( "", "", "State"));
-		steps.add(werk.createAttribute( "active", "Methods"));
-		steps.add(werk.createAttribute( "x", "300"));
-		steps.add(werk.createAttribute( "y", "400"));
+		steps.add(werk.createAttribute( "active", getActiveTab()));
+		steps.add(werk.createAttribute( "x", "" + tocTabPane.getScene().getWindow().getX()));
+		steps.add(werk.createAttribute( "y", "" + tocTabPane.getScene().getWindow().getY()));
 		steps.add(werk.createEndElement( "", "", "State"));
 	}
 	
@@ -243,24 +222,7 @@ public class PublishController implements Initializable
 	private void extractResearch()
 	{
 		steps.add(werk.createStartElement( "", "", "Research"));
-		String query = querier.extractPlain();
-		if (!StringUtil.isEmpty(query) )
-		{
-			steps.add(werk.createStartElement( "", "", "Query"));
-			steps.add(werk.createCData(query));
-			steps.add(werk.createEndElement( "", "", "Query"));
-
-		}
-		ObservableList<EntrezRecord> items = querier.getItems();
-		for (EntrezRecord item : items)
-		{
-			if (item.getPMID() != null) 
-			{
-				steps.add(werk.createStartElement( "", "", "Item"));
-				steps.add(werk.createAttribute("PMID", item.getPMID()));
-				steps.add(werk.createEndElement( "", "", "Item"));
-			}
-		}
+		querier.setXML(werk, steps);
 		steps.add(werk.createEndElement( "", "", "Research"));
 	}
 	
@@ -382,33 +344,42 @@ public class PublishController implements Initializable
 			for (int i=0; i<sz; i++)
 			{
 				org.w3c.dom.Node child = children.item(i);
+				Element el = (Element) child;
 				if (child == null)  continue;
-				if ("Keywords".equals(child.getTextContent()))
-				{
-					
-				}
-				if ("Content".equals(child.getTextContent()))
-				{
-					
-				}
+				if ("Keywords".equals(child.getNodeName()))
+					keywords.setText(el.getTextContent());
+				if ("Content".equals(child.getNodeName()))
+					hypothesis.setHtmlText(el.getTextContent());
 			}
-					
 		}
 	}
 	
 	private void setResearch(org.w3c.dom.Node elem)
 	{
 		if (elem != null)
-		{
-			
-		}
+			querier.setXML(elem);
 	}
 	
 	private void setMethods(org.w3c.dom.Node elem)
 	{
 		if (elem != null)
 		{
-			
+			NodeList children = elem.getChildNodes();
+			int sz = children.getLength();
+			for (int i=0; i<sz; i++)
+			{
+				org.w3c.dom.Node child = children.item(i);
+				if ("File".equals(child.getNodeName()))
+				{
+					String path = child.getAttributes().getNamedItem("path").getNodeValue();
+					if (path != null)
+					{
+						File f = new File(path);
+						EDLParsingHelper.setEDLDirectory(f, xmlTree, scans, segments);
+					}
+				}
+				
+			}			
 		}
 	}
 	
@@ -579,134 +550,14 @@ public class PublishController implements Initializable
 		List<File> files = db.getFiles();
 		
 		for (File f : files)
-		{
 			if (f.isDirectory())
 			{		
-				setEDLDirectory(f);
+				setMethodsFilePath(f.getAbsolutePath());
+				fileTree.setRoot(f);	// traverse down the file system tree, adding everything	
+				EDLParsingHelper.setEDLDirectory(f, xmlTree, scans, segments);
 				break;			//  add the first directory, then break
 			}
-		}
 	}
-	//--------------------------------------------------------------------------------
-	File findFile(File[] dir, String idName)
-	{
-		for (File child : dir)
-			if (StringUtil.chopExtension(child.getName()).equals(idName))
-				return child;
-		return null;
-	}
-	
-	TreeItem<org.w3c.dom.Node> getChildTreeItem(TreeItem<org.w3c.dom.Node> parent, String elemName)
-	{
-		for (TreeItem<org.w3c.dom.Node> child : parent.getChildren())
-		{	
-			org.w3c.dom.Node node = child.getValue();
-			String name = node.getNodeName();
-			if (name.equals(elemName))
-			
-				return child;
-		}
-		return null;
-	}
-	
-	private void setEDLDirectory(File f)
-	{
-		File objectFile = null;
-		File[] topLevelFiles = f.listFiles();
-		
-		objectFile = findFile(topLevelFiles, f.getName());
-		if (objectFile == null) return;
-		TreeItem<org.w3c.dom.Node> root = FileUtil.getXMLtree(objectFile, null);
-		xmlTree.setRoot(root);
-		TreeItem<org.w3c.dom.Node> obj = getChildTreeItem(root, "Obj");
-		if (obj != null)
-		{
-			TreeItem<org.w3c.dom.Node> history = getChildTreeItem(obj, "MethodHistory");
-			if (history != null)
-			{
-				List<TreeItem<org.w3c.dom.Node>> steps = history.getChildren();
-				int siz = steps.size();
-				for (int i=0; i<siz; i++)
-				{
-					TreeItem<org.w3c.dom.Node> step = steps.get(i);
-					org.w3c.dom.Node attr = null;
-					if (step != null) 
-						attr = step.getValue().getAttributes().getNamedItem("UID");
-					if (attr != null) 
-					{
-						String id = attr.getTextContent();
-						File methodFile = findFile(topLevelFiles, id);
-						if (methodFile != null)
-						{
-							TreeItem<org.w3c.dom.Node> methodroot = FileUtil.getXMLtree(methodFile);
-							methodroot = methodroot.getChildren().get(0);
-							step.getChildren().addAll(methodroot.getChildren());
-						}
-					}
-				}
-			}
-		}
-		
-		setMethodsFilePath(f.getAbsolutePath());
-		fileTree.setRoot(f);	// traverse down the file system tree, adding everything	
-		
-		for (File child : f.listFiles())
-		{
-			if (child.isDirectory())		// add sub-directories to the results tab
-			{
-				String chName = child.getName().toLowerCase();
-				if ("scanjobs".equals(chName))
-				{
-					scans.getItems().clear();
-					addScanJobsDirectory(child);
-				}
-				if ("segments".equals(chName))
-				{
-					segments.getItems().clear();
-					addSegmentsDirectory(child);
-				}
-			}
-		}
-	}
-	
-
-	//--------------------------------------------------------------------------------
-	
-	private void addScanJobsDirectory(File f)
-	{
-		for (File kid : f.listFiles())
-		{
-			if (FileUtil.isImageFile(kid))
-			{
-				String id = kid.getParentFile().getParentFile().getParentFile().getName();
-				scans.getItems().add(new ScanJob(id, kid));
-			}
-			else if (kid.isDirectory())
-				addScanJobsDirectory(kid);
-		}
-	}
-
-	//--------------------------------------------------------------------------------
-	private void addSegmentsDirectory(File f)
-	{
-		try
-		{
-			File[] kids = f.listFiles();
-			for (File kid : kids)
-			{
-				String id = kid.getName();
-				if (kid.isDirectory())
-				{
-					File[] grandkids = kid.listFiles();
-					for (File gkid : grandkids)
-						if (FileUtil.isCSV(gkid))
-							segments.getItems().add(new Segment(id, gkid));		// read the file, build the table
-				}
-			}
-		}
-		catch (Exception e) {			e.printStackTrace();		}
-	}
-	
 	//--------------------------------------------------------------------------------
 
 	private void setupCSVTable()
@@ -741,85 +592,7 @@ public class PublishController implements Initializable
 		helper.setupDictionary();
 	}
 
-	//--------------------------------------------------------------------------------
-	class Segment
-	{
-		String id;
-		File csvFile;
-		CSVTableData data;
-		
-		Segment(String inID, File inFile)
-		{
-			id = inID;
-			csvFile = inFile;
-			if (csvFile != null)		// read table
-				data = readBadCSVfile(csvFile);		// its actually tab-separated
-		}
-		
-		private CSVTableData readBadCSVfile(File f)
-		{
-			CSVTableData tableData = new CSVTableData();
-			try
-			{
-				FileInputStream fis = new FileInputStream(f);
-				//Construct BufferedReader from InputStreamReader
-				BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-				List<ObservableList<String>> idata = tableData.getData();
-				String line = null;
-				
-				line = br.readLine();		// first line is text labels, but not in columns
-				line = br.readLine();
-				String[] row = line.split("\t"); 
-				int len = row.length;
-				for (int i=0; i<len; i++)
-					tableData.getData().add(FXCollections.observableArrayList());
 
-				while (line != null) {
-//					System.out.println(line);
-					row = line.split("\t");  
-					if (row.length != len)	throw new IllegalArgumentException();		// there must be the same number of tabs in every row
-					for (int i = 0; i< row.length; i++)
-					{
-						idata.get(i).add(row[i]);
-						System.out.println(row[i]);
-					}
-					line = br.readLine();
-				}
-			 
-				br.close();
-			}
-			catch (Exception e)	{ e.printStackTrace();	}
-			
-			return tableData;
-		}
-		public String toString()		{	return id + ": " + csvFile.getName();		}
-		public CSVTableData getData()	{	return data;		}
-	}
-	//--------------------------------------------------------------------------------
-	class ScanJob
-	{
-		String id;
-		File imageFile;
-		Image image;
-		
-		ScanJob(String inID, File inFile)
-		{
-			id = inID;
-			imageFile = inFile;
-			if ((inFile == null || !FileUtil.isImageFile(inFile)))
-				image =  null;
-			else
-				try{
-					String path = inFile.getCanonicalPath();
-					image =  new Image(new FileInputStream(path));
-
-				}
-			catch (Exception e) { System.out.println(inFile.getAbsolutePath());   e.printStackTrace(); }
-		}
-		public String toString()		{	return id;		}
-		public Image getImage()		{	return image;		}
-	}
-	
 	//--------------------------------------------------------------------------------
 // Analysis commands
 	
@@ -871,7 +644,8 @@ public class PublishController implements Initializable
 
 	//--------------------------------------------------------------------------------
 
-	// TODO -- There's no menu bar at this point, but here are placeholders we'll need
+	@FXML MenuItem recentMenu;
+	
 	@FXML void doNew()
 	{
 		try
@@ -883,15 +657,13 @@ public class PublishController implements Initializable
 	
 	@FXML void doOpen()
 	{
-		FileChooser chooser = new FileChooser();	
-		chooser.setTitle("Open Container File...");
-		File file = chooser.showOpenDialog(App.getInstance().getStage());
-		if (file != null)		open(file);
+		Document doc = PublishDocument.open();
+		if (doc != null)
+			install(doc);
 	}
 	
-	void open(File f)	{			}		//TODO
 	@FXML void doClose(){	save();		}	//TODO -- pbly obsolete if we install a close handler!
-	@FXML void doZip()	{	}	//TODO
+	@FXML void doZip()	{	}	
 	
 	@FXML void doUnzip()
 	{
@@ -905,10 +677,11 @@ public class PublishController implements Initializable
     		+ "\nsee folder at: " + StringUtil.chopExtension(f.getAbsolutePath()));
        }
 	}
-	@FXML void doUndo()	{		}
-	@FXML void doRedo()	{	}
-	@FXML void doCut()	{	}
-	@FXML void doCopy()	{	}
+	@FXML void doQuit()		{	System.exit(0);}
+	@FXML void doUndo()		{	}
+	@FXML void doRedo()		{	}
+	@FXML void doCut()		{	}
+	@FXML void doCopy()		{	}
 	@FXML void doPaste()	{	}
 	@FXML void doCompare()	{ 	}
 }
