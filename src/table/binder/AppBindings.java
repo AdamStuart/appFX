@@ -21,7 +21,6 @@ public class AppBindings extends Application
         Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource(CSS).toExternalForm());
 
-
         primaryStage.setTitle("Binding Sandbox");
         primaryStage.setResizable(false);
         primaryStage.setScene(scene);

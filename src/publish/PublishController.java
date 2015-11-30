@@ -344,12 +344,12 @@ public class PublishController implements Initializable
 			for (int i=0; i<sz; i++)
 			{
 				org.w3c.dom.Node child = children.item(i);
-				Element el = (Element) child;
+//				Element el = (Element) child;
 				if (child == null)  continue;
 				if ("Keywords".equals(child.getNodeName()))
-					keywords.setText(el.getTextContent());
+					keywords.setText(child.getTextContent());
 				if ("Content".equals(child.getNodeName()))
-					hypothesis.setHtmlText(el.getTextContent());
+					hypothesis.setHtmlText(child.getTextContent());
 			}
 		}
 	}

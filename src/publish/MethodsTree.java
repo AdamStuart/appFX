@@ -12,6 +12,7 @@ import org.w3c.dom.NodeList;
 import javafx.scene.control.TreeItem;
 import util.FileUtil;
 import util.StringUtil;
+import xml.XMLTools;
 
 // This class is specific to the ZKW implementation of EDL
 public class MethodsTree
@@ -79,33 +80,11 @@ public class MethodsTree
 	//-----------------------------------------------------------------------------
 	private org.w3c.dom.Node getInputTree(org.w3c.dom.Node value)
 	{
-		if (value == null) return null;
-		NodeList children = value.getChildNodes();
-		if (children == null) return null;
-		int sz = children.getLength();
-		for (int i=0; i<sz; i++)
-		{
-			Node child = children.item(i);
-			String nodename = child.getNodeName();
-			if ("Inputobjects".equals( nodename))
-				return child;
-		}
-		return null;
+		return XMLTools.getChildByName(value, "Inputobjects");
 	}
-	//-----------------------------------------------------------------------------
 	private Node getOutputTree(org.w3c.dom.Node value)
 	{
-		if (value == null) return null;
-		NodeList children = value.getChildNodes();
-		if (children == null) return null;
-		int sz = children.getLength();
-		for (int i=0; i<sz; i++)
-		{
-			Node child = children.item(i);
-			if ("Outputobjects".equals(child.getNodeName()))
-				return child;
-		}
-		return null;
+		return XMLTools.getChildByName(value, "Outputobjects");
 	}
 	// inNode is either Inputobjects or Outputobjects.  Iterate thru the Obj list
 	// and get the Identity element and then the UID attribute
