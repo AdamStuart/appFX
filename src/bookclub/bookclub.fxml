@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.media.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.web.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bookclub.BookClubController">
+   <children>
+      <BorderPane fx:id="container">
+         <center>
+            <TabPane>
+               <tabs>
+                  <Tab id="Gameboard" text="Game Board">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Pane fx:id="gameboard" layoutX="8.0" layoutY="14.0" prefHeight="661.0" prefWidth="785.0" />
+                              <VBox layoutX="14.0" layoutY="648.0" prefHeight="200.0" prefWidth="100.0" spacing="12.0">
+                                 <children>
+                                    <ColorPicker fx:id="color0" />
+                                    <ColorPicker fx:id="color1" layoutX="10.0" layoutY="10.0" />
+                                    <ColorPicker fx:id="color2" layoutX="10.0" layoutY="36.0" />
+                                    <ColorPicker fx:id="color3" layoutX="10.0" layoutY="62.0" />
+                                    <ColorPicker fx:id="color4" layoutX="10.0" layoutY="88.0" />
+                                    <ColorPicker layoutX="10.0" layoutY="114.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab id="Intro" text="Intro Video">
+                    <content>
+                      <AnchorPane fx:id="mediaContainer" minHeight="0.0" minWidth="0.0" prefHeight="1000.0" prefWidth="1000.0">
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab id="Survey" text="Questions">
+                     <content>
+                        <StackPane>
+                           <children>
+                              <ImageView fx:id="editorBkgd1" fitHeight="722.0" fitWidth="998.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_LEFT">
+                                 <image>
+                                    <Image url="@page.jpg" />
+                                 </image>
+                              </ImageView>
+                              <VBox fillWidth="false" spacing="20.0" StackPane.alignment="TOP_LEFT">
+                                 <children>
+                                    <ScrollPane hbarPolicy="NEVER" prefHeight="569.0" prefViewportHeight="696.0" prefViewportWidth="650.0" prefWidth="652.0" translateX="120.0" translateY="80.0">
+                                       <content>
+                                          <AnchorPane prefHeight="550.0" prefWidth="756.0">
+                                             <children>
+                                                <VBox id="surveyVbox" fx:id="surveyVbox" layoutX="25.0" prefHeight="550.0" prefWidth="781.0">
+                                                 <padding>
+                                                      <Insets left="20.0" top="12.0" />
+                                                   </padding>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                                 <padding>
+                                    <Insets top="5.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </StackPane>
+                     </content>
+                  </Tab>
+                  <Tab id="Editor" text="Today's Prompt">
+                     <content>
+                        <StackPane>
+                           <children>
+                              <ImageView fx:id="editorBkgd" fitHeight="722.0" fitWidth="1170.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_LEFT">
+                                 <image>
+                                    <Image url="@page.jpg" />
+                                 </image>
+                              </ImageView>
+                              <VBox spacing="20.0">
+                                 <children>
+                                    <Label fx:id="prompt" text="Explain how your characters react to the new details in the story:" translateX="80.0" translateY="25.0">
+                                       <font>
+                                          <Font name="System Italic" size="28.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets left="20.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <AnchorPane>
+                                       <children>
+                                          <HTMLEditor fx:id="editor" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="91.0" layoutY="14.0" prefHeight="621.0" prefWidth="806.0" BorderPane.alignment="CENTER">
+                                             <opaqueInsets>
+                                                <Insets bottom="80.0" left="80.0" right="80.0" top="40.0" />
+                                             </opaqueInsets>
+                                          </HTMLEditor>
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                                 <padding>
+                                    <Insets top="5.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </StackPane>
+                     </content>
+                  </Tab>
+                  <Tab id="Game Scene" text="Game Scene">
+                     <content>
+                        <HBox>
+                           <children>
+                              <ListView fx:id="birdList" prefHeight="805.0" prefWidth="200.0" />
+                              <Group fx:id="sceneGroup" />
+                           </children>
+                        </HBox>
+                     </content>
+                  </Tab>
+                  <Tab id="Flash Card" text="Flash Card">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <StackPane fx:id="flashcardStack" layoutX="14.0" layoutY="22.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="22.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab id="Contest" text="Contest">
+                     <content>
+                        <Group fx:id="contestGroup" />
+                     </content>
+                  </Tab>
+                  <Tab id="Item Gallery" text="Item Gallery">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <ScrollPane fx:id="galleryScroll" layoutX="14.0" layoutY="14.0" prefHeight="976.0" prefWidth="979.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab id="Webkit" text="Webkit">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <WebView fx:id="webview" layoutX="14.0" layoutY="14.0" prefHeight="879.0" prefWidth="968.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab id="Sudoku" text="Sudoku">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Pane fx:id="gameboard1" layoutX="8.0" layoutY="14.0" prefHeight="661.0" prefWidth="785.0">
+                                 <children>
+                                    <GridPane fx:id="theGrid" prefHeight="587.0" prefWidth="607.0">
+                                      <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                    </GridPane>
+                                 </children>
+                              </Pane>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+               </tabs>
+            </TabPane>
+         </center>
+         <bottom>
+            <HBox prefHeight="40.0" prefWidth="773.0" spacing="10.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="leftSideBarButton" mnemonicParsing="false" text="Hide" />
+                  <Button fx:id="toolbarVisible" mnemonicParsing="false" onAction="#toggleToolbar" text="Toolbar" />
+                  <Button fx:id="save" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#save" text="Save" />
+               </children>
+            </HBox>
+         </bottom>
+         <left>
+            <VBox id="To do list" prefHeight="540.0" prefWidth="232.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="To Do List">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <ListView fx:id="listToDo" prefHeight="200.0" prefWidth="200.0" />
+                  <Label text="Read">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <ListView fx:id="listRead" prefHeight="200.0" prefWidth="200.0" />
+                  <Label layoutX="10.0" layoutY="64.0" text="Write">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <ListView fx:id="listWrite" prefHeight="200.0" prefWidth="200.0" />
+                  <Label text="Create">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <ListView fx:id="listCreate" prefHeight="200.0" prefWidth="200.0" />
+                  <HBox spacing="20.0">
+                     <children>
+                        <Label text="Events">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
+                        <Button mnemonicParsing="false" text="Add" />
+                     </children>
+                  </HBox>
+                  <ListView fx:id="listEvent" prefHeight="283.0" prefWidth="232.0" />
+               </children>
+            </VBox>
+         </left>
+         <top>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </top>
+      </BorderPane>
+   </children>
+</HBox>
