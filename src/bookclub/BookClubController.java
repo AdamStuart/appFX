@@ -171,29 +171,9 @@ public class BookClubController
 	           if(newval.intValue()>rowheight)
 	                   count.setValue(count.get()+newval.intValue());
 	         });
-//	        ScrollBar scrollBarv = (ScrollBar)  textArea.lookup(".scroll-bar:vertical");
-//	        ScrollBar scrollBar = lookupVerticalScrollBar(textArea);
 	        surveyVbox.getChildren().add(labl);
 			surveyVbox.getChildren().add(textArea);
-//            textArea.layout();
-//	        Text t = (Text)textArea.lookup(".text");
-//	        Region content = (Region)textArea.lookup(".content");
-//	        ScrollBar scrollBarv = (ScrollBar)textArea.lookup(".scroll-bar:vertical");
-//if (scrollBarv != null)
-//{
-//	        scrollBarv.setOpacity(0.0);
-//	        scrollBarv.visibleProperty().addListener(new ChangeListener<Boolean>() {
-//
-//	            @Override public void changed(ObservableValue<? extends Boolean> source, Boolean wasVisible, Boolean isVisible) 
-//	            {
-//	                if (isVisible) 
-//	                {
-//	                    textArea.setPrefRowCount(textArea.getPrefRowCount() + 1);
-//	                    textArea.requestLayout();
-//	                }
-//	            }
-//	        });
-//		}
+
 		}
 		surveyVbox.setMaxWidth(500);
 	}
@@ -423,12 +403,8 @@ private String variableSubstitue(String s)
 				GridPane.setHalignment(label, HPos.CENTER);
 				theGrid.getChildren().addAll( label);			 // don't forget to add children to gridpane
 			}	
-		}
-				
-	 
+		}	 
 	}
-
-	
 	
 	private ImageView makeImageView(String filename, double xOff, double yOff, double scale)
 	{
@@ -468,11 +444,8 @@ private String variableSubstitue(String s)
 
 			double cx = ev.getX();
 			double cy = ev.getY();
-			double dx = cx - xStart; // - xOffset;
-			double dy = cy - yStart; // - yOffset;
-			
-//			System.out.println(String.format("deskDrag cx %.2f cy %.2f", cx, cy));
-//			System.out.println(String.format("deskDrag dx %.2f dy %.2f", dx, dy));
+			double dx = cx - xStart;
+			double dy = cy - yStart; 
 
 			if ((iv.getTranslateX()  >= 0 || dx > 0) && (iv.getTranslateY() >= 0 || dy > 0))
 			{
@@ -546,24 +519,15 @@ private String variableSubstitue(String s)
 	private void showToolbar(boolean isVis)
 	{
 	    Node node = editor.lookup(".top-toolbar");
-	    if (node != null) 
-	    	{
-	    	node.setManaged(isVis);
-	    	node.setVisible(isVis);
-	    	}
+	    if (node != null) 	{	node.setManaged(isVis); 	node.setVisible(isVis);		}
 	    node = editor.lookup(".bottom-toolbar");
-	    if (node != null) 
-	    	{
-	    	node.setManaged(isVis);
-	    	node.setVisible(isVis);
-	    	}
-
+	    if (node != null)  	{	node.setManaged(isVis); 	node.setVisible(isVis);		}
 	}
+
 	private boolean isToolbarVisible()
 	{
 	    Node node = editor.lookup(".top-toolbar");
-	    if (node != null) return node.isVisible();
-	  return false;
+	    return node != null && node.isVisible();
 	}
 	
 	@FXML private void toggleToolbar()

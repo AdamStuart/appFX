@@ -29,13 +29,10 @@ public class AppWordcloud extends Application
     				Color.web("40C5F1FF"),
     				Color.web("40D3F1FF"),
     				Color.web("FFFFFFFF"));
-
 	
 	@Override public void start(Stage primaryStage) throws Exception
 	{
 		final FrequencyAnalyzer frequencyAnalizer = new FrequencyAnalyzer();
-//		File f = getInputStream(primaryStage);
-//		if (stream == null) return;
 		
 		final String url= "https://www.fastcodesign.com/3053406/how-apple-is-giving-design-a-bad-name";
 		final List<WordFrequency> wordFrequencies = frequencyAnalizer.load(url);		//"http://www.nytimes.com/"

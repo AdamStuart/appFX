@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 
 public class AppIChing extends Application
 {
-	static void main(String[] args)    {        launch(args);    }
+	public static void main(String[] args)    {        launch(args);    }
 	
 	static final String RESOURCE = "iching.fxml";
 //    static final String STYLE = "editor.css";
