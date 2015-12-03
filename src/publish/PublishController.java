@@ -36,6 +36,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -86,6 +87,7 @@ public class PublishController implements Initializable
 	@FXML ListView<String> normalizeList;
 	@FXML ListView<String> interrogateList;
 	@FXML ListView<String> visualizeList;
+	@FXML ListView<SOPLink> soplist;
 	@FXML private TreeTableView<Population> classifyTree;
 
 	EntrezForm querier = new EntrezForm();
@@ -137,6 +139,7 @@ public class PublishController implements Initializable
 		//Methods---------
 		setupDropPane();
 		setupXMLTree();
+		setupSOPList();
 		fileTree = new XMLFileTree(null);
 		fileTreeBox.getChildren().add(fileTree);
 		fileTreeBox.setBorder(Borders.greenBorder);
@@ -159,6 +162,23 @@ public class PublishController implements Initializable
 		setupAnalysis();
 	}
 
+	private void setupSOPList()
+	{
+		ObservableList<SOPLink> links = FXCollections.observableArrayList();
+		links.add(new SOPLink("http://cnn.com", "CNN News"));
+		links.add(new SOPLink("http://google.com", "Google Search"));
+		soplist.setItems(links);
+		soplist.setOnMouseClicked(e -> {
+			if (e.getClickCount() == 2)
+			{
+				SOPLink link = soplist.getSelectionModel().getSelectedItem();
+				if (link != null)
+					StringUtil.launchURL(link.getUrl());
+				
+			}
+		});
+		
+	}
 	public void start()
 	{
 		TabPaneDetacher.create().makeTabsDetachable(tocTabPane);
@@ -183,7 +203,7 @@ public class PublishController implements Initializable
 			steps = new ArrayList<XMLEvent>();
 			steps.add(werk.createStartElement( "", "", "Publication"));
 			extractState(); 
-			extractHypothesis();
+			extractHypothesis();				// TODO these should be bound, not extracted
 			extractResearch();
 			extractMethods();
 			extractResults();
@@ -605,9 +625,11 @@ public class PublishController implements Initializable
 	private void setupAnalysis()
 	{
 		normalizeList.setItems(FXCollections.observableArrayList(strs));
+		normalizeList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		normalizeList.setCellFactory(item -> new StepCell());
-		visualizeList.setItems(FXCollections.observableArrayList(viz));
+		
 		classifyTree.setRoot(TreeTableModel.getCellPopulationTree());
+		classifyTree.getStyleClass().add("classifierTree");
 		nameColumn.setPrefWidth(200);	 
 		nameColumn.setCellValueFactory(p -> {
             Population pop = p.getValue().getValue();  
@@ -617,9 +639,13 @@ public class PublishController implements Initializable
             Population pop = p.getValue().getValue();  
             return new ReadOnlyObjectWrapper(pop.getCount());
 		});
-		
 		interrogateList.setItems(FXCollections.observableArrayList(interrog));
-	}
+		interrogateList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+		visualizeList.setItems(FXCollections.observableArrayList(viz));
+		visualizeList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+}
 	 public class StepCell extends ListCell<String> {
 
 	     public StepCell() {    }

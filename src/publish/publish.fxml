@@ -10,7 +10,6 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-
 <AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="publish.PublishController">
    <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -69,14 +68,20 @@
                               <Label layoutX="14.0" layoutY="2.0" text="A Hierarchical Display of Biological Methods" />
                               <SplitPane fx:id="methodsplitter" dividerPositions="0.4" layoutY="27.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
                                  <items>
-                                    <SplitPane dividerPositions="0.3" orientation="VERTICAL">
+                                    <SplitPane dividerPositions="0.3, 0.5" orientation="VERTICAL">
                                        <items>
                                           <VBox prefHeight="200.0" prefWidth="100.0">
+                                             <children>
+                                                <Label text="Standard Operating Procedures" />
+                                                <ListView fx:id="soplist" VBox.vgrow="ALWAYS" />
+                                             </children>
+                                          </VBox>
+                                          <VBox>
                                              <children>
                                                 <Label text="Server Connections" />
                                              </children>
                                           </VBox>
-                                          <VBox fx:id="fileTreeBox" prefHeight="388.0" prefWidth="315.0">
+                                          <VBox fx:id="fileTreeBox">
                                              <children>
                                                 <Label text="File Cache" />
                                              </children>

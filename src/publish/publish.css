@@ -20,6 +20,11 @@
     -fx-text-fill: #333333;
     -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
 }
+/*  hide the header of the Analysis:Classify tree */
+.classifierTree .column-header-background { visibility: hidden; -fx-padding: -1em; }
+
+
+
 .cell {							
     -fx-font-size: 14px;
     -fx-font-weight: bold;
