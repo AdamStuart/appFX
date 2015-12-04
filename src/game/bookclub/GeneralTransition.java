@@ -1,4 +1,4 @@
-package bookclub;
+package game.bookclub;
 
 import java.util.ArrayList;
 import java.util.List;

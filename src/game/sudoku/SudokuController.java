@@ -1,4 +1,4 @@
-package sudoku;
+package game.sudoku;
 
 import gui.Borders;
 import gui.Cursors;

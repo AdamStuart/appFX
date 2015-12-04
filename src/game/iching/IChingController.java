@@ -1,4 +1,4 @@
-package iching;
+package game.iching;
 
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;

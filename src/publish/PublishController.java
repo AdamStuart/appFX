@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -15,6 +16,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import container.mosaic.MosaicEngine;
+import container.mosaic.refimpl.javafx.MosaicPane;
 import database.forms.EntrezForm;
 import gui.Backgrounds;
 import gui.Borders;
@@ -30,9 +33,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
@@ -52,9 +57,13 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -87,21 +96,22 @@ public class PublishController implements Initializable
 	@FXML ListView<String> normalizeList;
 	@FXML ListView<String> interrogateList;
 	@FXML ListView<String> visualizeList;
-	@FXML ListView<SOPLink> soplist;
 	@FXML private TreeTableView<Population> classifyTree;
 
 	EntrezForm querier = new EntrezForm();
 
 	
+	@FXML SplitPane resultsplitter;
 	@FXML ListView<ScanJob> scans;
 	@FXML ListView<Segment> segments;
-	@FXML private TreeTableView<org.w3c.dom.Node> xmlTree;
-	
-	@FXML private VBox fileTreeBox;
-	private XMLFileTree fileTree;
-	@FXML SplitPane methodsplitter;
-	@FXML SplitPane resultsplitter;
 	@FXML TableView<DataRow> csvtable;
+
+	// Methods
+	private TreeTableView<org.w3c.dom.Node> xmlTree;
+	private XMLFileTree fileTree = new XMLFileTree(null);
+	ListView<SOPLink> soplist = new ListView<SOPLink>();
+	
+	
 	ObservableList<String> speciesList = FXCollections.observableArrayList("Mouse", "Human", "More...");
 	ObservableList<String> cellTypes = FXCollections.observableArrayList("T Cells", "B Cells", "NK Cells", "More...");
 	ObservableList<String> technologyList = FXCollections.observableArrayList("ChipCytometry", "PCR", "Mass Spec", "HPLC", "More...");
@@ -114,8 +124,8 @@ public class PublishController implements Initializable
 	private PublishDocument doc;
 //	private PublishDocument getDocument()		{ return doc;	}
 
-	@FXML void showMethodsTree()	{		new MethodsTree(fileTree.getRoot());	}
-
+//	@FXML void showMethodsTree()	{		new MethodsTree(fileTree.getRoot());	}
+	MosaicPane<Region> mosaicPane;
 	//-------------------------------------------------------------------------------------------
 	@Override public void initialize(URL location, ResourceBundle resources)
 	{
@@ -137,14 +147,90 @@ public class PublishController implements Initializable
 		AnchorPane.setRightAnchor(querier, 10d);
 
 		//Methods---------
-		setupDropPane();
+		mosaicPane = new MosaicPane<Region>();
+		MosaicEngine<Region> engine = mosaicPane.getEngine();
+//  		engine.addSurface(new Surface<Rectangle2D>());
+		methodsAnchor.getChildren().add(mosaicPane);
+		mosaicPane.setBorder(Borders.blueBorder5);
+		mosaicPane.prefHeightProperty().bind(methodsAnchor.heightProperty());
+		mosaicPane.prefWidthProperty().bind(methodsAnchor.widthProperty());
+		// setup mosaic
+//		Label aa = getLabel(Color.DARKCYAN, "SOPs");
+////		VBox v2 = new VBox(sop, soplist);
+//		mosaicPane.add(aa, 0.5, 0, 0.5, 0.5);
+
 		setupXMLTree();
 		setupSOPList();
-		fileTree = new XMLFileTree(null);
-		fileTreeBox.getChildren().add(fileTree);
-		fileTreeBox.setBorder(Borders.greenBorder);
-		VBox.setVgrow(fileTree, Priority.ALWAYS);
-		AnchorPane.setBottomAnchor(fileTreeBox, 30d);
+		setupDropPane();
+
+		
+		String surface = "model5";
+		String[] model = { 
+				"Methods , 0, 0, 0.50, 1",  
+				"File , 0.50, 0, 0.50, 0.33", 
+				"Inventory, .5, 0.33, 0.50, 0.33",  
+				"SOPs, .5, 0.66, 0.50, 0.33"
+				}; 
+		Color[] colors = new Color[] { Color.GAINSBORO,   Color.CORAL,   Color.CORNFLOWERBLUE,   Color.DARKSLATEGRAY};
+		/** Used to randomize ui element colors */
+		Random random = new Random();
+	
+//		
+//		       engine.addChangeListener((obs,old, val) -> {
+//		    	   obs.setX(newR.getX());
+//		    	   obs.setY(newR.getY());
+//		    	   obs.setWidth(newR.getWidth());
+//		    	   obs.setHeight(newR.getHeight());
+//		       }
+//		       
+//		       engine.add(MyObject, 0, 0, 0.5, 0.5);
+//		       engine.add(MyObject, 0, 0.5, 0.5, 1);
+//		       engine.add(MyObject, 0.5, 0, 0.5, 0.5);
+//		       engine.requestLayout();
+//		
+//		
+		int i = 0;
+		for(String def : model) {
+			String[] args = def.split("[\\s]*\\,[\\s]*");
+			int offset = args.length > 4 ? args.length - 4 : 0;
+			String id = args.length == 4 ? "" + i : args[0];
+			Label l = getLabel(i > 4 ? colors[random.nextInt(5)] : colors[i], id);
+			System.out.println("adding " + id);
+//			l.setBorder(Borders.greenBorder);
+			mosaicPane.add(l, id, 
+				Double.parseDouble(args[offset + 0]), 
+				Double.parseDouble(args[offset + 1]),
+				Double.parseDouble(args[offset + 2]),
+				Double.parseDouble(args[offset + 3]));
+			clientMap.put(id, l);
+			i++;
+		}
+//		
+		
+//		Label xml = getLabel(Color.CORAL, "Methods Hierarchy");
+////		VBox v1 = new VBox(xml, xmlTree);
+//		mosaicPane.add(	xml, 0, 0, 0.2, 0.2);
+//		
+//		
+//		Label bb = getLabel(Color.GAINSBORO, "File Cache");
+////		new VBox(filetree, fileTree)
+//		mosaicPane.add(bb, 0.5, 0.5, 0.2, 0.2);
+//		
+////		Label catalog = getLabel(Color.CADETBLUE, "Reagent Catalogs");
+////		mosaicPane.add(catalog, 0.25, 0, 0.25, 0.5);
+//		
+//		Label inventory = getLabel(Color.CORNFLOWERBLUE, "Inventory");
+//		mosaicPane.add(inventory, 0.5, 0.5, 0.5, 0.5);
+//		
+//        mosaicPane.getEngine().addSurface(mosaicPane.getSurface());
+////		static String  model1 =  "model1": [
+////        0, 0, 0.50, 0.33,  0.50, 0, 0.50, 1,	  0, 0.33, 0.50, 0.3,	    0, 0.66, 0.50, 0.33
+////      ],
+//
+		
+		
+      mosaicPane.getEngine().addSurface(mosaicPane.getSurface());
+
 		
 		//Results --------- there is an overlay of an ImageView and TableView, so show/hide on selection change
 		setupCSVTable();
@@ -161,7 +247,26 @@ public class PublishController implements Initializable
 		//Analysis --------- 
 		setupAnalysis();
 	}
+					
+					
+	public Label getLabel(Color color, String id) {
+		Label label = new Label();
+		label.textProperty().set(id);
+		label.textAlignmentProperty().set(TextAlignment.CENTER);
+		label.alignmentProperty().set(Pos.CENTER);
+		label.setOpacity(1.0);
+		label.setTextFill(Color.WHITE);
+		label.setFont(Font.font("Arial", FontWeight.BOLD, 16d));
+		String style = "-fx-background-color: #" + color.toString().substring(2, 8).toUpperCase() + 
+						";-fx-alignment:center;-fx-text-alignment:center;";
+		label.setStyle(style);
+		label.setManaged(false);
+		return label;
+	}
+	/** Mapping of element id's to labels for later reference when serializing */
+	private java.util.Map<String, Label> clientMap = new java.util.HashMap<>();
 
+	
 	private void setupSOPList()
 	{
 		ObservableList<SOPLink> links = FXCollections.observableArrayList();
@@ -174,7 +279,6 @@ public class PublishController implements Initializable
 				SOPLink link = soplist.getSelectionModel().getSelectedItem();
 				if (link != null)
 					StringUtil.launchURL(link.getUrl());
-				
 			}
 		});
 		
@@ -398,7 +502,6 @@ public class PublishController implements Initializable
 						EDLParsingHelper.setEDLDirectory(f, xmlTree, scans, segments);
 					}
 				}
-				
 			}			
 		}
 	}
@@ -585,7 +688,7 @@ public class PublishController implements Initializable
 		assert (csvtable != null);
 	}
 	
-	public class DataRow 	 // public because you get access to properties
+	class DataRow 	 
 	{
 	    IntegerProperty rowNum = new SimpleIntegerProperty(0);
 	    private ObservableList<SimpleIntegerProperty> vals = FXCollections.observableArrayList();
@@ -605,7 +708,8 @@ public class PublishController implements Initializable
 	//--------------------------------------------------------------------------------
 	private void setupXMLTree()
 	{
-		assert (xmlTree != null);
+//		assert (xmlTree != null);
+		xmlTree = new TreeTableView<org.w3c.dom.Node>();
 		xmlTree.setFixedCellSize(30);
 		xmlTree.setShowRoot(false);
 		EDLParsingHelper helper = new EDLParsingHelper(xmlTree);
@@ -646,6 +750,7 @@ public class PublishController implements Initializable
 		visualizeList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
 }
+	//--------------------------------------------------------------------------------
 	 public class StepCell extends ListCell<String> {
 
 	     public StepCell() {    }
@@ -661,12 +766,6 @@ public class PublishController implements Initializable
 
 	     }
 	 }
-
-	
-	@FXML void doExplore()	{	System.out.println("doExplore: ");	}
-	@FXML void doBatch()	{	System.out.println("doBatch: ");	}
-	@FXML void doMonitor()	{	System.out.println("doMonitor: ");	}
-	@FXML void doConfigure(){  	System.out.println("doConfigure: ");		}
 
 	//--------------------------------------------------------------------------------
 
@@ -689,8 +788,9 @@ public class PublishController implements Initializable
 	}
 	
 	@FXML void doClose(){	save();		}	//TODO -- pbly obsolete if we install a close handler!
-	@FXML void doZip()	{	}	
-	
+	@FXML void doQuit()		{	System.exit(0);}
+
+	@FXML void doZip()	{	}		
 	@FXML void doUnzip()
 	{
        FileChooser fileChooser = new FileChooser();
@@ -699,15 +799,21 @@ public class PublishController implements Initializable
        if (f != null)
        {
     	  String entries =  FileUtil.decompress(f);
-    	 System.out.println("decompressed: " + entries 
+    	  System.out.println("decompressed: " + entries 
     		+ "\nsee folder at: " + StringUtil.chopExtension(f.getAbsolutePath()));
        }
 	}
-	@FXML void doQuit()		{	System.exit(0);}
-	@FXML void doUndo()		{	}
-	@FXML void doRedo()		{	}
-	@FXML void doCut()		{	}
-	@FXML void doCopy()		{	}
-	@FXML void doPaste()	{	}
-	@FXML void doCompare()	{ 	}
+	//--------------------------------------------------------------------------------
+	@FXML void doUndo()		{	System.out.println("doUndo");	}
+	@FXML void doRedo()		{	System.out.println("doRedo");	}
+	@FXML void doCut()		{	System.out.println("doCut");	}
+	@FXML void doCopy()		{	System.out.println("doCopy");	}
+	@FXML void doPaste()	{	System.out.println("doPaste");	}
+	@FXML void doCompare()	{ 	System.out.println("doCompare");	}
+	
+	@FXML void doExplore()	{	System.out.println("doExplore: ");	}
+	@FXML void doBatch()	{	System.out.println("doBatch: ");	}
+	@FXML void doMonitor()	{	System.out.println("doMonitor: ");	}
+	@FXML void doConfigure(){  	System.out.println("doConfigure: ");		}
+
 }

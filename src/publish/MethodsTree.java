@@ -50,7 +50,7 @@ public class MethodsTree
 		System.out.println("Time (ms) = " + (System.currentTimeMillis() - startTime));
 	}
 	//-----------------------------------------------------------------------------
-	void traverseFiles(TreeItem<File> tree,List<String> id, Map <String, List<String>> in, Map <String, List<String>> out)
+	void traverseFiles(TreeItem<File> tree, List<String> id, Map <String, List<String>> in, Map <String, List<String>> out)
 	{
 		if (tree == null) return;
 		File file = tree.getValue();

@@ -135,7 +135,7 @@ class PathIterator<T> implements PathVisitable<T> {
             int i = 0;
             for(Node<T> n : curr.nextVertical.nextNodes()) {
                 if(i++ == 0) {
-                    doHorizontalScan(n, hPaths, currPath);
+//                    doHorizontalScan(n, hPaths, currPath);
                 }else{
                     currPath = currPath.copyBranch(n.prevVertical);
                     hPaths.add(currPath);
@@ -427,7 +427,8 @@ class PathIterator<T> implements PathVisitable<T> {
     		VerticalPath newPath = new VerticalPath();
     		//newPath.dividerCount = this.dividerCount;
     		for(Element<T> e : elems) {
-    			switch(e.type) {
+    			if (e != null)
+    				switch(e.type) {
 	    			case NODE: { newPath.elems.add(l.getNode(e.stringID)); break; }
 	    			case DIVIDER: { newPath.elems.add(l.getDivider(e.stringID, ((Divider<T>)e).isVertical)); break; }
 	    		}

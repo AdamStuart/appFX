@@ -484,6 +484,7 @@ class Divider<T> extends Element<T> {
 	 * @return	the most "proximal" Node
 	 */
 	Node<T> getMostProximalNode() {
+		if (prevNodes.size() == 0) return null;			//AST
 		Node<T> nodeWithMinValue = prevNodes.get(0);
 		if(isVertical) {
 			for(Node<T> n : prevNodes) {
@@ -512,6 +513,7 @@ class Divider<T> extends Element<T> {
 	 * @return	the most "distal" Node
 	 */
 	Node<T> getMostDistalNode() {
+		if (prevNodes.size() == 0) return null;		//AST
 		Node<T> nodeWithMaxValue = prevNodes.get(0);
 		if(isVertical) {
 			for(Node<T> n : prevNodes) {

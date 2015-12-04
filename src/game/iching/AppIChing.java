@@ -1,4 +1,4 @@
-package bookclub;
+package game.iching;
 
 import java.net.URL;
 
@@ -9,31 +9,30 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 
-public class AppBookClub extends Application
+public class AppIChing extends Application
 {
-    public static void main(String[] args)    {        launch(args);    }
-    static final String RESOURCE = "bookclub.fxml";
+	public static void main(String[] args)    {        launch(args);    }
+	
+	static final String RESOURCE = "iching.fxml";
 //    static final String STYLE = "editor.css";
-    static AppBookClub instance;
-    public Stage getStage()	{ return stage;	}
+    static AppIChing instance;
+    static public AppIChing getInstance()	{ return instance;	}
     Stage stage;
+    public Stage getStage()	{ return stage;	}
     
-    @Override  public void start(Stage primaryStage) throws Exception
+    @Override
+    public void start(Stage primaryStage) throws Exception
     {
     	instance = this;
     	stage = primaryStage;
          URL resource = getClass().getResource(RESOURCE);
         Parent root = FXMLLoader.load(resource);
         Scene scene = new Scene(root);
-//		scene.getStylesheets().add(getClass().getResource(STYLE).toExternalForm());
-
-
-        primaryStage.setTitle("Book Club Prototype");
+        primaryStage.setTitle("I Ching Prototype");
         primaryStage.setResizable(true);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    static public AppBookClub getInstance()	{ return instance;	}
 
 
 }

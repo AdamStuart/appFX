@@ -44,7 +44,7 @@ class Node<T> extends Element<T> {
 	 * @param t					the object being laid out in most cases.
 	 * @param id				user specified String id.
 	 * @param percentX			the percentage of the overall width, used to locate this node.
-     * @param percentY			the percentage of the overall height used to locate thithiss node.
+     * @param percentY			the percentage of the overall height used to locate this node.
      * @param percentWidth		the percentage of the overall width used to size this node horizontally.
      * @param percentHeight		the percentage of the overall height used to size this node vertically. 
 	 */

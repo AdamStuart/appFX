@@ -1863,7 +1863,7 @@ class MosaicEngineImpl<T> implements MosaicEngine<T> {
 			Node<T> retVal = null;
 			if(retVal == null) {
 				for(Node<T> n : layout.getNodeList()) {
-					if(n.r.contains(x, y)) {
+					if (n != null) if(n.r.contains(x, y)) {
 						retVal = surface.getNode(n.stringID);
 						break;
 					}
@@ -1884,7 +1884,7 @@ class MosaicEngineImpl<T> implements MosaicEngine<T> {
 					selectedElement.r.x = dragPoint.x;
 					selectedElement.r.y = dragPoint.y;
 					LayoutImpl<T> removalSnapshot = surface.getInterimSnapshot();
-					if(isDraggingNode) {
+					if(isDraggingNode && removalSnapshot != null) {
 						Node<T> currentDragOver =  getDragOverNode(surface, removalSnapshot, x, y);
 						if(currentDragOver != null) {
 							lastDragOver = currentDragOver;
