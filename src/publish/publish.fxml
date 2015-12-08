@@ -130,6 +130,7 @@
                                  </children>
                               </StackPane>
                               <Button fx:id="plotButton" layoutX="20.0" layoutY="427.0" mnemonicParsing="false" onAction="#doPlot" text="Plot" />
+                              <Button fx:id="firstcolsButton" layoutX="20.0" layoutY="467.0" mnemonicParsing="false" onAction="#doShowHideCols" text="Show/Hide First Columns" />
                            </children>
                         </AnchorPane>
                     </content>

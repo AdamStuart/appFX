@@ -135,7 +135,7 @@ class PathIterator<T> implements PathVisitable<T> {
             int i = 0;
             for(Node<T> n : curr.nextVertical.nextNodes()) {
                 if(i++ == 0) {
-//                    doHorizontalScan(n, hPaths, currPath);
+                    doHorizontalScan(n, hPaths, currPath);
                 }else{
                     currPath = currPath.copyBranch(n.prevVertical);
                     hPaths.add(currPath);

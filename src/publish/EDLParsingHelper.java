@@ -244,6 +244,14 @@ public class EDLParsingHelper
 		}
 		catch (Exception e) {			e.printStackTrace();		}
 	}
-	
 
+	public static void addCSVFilesToSegments(File dir, ListView<Segment> segments)
+	{
+		File[] kids = dir.listFiles();
+		for (File kid : kids)
+		{
+			if (FileUtil.isCSV(kid))
+				segments.getItems().add(new Segment(kid.getName(), kid));		// read the file, build the table
+		}
+	}
 }
