@@ -19,9 +19,7 @@ public class AppMosaicTester {
 
 	    public static int exec(Class<?> klass, String... modelSpec) throws IOException, InterruptedException {
 	        String javaHome = System.getProperty("java.home");
-	        String javaBin = javaHome +
-	                File.separator + "bin" +
-	                File.separator + "java";
+	        String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
 	        String classpath = System.getProperty("java.class.path");
 	        String className = klass.getCanonicalName();
 	        
@@ -71,7 +69,7 @@ public class AppMosaicTester {
 			//DesktopApplicationContext.main(MosaicPaneRefImpl.class, new String[] { "--file=testModel.txt", "--surface=model6"});
 			
 			//JavaFX
-			JavaProcess.exec(MosaicPaneRefImpl.class, "--file=" + path, "--surface=model6");
+			JavaProcess.exec(MosaicPaneRefImpl.class, "--file=" + path, "--surface=model3");
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

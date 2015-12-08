@@ -62,6 +62,7 @@ class AlignmentVisitor<T> implements PathVisitor<T>, ElementVisitor<T> {
 		}
 		
 		for(Divider<T> d : surface.getHorizontalDividers()) {
+			if (d.getMostProximalNode() == null) continue;			// AST
 			d.r.x = d.getMostProximalNode().r.x;
 			d.r.width = Math.min(surfaceArea.width, d.getMostDistalNode().r.getMaxX() - d.r.x);
 		}

@@ -1,4 +1,4 @@
-package bookclub;
+package game.bookclub;
 
 import java.io.File;
 import java.io.FileInputStream;

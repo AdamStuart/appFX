@@ -398,7 +398,9 @@ public class SurfaceImpl<T> extends SurfacePriviledged<T> {
 	}
 	
 	LayoutImpl<T> getInterimSnapshot() {
-		return interimLayoutSnapshot;
+		if (interimLayoutSnapshot == null)		// AST
+			snapshotInterimLayout();
+	return interimLayoutSnapshot;
 	}
 	
 	/**

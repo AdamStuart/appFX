@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -871,11 +872,11 @@ class MosaicEngineImpl<T> implements MosaicEngine<T> {
 		movePoint.y = Math.min(maxMoveBounds.getMaxY(), Math.max(movePoint.y, maxMoveBounds.y));
 		moveDividerImmediately(s, d, alt, movePoint, dividerSize);
 	}
-	
+	boolean verbose = false;
 	/** Used for testing */
 	private void doStats(SurfacePriviledged<T> surface, long start) {
+if (!verbose) return;		
 		long finish = System.nanoTime() - start;
-		
 		System.out.println("Divider Size: " + surface.getDividerSize());
 		System.out.println("Integer Precision: " + surface.getUseIntegerPrecision());
 		System.out.println("Area: " + surface.getArea());
@@ -1324,7 +1325,10 @@ class MosaicEngineImpl<T> implements MosaicEngine<T> {
     	surface.setHasValidDrop(false);
     	
     	for(Node<T> n : surface.getNodeList()) {
-    		n.r.setFrame(interimLayout.getNode(n.stringID).r);
+    	    if (n == null) continue;
+    	    if (interimLayout == null) continue;
+    	    if (interimLayout.getNode(n.stringID) == null) continue;
+    	n.r.setFrame(interimLayout.getNode(n.stringID).r);
 	    	n.force(surface, ChangeType.RESIZE_RELOCATE);
     	}
     }
@@ -1823,15 +1827,16 @@ class MosaicEngineImpl<T> implements MosaicEngine<T> {
 			System.out.println("\tselected e " + e + "\n\t alt " + alt);
 			
 			if(e.type == ElementType.DIVIDER) {
-				System.out.println("Divider " + e.stringID + "'s leading: ");
-				for(Divider<T> d : ((Divider<T>)e).leadingJoins) {
+if (verbose)	{
+	System.out.println("Divider " + e.stringID + "'s leading: ");
+	for(Divider<T> d : ((Divider<T>)e).leadingJoins) {
+				System.out.println("\t " + d);
+				}
+	System.out.println("Divider " + e.stringID + "'s trailing: ");
+		for(Divider<T> d : ((Divider<T>)e).trailingJoins) {
 					System.out.println("\t " + d);
 				}
-				System.out.println("Divider " + e.stringID + "'s trailing: ");
-				for(Divider<T> d : ((Divider<T>)e).trailingJoins) {
-					System.out.println("\t " + d);
-				}
-				//must use the perpendicular's x/y when alt isn't null and calculating alternate axis
+}				//must use the perpendicular's x/y when alt isn't null and calculating alternate axis
 				dragXOffset = e.type == ElementType.DIVIDER && ((Divider<T>)e).isVertical || alt == null ? x - e.r.x : x - alt.r.x;
 				dragYOffset = e.type == ElementType.DIVIDER && ((Divider<T>)e).isVertical && alt != null ? y - alt.r.y : y - e.r.y;
 				
@@ -1863,7 +1868,7 @@ class MosaicEngineImpl<T> implements MosaicEngine<T> {
 			Node<T> retVal = null;
 			if(retVal == null) {
 				for(Node<T> n : layout.getNodeList()) {
-					if(n.r.contains(x, y)) {
+					if (n != null) if(n.r.contains(x, y)) {
 						retVal = surface.getNode(n.stringID);
 						break;
 					}
@@ -1877,14 +1882,15 @@ class MosaicEngineImpl<T> implements MosaicEngine<T> {
 		
 		void dragElement(SurfacePriviledged<T> surface, double x, double y) {
 			if(selectedElement == null) return;
-
+Objects.requireNonNull(surface);
 			switch(selectedElement.type) {
 				case NODE: {
 					Point2D.Double dragPoint = moveDragPoint(new Point2D.Double(selectedElement.r.x, selectedElement.r.y), surface.getArea(), x, y, dragXOffset, dragYOffset);
 					selectedElement.r.x = dragPoint.x;
 					selectedElement.r.y = dragPoint.y;
 					LayoutImpl<T> removalSnapshot = surface.getInterimSnapshot();
-					if(isDraggingNode) {
+Objects.requireNonNull(removalSnapshot);
+					if(isDraggingNode && removalSnapshot != null) {
 						Node<T> currentDragOver =  getDragOverNode(surface, removalSnapshot, x, y);
 						if(currentDragOver != null) {
 							lastDragOver = currentDragOver;

@@ -1,4 +1,4 @@
-package bookclub;
+package game.bookclub;
 
 import javafx.animation.Animation;
 import javafx.animation.Transition;

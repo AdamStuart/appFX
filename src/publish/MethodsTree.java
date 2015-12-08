@@ -50,7 +50,7 @@ public class MethodsTree
 		System.out.println("Time (ms) = " + (System.currentTimeMillis() - startTime));
 	}
 	//-----------------------------------------------------------------------------
-	void traverseFiles(TreeItem<File> tree,List<String> id, Map <String, List<String>> in, Map <String, List<String>> out)
+	void traverseFiles(TreeItem<File> tree, List<String> id, Map <String, List<String>> in, Map <String, List<String>> out)
 	{
 		if (tree == null) return;
 		File file = tree.getValue();
@@ -69,7 +69,6 @@ public class MethodsTree
 				org.w3c.dom.Node oututTree = getOutputTree(value);
 				extractObjects(myId, inputTree, in);
 				extractObjects(myId, oututTree, out);
-	
 				id.add(myId);
 			}
 		}
@@ -91,35 +90,47 @@ public class MethodsTree
 	//-----------------------------------------------------------------------------
 	private void extractObjects(String id, Node inNode, Map<String, List<String>> map)
 	{
-		NodeList children = inNode.getChildNodes();
-		if (children == null) return;
-		if (map == null) return;
-		int sz = children.getLength();
-		for (int i=0; i<sz; i++)
+		System.out.println("extractObjects rewritten with XMLTools - to test"); 
+		Node child = XMLTools.getChildByPath(inNode, new String[] { "Obj", "Identity" });
+		if (child != null)
 		{
-			Node child = children.item(i);
-			if ("Obj".equals(child.getNodeName()))
-			{
-				NodeList children2 = child.getChildNodes();
-				if (children2 == null) return;
-				int sz2 = children2.getLength();
-				for (int j=0; j<sz2; j++)
-				{
-					Node child2 = children2.item(j);
-					if (child2 != null && "Identity".equals(child2.getNodeName()))
-					{
-						Node attr = child2.getAttributes().getNamedItem("UID");
-						String ref = attr.getTextContent();
-						List<String> hits = map.get(id);
-						if (hits == null)
-							hits = new ArrayList<String>();
-						hits.add(ref);
-						map.put(id, hits);
-					}
-
-				}
-			}
+			String ref =  XMLTools.getChildAttribute(child, "UID");
+			List<String> hits = map.get(id);
+			if (hits == null)
+				hits = new ArrayList<String>();
+			hits.add(ref);
+			map.put(id, hits);
 		}
+			
+//		NodeList children = inNode.getChildNodes();
+//		if (children == null) return;
+//		if (map == null) return;
+//		int sz = children.getLength();
+//		for (int i=0; i<sz; i++)
+//		{
+//			Node child = children.item(i);
+//			if ("Obj".equals(child.getNodeName()))
+//			{
+//				NodeList children2 = child.getChildNodes();
+//				if (children2 == null) return;
+//				int sz2 = children2.getLength();
+//				for (int j=0; j<sz2; j++)
+//				{
+//					Node child2 = children2.item(j);
+//					if (child2 != null && "Identity".equals(child2.getNodeName()))
+//					{
+//						Node attr = child2.getAttributes().getNamedItem("UID");
+//						String ref = attr.getTextContent();
+//						List<String> hits = map.get(id);
+//						if (hits == null)
+//							hits = new ArrayList<String>();
+//						hits.add(ref);
+//						map.put(id, hits);
+//					}
+//
+//				}
+//			}
+//		}
 	}	
 
 }

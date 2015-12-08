@@ -268,7 +268,7 @@ public class NodeFactory
 		TableView<ObservableList<StringProperty>> table = new TableView<ObservableList<StringProperty>>();
 		if (attrMap.getId() == null)
 			attrMap.put("id", gensym("T"));
-		CSVTableData data = FileUtil.openCSVfile(attrMap.get("file"), table);
+		CSVTableData data = FileUtil.openCSVfile(attrMap.get("file"), table);		// TODO THIS CURRENTLY ASSUMES ALL INTS!!
 		attrMap.put("name", attrMap.get("file"));
 		if (data == null) return null;
 	    StackPane border = makeStackPane(attrMap, table);
@@ -379,7 +379,7 @@ public class NodeFactory
 				TableView<ObservableList<StringProperty>> table = new TableView<ObservableList<StringProperty>>();
 //				if (attrMap.getId() == null)
 //					attrMap.put("id", gensym("T"));
-				CSVTableData data = new CSVTableData();
+				CSVTableData data = new CSVTableData(id);
 				
 				if (data == null) return null;
 			    StackPane border = makeStackPane(attrs, table);

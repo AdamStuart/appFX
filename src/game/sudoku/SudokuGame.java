@@ -1,4 +1,4 @@
-package sudoku;
+package game.sudoku;
 
 import java.util.ArrayList;
 import java.util.Collections;

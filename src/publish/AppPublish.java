@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 public class AppPublish extends Application
 {
     public static void main(String[] args)    {        launch(args);    }
-	static final String RESOURCE = "publish.fxml";
+	static final String RESOURCE = "publisher.fxml";
     static final String STYLE = "publish.css";
 
 	public AppPublish() 					{	   instance = this;	}

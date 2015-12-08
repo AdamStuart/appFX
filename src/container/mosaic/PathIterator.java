@@ -427,7 +427,8 @@ class PathIterator<T> implements PathVisitable<T> {
     		VerticalPath newPath = new VerticalPath();
     		//newPath.dividerCount = this.dividerCount;
     		for(Element<T> e : elems) {
-    			switch(e.type) {
+    			if (e != null)
+    				switch(e.type) {
 	    			case NODE: { newPath.elems.add(l.getNode(e.stringID)); break; }
 	    			case DIVIDER: { newPath.elems.add(l.getDivider(e.stringID, ((Divider<T>)e).isVertical)); break; }
 	    		}
