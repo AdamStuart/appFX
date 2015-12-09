@@ -106,8 +106,13 @@
                               <VBox layoutX="29.0" layoutY="14.0" spacing="8.0">
                                  <children>
                                     <CheckBox fx:id="showAllColumns" mnemonicParsing="false" text="Show All Columns" />
-                                    <Button fx:id="plotButton" layoutX="21.0" layoutY="564.0" mnemonicParsing="false" onAction="#doPlot" text="Plot Selected Sets" />
-                                    <Button fx:id="plotAllButton" mnemonicParsing="false" onAction="#doPlotAll" prefHeight="26.0" text=" Overlay All" />
+                                    <HBox spacing="4.0">
+                                       <children>
+                                          <Button fx:id="plotButton" layoutX="21.0" layoutY="564.0" mnemonicParsing="false" onAction="#doPlot" text="Plot 1D" />
+                                          <Button fx:id="plot2DButton" mnemonicParsing="false" onAction="#doPlot2D" text="Plot 2D" />
+                                          <Button fx:id="plotAllButton" mnemonicParsing="false" onAction="#doPlotAll" prefHeight="26.0" text=" Overlay" />
+                                       </children>
+                                    </HBox>
                                     <CheckBox fx:id="addYOffset" mnemonicParsing="false" text="Add Y Offset" />
                                     <CheckBox fx:id="showSumCk" mnemonicParsing="false" text="Show Sum" />
                                     <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="653.0" prefWidth="202.0">

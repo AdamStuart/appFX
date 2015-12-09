@@ -52,6 +52,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
@@ -73,6 +74,7 @@ import javafx.stage.Stage;
 import model.CSVTableData;
 import model.Histogram1D;
 import model.IntegerDataRow;
+import model.OverlaidScatterChart;
 import model.Population;
 import model.Range;
 import table.codeOrganizer.TreeTableModel;
@@ -125,6 +127,7 @@ public class PublishController implements Initializable
 	//-------------------------------------------------------------------------------------------
 	// Results
 	@FXML Button plotButton;
+	@FXML Button plot2DButton;
 	@FXML Button plotAllButton;
 
 	@FXML CheckBox addYOffset;
@@ -174,6 +177,7 @@ public class PublishController implements Initializable
 		
 		//Results --------- there is an overlay of an ImageView and TableView, so show/hide on selection change
 		
+		graphVBox.setSpacing(5);
 		
 		addOffset.bind(addYOffset.selectedProperty());
 		allColumns.bind(showAllColumns.selectedProperty());
@@ -219,9 +223,10 @@ public class PublishController implements Initializable
 	private void setupSOPList()
 	{
 		ObservableList<SOPLink> links = FXCollections.observableArrayList();
-		links.add(new SOPLink("http://cnn.com", "CNN News"));
-		links.add(new SOPLink("http://google.com", "Google Search"));
-		soplist.setItems(links);
+		links.add(new SOPLink("http://chipcytometry.com/Blog/", "Chip Cytometry SOPs"));
+		links.add(new SOPLink("http://www.protocol-online.org/prot/Cell_Biology/Flow_Cytometry__FCM_/", "FACS Protocols"));
+		links.add(new SOPLink("https://www.thermofisher.com/us/en/home/references/protocols/cell-and-tissue-analysis/flow-cytometry-protocol.html", "ThermoFisher"));
+			soplist.setItems(links);
 		soplist.setOnMouseClicked(e -> {
 			if (e.getClickCount() == 2)
 			{
@@ -516,7 +521,7 @@ public class PublishController implements Initializable
 	}
 
 	//-------------------------------------------------------------------------------------------
-	public static String[] colNames = new String[] { "CellId", "Position", "X", "Y", "Size", "CD3", "CD25", "CD4", "CD19", "CD38", "CD39",  "CD161", "CD27" };
+	public static String[] colNames = new String[] { "Id", "Pos", "X", "Y", "Size", "CD3", "CD25", "CD4", "CD19", "CD38", "CD39",  "CD161", "CD27" };
 	
 	
 	public void installSegmentTable(CSVTableData inData)
@@ -530,7 +535,7 @@ public class PublishController implements Initializable
 			for (int i=0;i<colNames.length;i++)
 				inData.getColumnNames().add(colNames[i]);
 
-        TableColumn<IntegerDataRow, Integer> rowNumColumn = new TableColumn<>("Row#");  
+        TableColumn<IntegerDataRow, Integer> rowNumColumn = new TableColumn<>("#");  
         rowNumColumn.setCellValueFactory(cellData -> cellData.getValue().getRowNum().asObject());
 		csvtable.getColumns().add(rowNumColumn);
 		for (int i=0;i<colNames.length;i++)
@@ -632,7 +637,7 @@ public class PublishController implements Initializable
 		
 		System.out.println("built chartMap");
 		int tablenum = 0;
-		double yOffset = addOffset.get() ?  0.1 : 0;
+		double yOffset = addOffset.get() ?  0.03 : 0;
 		// process the rest of the tables to increments sums, and add another series to the charts
 		for (String name : tablenames)
 		{
@@ -667,36 +672,62 @@ public class PublishController implements Initializable
 		System.out.println("built overlays");
 		
 	}
-//--------------------------------------------------------------------------------
-	@FXML private void doPlot()
-	{
-		System.out.println("BROKEN doPlot");
-		ObservableList<IntegerDataRow> data = csvtable.getItems();
-		if (data == null) return;
-		Segment activeSeg = segments.getSelectionModel().getSelectedItem();
-		if (activeSeg != null)
+	//--------------------------------------------------------------------------------
+		@FXML private void doPlot()
 		{
-			List<Histogram1D> histos = activeSeg.getData().getHistograms();  // data.getHistograms();			BROKEN
-			fillChartBox(histos);
+			ObservableList<IntegerDataRow> data = csvtable.getItems();
+			if (data == null) return;
+			Segment activeSeg = segments.getSelectionModel().getSelectedItem();
+			if (activeSeg != null)
+			{
+				List<Histogram1D> histos = activeSeg.getData().getHistograms(); 
+				fillChartBox(histos);
+			}
 		}
-	}
+		//--------------------------------------------------------------------------------
+		@FXML private void doPlot2D()
+		{
+			System.out.println("doPlot2D");
+			graphVBox.getChildren().clear();
+			ObservableList<IntegerDataRow> data = csvtable.getItems();
+			if (data == null) return;
+			Segment activeSeg = segments.getSelectionModel().getSelectedItem();
+			if (activeSeg != null)
+			{
+				CSVTableData model = activeSeg.getData();
+				model.getImages().clear();
+				model.generateScatters();
+				String[] labels = new String[]{ "CD3 / CD4", "CD3 / CD19", "CD25 / CD38", "CD39 / CD38", "CD25 / CD27", "err", "err", "err" };
+				int i=0;
+				for (Image img : model.getImages())
+				{
+					ImageView view = new ImageView(img);
+					view.setFitWidth(200);
+					view.setFitHeight(200);
+					view.setScaleY(-1);
+					graphVBox.getChildren().add(view);
+					graphVBox.getChildren().add(new Label(labels[i]));
+					i++;
+				}
+			}
+		}
 
 
-	private void fillChartBox(List<Histogram1D> histos)
-	{
-		graphVBox.getChildren().clear();
-		if (histos == null) return;
-		for (Histogram1D histo : histos)
+		private void fillChartBox(List<Histogram1D> histos)
 		{
-			if (histo == null) continue;		// first 5 are null
-			Range r = histo.getRange();
-			System.out.println("Histogram has range of " + r.min() + " - " + r.max());
-			if (r.width() < 50) continue;
-			LineChart<Number, Number> chart = histo.makeChart();
-			graphVBox.getChildren().add(chart);
-			VBox.setVgrow(chart, Priority.ALWAYS);
+			graphVBox.getChildren().clear();
+			if (histos == null) return;
+			for (Histogram1D histo : histos)
+			{
+				if (histo == null) continue;		// first 5 are null
+				Range r = histo.getRange();
+				System.out.println("Histogram has range of " + r.min() + " - " + r.max());
+				if (r.width() < 50) continue;
+				LineChart<Number, Number> chart = histo.makeChart();
+				graphVBox.getChildren().add(chart);
+				VBox.setVgrow(chart, Priority.ALWAYS);
+			}
 		}
-	}
 	//--------------------------------------------------------------------------------
 
 	private void setupDropPane()
@@ -779,7 +810,7 @@ public class PublishController implements Initializable
 // Analysis commands
 	
 	String[] strs = new String[] { "Filter Samples", "Organize Files", "Image Processing", "Edge Detection", "Feature Recognition", "Quantification", "Parametric Normalization", "Labeling"};
-	String[] stepList = new String[] { "Read Zip File", "Check Manifest", "Queue Files", "Read CSV Files", "Ranges Set", "Distributions Set", "Gutter Gates Applied", "Statistics Generated", "Smoothed", "Distriubtions Regenerated", "Normalized", "Baseline Peak Found", "POI Gated"};
+	String[] stepList = new String[] { "Read Zip File", "Check Manifest", "Queue Files", "Read CSV Files", "Ranges Set", "Distributions Set", "Gutter Gates Applied", "Statistics Generated", "Smoothed", "Distriubtions Regenerated", "Normalized", "Baseline Peak Found", "Populations Gated"};
 	String[] interrog = new String[] { "Activation", "Stimulation", "Memory", "Expression", "Regulation", "Promotion", "Inhibition", "Apoptosis" };
 	String[] viz = new String[] { "QC Montage", "Stats Panel", "Backgating", "Correlation", "Heat Map", "Hover Plot", "Drill Down Chart", "Tree Map", "Anova", "Cytoscape", "VISNE", "SPADE"};
 	@FXML	private TreeTableColumn<Population, String> nameColumn;
