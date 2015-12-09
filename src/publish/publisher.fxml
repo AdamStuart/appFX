@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.web.*?>
@@ -99,6 +100,28 @@
                         </AnchorPane>
                     </content>
                   </Tab>
+                   <Tab closable="false" text="Checkpoint">
+                      <content>
+                           <AnchorPane fx:id="checkpointAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <children>
+                                   <VBox layoutX="20.0" layoutY="20.0" spacing="8.0">
+                                    <children>
+                                      <CheckBox fx:id="auth" mnemonicParsing="false" text="Are you authorized to run the experiment?" />
+                                      <CheckBox fx:id="scheduled" mnemonicParsing="false" text="Is it on the schedule?" />
+                                      <CheckBox fx:id="resources" mnemonicParsing="false" text="Are all required resources on site?" />
+                                      <CheckBox fx:id="qc" mnemonicParsing="false" text="Are QC records up to date?" />
+                                      <CheckBox fx:id="lucky" mnemonicParsing="false" text="Are you feeling lucky?" />
+                                    <Label fx:id="droplabel" alignment="CENTER" prefHeight="385.0" prefWidth="772.0" text="Drop Data Files Here" textAlignment="CENTER" visible="false">
+                                       <font>
+                                          <Font size="64.0" />
+                                       </font>
+                                    </Label>
+                                    </children>
+                                    </VBox>
+                              </children>
+                           </AnchorPane>
+                      </content>
+                   </Tab>
                   <Tab closable="false" text="Results">
                     <content>
                       <AnchorPane fx:id="resultsAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">

@@ -134,6 +134,14 @@ public class PublishController implements Initializable
 	@FXML CheckBox showAllColumns;
 	@FXML CheckBox showSumCk;
 	
+	@FXML CheckBox auth;
+	@FXML CheckBox scheduled;
+	@FXML CheckBox resources;
+	@FXML CheckBox qc;
+	@FXML CheckBox lucky;
+	@FXML Label droplabel;
+	
+
 	BooleanProperty addOffset = new SimpleBooleanProperty(false);
 	BooleanProperty allColumns = new SimpleBooleanProperty(false);
 	BooleanProperty showSum = new SimpleBooleanProperty(false);
@@ -148,8 +156,13 @@ public class PublishController implements Initializable
 	@FXML void showMethodsTree()	{		new MethodsTree(fileTree.getRoot());	}
 	MosaicPane<Region> mosaicPane;
 	//-------------------------------------------------------------------------------------------
-	@Override public void initialize(URL location, ResourceBundle resources)
+	@Override public void initialize(URL location, ResourceBundle resBundle)
 	{
+		auth.setOnAction(e -> showDropLabel());
+		scheduled.setOnAction(e -> showDropLabel());
+		resources.setOnAction(e -> showDropLabel());
+		qc.setOnAction(e -> showDropLabel());
+		lucky.setOnAction(e -> showDropLabel());
 //		discussion.setId("id");
 		doc = new PublishDocument(this);
 		//Hypothesis---------
@@ -189,7 +202,7 @@ public class PublishController implements Initializable
 			resultsplitter.setVisible(false);
 		});
 		segments.getSelectionModel().selectedItemProperty().addListener((obs, old, val)-> {
-			installSegmentTable(val.getData());
+			if (val != null) installSegmentTable(val.getData());
 			image.setVisible(false);
 			resultsplitter.setVisible(true);
 		});
@@ -202,6 +215,12 @@ public class PublishController implements Initializable
 	}
 					
 					
+	private void showDropLabel()
+	{
+		boolean showIt = auth.isSelected() && scheduled.isSelected() && resources.isSelected() && lucky.isSelected() && qc.isSelected();
+		droplabel.setVisible(showIt);
+	}
+	
 	public Label getLabel(Color color, String id) {
 		Label label = new Label();
 		label.textProperty().set(id);
@@ -225,7 +244,8 @@ public class PublishController implements Initializable
 		ObservableList<SOPLink> links = FXCollections.observableArrayList();
 		links.add(new SOPLink("http://chipcytometry.com/Blog/", "Chip Cytometry SOPs"));
 		links.add(new SOPLink("http://www.protocol-online.org/prot/Cell_Biology/Flow_Cytometry__FCM_/", "FACS Protocols"));
-		links.add(new SOPLink("https://www.thermofisher.com/us/en/home/references/protocols/cell-and-tissue-analysis/flow-cytometry-protocol.html", "ThermoFisher"));
+		links.add(new SOPLink("https://www.thermofisher.com/us/en/home/referen"
+						+ "ces/protocols/cell-and-tissue-analysis/flow-cytometry-protocol.html", "ThermoFisher"));
 			soplist.setItems(links);
 		soplist.setOnMouseClicked(e -> {
 			if (e.getClickCount() == 2)
