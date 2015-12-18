@@ -68,7 +68,7 @@ public class TuringPatternList
 	  //--------------------------------------------------------------
 	  String dump()
 	  {
-		  StringBuffer s = new StringBuffer();
+		  StringBuilder s = new StringBuilder();
 		  for (TuringPattern p : theModel) 
 			  s.append(p.toString() + "\n");
 		  return s.toString();

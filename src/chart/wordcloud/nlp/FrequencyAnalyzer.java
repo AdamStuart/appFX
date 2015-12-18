@@ -35,7 +35,7 @@ public class FrequencyAnalyzer {
     public static final String DEFAULT_ENCODING = "UTF-8";
     public static final int DEFAULT_WORD_MAX_LENGTH = 32;
     public static final int DEFAULT_WORD_MIN_LENGTH = 3;
-    public static final int DEFAULT_WORD_FREQUENCIES_TO_RETURN = 150;
+    public static final int DEFAULT_WORD_FREQUENCIES_TO_RETURN = 350;
     public static final long DEFAULT_URL_LOAD_TIMEOUT = 3000; // 3 sec
 
     private final Set<String> stopWords = new HashSet<>();
@@ -65,16 +65,34 @@ public class FrequencyAnalyzer {
     	return load(Collections.singletonList(doc.body().text()));
     }
 
+    static String[] prefixes = new String[]{"cd", "tnf", "il", "ig", "lsr", "ki"};		// TODO -- hacking biomarker patterns
+    static String[] suffixes = new String[]{"+", "-"};
+    public static boolean isBiomarker(String str)
+    {
+    	for (String s : prefixes)
+    		if (str.startsWith(s))        	return true;
+    	for (String s : suffixes)
+    		if (str.endsWith(s))        	return true;
+
+    	return false;
+    	
+    }
     public List<WordFrequency> load(final List<String> texts) {
         final List<WordFrequency> wordFrequencies = new ArrayList<>();
 
         final Map<String, Integer> cloud = buildWordFrequencies(texts, wordTokenizer);
         for(Map.Entry<String, Integer> wordCount : cloud.entrySet()) {
-            wordFrequencies.add(new WordFrequency(wordCount.getKey(), wordCount.getValue()));
+        	String key = wordCount.getKey();
+        	int val = wordCount.getValue();
+        	int weight =  isBiomarker(key) ? 10 : 1;
+        	WordFrequency wf = new WordFrequency(key, val, weight);
+            wordFrequencies.add(wf);
         }
         List<WordFrequency> top = takeTopFrequencies(wordFrequencies);
-        for (WordFrequency wf : top)
-        	System.out.println(""  + wf);
+       StringBuilder builder = new StringBuilder();
+       for (WordFrequency wf : top)
+        	builder.append(", "  + wf);
+       System.out.println(builder.toString());
         return top;
     }
 
@@ -93,10 +111,10 @@ public class FrequencyAnalyzer {
         }
         return wordFrequencies;
     }
-    String[] stop = new String[]{"its", "it's", "very", "will", "in", "out", "ago", "one", 
+    String[] stop = new String[]{"its", "it's", "very", "will", "in", "out", "ago", "one", "have", "one", "one", 
     				"for", "this", "all", "that", "your", "you", "his", "her", "my", "our",
-    				"but", "has", "the", "and", "or", "to", "not", "is", "are",  
-    				"it", "if", "a", "an", "as", "with", "we", "they"};
+    				"but", "has", "the", "and", "or", "to", "not", "is", "are",  "cell", "cells", "were", "been",
+    				"it", "if", "a", "an", "as", "with", "we", "they", "from", "into", "this", "also"};
     List<String> stopWordList = Arrays.asList(stop);
 
     private List<String> filter(final List<String> words) {
@@ -145,9 +163,9 @@ public class FrequencyAnalyzer {
 //    public void addFilter(final Filter filter) 			{        filters.add(filter);    }
 //    public void setFilter(final Filter filter) {    filters.clear();       filters.add(filter);    }
 
-    public void clearNormalizers() 							{        normalizers.clear();    }
-    public void addNormalizer(final Normalizer normalizer) {        normalizers.add(normalizer);    }
-    public void setNormalizer(final Normalizer normalizer) {       normalizers.clear();       normalizers.add(normalizer);    }
+    public void clearNormalizers() 							{   normalizers.clear();    }
+    public void addNormalizer(final Normalizer normalizer) 	{   normalizers.add(normalizer);    }
+    public void setNormalizer(final Normalizer normalizer) 	{   normalizers.clear();       normalizers.add(normalizer);    }
 
     public void setCharacterEncoding(String encoding) {        characterEncoding = encoding;    }
     public void setUrlLoadTimeout(final long timeout) {        urlLoadTimeout = timeout;    }

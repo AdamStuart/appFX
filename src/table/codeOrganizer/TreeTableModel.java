@@ -56,14 +56,69 @@ public class TreeTableModel
 		TreeItem<Population> lymph = makeTree("Lymphocytes");
 		TreeItem<Population> t = makeTree("T Cells");
 		TreeItem<Population> b = makeTree("B Cells");
+		TreeItem<Population> myeloid = makeTree("Myeloid");
 		live.getChildren().add(lymph);
-		makeTrees(live, "Monocytes", "Granulocytes", "Neutrophils", "Eosinophils", "Basophils");
+		makeTrees(myeloid, "Monocytes", "Granulocytes", "Neutrophils", "Eosinophils", "Basophils");
 		makeTrees(lymph, "NK Cells", t, b);
-		makeTrees(t, "T Cell Receptors", "CD4", "CD8");
+		makeTrees(t, "T-reg", "CD4", "CD8");
 		makeTrees(b, "Plasma B Cells", "Memory B Cells", "B-1", "B-reg");
+		setFrequencies(raw);
 		return raw;
-
 	}
+	
+	static private void setFrequencies(TreeItem<Population> tree)
+	{
+		for (FrequencyRange fq : ranges)
+		{
+			Population pop = tree.getValue();
+			if (fq.name.equals(pop.getName()))
+			{
+				pop.setRange(fq.low, fq.high);
+				pop.setMarker(fq.marker);
+				break;
+			}
+		}
+		for (TreeItem<Population> child : tree.getChildren())
+			setFrequencies(child);
+	}
+	//http://www.dartmouth.edu/~dartlab/uploads/CellTypes%20StemCell.pdf
+	static FrequencyRange[] ranges = new FrequencyRange[]{
+		new FrequencyRange( "Lymphocytes", "CD45+", 14, 47 ),
+		new FrequencyRange( "T Cells", "CD3+", 7, 24 ),
+		new FrequencyRange( "T-reg","CD4+CD25+",  0.1, 0.7 ),
+		new FrequencyRange( "CD4", "CD4+", 4,20 ),
+		new FrequencyRange( "CD8", "CD8+", 2, 11 ),
+		
+		new FrequencyRange( "NK Cells", "CD161+", 1, 6 ),
+		new FrequencyRange( "B Cells", "CD3-CD19+", 1, 7 ),
+		new FrequencyRange( "Naive B Cells", "", 0.7, 4.9 ),
+		new FrequencyRange( "Plasma B Cells", "CD25+CD38+", 0.2, 2 ),
+		new FrequencyRange( "Memory B Cells", "", 0.1, 0.7 ),
+		new FrequencyRange( "B-1", "", 1, 7 ),
+		new FrequencyRange( "Myeloid", "CD3-", 53, 86 ),
+		new FrequencyRange( "Monocytes", "", 2, 12 ),
+		new FrequencyRange( "Granulocytes", "", 35, 80 ),
+		new FrequencyRange( "Neutrophils", "", 30, 80 ),
+		new FrequencyRange( "Eosinophils", "", 0, 7 ),
+		new FrequencyRange( "Basophils", "", 0, 0.2 ),
+		new FrequencyRange( "Stem Cells", "CD34+", 0.03, 0.09 ) };
+	
+	static class FrequencyRange
+	{
+		String name;
+		String marker;
+		double low;
+		double high;
+		
+		FrequencyRange(String n, String mark, double lo, double hi)
+		{
+			name = n;
+			low = lo;
+			high = hi;
+			marker = mark;
+		}
+	}
+	
 	private static TreeItem<Population> makeTree(String s)
 	{
 		TreeItem<Population> a = new TreeItem<Population>(new Population(s));
@@ -142,7 +197,7 @@ static TreeItem<String> readTree(String s)
 		return root;
 	}
 	
-static public void dumpTree(TreeItem<String> t, int indent, StringBuffer buff)
+static public void dumpTree(TreeItem<String> t, int indent, StringBuilder buff)
 {
 	String pad = "          ".substring(0,indent);
 //	String pad = "   ";
@@ -155,7 +210,7 @@ static public void dumpTree(TreeItem<String> t, int indent, StringBuffer buff)
 	buff.append(pad + ")\n" );
 }
 
-static public void xmlTree(TreeItem<String> t, int indent, StringBuffer buff)
+static public void xmlTree(TreeItem<String> t, int indent, StringBuilder buff)
 {
 	String pad = "                ".substring(0,2 * indent);
 	ObservableList<TreeItem<String> >children = t.getChildren();
@@ -178,12 +233,12 @@ static public void xmlTree(TreeItem<String> t, int indent, StringBuffer buff)
 		
 		TreeItem<String> test = readTree(expr2);
 
-		StringBuffer buff = new StringBuffer("(\n");
+		StringBuilder buff = new StringBuilder("(\n");
 		dumpTree(test, 0, buff);
 		buff.append(")\n");
 		System.out.println(buff.toString());
 		
-		buff = new StringBuffer("<?xml> .... <Element> \n");
+		buff = new StringBuilder("<?xml> .... <Element> \n");
 		xmlTree(test, 0, buff);
 		buff.append(" </Element> \n");
 		System.out.println(buff.toString());

@@ -270,7 +270,7 @@ public class Selection
 	//--------------------------------------------------------------------------
 	public String getState()
 	{
-		StringBuffer b = new StringBuffer();
+		StringBuilder b = new StringBuilder();
 		for (Node n : items)
 			if (!n.getId().equals("Marquee"))
 				b.append(Model.describe(n));

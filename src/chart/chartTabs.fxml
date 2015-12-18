@@ -153,5 +153,14 @@
             </AnchorPane>
         </content>
       </Tab>
+      <Tab text="Trends">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" >
+               <children>
+                  <StackPane fx:id="trendlineContainer" layoutX="14.0" layoutY="14.0" prefHeight="564.0" prefWidth="852.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="14.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
   </tabs>
 </TabPane>

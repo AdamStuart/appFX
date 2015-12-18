@@ -422,7 +422,7 @@ public class Controller implements Initializable
 //		if (src == opacity)			return opacStr;
 //		if (src == rotation)		return rotStr;
 
-		StringBuffer buff = new StringBuffer();
+		StringBuilder buff = new StringBuilder();
 		buff.append(fillHex).append(strokeHex).append(wtStr).append(opacStr).append(rotStr);
 		return buff.toString();
 	}
@@ -430,7 +430,7 @@ public class Controller implements Initializable
 //	public static String getStyle(Shape n)
 //	{
 //		DecimalFormat fmt = new DecimalFormat("0.00");
-//		StringBuffer buff = new StringBuffer();
+//		StringBuilder buff = new StringBuilder();
 //		Paint fill = n.getFill();
 //		String fillStr = fill.toString();
 //		Paint stroke = n.getStroke();

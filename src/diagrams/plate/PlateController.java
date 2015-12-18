@@ -287,7 +287,7 @@ public class PlateController implements Initializable {
 										
 						if (multiSelection)
 						{
-							StringBuffer buf = new StringBuffer();
+							StringBuilder buf = new StringBuilder();
 							for (AttributeValue av : items)
 								buf.append(av.toString()).append('\n');
 							content.put(avListDataFormat, buf.toString());

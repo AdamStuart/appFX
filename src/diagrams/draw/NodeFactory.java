@@ -281,7 +281,7 @@ public class NodeFactory
 		if (text == null)
 		{
 			String name = attr.get("file");
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			attr.put("name", name);
 			FileUtil.readFile(new File(name), buffer);
 			text = buffer.toString();
@@ -523,7 +523,7 @@ public class NodeFactory
 						if (idx > 0)
 							path = path.substring(idx);
 						
-						StringBuffer buff = new StringBuffer();
+						StringBuilder buff = new StringBuilder();
 						FileUtil.readFileIntoBuffer(f, buff);
 						Node n = (Node) e.getTarget();
 						String styl = buff.toString();

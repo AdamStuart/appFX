@@ -187,7 +187,7 @@ private void updateStackBackground()
 	private PlateController getController()		{		return parent.getController();	}
 	private String getAttributeText()
 	{
-		StringBuffer buf = new StringBuffer(getDescriptor()+"\n");
+		StringBuilder buf = new StringBuilder(getDescriptor()+"\n");
 		for (AttributeValue av : attributes)
 			buf.append(av.toString()).append("\n");
 		return buf.toString();

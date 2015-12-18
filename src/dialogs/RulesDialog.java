@@ -91,7 +91,7 @@ public class RulesDialog extends Dialog
 
 	public String extract()
 	{
-		StringBuffer buf = new StringBuffer("WHERE ");
+		StringBuilder buf = new StringBuilder("WHERE ");
 		boolean firstClause = true;
 		for (Node line : box.getChildren())
 		{

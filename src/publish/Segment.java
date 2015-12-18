@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import model.CSVTableData;
@@ -11,24 +12,29 @@ import model.IntegerDataRow;
 import util.StringUtil;
 
 //--------------------------------------------------------------------------------
+
 public class Segment
 {
 	String id;
 	File csvFile;
 	CSVTableData data;
+	public static String[] colNames = new String[] { "Id", "Pos", "X", "Y", "Size", "CD3", "CD25", "CD4", "CD19", "CD38", "CD39",  "CD161", "CD27" };
 	
 	Segment(String inID, File inFile)
 	{
 		id = inID;
 		csvFile = inFile;
 		if (csvFile != null)		// read table
+		{
 			data = readBadCSVfile(csvFile);		// its actually tab-separated
+			data.setColumnNames(Arrays.asList(colNames));
+		}
 	}
 	
 	private CSVTableData readBadCSVfile(File f)
 	{
 		CSVTableData tableData = new CSVTableData(f.getName());
-		tableData.setColumnNames(Arrays.asList(PublishController.colNames));
+		tableData.setColumnNames(Arrays.asList(colNames));
 		int lineCt = 0;
 		try
 		{

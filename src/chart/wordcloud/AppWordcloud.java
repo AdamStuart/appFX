@@ -34,7 +34,8 @@ public class AppWordcloud extends Application
 	{
 		final FrequencyAnalyzer frequencyAnalizer = new FrequencyAnalyzer();
 		
-		final String url= "https://www.fastcodesign.com/3053406/how-apple-is-giving-design-a-bad-name";
+//		final String url= "https://www.fastcodesign.com/3053406/how-apple-is-giving-design-a-bad-name";
+		final String url= "http://www.ncbi.nlm.nih.gov/pubmed/12746906";
 		final List<WordFrequency> wordFrequencies = frequencyAnalizer.load(url);		//"http://www.nytimes.com/"
 		if (wordFrequencies == null || wordFrequencies.isEmpty())
 			System.out.println("frequencyAnalizer.load failed");

@@ -51,7 +51,7 @@ public class TuringPattern
 	// ----------------------------------------------------------------------------
 	public String toString()
 	{
-		StringBuffer s = new StringBuffer("TuringPattern v0.1 ");
+		StringBuilder s = new StringBuilder("TuringPattern v0.1 ");
 		s.append(ParseUtil.pointToString(activatorRadius));
 		s.append( ParseUtil.pointToString(inhibitorRadius));
 //		s.append(getVarSamplingRadius()).append(", ").append(stepsize);
@@ -74,7 +74,7 @@ public class TuringPattern
 	// ----------------------------------------------------------------------------
 	public String getString()
 	{
-		StringBuffer s = new StringBuffer("TuringPattern v0.1 ");
+		StringBuilder s = new StringBuilder("TuringPattern v0.1 ");
 		s.append("id: " + id);
 		s.append("name: " + name);
 		s.append("active: " + Boolean.toString(isActive));

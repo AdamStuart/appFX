@@ -45,10 +45,10 @@
                                              </children>
                                           </HBox>
                                           <Label text="Keywords" />
-                                          <TextArea fx:id="keywords" prefHeight="45.0" prefWidth="763.0" />
                                        </children>
                                     </VBox>
-                                    <HTMLEditor fx:id="hypothesis" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutY="223.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="223.0" />
+                                    <TextArea fx:id="keywords" prefHeight="45.0" prefWidth="763.0" />
+                                    <HTMLEditor fx:id="hypothesis" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutY="223.0" prefHeight="610.0" prefWidth="800.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="223.0" />
                                  </children>
                               </VBox>
                            </children>
@@ -133,9 +133,10 @@
                                        <children>
                                           <Button fx:id="plotButton" layoutX="21.0" layoutY="564.0" mnemonicParsing="false" onAction="#doPlot" text="Plot 1D" />
                                           <Button fx:id="plot2DButton" mnemonicParsing="false" onAction="#doPlot2D" text="Plot 2D" />
-                                          <Button fx:id="plotAllButton" mnemonicParsing="false" onAction="#doPlotAll" prefHeight="26.0" text=" Overlay" />
                                        </children>
                                     </HBox>
+                                    <Button fx:id="plotAllButton" mnemonicParsing="false" onAction="#doPlotAll" prefHeight="26.0" text=" Overlay" />
+                                    <Button fx:id="histogramProfiles" layoutX="10.0" layoutY="70.0" mnemonicParsing="false" onAction="#doHistogramProfiles" prefHeight="26.0" text="Histogram Profiles" />
                                     <CheckBox fx:id="addYOffset" mnemonicParsing="false" text="Add Y Offset" />
                                     <CheckBox fx:id="showSumCk" mnemonicParsing="false" text="Show Sum" />
                                     <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="653.0" prefWidth="202.0">
@@ -161,17 +162,17 @@
                                     <ImageView fx:id="image" fitHeight="305.0" fitWidth="526.0" layoutX="238.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
                                     <SplitPane fx:id="resultsplitter" dividerPositions="0.5">
                                        <items>
+                                          <ScrollPane prefHeight="809.0" prefWidth="275.0">
+                                             <content>
+                                                <VBox fx:id="graphVBox" prefWidth="265.0" />
+                                             </content>
+                                          </ScrollPane>
                                           <TableView fx:id="csvtable" prefHeight="827.0" prefWidth="279.0">
                                             <columns>
                                               <TableColumn prefWidth="75.0" text="C1" />
                                               <TableColumn prefWidth="75.0" text="C2" />
                                             </columns>
                                           </TableView>
-                                          <ScrollPane prefHeight="809.0" prefWidth="275.0">
-                                             <content>
-                                                <VBox fx:id="graphVBox" prefWidth="265.0" />
-                                             </content>
-                                          </ScrollPane>
                                        </items>
                                     </SplitPane>
                                  </children>
@@ -201,8 +202,8 @@
                                                   <columns>
                                                     <TreeTableColumn fx:id="nameColumn" prefWidth="106.0" text="Population" />
                                                       <TreeTableColumn fx:id="countColumn" prefWidth="83.0" text="Count" />
-                                                    <TreeTableColumn fx:id="expectedColumn" prefWidth="83.0" text="Expected" />
-                                                      <TreeTableColumn fx:id="observedColumn" prefWidth="84.0" text="Observed" />
+                                                    <TreeTableColumn fx:id="rangeColumn" prefWidth="83.0" text="Range" />
+                                                      <TreeTableColumn fx:id="markerColumn" prefWidth="83.0" text="Marker" />
                                                   </columns>
                                                 </TreeTableView>
                                              </children>
@@ -223,7 +224,6 @@
                                     </SplitPane>
                                     <HBox spacing="8.0">
                                        <children>
-                                          <Button layoutX="32.0" layoutY="315.0" mnemonicParsing="false" onAction="#doExplore" text="Explore" />
                                           <Button mnemonicParsing="false" onAction="#doBatch" text="Batch" />
                                           <Button mnemonicParsing="false" onAction="#doMonitor" text="Monitor" />
                                           <Button mnemonicParsing="false" onAction="#doConfigure" text="Configure" />

@@ -299,7 +299,7 @@ public class TableViewDataDemoController {
     public String getDummyText(int length) {
         String most = "abdflntiso";
         String alpha = "abcdefghijkmopqrstuvwxyz";
-        StringBuffer b = new StringBuffer();
+        StringBuilder b = new StringBuilder();
         int chars = 0;
         for (int i = 0; i < length; i++) {
             if (chars > 2 && chars > Math.random() * 10) {

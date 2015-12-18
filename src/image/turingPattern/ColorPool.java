@@ -116,7 +116,7 @@ public class ColorPool extends ArrayList<Color> {
 		
 	private String colorToString(Color c, boolean alpha)
 	{
-		StringBuffer tmp = new StringBuffer(alpha ? "0x" : "#");			
+		StringBuilder tmp = new StringBuilder(alpha ? "0x" : "#");			
 		if (alpha) tmp.append(twoCharHex(c.getOpacity()));
 		tmp.append(twoCharHex(c.getRed()));
 		tmp.append(twoCharHex(c.getGreen()));

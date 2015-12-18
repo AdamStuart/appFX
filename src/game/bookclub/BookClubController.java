@@ -576,7 +576,7 @@ private String variableSubstitue(String s)
 	//---------------------------------------------------------------------
 	@FXML public void save()
 	{
-		StringBuffer buffer = new StringBuffer("{ \n");
+		StringBuilder buffer = new StringBuilder("{ \n");
 		ObservableList<Node> kids = sceneGroup.getChildren();
 		for (Node k : kids)
 			if (k instanceof ImageView)

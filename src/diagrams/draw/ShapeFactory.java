@@ -210,7 +210,7 @@ public class ShapeFactory
 					System.out.println("File: " + f.getAbsolutePath());
 					if (FileUtil.isCSS(f))
 					{
-						StringBuffer buff = new StringBuffer();
+						StringBuilder buff = new StringBuilder();
 						FileUtil.readFileIntoBuffer(f, buff);
 						String styl = buff.toString();
 						shape.getStyleClass().add(styl);

@@ -246,7 +246,7 @@ public class FCSFileReader
 //	}
 //public String streamAttributes( HashMap<String, String> map, char delim)
 //{
-//	StringBuffer buffer = new StringBuffer();
+//	StringBuilder buffer = new StringBuilder();
 //	Set<String> keys = map.keySet();
 //	for (String key : keys)
 //		buffer.append(delim).append(key).append(delim).append(map.get(key));

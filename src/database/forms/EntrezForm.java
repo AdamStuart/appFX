@@ -154,7 +154,7 @@ public class EntrezForm extends VBox
 //			System.out.println("" + ids);
 			
 			NodeList nodes = doc.getChildNodes();
-			StringBuffer buff = new StringBuffer(EUTILS + "esummary.fcgi?db=pubmed&id=");
+			StringBuilder buff = new StringBuilder(EUTILS + "esummary.fcgi?db=pubmed&id=");
 			for (int i=0; i< nodes.getLength(); i++)
 			{
 				org.w3c.dom.Node node = nodes.item(i);
@@ -218,14 +218,14 @@ public class EntrezForm extends VBox
 
 	public String extract()		// for saving, we don't want the full url
 	{
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		collectSearchTerms(buf);
 		return buf.toString();
 	}
 	
 	//------------------------------------------------------------------------------
 
-	private void collectSearchTerms(StringBuffer buf)
+	private void collectSearchTerms(StringBuilder buf)
 	{
 		for (Node line : queryContent.getChildren())
 		{

@@ -233,7 +233,7 @@ public class PlateModel
 	
 	public String getSelectedWellStr()
 	{
-		StringBuffer buff = new StringBuffer();
+		StringBuilder buff = new StringBuilder();
 		wellData.forEach(w -> { if (w.getSelected()) buff.append(w.getDescriptor() + ", ");	} );
 		return buff.toString();
 	}

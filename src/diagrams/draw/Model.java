@@ -80,14 +80,14 @@ public class Model
 	
 		// **-------------------------------------------------------------------------------
 	
-	static public StringBuffer traverseSceneGraph(Pane root)
+	static public StringBuilder traverseSceneGraph(Pane root)
 	{
-		StringBuffer buff = new StringBuffer();
+		StringBuilder buff = new StringBuilder();
 		traverse(buff, root, 0);
 		return buff;
 	}
 			
-	static private void traverse(StringBuffer buff,Node node, int indent)
+	static private void traverse(StringBuilder buff,Node node, int indent)
 	{
 		if (ShapeFactory.isMarquee(node)) return;
 		if (node instanceof Shape)			buff.append(describe(node));	
@@ -113,7 +113,7 @@ public class Model
 	static public String describe(Node node)
 	{		
 		Map<Object, Object> props = node.getProperties();
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (Object key : props.keySet())
 		{
 			if (key instanceof String)

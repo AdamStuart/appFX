@@ -195,7 +195,7 @@ private void setupDropPane()
 			{
 				System.out.println("format = " + f.toString());
 				String urlStr = p.toString();
-				StringBuffer buffer = new StringBuffer(urlStr);
+				StringBuilder buffer = new StringBuilder(urlStr);
 				if (e.getGestureSource() instanceof TableView)
 				{
 					TableView<AttributeValue> tv = (TableView<AttributeValue>) e.getGestureSource();

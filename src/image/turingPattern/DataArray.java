@@ -133,7 +133,7 @@ public class DataArray
 	{
 		int x = Math.min(siz.width, 20);  
 		int y = Math.min(siz.height, 20);  
-		StringBuffer b = new StringBuffer();
+		StringBuilder b = new StringBuilder();
 
 		for (int i = 0; i < x; i++)
 		{

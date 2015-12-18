@@ -13,6 +13,7 @@ import chart.flexiPie.FlexiPieController;
 import chart.timeseries.AppTimeSeries;
 import chart.treemap.BudgetItem;
 import chart.treemap.Treemap;
+import chart.trendlines.TrendlineController;
 import chart.wordcloud.ColorPalette;
 import chart.wordcloud.WordCloud;
 import chart.wordcloud.WordcloudController;
@@ -45,6 +46,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import util.FileUtil;
@@ -61,6 +63,7 @@ public class ChartTabController implements Initializable
 	@FXML private StackPane usMapContainer;
 	@FXML private StackPane wordcloudContainer;
 	@FXML private StackPane treemapContainer;
+	@FXML private StackPane trendlineContainer;
 	@FXML private ListView<File> textfileList;
 	@FXML private TreeTableView<BudgetItem> budgetTable;
 	@FXML private TreeTableColumn<TreeTableView<BudgetItem>, BudgetItem> categoryColumn;
@@ -157,6 +160,10 @@ public class ChartTabController implements Initializable
 		budgetColumn.setCellFactory( p ->	{	return new TwoDigitCell();	});
 		
 
+	    //----------------------------------------- Trendlines
+    	TrendlineController controller = new TrendlineController();
+	    trendlineContainer.getChildren().add(controller.createContent());
+		
 	    //----------------------------------------- Time Series
 	    fxmlLoader = new FXMLLoader();
 	    url = AppTimeSeries.class.getResource(FXML + "TimeSeries.fxml");
@@ -214,22 +221,34 @@ public class ChartTabController implements Initializable
 	@FXML public void create()
 	{
 		System.out.println("create");
+
+		final FrequencyAnalyzer frequencyAnalizer = new FrequencyAnalyzer();
+		List<WordFrequency> wordFrequencies; // = frequencyAnalizer.load(strs);
+		String url = null;   //"http://www.ncbi.nlm.nih.gov/pubmed/12746906";
+		try
+		{
+			if (url != null)
+				wordFrequencies = frequencyAnalizer.load(url);		//"http://www.nytimes.com/"
+		}
+		catch (Exception e)
+		{
+			return;
+		}
+		
+
 		List<File> selectedFiles = textfileList.getSelectionModel().getSelectedItems();
-		if (selectedFiles.size() > 0)
+		if (selectedFiles.size() > 0 || url != null)
 		{
 			for(File f : selectedFiles)
 				System.out.println(f.getName());
 
-			final FrequencyAnalyzer frequencyAnalizer = new FrequencyAnalyzer();
 			List<String> strs = new ArrayList<String>();
 			for(File f : selectedFiles)
 				strs.add(FileUtil.readFileIntoString(f.getAbsolutePath()));
-			final List<WordFrequency> wordFrequencies = frequencyAnalizer.load(strs);
 			
-//				final List<WordFrequency> wordFrequencies = frequencyAnalizer.load(url);		//"http://www.nytimes.com/"
 //			if (wordFrequencies == null || wordFrequencies.isEmpty())
 //				System.out.println("frequencyAnalizer.load failed");
-			
+			wordFrequencies = frequencyAnalizer.load(strs);
 			final WordCloud wordCloud = new WordCloud(600, 600, CollisionMode.RECTANGLE);
 			wordCloud.setPadding(2);
 			boolean isCircular = circular.isSelected();
