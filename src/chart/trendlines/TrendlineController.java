@@ -32,22 +32,18 @@ public class TrendlineController
 		chart.setAlternativeColumnFillVisible(false);
 		chart.setAlternativeRowFillVisible(false);
 
+		// make a bell curve
 		double mean = 0; 
 		double stdev = 1;
 		double inc = .5;
-//		for (double inc = 0.5; inc <= 1.5; inc += 0.5)
-//		{
-			XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
-		
-			for (double d=-3; d <= 3; d += inc)
-			{
-				series.getData().add(new  XYChart.Data<Number, Number>(d, gauss(d, mean, stdev)));
-			}
-			chart.getData().add(series);
-//		}
+		XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
+		for (double d=-3; d <= 3; d += inc)
+			series.getData().add(new  XYChart.Data<Number, Number>(d, gauss(d, mean, stdev)));
+		chart.getData().add(series);
 		container.getChildren().add(chart);
-		
-	      // http://thorwin.blogspot.nl/2015/03/trend-curveline-in-javafx-chart.html
+
+		//-----------------------
+	    // http://thorwin.blogspot.nl/2015/03/trend-curveline-in-javafx-chart.html
 	    double[] xs = new double[]{0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
 	    double[] ys =new double[] {0.5, 1.3, 0.4, 5.6, 2.8, 9.1};
 		
@@ -58,12 +54,7 @@ public class TrendlineController
 	   List<XYChart.Series<Number,Number>> allFits = new ArrayList<XYChart.Series<Number,Number>>();
 
        for (int i=0; i<ys.length-1;i++)
-       {
-    	   XYChart.Series<Number, Number> fit = new XYChart.Series<>();
-//    	   fit.getNode().getStyle().add("nosymbols"); 
-//    	   fit.getData().lo
-    	   allFits.add(fit);
-       }
+    	   allFits.add(new XYChart.Series<>());
 
         // calculate the polynomial coefficients and calculate trend points
        
@@ -80,20 +71,11 @@ public class TrendlineController
         NumberAxis xAxis = new NumberAxis();
         NumberAxis yAxis = new NumberAxis();
         LineChart<Number,Number> linechart = new LineChart<Number, Number>(xAxis, yAxis);
-//        String style =  ".default-color0.chart-series-line { -fx-stroke: transparent;   }"+
-//        		        ".default-color1.chart-line-symbol {   -fx-background-color: transparent;    }"+
-//        		        ".default-color2.chart-line-symbol {   -fx-background-color: transparent;    }";
-//
-//        linechart.setStyle(style);
-
         linechart.getData().add(data);
         linechart.getData().addAll(allFits);
-		container.getChildren().add(linechart);
 
-//        linechart.getStylesheets().add(Demo.class.getResource("style.css")
-//             .toExternalForm());   included this into CurveFittedChart.css
-
-        // setup chart series
+		//-----------------------
+        container.getChildren().add(linechart);
 		return container;
 	}
 
