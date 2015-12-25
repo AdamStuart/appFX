@@ -6,24 +6,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import gui.Borders;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.geometry.Side;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import model.CSVTableData;
 import model.Histogram1D;
 import model.OverlaidLineChart;
-import model.Peak;
+import model.OverlaidScatterChart;
+import util.StringUtil;
 
 public class PublishModel
 {
 	List<String> tablenames = new ArrayList<String>();
 	Map<String, CSVTableData> tablemap = new HashMap<String, CSVTableData>();
 	Map<String, OverlaidLineChart> peakFitChartMap = new HashMap<String, OverlaidLineChart>();
+	
 	PublishController controller;
+	VBox vbox;
+	HBox hbox;
 	
 	public PublishModel(PublishController c)
 	{
@@ -53,7 +61,11 @@ public class PublishModel
 		Objects.requireNonNull(tablenames);
 		HashMap<String, List<Histogram1D>> datasetMap = new HashMap<String, List<Histogram1D>>();
 		HashMap<String, LineChart<Number, Number>> chartMap = new HashMap<String, LineChart<Number, Number>>();
-		
+		hbox = new HBox(8); hbox.setBorder(Borders.blueBorder1);
+		vbox = new VBox(8); vbox.setBorder(Borders.greenBorder);
+		container.getChildren().add(hbox);
+		hbox.getChildren().add(vbox);
+
 		CSVTableData firstTable = null;
 		
 		for (String tablename : tablenames)
@@ -70,7 +82,7 @@ public class PublishModel
 		List<Histogram1D> firstDataset = firstTable.getHistograms();
 		List<Histogram1D> sums = new ArrayList<Histogram1D>();
 		int nCols = firstDataset.size();
-		 nCols = 9; // DEBUG
+//		 nCols = 9; // DEBUG
 	
 		for (int i = 0; i< nCols; i++)		
 		{
@@ -79,21 +91,23 @@ public class PublishModel
 			Histogram1D sum = new Histogram1D(histo);
 			sums.add(sum);
 			if (histo == null) continue;
-			LineChart<Number, Number> rawChart = histo.makeRawDataChart();
-			LineChart<Number, Number> smoothedChart = histo.makeChart();
-			OverlaidLineChart peakFitChart = histo.makePeakFitChart();
+			LineChart<Number, Number> rawChart = histo.makeRawDataChart();	rawChart.setPrefWidth(200);
+			LineChart<Number, Number> smoothedChart = histo.makeChart();	smoothedChart.setPrefWidth(200);
+			OverlaidLineChart peakFitChart = histo.makePeakFitChart();		//	peakFitChart.setPrefWidth(200);
 			peakFitChartMap.put(histo.getName(), peakFitChart);
 			chartMap.put(histo.getName(), smoothedChart);
 			Label statLabel = new Label(histo.getStatString());
-			statLabel.setMinWidth(150);
-			rawChart.setPrefWidth(200);
-			smoothedChart.setPrefWidth(200);
-//			peakFitChart.setPrefWidth(200);
+			statLabel.setMinWidth(100);
+		
+			
+
 			peakFitChart.setOnKeyTyped(ev -> { 	classify();	});
 			peakFitChart.setOnMouseClicked(ev -> { 	classify();	});
-
-			HBox dimensionBox = new HBox(rawChart, smoothedChart, statLabel, peakFitChart);
-			container.getChildren().add(dimensionBox);
+			peakFitChart.setLegendVisible(true);
+			peakFitChart.setLegendSide(Side.RIGHT);
+			HBox dimensionBox = new HBox(peakFitChart);		//rawChart, smoothedChart, statLabel, 
+			if (i < 13)
+				vbox.getChildren().add(dimensionBox);
 			
 			// important:  we can't add the markers before the chart is shown!
 			Thread th = new Thread(() -> Platform.runLater(() -> { histo.addPeakMarkers(peakFitChart);  }) );  
@@ -113,31 +127,38 @@ public class PublishModel
 		}
 		List<Histogram1D> firstDataset = firstTable.getHistograms();
 		Histogram1D cd3 = firstDataset.get(5);
-		List<Peak> peaks = cd3.getPeaks();
-		if (peaks.size() == 2)
-		{
-			firstTable.addPColumn("CD3+", cd3, 1);
-			firstTable.addPColumn("CD3-", cd3, 0);
-		}
+		Histogram1D cd19 = firstDataset.get(8);
+		Histogram1D cd27 = firstDataset.get(12);
+		Histogram1D cd38 = firstDataset.get(9);
 		final CSVTableData table = firstTable;
-		table.generateGatedHistograms("CD3-"); 
-		int nCols = 9; // DEBUG
+		table.addPColumnPeakIndex("CD3+", cd3, 1);
+		table.addPColumnPeakIndex("CD3-", cd3, 0);
+		table.addPColumnAbove("CD19+", cd19, cd19.getPeaks().get(0).getMax());
+		table.addPColumnAnd("B", "CD3-", "CD19+");
+		table.addPColumnAbove("CD27+", cd27, cd27.getPeaks().get(0).getMax());
+		table.addPColumnAnd("CD27+B", "B", "CD27+");
+		table.addPColumnAbove("CD38+", cd38, cd38.getPeaks().get(0).getMax());
+		table.addPColumnAnd("Bplasma", "CD27+B", "CD38+");
+		int nCols = firstDataset.size();
+//		 nCols = 9; // DEBUG
 		for (int i = 0; i< nCols; i++)		
 		{
 			if (i < 5) continue;
 			Histogram1D histo = firstDataset.get(i);
 			OverlaidLineChart peakFitChart = peakFitChartMap.get(histo.getName());
-			if (peakFitChart != null) 
-			{
-				Histogram1D gatedHistogram = table.getGatedHistogram(histo.getName());
-				if (gatedHistogram != null)
-					peakFitChart.getData().add( gatedHistogram.getDataSeries(0, histo.getArea()));	
-
-			}
+			table.makeGatedHistogramOverlay(histo, peakFitChart, .005, "CD3-", "CD19+", "B", "CD27+B", "CD38+", "Bplasma");
 		}
-//		Thread th = new Thread(() -> Platform.runLater(() -> {  }) );  
-//		th.start();
+//		
+		OverlaidLineChart cd3Neg = table.showGatedHistogram("All", "CD3-", "CD3"); 
+		OverlaidLineChart cd19Pos = table.showGatedHistogram("CD3-", "CD19+", "CD19"); 
+		OverlaidLineChart cd27Pos = table.showGatedHistogram("B", "CD27+B", "CD27"); 
+		OverlaidLineChart cd38Pos = table.showGatedHistogram("B", "CD38+",  "CD38"); 
+		OverlaidLineChart bPlasma = table.showGatedHistogram("CD27+B", "Bplasma", "CD38"); 
 		
+		OverlaidScatterChart<Number, Number> plot27 = table.getGatedScatterChart("CD27+B", "CD38", "CD39"); 
+		OverlaidScatterChart<Number, Number> plotPlasma = table.getGatedScatterChart("Bplasma", "CD161", "CD4"); 
+		OverlaidScatterChart<Number, Number> plot25 = table.getGatedScatterChart("Bplasma", "CD25", "CD161"); 
+		hbox.getChildren().add(new VBox(5, cd3Neg, cd19Pos, cd27Pos, cd38Pos, bPlasma, plot27, plot25, plotPlasma));
 		
 }
 	
@@ -198,7 +219,7 @@ public class PublishModel
 				Histogram1D sum =sums.get(i-5);
 				Histogram1D distr = dataset.get(i);
 				if (distr ==  null) continue;
-				XYChart.Series series = distr.getDataSeries(tablenum  * yOffset);
+				XYChart.Series series = distr.getDataSeries("all", tablenum  * yOffset);
 				sum.add(distr);
 				LineChart<Number, Number> chart = chartMap.get(distr.getName());
 				if (chart == null) continue;		// error
@@ -210,7 +231,7 @@ public class PublishModel
 		for (int i =5; i< nCols; i++)		
 		{
 			Histogram1D sum =sums.get(i-5);
-			XYChart.Series series = sum.getDataSeries();
+			XYChart.Series series = sum.getDataSeries(sum.getName());
 			LineChart<Number, Number> chart = chartMap.get(sum.getName());
 			if (chart == null) continue;		// error
 			chart.getData().add(series);

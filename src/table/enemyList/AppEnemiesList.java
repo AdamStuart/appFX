@@ -52,7 +52,7 @@ import javafx.util.Callback;
  */
 
 //-----------------------------------------------------------------
-public class EnemiesListController extends Application implements Initializable
+public class AppEnemiesList extends Application implements Initializable
 {
 	public static void main(String[] args) {	launch(args);	}
 	
@@ -109,7 +109,7 @@ public class EnemiesListController extends Application implements Initializable
 	{
 		for (int i = 0; i < str.length; i++)
 		{
-			URL url = EnemiesListController.class.getResource("/images/" + (i + 1) + ".png");
+			URL url = AppEnemiesList.class.getResource("/images/" + (i + 1) + ".png");
 			if (url != null)
 				obj.add(new Person(str[i], url.toExternalForm()));
 		}
@@ -127,7 +127,7 @@ public class EnemiesListController extends Application implements Initializable
 			{
 				ImageView node = new ImageView();
 				// node.setStyle("-fx-background: yellow");
-				URL res = EnemiesListController.class.getResource("noImage.png");
+				URL res = AppEnemiesList.class.getResource("noImage.png");
 				String png = res == null ? null : res.toExternalForm();
 				if (png != null)
 					node.setImage(new Image(png));

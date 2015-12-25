@@ -14,6 +14,7 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import util.FileUtil;
 import util.StringUtil;
+import xml.XMLTreeItem;
 
 public class EDLParsingHelper
 {
@@ -136,20 +137,9 @@ public class EDLParsingHelper
 		return null;
 	}
 	
-	static  private TreeItem<org.w3c.dom.Node> getChildTreeItem(TreeItem<org.w3c.dom.Node> parent, String elemName)
-	{
-		for (TreeItem<org.w3c.dom.Node> child : parent.getChildren())
-		{	
-			org.w3c.dom.Node node = child.getValue();
-			String name = node.getNodeName();
-			if (name.equals(elemName))
-			
-				return child;
-		}
-		return null;
-	}
+	static public String[] dims = new String[]{"CD3", "CD25","CD4", "CD19", "CD38", "CD39", "CD161", "CD27" };
 	
-	
+	//--------------------------------------------------------------------------------
 	static public void setEDLDirectory(File f, TreeTableView<org.w3c.dom.Node> xmlTree, ListView<ScanJob> scans, ListView<Segment> segments)
 	{
 		File objectFile = null;
@@ -157,12 +147,12 @@ public class EDLParsingHelper
 		
 		objectFile = findFile(topLevelFiles, f.getName());
 		if (objectFile == null) return;
-		TreeItem<org.w3c.dom.Node> root = FileUtil.getXMLtree(objectFile, null);
+		XMLTreeItem root = FileUtil.getXMLtree(objectFile, null);
 		xmlTree.setRoot(root);
-		TreeItem<org.w3c.dom.Node> obj = getChildTreeItem(root, "Obj");
+		XMLTreeItem obj = root.getChild("Obj");
 		if (obj != null)
 		{
-			TreeItem<org.w3c.dom.Node> history = getChildTreeItem(obj, "MethodHistory");
+			XMLTreeItem history = obj.getChild( "MethodHistory");
 			if (history != null)
 			{
 				List<TreeItem<org.w3c.dom.Node>> steps = history.getChildren();
@@ -179,9 +169,8 @@ public class EDLParsingHelper
 						File methodFile = findFile(topLevelFiles, id);
 						if (methodFile != null)
 						{
-							TreeItem<org.w3c.dom.Node> methodroot = FileUtil.getXMLtree(methodFile);
-							methodroot = methodroot.getChildren().get(0);
-							step.getChildren().addAll(methodroot.getChildren());
+							XMLTreeItem methodroot = FileUtil.getXMLtree(methodFile);
+							step.getChildren().addAll(methodroot.getChildren().get(0).getChildren());
 						}
 					}
 				}
@@ -245,13 +234,12 @@ public class EDLParsingHelper
 		catch (Exception e) {			e.printStackTrace();		}
 	}
 
+	//--------------------------------------------------------------------------------
 	public static void addCSVFilesToSegments(File dir, ListView<Segment> segments)
 	{
 		File[] kids = dir.listFiles();
 		for (File kid : kids)
-		{
 			if (FileUtil.isCSV(kid))
 				segments.getItems().add(new Segment(kid.getName(), kid));		// read the file, build the table
-		}
 	}
 }

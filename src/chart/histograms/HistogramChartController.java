@@ -62,7 +62,7 @@ public class HistogramChartController implements Initializable
 		catch (Exception e) { e.printStackTrace(); }
 		histogramChart.setTitle("Histogram Chart");
 		histogramChart.setCreateSymbols(false);
-		histogramChart.getData().addAll( h1.getDataSeries(), h2.getDataSeries());	
+		histogramChart.getData().addAll( h1.getDataSeries("Col1"), h2.getDataSeries("Col2"));	
 //		String s = getClass().getResource("no-symbols.css").toExternalForm();
 //		histogramChart.getStylesheets().add(s);
 

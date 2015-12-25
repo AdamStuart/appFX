@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import xml.TreeItemPredicate;
 
 public class AppFilterableTreeItemSample extends Application {
 
@@ -88,9 +89,10 @@ public class AppFilterableTreeItemSample extends Application {
     private Node createFilteredTree() {
         FilterableTreeItem<Actor> root = getTreeModel();
         root.predicateProperty().bind(Bindings.createObjectBinding(() -> {
-            if (filterField.getText() == null || filterField.getText().isEmpty())
+            System.out.println(filterField.getText().toUpperCase() );
+           if (filterField.getText() == null || filterField.getText().isEmpty())
                 return null;
-            return TreeItemPredicate.create(actor -> actor.toString().contains(filterField.getText()));
+            return TreeItemPredicate.create(actor -> actor.toString().toUpperCase().contains(filterField.getText().toUpperCase()));
         }, filterField.textProperty()));
         
         TreeView<Actor> treeView = new TreeView<>(root);

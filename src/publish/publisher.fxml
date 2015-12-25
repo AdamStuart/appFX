@@ -95,7 +95,9 @@
                                     </TreeTableView>
                                  </items>
                               </SplitPane>
-                              <Button layoutX="307.0" layoutY="1.0" mnemonicParsing="false" onAction="#showMethodsTree" text="Show Methods Tree" AnchorPane.rightAnchor="20.0" />
+                              <Button layoutX="324.0" layoutY="-3.0" mnemonicParsing="false" onAction="#showMethodsTree" text="Show Methods Tree" AnchorPane.rightAnchor="354.0" />
+                              <Label layoutX="494.0" layoutY="6.0" text="Filter" AnchorPane.rightAnchor="292.0" AnchorPane.topAnchor="6.0" />
+                              <TextField fx:id="filterText" layoutX="546.0" layoutY="1.0" prefHeight="26.0" prefWidth="256.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="1.0" />
                            </children>
                         </AnchorPane>
                     </content>

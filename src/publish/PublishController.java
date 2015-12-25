@@ -24,6 +24,7 @@ import gui.TabPaneDetacher;
 import icon.FontAwesomeIcons;
 import icon.GlyphsDude;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -47,6 +48,8 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.image.ImageView;
@@ -75,9 +78,11 @@ import model.Range;
 import table.codeOrganizer.TreeTableModel;
 import util.FileUtil;
 import util.StringUtil;
+import xml.TreeItemPredicate;
 import xml.XMLFactory;
 import xml.XMLFileTree;
 import xml.XMLTools;
+import xml.XMLTreeItem;
 
   
 public class PublishController implements Initializable
@@ -113,8 +118,10 @@ public class PublishController implements Initializable
 	// Methods
 	@FXML private VBox connectionsBox; 
 	@FXML private TreeTableView<org.w3c.dom.Node> xmlTree;
+	private XMLTreeItem xmlTreeRoot;
 	private XMLFileTree fileTree = new XMLFileTree(null);
 	@FXML ListView<SOPLink> soplist = new ListView<SOPLink>();
+	@FXML private TextField filterText; 
 	
 	ObservableList<String> speciesList = FXCollections.observableArrayList("Mouse", "Human", "More...");
 	ObservableList<String> cellTypes = FXCollections.observableArrayList("T Cells", "B Cells", "NK Cells", "More...");
@@ -169,13 +176,9 @@ public class PublishController implements Initializable
 	@Override public void initialize(URL location, ResourceBundle resBundle)
 	{
 		model = new PublishModel(this);
-		auth.setOnAction(e -> showDropLabel());
-		scheduled.setOnAction(e -> showDropLabel());
-		resources.setOnAction(e -> showDropLabel());
-		qc.setOnAction(e -> showDropLabel());
-		lucky.setOnAction(e -> showDropLabel());
 //		discussion.setId("id");
 		doc = new PublishDocument(this);
+		setupDropPane();
 		//Hypothesis---------
 		species.setItems(speciesList);
 		species.getSelectionModel().selectFirst();
@@ -194,9 +197,15 @@ public class PublishController implements Initializable
 		//Methods---------
 		setupXMLTree();
 		setupSOPList();
-		setupDropPane();
-		fileTreeBox.getChildren().add(fileTree);
+
 		
+		//Checkpoint---------
+		auth.setOnAction(e -> showDropLabel());
+		scheduled.setOnAction(e -> showDropLabel());
+		resources.setOnAction(e -> showDropLabel());
+		qc.setOnAction(e -> showDropLabel());
+		lucky.setOnAction(e -> showDropLabel());
+	
 //		String surface = "model5";		Mosaic Pane seems to be brittle around "bad" input here.
 		
 		//Results --------- there is an overlay of an ImageView and TableView, so show/hide on selection change
@@ -242,11 +251,7 @@ public class PublishController implements Initializable
 	}
 	
 	public Label getLabel(Color color, String id) {
-		Label label = new Label();
-		label.textProperty().set(id);
-		label.textAlignmentProperty().set(TextAlignment.CENTER);
-		label.alignmentProperty().set(Pos.CENTER);
-		label.setOpacity(1.0);
+		Label label = new Label(id);
 		label.setTextFill(Color.WHITE);
 		label.setFont(Font.font("Arial", FontWeight.BOLD, 16d));
 		String style = "-fx-background-color: #" + color.toString().substring(2, 8).toUpperCase() + 
@@ -506,8 +511,7 @@ public class PublishController implements Initializable
 			
 		}
 	}
-	
-	
+		
 	private void setAnalysis(org.w3c.dom.Node elem)
 	{
 		if (elem != null)
@@ -638,6 +642,31 @@ public class PublishController implements Initializable
 			if (db.hasFiles())  addFiles(e);
 		});
 	}
+	
+	//--------------------------------------------------------------------------------
+
+	boolean nodeContains(org.w3c.dom.Node node, String  str)
+	{
+		if (node == null) return false;
+		String nodeText = node.getTextContent();
+		System.out.println(nodeText);
+		if (nodeText.toUpperCase().contains(str.toUpperCase()))
+			return true;
+		return false;
+	}
+	
+	void buildFilteredTree(XMLTreeItem item, XMLTreeItem filtered, String s)
+	{
+		if (StringUtil.isEmpty(s) || item == null ) return;
+		org.w3c.dom.Node node = item.getValue();
+		if (nodeContains(node, s))
+		{
+			XMLTreeItem filteredChild = new XMLTreeItem(item);
+			filtered.getChildren().add(filteredChild);
+			for (TreeItem<?> itemChild : item.getChildren())
+				buildFilteredTree((XMLTreeItem)itemChild, filteredChild, s);
+		}
+	}
 	//--------------------------------------------------------------------------------
 	// specifically adding an experiment folder with xmls and subfolders
 	void addFiles(DragEvent ev)
@@ -662,6 +691,12 @@ public class PublishController implements Initializable
 					setMethodsFilePath(f.getAbsolutePath());
 					fileTree.setRoot(f);				// traverse down the file system tree, adding everything	
 					EDLParsingHelper.setEDLDirectory(f, xmlTree, scans, segments);
+					if (xmlTreeRoot == null)
+					{
+						xmlTreeRoot = (XMLTreeItem) xmlTree.getRoot();
+						org.w3c.dom.Node node = xmlTreeRoot.getValue();
+						xmlTreeRoot.setValue(node);
+					}
 				}
 				break;			//  add the first directory, then break
 			}
@@ -684,7 +719,32 @@ public class PublishController implements Initializable
 		xmlTree.setShowRoot(false);
 		EDLParsingHelper helper = new EDLParsingHelper(xmlTree);
 		helper.setupDictionary();
+		fileTreeBox.getChildren().add(fileTree);
+        filterText.setPromptText("Filter methods tree ...");
+        filterText.textProperty().addListener((observable, oldValue, newValue) -> filterChanged(newValue));
+       xmlTreeRoot = null;
+//        
+//        xmlTreeRoot.predicateProperty().bind(Bindings.createObjectBinding(() -> {
+//            System.out.println(filterText.getText());
+//           if (StringUtil.isEmpty(filterText.getText()) )  return;
+//            return TreeItemPredicate.create(node -> nodeContains(node, filterText.getText()));
+//        }, filterText.textProperty()));
+
+
 	}
+	  private void filterChanged(String filter) {
+	        if (filter.isEmpty()) 	
+	        	{
+//	        	org.w3c.dom.Node val = xmlTreeRoot.getValue().getChildNodes().item(0);
+	        	xmlTree.setRoot(xmlTreeRoot);         
+	        	}
+	        else {
+	        	XMLTreeItem filteredRoot = new XMLTreeItem();
+	        	
+	        	buildFilteredTree(xmlTreeRoot, filteredRoot, filter);
+	            xmlTree.setRoot(filteredRoot);
+	        }
+	    }
 
 	//--------------------------------------------------------------------------------
 // Analysis commands

@@ -46,6 +46,7 @@ import javafx.stage.WindowEvent;
 import model.AttributeMap;
 import model.CSVTableData;
 import util.FileUtil;
+import util.MacUtil;
 import util.RectangleUtil;
 import util.StringUtil;
 
@@ -226,7 +227,7 @@ public class NodeFactory
 		if (url == null) 
 		{
 			String filepath = attrMap.get("file");		// f.getAbsolutePath()
-			url = FileUtil.urlFromPlist(filepath);
+			url = MacUtil.urlFromPlist(filepath);
 		}
 		if (url == null) return null;
 		WebView webView = new WebView();

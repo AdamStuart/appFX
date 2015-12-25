@@ -68,7 +68,7 @@ public TreeTableView buildFileBrowserTreeTableView(DirectoryModel inModel) {
                                 treeItem.getValue() == null || treeItem.getValue().isDirectory()) {
                             setText(null);
                         } else {
-                            setText(nf.format(item.length()) + " KB");
+                            setText(nf.format(item.length()) + " Bytes");
                         }
                     }
                 }
