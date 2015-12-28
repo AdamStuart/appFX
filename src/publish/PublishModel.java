@@ -10,18 +10,18 @@ import gui.Borders;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Side;
+import javafx.scene.chart.Chart;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import model.CSVTableData;
+import model.GraphRequest;
 import model.Histogram1D;
+import model.HistogramRequest;
 import model.OverlaidLineChart;
-import model.OverlaidScatterChart;
-import util.StringUtil;
+import model.ScatterRequest;
 
 public class PublishModel
 {
@@ -59,27 +59,26 @@ public class PublishModel
 		if (processSegmentTables(items)) return;	// fill it from cache
 		Objects.requireNonNull(tablemap);
 		Objects.requireNonNull(tablenames);
-		HashMap<String, List<Histogram1D>> datasetMap = new HashMap<String, List<Histogram1D>>();
+		HashMap<String, Map<String, Histogram1D>> datasetMap = new HashMap<String, Map<String, Histogram1D>>();
 		HashMap<String, LineChart<Number, Number>> chartMap = new HashMap<String, LineChart<Number, Number>>();
 		hbox = new HBox(8); hbox.setBorder(Borders.blueBorder1);
 		vbox = new VBox(8); vbox.setBorder(Borders.greenBorder);
 		container.getChildren().add(hbox);
 		hbox.getChildren().add(vbox);
 
-		CSVTableData firstTable = null;
+		final CSVTableData firstTable = tablemap.get(tablenames.get(0));
 		
 		for (String tablename : tablenames)
 		{
 			CSVTableData table = tablemap.get(tablename);
 			if (table == null) { continue;  } 
-			if (firstTable == null) { firstTable = table;  } 
-			List<Histogram1D> histos = table.getHistograms();
-			for (Histogram1D h : histos)
-				if (h != null) 
-					h.calcDistributionStats();
+			Map<String, Histogram1D> histos = table.getHistograms();
+			for (String name : histos.keySet())
+				if (histos.get(name) != null) 
+					histos.get(name).calcDistributionStats();			// calculates mean, area & several percentiles that are never used
 			datasetMap.put(table.getName(), histos);
 		}
-		List<Histogram1D> firstDataset = firstTable.getHistograms();
+		Map<String, Histogram1D> firstDataset = firstTable.getHistograms();
 		List<Histogram1D> sums = new ArrayList<Histogram1D>();
 		int nCols = firstDataset.size();
 //		 nCols = 9; // DEBUG
@@ -88,21 +87,19 @@ public class PublishModel
 		{
 			if (i < 5) continue;
 			Histogram1D histo = firstDataset.get(i);
+			if (histo == null) continue;
 			Histogram1D sum = new Histogram1D(histo);
 			sums.add(sum);
-			if (histo == null) continue;
-			LineChart<Number, Number> rawChart = histo.makeRawDataChart();	rawChart.setPrefWidth(200);
+//			LineChart<Number, Number> rawChart = histo.makeRawDataChart();	rawChart.setPrefWidth(200);
 			LineChart<Number, Number> smoothedChart = histo.makeChart();	smoothedChart.setPrefWidth(200);
 			OverlaidLineChart peakFitChart = histo.makePeakFitChart();		//	peakFitChart.setPrefWidth(200);
-			peakFitChartMap.put(histo.getName(), peakFitChart);
 			chartMap.put(histo.getName(), smoothedChart);
+			peakFitChartMap.put(histo.getName(), peakFitChart);
 			Label statLabel = new Label(histo.getStatString());
 			statLabel.setMinWidth(100);
-		
-			
 
-			peakFitChart.setOnKeyTyped(ev -> { 	classify();	});
-			peakFitChart.setOnMouseClicked(ev -> { 	classify();	});
+//			peakFitChart.setOnKeyTyped(ev -> { 	classify(firstTable);	});		// doesn't work -- ask for focus?
+			peakFitChart.setOnMouseClicked(ev -> { 	classify(firstTable);	});
 			peakFitChart.setLegendVisible(true);
 			peakFitChart.setLegendSide(Side.RIGHT);
 			HBox dimensionBox = new HBox(peakFitChart);		//rawChart, smoothedChart, statLabel, 
@@ -115,60 +112,75 @@ public class PublishModel
 		}
 		
 	}
-	
-	public void classify()
+	public void analyze(CSVTableData table)
 	{
-		// TODO -- put a semaphore here to make sure this isn't run ahead of scanPeaks
-		CSVTableData firstTable = null;
-		for (String tablename : tablenames)
-		{
-			CSVTableData table = tablemap.get(tablename);
-			if (firstTable == null) { firstTable = table;  } 
-		}
-		List<Histogram1D> firstDataset = firstTable.getHistograms();
-		Histogram1D cd3 = firstDataset.get(5);
-		Histogram1D cd19 = firstDataset.get(8);
-		Histogram1D cd27 = firstDataset.get(12);
-		Histogram1D cd38 = firstDataset.get(9);
-		final CSVTableData table = firstTable;
-		table.addPColumnPeakIndex("CD3+", cd3, 1);
-		table.addPColumnPeakIndex("CD3-", cd3, 0);
-		table.addPColumnAbove("CD19+", cd19, cd19.getPeaks().get(0).getMax());
-		table.addPColumnAnd("B", "CD3-", "CD19+");
-		table.addPColumnAbove("CD27+", cd27, cd27.getPeaks().get(0).getMax());
-		table.addPColumnAnd("CD27+B", "B", "CD27+");
-		table.addPColumnAbove("CD38+", cd38, cd38.getPeaks().get(0).getMax());
-		table.addPColumnAnd("Bplasma", "CD27+B", "CD38+");
-		int nCols = firstDataset.size();
-//		 nCols = 9; // DEBUG
-		for (int i = 0; i< nCols; i++)		
-		{
-			if (i < 5) continue;
-			Histogram1D histo = firstDataset.get(i);
-			OverlaidLineChart peakFitChart = peakFitChartMap.get(histo.getName());
-			table.makeGatedHistogramOverlay(histo, peakFitChart, .005, "CD3-", "CD19+", "B", "CD27+B", "CD38+", "Bplasma");
-		}
-//		
-		OverlaidLineChart cd3Neg = table.showGatedHistogram("All", "CD3-", "CD3"); 
-		OverlaidLineChart cd19Pos = table.showGatedHistogram("CD3-", "CD19+", "CD19"); 
-		OverlaidLineChart cd27Pos = table.showGatedHistogram("B", "CD27+B", "CD27"); 
-		OverlaidLineChart cd38Pos = table.showGatedHistogram("B", "CD38+",  "CD38"); 
-		OverlaidLineChart bPlasma = table.showGatedHistogram("CD27+B", "Bplasma", "CD38"); 
+		classify(table);
+		List<GraphRequest> requests = visualize();
+		List<Chart> charts = table.process(requests);
 		
-		OverlaidScatterChart<Number, Number> plot27 = table.getGatedScatterChart("CD27+B", "CD38", "CD39"); 
-		OverlaidScatterChart<Number, Number> plotPlasma = table.getGatedScatterChart("Bplasma", "CD161", "CD4"); 
-		OverlaidScatterChart<Number, Number> plot25 = table.getGatedScatterChart("Bplasma", "CD25", "CD161"); 
-		hbox.getChildren().add(new VBox(5, cd3Neg, cd19Pos, cd27Pos, cd38Pos, bPlasma, plot27, plot25, plotPlasma));
-		
-}
+	}
 	
+	public void classify(CSVTableData table)
+	{
+//		table.addPColumn( "All", "CD3+");
+		table.addPColumn( "All", "CD3-");
+		table.addPColumn("CD3-", "CD19+", "B");
+		table.addPColumn("B", "CD27+", "CD27+B");
+		table.addPColumn("B", "CD38+");
+		table.addPColumn("CD27+B", "CD38+", "Bplasma");
+	}
+	
+	public List<GraphRequest> visualize()
+	{
+		List<GraphRequest> requests = new ArrayList<GraphRequest>();
+		for (String name : EDLParsingHelper.dims)		
+			requests.add(new HistogramRequest(name, "All", "CD3-", "CD19+", "B", "CD27+B", "CD38+", "Bplasma"));
+		
+		requests.add(new HistogramRequest("CD3", "All", "CD3-"));
+//		requests.add(new HistogramRequest("CD3", "All", "CD3+")); 
+		requests.add(new HistogramRequest("CD19", "CD3-", "CD19+")); 
+		requests.add(new HistogramRequest("CD27", "B", "CD27+B" )); 
+		requests.add(new HistogramRequest("CD38", "B", "CD38+"  )); 
+		requests.add(new HistogramRequest("CD38", "CD27+B", "Bplasma" )); 
+		requests.add(new ScatterRequest("CD38", "CD39", "CD27+B", "Bplasma")); 
+		requests.add(new ScatterRequest("CD161", "CD4", "Bplasma")); 
+		requests.add(new ScatterRequest("CD25", "CD161", "Bplasma")); 
+		return requests;
+	
+//		Map<String, Image> results = new HashMap<String,Image>();
+//		requests.stream().process().collect();
+	}
+	//--------------------------------------------------------------------------------
+//	Histogram1D histo = firstDataset.get(name);
+//	OverlaidLineChart peakFitChart = peakFitChartMap.get(histo.getName());
+//	table.makeGatedHistogramOverlay(histo, peakFitChart, .005, );
+	
+
+	
+	
+	//--------------------------------------------------------------------------------
+//
+//	class DataSet
+//	{
+//		String name;
+//		File file;
+//	}
+//
+//	class Population
+//	{
+//		DataSet data;
+//		Population parent;
+//		String name;
+//		double frequency;
+//	}
+//	
 	//--------------------------------------------------------------------------------
 	public void processSegmentTables(VBox container, ObservableList<Segment> items)
 	{
 		if (processSegmentTables(items)) return;	// fill it from cache
 		Objects.requireNonNull(tablemap);
 		Objects.requireNonNull(tablenames);
-		HashMap<String, List<Histogram1D>> datasetMap = new HashMap<String, List<Histogram1D>>();
+		HashMap<String, Map<String, Histogram1D>> datasetMap = new HashMap<String, Map<String, Histogram1D>>();
 		HashMap<String, LineChart<Number, Number>> chartMap = new HashMap<String, LineChart<Number, Number>>();
 		
 		CSVTableData firstTable = null;
@@ -184,17 +196,17 @@ public class PublishModel
 		System.out.println("built histogram map");
 		
 		// process the first table to build sums and charts
-		List<Histogram1D> firstDataset = firstTable.getHistograms();
+		Map<String, Histogram1D> firstDataset = firstTable.getHistograms();
 		System.out.println("adding First DataSet: " + firstTable.getName());
-		List<Histogram1D> sums = new ArrayList<Histogram1D>();
+		Map<String, Histogram1D> sums = new HashMap<String, Histogram1D>();
 		int nCols = firstDataset.size();
 		
-		for (int i = 0; i< nCols; i++)		
+		for (String name : firstDataset.keySet())		
 		{
-			if (i < 5) continue;
-			Histogram1D histo = firstDataset.get(i);
+//			if (i < 5) continue;
+			Histogram1D histo = firstDataset.get(name);
 			Histogram1D sum = new Histogram1D(histo);
-			sums.add(sum);
+			sums.put(name, sum);
 			if (histo == null) continue;
 			LineChart<Number, Number> chart = histo.makeChart();
 			chartMap.put(histo.getName(), chart);
@@ -213,7 +225,7 @@ public class PublishModel
 			if (tableData == null)	continue;				// error
 			if (tableData == firstTable)	continue;		// already processed above
 			String tableName = tableData.getName();
-			List<Histogram1D> dataset = datasetMap.get(tableName);
+			Map<String, Histogram1D> dataset = datasetMap.get(tableName);
 			for (int i = 5; i< nCols; i++)		
 			{
 				Histogram1D sum =sums.get(i-5);

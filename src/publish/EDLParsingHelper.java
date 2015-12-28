@@ -8,6 +8,8 @@ import java.util.Map;
 import org.w3c.dom.Node;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
@@ -110,6 +112,11 @@ public class EDLParsingHelper
 	//-------------------------------------------------------------------
 	static Map<String,String> lookupMap = new HashMap<String,String>();
 	
+	public static String[] strs = new String[] { "Filter Samples", "Organize Files", "Image Processing", "Edge Detection", "Feature Recognition", "Quantification", "Parametric Normalization", "Labeling"};
+	public static String[] stepList = new String[] { "3Read Zip File", "0Check Manifest", "3Queue Files", "3Read CSV Files", "3Ranges Set", "4Distributions Set", "3Gutter Gates Applied", "4Statistics Generated", "3Smoothed", "3Distriubtions Regenerated", "2Normalized", "3Baseline Peak Found", "2Populations Gated"};
+	public static String[] interrog = new String[] { "Activation", "Stimulation", "Memory", "Expression", "Regulation", "Promotion", "Inhibition", "Apoptosis" };
+	public static String[] viz = new String[] { "QC Montage", "Stats Panel", "Backgating", "Correlation", "Heat Map", "Hover Plot", "Drill Down Chart", "Tree Map", "Anova", "Cytoscape", "VISNE", "SPADE"};
+
 	void setupDictionary()
 	{
 		lookupMap.put("Inputobjects", "Input");
@@ -138,10 +145,14 @@ public class EDLParsingHelper
 	}
 	
 	static public String[] dims = new String[]{"CD3", "CD25","CD4", "CD19", "CD38", "CD39", "CD161", "CD27" };
-	
+	static String[] suppressNames = new String[]{ "SpecificParameters", "Environment", "Machine", "MethodHistory"};		// close the disclosure triangle, as they may be big
+
 	//--------------------------------------------------------------------------------
-	static public void setEDLDirectory(File f, TreeTableView<org.w3c.dom.Node> xmlTree, ListView<ScanJob> scans, ListView<Segment> segments)
+	static public void setEDLDirectory(File f, PublishController ctrlr)
 	{
+		TreeTableView<org.w3c.dom.Node> xmlTree = ctrlr.getXmlTree();
+		ListView<ScanJob> scans = ctrlr.getScans();
+		ListView<Segment> segments = ctrlr.getSegments();		
 		File objectFile = null;
 		File[] topLevelFiles = f.listFiles();
 		
@@ -241,5 +252,20 @@ public class EDLParsingHelper
 		for (File kid : kids)
 			if (FileUtil.isCSV(kid))
 				segments.getItems().add(new Segment(kid.getName(), kid));		// read the file, build the table
+	}
+
+	public static ObservableList<String> speciesList = FXCollections.observableArrayList("Mouse", "Human", "More...");
+	public static ObservableList<String> cellTypes = FXCollections.observableArrayList("T Cells", "B Cells", "NK Cells", "More...");
+	public static ObservableList<String> technologyList = FXCollections.observableArrayList("ChipCytometry", "PCR", "Mass Spec", "HPLC", "More...");
+
+
+	public static ObservableList<SOPLink> getSOPLinks()
+	{
+		ObservableList<SOPLink> links = FXCollections.observableArrayList();
+		links.add(new SOPLink("http://chipcytometry.com/Blog/", "Chip Cytometry SOPs"));
+		links.add(new SOPLink("http://www.protocol-online.org/prot/Cell_Biology/Flow_Cytometry__FCM_/", "FACS Protocols"));
+		links.add(new SOPLink("https://www.thermofisher.com/us/en/home/references/"
+		+ "protocols/cell-and-tissue-analysis/flow-cytometry-protocol.html", "ThermoFisher"));
+		return links;
 	}
 }
