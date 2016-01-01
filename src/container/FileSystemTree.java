@@ -208,9 +208,9 @@ public class FileSystemTree extends TreeTableView<File>
 				return children;
 			}
 		}
-
 		return FXCollections.emptyObservableList();
 	}
+	
 	private int getNChildren(TreeItem<File> treeItem)
 	{
 		if (treeItem == null) return 0;

@@ -22,8 +22,9 @@ import javafx.beans.property.SimpleDoubleProperty;
  * A sample that demonstrates the use of double properties and Image Operators.
  */
 public class ImageOperatorSample extends Application {
+    public static void main(String[] args) { launch(args); }
      
-    SimpleDoubleProperty gridSize = new SimpleDoubleProperty(3.0);
+    SimpleDoubleProperty gridSize = new SimpleDoubleProperty(8.0);
     SimpleDoubleProperty hueFactor = new SimpleDoubleProperty(12.0);
     SimpleDoubleProperty hueOffset = new SimpleDoubleProperty(240.0);
      
@@ -31,41 +32,41 @@ public class ImageOperatorSample extends Application {
         Group root = new Group();
         primaryStage.setScene(new Scene(root));
         final WritableImage img = new WritableImage(300, 300);
-        gridSize.addListener(observable -> {  renderImage(img, gridSize, hueFactor, hueOffset);   });
-        hueFactor.addListener(observable -> { renderImage(img, gridSize, hueFactor, hueOffset);   });
-        hueOffset.addListener(observable -> { renderImage(img, gridSize, hueFactor, hueOffset);   });
-        renderImage(img, 8.0, 12.0, 240.0);
+       gridSize.addListener(observable -> {  renderImage(img);   });
+        hueFactor.addListener(observable -> { renderImage(img);   });
+        hueOffset.addListener(observable -> { renderImage(img);   });
         ImageView view = new ImageView(img);
-        root.getChildren().add(view);
+        renderImage(img);
+       root.getChildren().add(view);
     }
-    private static void renderImage(WritableImage img, SimpleDoubleProperty gridSize, SimpleDoubleProperty hueFactor, SimpleDoubleProperty hueOffset) {
-    	renderImage(img, gridSize.doubleValue(), hueFactor.doubleValue(), hueOffset.doubleValue());
+    @Override public void start(Stage primaryStage) throws Exception {
+        init(primaryStage);
+        primaryStage.show();
     }
+
     
-    private static void renderImage(WritableImage img, double gridSize, double hueFactor, double hueOffset) {
+    private void renderImage(WritableImage img) {
         PixelWriter pw = img.getPixelWriter();
         double w = img.getWidth();
         double h = img.getHeight();
+        double grid = gridSize.get();
+        double hueF = hueFactor.get();
+        double hueOff = hueOffset.get();
         double xRatio = 0.0;
         double yRatio = 0.0;
         double hue = 0.0;
-        gridSize *= Math.PI;
+        grid *= Math.PI;
         for (int y = 0; y < h; y++) {
             for (int x = 0; x < w; x++) 
             {
                 xRatio = x/w;
                 yRatio = y/h;
-                hue = Math.sin(yRatio * gridSize)* Math.sin(xRatio * gridSize)*
-                				Math.tan(hueFactor/20.0)*360.0 + hueOffset;
+                hue = Math.sin(yRatio * grid)* Math.sin(xRatio * grid)*
+                				Math.tan(hueF/20.0)*360.0 + hueOff;
                 Color c = Color.hsb(hue, 1.0, 1.0);
                 pw.setColor(x, y, c);
             }
         }
     }
  
-    @Override public void start(Stage primaryStage) throws Exception {
-        init(primaryStage);
-        primaryStage.show();
-    }
-    public static void main(String[] args) { launch(args); }
-}
+ }

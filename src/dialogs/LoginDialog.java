@@ -18,14 +18,21 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.util.Pair;
 
-//Optional<Pair<String, String>> result = (new LoginDialog()).showAndWait();
-//
-//result.ifPresent(usernamePassword -> {
-//	System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue());
-//});
 
 public class LoginDialog extends Dialog
 {
+
+	public static Pair<String, String> authenticate(String username, String password)
+	{
+		LoginDialog login = new LoginDialog();
+		Optional<Pair<String, String>> result = login.showAndWait();
+
+		result.ifPresent(usernamePassword -> {
+			System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue());
+		});
+		return null;
+	}
+
 	public LoginDialog()
 	{
 	super();
@@ -80,11 +87,10 @@ public class LoginDialog extends Dialog
 		// Request focus on the username field by default.
 		Platform.runLater(() -> username.requestFocus());
 
-		// Convert the result to a username-password-pair when the login button
-		// is clicked.
+		// Convert the result to a username-password-pair on OK
 		setResultConverter(dialogButton -> {
 			if (dialogButton == loginButtonType)
-				return new Pair<>(username.getText(), password.getText());
+				return new Pair<String, String>(username.getText(), password.getText());
 			return null;
 		});
 
