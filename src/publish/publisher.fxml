@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.*?>
@@ -23,11 +25,11 @@
                            <children>
                               <VBox fillWidth="false" layoutX="8.0" layoutY="5.0" spacing="8.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="10.0">
                                  <children>
-                                    <VBox prefHeight="191.0" spacing="8.0" VBox.vgrow="NEVER">
+                                    <VBox prefHeight="173.0" prefWidth="696.0" spacing="8.0" VBox.vgrow="NEVER">
                                        <children>
                                           <HBox layoutX="42.0" layoutY="4.0" spacing="8.0">
                                              <children>
-                                                <Label minHeight="-Infinity" prefHeight="113.0" prefWidth="631.0" text="The purpose of the hypothesis is to assert the connections or correlations you intend to demonstrate. Provide specific enough informations that we can search for similar work in the literature." wrapText="true">
+                                                <Label minHeight="-Infinity" prefHeight="90.0" prefWidth="631.0" text="The purpose of the hypothesis is to assert the connections or correlations you intend to demonstrate. Provide specific enough informations that we can search for similar work in the literature." wrapText="true">
                                                    <padding>
                                                       <Insets left="20.0" />
                                                    </padding>
@@ -193,7 +195,7 @@
                            <children>
                               <VBox layoutX="-1.0" layoutY="46.0" prefHeight="421.0" prefWidth="800.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="46.0">
                                  <children>
-                                    <SplitPane dividerPositions="0.24874371859296482, 0.5954773869346733, 0.7713567839195979" layoutX="31.0" layoutY="46.0" prefHeight="355.0" prefWidth="766.0" AnchorPane.bottomAnchor="174.0" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="46.0" VBox.vgrow="ALWAYS">
+                                    <SplitPane dividerPositions="0.24874371859296482, 0.5954773869346733" layoutX="31.0" layoutY="46.0" prefHeight="355.0" AnchorPane.bottomAnchor="174.0" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="46.0" VBox.vgrow="ALWAYS">
                                        <items>
                                           <VBox prefHeight="761.0" prefWidth="164.0" spacing="8.0">
                                              <children>
@@ -214,16 +216,9 @@
                                                 </TreeTableView>
                                              </children>
                                           </VBox>
-                                          <VBox spacing="8.0">
+                                          <VBox fx:id="canvasVbox" spacing="8.0">
                                              <children>
-                                                <Label text="Interrogate" />
-                                                <ListView fx:id="interrogateList" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                                             </children>
-                                          </VBox>
-                                          <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0">
-                                             <children>
-                                                <Label text="Visualize" />
-                                                <ListView fx:id="visualizeList" prefHeight="245.0" prefWidth="220.0" VBox.vgrow="ALWAYS" />
+                                                <Label text="Canvas" />
                                              </children>
                                           </VBox>
                                        </items>
@@ -257,14 +252,6 @@
                   <Tab id="Mosaic" closable="false" text="Mosaic">
                      <content>
                         <AnchorPane fx:id="mosaicAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                     </content>
-                  </Tab>
-                  <Tab id="Specification" closable="false" text="Specs">
-                     <content>
-                        <AnchorPane id="Specification" fx:id="specsAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <WebView fx:id="agendaPage" layoutX="14.0" layoutY="14.0" prefHeight="667.0" prefWidth="795.0" AnchorPane.bottomAnchor="162.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="14.0" />
-                           </children></AnchorPane>
                      </content>
                   </Tab>
                </tabs>

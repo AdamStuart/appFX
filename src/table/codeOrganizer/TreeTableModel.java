@@ -51,16 +51,18 @@ public class TreeTableModel
 		TreeItem<Population> raw = makeTree("Events");
 		TreeItem<Population> live = makeTree("Live Leukocytes");
 		raw.getChildren().add(live);
-		makeTrees(raw, "Debris", "Doublets", "Dead Cells");
+//		makeTrees(raw, "Debris", "Doublets", "Dead Cells");
 
 		TreeItem<Population> lymph = makeTree("Lymphocytes");
 		TreeItem<Population> t = makeTree("T Cells");
+		TreeItem<Population> cd4 = makeTree("CD4");
 		TreeItem<Population> b = makeTree("B Cells");
 		TreeItem<Population> myeloid = makeTree("Myeloid");
-		live.getChildren().add(lymph);
 		makeTrees(myeloid, "Monocytes", "Granulocytes", "Neutrophils", "Eosinophils", "Basophils");
+		makeTrees(live, lymph, myeloid);
 		makeTrees(lymph, "NK Cells", t, b);
-		makeTrees(t, "T-reg", "CD4", "CD8");
+		makeTrees(t, cd4, "CD8", "DN");
+		makeTrees(cd4, "TH-17", "T-reg");
 		makeTrees(b, "Plasma B Cells", "Memory B Cells", "B-1", "B-reg");
 		setFrequencies(raw);
 		return raw;
@@ -85,11 +87,12 @@ public class TreeTableModel
 	static FrequencyRange[] ranges = new FrequencyRange[]{
 		new FrequencyRange( "Lymphocytes", "CD45+", 14, 47 ),
 		new FrequencyRange( "T Cells", "CD3+", 7, 24 ),
-		new FrequencyRange( "T-reg","CD4+CD25+",  0.1, 0.7 ),
 		new FrequencyRange( "CD4", "CD4+", 4,20 ),
 		new FrequencyRange( "CD8", "CD8+", 2, 11 ),
-		
-		new FrequencyRange( "NK Cells", "CD161+", 1, 6 ),
+		new FrequencyRange( "T-reg","CD25+CD39+",  3, 8 ),
+		new FrequencyRange( "TH-17","CD161+",  0.4, 1 ),
+
+		new FrequencyRange( "NK Cells", "CD56+", 1, 6 ),
 		new FrequencyRange( "B Cells", "CD3-CD19+", 1, 7 ),
 		new FrequencyRange( "Naive B Cells", "", 0.7, 4.9 ),
 		new FrequencyRange( "Plasma B Cells", "CD25+CD38+", 0.2, 2 ),

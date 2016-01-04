@@ -63,6 +63,8 @@ public class PublishModel
 		HashMap<String, LineChart<Number, Number>> chartMap = new HashMap<String, LineChart<Number, Number>>();
 		hbox = new HBox(8); hbox.setBorder(Borders.blueBorder1);
 		vbox = new VBox(8); vbox.setBorder(Borders.greenBorder);
+		vbox.prefWidthProperty().bind(hbox.widthProperty());
+		vbox.prefHeightProperty().bind(hbox.heightProperty());
 		container.getChildren().add(hbox);
 		hbox.getChildren().add(vbox);
 
@@ -85,23 +87,27 @@ public class PublishModel
 	
 		for (int i = 0; i< nCols; i++)		
 		{
-			if (i < 5) continue;
-			Histogram1D histo = firstDataset.get(i);
+//			if (i < 5) continue;
+			String dim = EDLParsingHelper.dims[i];
+			Histogram1D histo = firstDataset.get(dim);
 			if (histo == null) continue;
 			Histogram1D sum = new Histogram1D(histo);
 			sums.add(sum);
 //			LineChart<Number, Number> rawChart = histo.makeRawDataChart();	rawChart.setPrefWidth(200);
-			LineChart<Number, Number> smoothedChart = histo.makeChart();	smoothedChart.setPrefWidth(200);
+			LineChart<Number, Number> smoothedChart = histo.makeChart();	//smoothedChart.setPrefWidth(200);
 			OverlaidLineChart peakFitChart = histo.makePeakFitChart();		//	peakFitChart.setPrefWidth(200);
 			chartMap.put(histo.getName(), smoothedChart);
 			peakFitChartMap.put(histo.getName(), peakFitChart);
-			Label statLabel = new Label(histo.getStatString());
-			statLabel.setMinWidth(100);
+//			Label statLabel = new Label(histo.getStatString());
+//			statLabel.setMinWidth(100);
+//			statLabel.setPrefWidth(600);
+			peakFitChart.getXAxis().setTickLabelsVisible(true);		// use CSS
+			peakFitChart.getYAxis().setTickLabelsVisible(false);
 
 //			peakFitChart.setOnKeyTyped(ev -> { 	classify(firstTable);	});		// doesn't work -- ask for focus?
 			peakFitChart.setOnMouseClicked(ev -> { 	classify(firstTable);	});
-			peakFitChart.setLegendVisible(true);
-			peakFitChart.setLegendSide(Side.RIGHT);
+			peakFitChart.setLegendVisible(false);
+//			peakFitChart.setLegendSide(Side.RIGHT);
 			HBox dimensionBox = new HBox(peakFitChart);		//rawChart, smoothedChart, statLabel, 
 			if (i < 13)
 				vbox.getChildren().add(dimensionBox);
@@ -109,17 +115,20 @@ public class PublishModel
 			// important:  we can't add the markers before the chart is shown!
 			Thread th = new Thread(() -> Platform.runLater(() -> { histo.addPeakMarkers(peakFitChart);  }) );  
 			th.start();
+			new Thread(() -> Platform.runLater(() -> { container.layout();	})).start();
 		}
 		
 	}
-	public void analyze(CSVTableData table)
+	public List<XYChart<Number, Number>> analyze1D(CSVTableData table)
 	{
 		classify(table);
-		List<GraphRequest> requests = visualize();
-		List<Chart> charts = table.process(requests);
+		List<GraphRequest> requests = visualize1D();
+		List<XYChart<Number, Number>> charts = table.process(requests);			// THREAD
+		return charts;
 		
 	}
 	
+	String ontology = " ( All (CD3- (CD19+ (CD27+ (CD38+ ())))) (CD3+ (CD4+ (CD25+ (CD39+ ())))))";
 	public void classify(CSVTableData table)
 	{
 //		table.addPColumn( "All", "CD3+");
@@ -130,27 +139,33 @@ public class PublishModel
 		table.addPColumn("CD27+B", "CD38+", "Bplasma");
 	}
 	
-	public List<GraphRequest> visualize()
+	public List<GraphRequest> visualize1D()
 	{
 		List<GraphRequest> requests = new ArrayList<GraphRequest>();
-		for (String name : EDLParsingHelper.dims)		
-			requests.add(new HistogramRequest(name, "All", "CD3-", "CD19+", "B", "CD27+B", "CD38+", "Bplasma"));
+//		for (String name : EDLParsingHelper.dims)		
+//			requests.add(new HistogramRequest(name, "All", "CD3-", "CD19+", "B", "CD27+B", "CD38+", "Bplasma"));
 		
-		requests.add(new HistogramRequest("CD3", "All", "CD3-"));
+		requests.add(new HistogramRequest("CD3", "All", "CD3-"));					// THREAD
 //		requests.add(new HistogramRequest("CD3", "All", "CD3+")); 
 		requests.add(new HistogramRequest("CD19", "CD3-", "CD19+")); 
-		requests.add(new HistogramRequest("CD27", "B", "CD27+B" )); 
-		requests.add(new HistogramRequest("CD38", "B", "CD38+"  )); 
+		requests.add(new HistogramRequest("CD27", "CD19+", "CD27+B" )); 
+		requests.add(new HistogramRequest("CD38", "CD19+", "CD38+"  )); 
 		requests.add(new HistogramRequest("CD38", "CD27+B", "Bplasma" )); 
-		requests.add(new ScatterRequest("CD38", "CD39", "CD27+B", "Bplasma")); 
-		requests.add(new ScatterRequest("CD161", "CD4", "Bplasma")); 
-		requests.add(new ScatterRequest("CD25", "CD161", "Bplasma")); 
 		return requests;
 	
 //		Map<String, Image> results = new HashMap<String,Image>();
 //		requests.stream().process().collect();
 	}
-	//--------------------------------------------------------------------------------
+
+	public List<GraphRequest> visualize2D()
+	{
+		List<GraphRequest> requests = new ArrayList<GraphRequest>();
+		requests.add(new ScatterRequest("CD38", "CD39", "CD27+B", "Bplasma")); 
+		requests.add(new ScatterRequest("CD161", "CD4", "Bplasma")); 
+		requests.add(new ScatterRequest("CD25", "CD161", "Bplasma")); 
+		return requests;
+	}
+//--------------------------------------------------------------------------------
 //	Histogram1D histo = firstDataset.get(name);
 //	OverlaidLineChart peakFitChart = peakFitChartMap.get(histo.getName());
 //	table.makeGatedHistogramOverlay(histo, peakFitChart, .005, );

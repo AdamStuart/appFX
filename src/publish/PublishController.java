@@ -3,6 +3,7 @@ package publish;
 import java.io.File;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -22,6 +23,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -83,7 +85,7 @@ public class PublishController implements Initializable
 	@FXML AnchorPane analysisAnchor;
 	@FXML AnchorPane discussionAnchor;
 	@FXML AnchorPane mosaicAnchor;
-	@FXML AnchorPane specsAnchor;
+//	@FXML AnchorPane specsAnchor;
 	AnchorPane[]  anchors;
 
 	//
@@ -149,9 +151,11 @@ public class PublishController implements Initializable
 
 	// Analysis
 	@FXML ListView<String> normalizeList;
-	@FXML ListView<String> interrogateList;
-	@FXML ListView<String> visualizeList;
+//	@FXML ListView<String> interrogateList;
+//	@FXML ListView<String> visualizeList;
 	@FXML private TreeTableView<Population> classifyTree;
+	@FXML private VBox canvasVbox;
+	
 	// discussion
 	@FXML HTMLEditor discussion;
 	public String getDiscussionHTML() {		return discussion.getHtmlText();	}
@@ -240,9 +244,10 @@ public class PublishController implements Initializable
 		setupAnalysis();
 		setupMosaic();
 		
-		String agendaUrl = "https://docs.google.com/document/d/1VT5hmAjFJSIQT_1YsJpF6ELrzmJ1iT2Lng0s-DyZnSg/edit?ts=563105e1";
-		agendaPage.getEngine().load(agendaUrl);
-		anchors = new AnchorPane[] {abstractAnchor, research, methodsAnchor, checkpointAnchor, resultsAnchor, analysisAnchor, discussionAnchor, specsAnchor};
+//		String agendaUrl = "https://docs.google.com/document/d/1VT5hmAjFJSIQT_1YsJpF6ELrzmJ1iT2Lng0s-DyZnSg/edit?ts=563105e1";
+//		agendaPage.getEngine().load(agendaUrl);
+		anchors = new AnchorPane[] {abstractAnchor, research, methodsAnchor, checkpointAnchor, resultsAnchor, analysisAnchor, discussionAnchor};
+		//, specsAnchor
 	}
 	//-------------------------------------------------------------------------------------				
 	public void start()
@@ -423,7 +428,7 @@ public class PublishController implements Initializable
 		System.out.println("doHistogramProfiles: ");	
 		graphVBox.getChildren().clear();
 		graphVBox.setPrefWidth(1450);
-		resultsplitter.setDividerPosition(0, 0.1);
+		resultsplitter.setDividerPosition(0, 0.9);
 //		graphVBox.setBorder(Borders.dashedBorder);
 		model.profileHistograms(graphVBox, segments.getItems());
 	}
@@ -438,7 +443,7 @@ public class PublishController implements Initializable
 		if (model != null)
 		{
 			graphVBox.getChildren().clear();
-			model.generateHistograms(graphVBox);
+			model.generateRawHistogramCharts(graphVBox);
 		}
 	}
 	//--------------------------------------------------------------------------------
@@ -556,7 +561,7 @@ public class PublishController implements Initializable
 	@FXML	private TreeTableColumn<Population, String> countColumn;
 	@FXML	private TreeTableColumn<Population, String> markerColumn;
 	@FXML	private TreeTableColumn<Population, String> rangeColumn;
-	@FXML	private WebView agendaPage;
+//	@FXML	private WebView agendaPage;
 
 	private void setupAnalysis()
 	{
@@ -577,13 +582,21 @@ public class PublishController implements Initializable
 			String txt =  (pop.getHigh() <= pop.getLow()) ?  "" :"(" + pop.getLow() + " - " + pop.getHigh() + "%)";
 			return new ReadOnlyObjectWrapper<String>(txt);	
 		});
+		Objects.requireNonNull(canvasVbox);
+//		canvasVbox.setBorder(Borders.dashedBorder);
+		AnchorPane canvas = new AnchorPane();
+		canvas.setPrefHeight(3000);
+		canvasVbox.getChildren().add(canvas);
+		canvas.setBorder(Borders.dashedBorder);
+
 		
-		interrogateList.setItems(FXCollections.observableArrayList(EDLParsingHelper.interrog));
-		interrogateList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
-		visualizeList.setItems(FXCollections.observableArrayList(EDLParsingHelper.viz));
-		visualizeList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
+		//these two list commented out because it wasn't clear what they are for.
+//		interrogateList.setItems(FXCollections.observableArrayList(EDLParsingHelper.interrog));
+//		interrogateList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+//
+//		visualizeList.setItems(FXCollections.observableArrayList(EDLParsingHelper.viz));
+//		visualizeList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+//
 }
 	class Step
 	{
@@ -642,7 +655,8 @@ public class PublishController implements Initializable
 		if (xmlDoc != null)
 			doc.install(xmlDoc);
 	}
-	
+	@FXML void save()		{	if (doc != null) doc.save();		}
+	@FXML void saveas()		{	if (doc != null) doc.saveas();		}
 	@FXML void doClose()	{	if (doc != null) doc.save();		}	//TODO -- pbly obsolete if we install a close handler!
 	@FXML void doQuit()		{	System.exit(0);}
 
