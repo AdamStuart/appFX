@@ -3,6 +3,8 @@ package dialogs;
 import java.net.URL;
 import java.util.Optional;
 
+import icon.FontAwesomeIcons;
+import icon.GlyphsDude;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -52,6 +54,8 @@ public class LoginDialog extends Dialog
 		URL res =  getClass().getResource("login.png");
 		if (res != null)
 			setGraphic(new ImageView(res.toString()));
+		else
+			setGraphic(GlyphsDude.createIcon((FontAwesomeIcons.KEY)) );
 
 		// Set the button types.
 		ButtonType loginButtonType = new ButtonType("Sign In", ButtonData.OK_DONE);
@@ -63,12 +67,13 @@ public class LoginDialog extends Dialog
 		grid.setVgap(10);
 		grid.setPadding(new Insets(20, 150, 10, 10));
 
+		
 		TextField username = new TextField();
-		username.setPromptText("Username");
+		username.setPromptText("User name");
 		PasswordField password = new PasswordField();
 		password.setPromptText("Password");
 
-		grid.add(new Label("Username:"), 0, 0);
+		grid.add(new Label("User name:"), 0, 0);
 		grid.add(username, 1, 0);
 		grid.add(new Label("Password:"), 0, 1);
 		grid.add(password, 1, 1);

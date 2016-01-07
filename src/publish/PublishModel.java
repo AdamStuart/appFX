@@ -87,7 +87,7 @@ public class PublishModel
 	
 		for (int i = 0; i< nCols; i++)		
 		{
-//			if (i < 5) continue;
+			if (i > 2) continue;			// DEBUG
 			String dim = EDLParsingHelper.dims[i];
 			Histogram1D histo = firstDataset.get(dim);
 			if (histo == null) continue;
@@ -128,68 +128,71 @@ public class PublishModel
 		
 	}
 	
-	String ontology = " ( All (CD3- (CD19+ (CD27+ (CD38+ ())))) (CD3+ (CD4+ (CD25+ (CD39+ ())))))";
+	
+	
+	//@formatter:off
+	String ontology = " ( All (CD3- (CD19+ (CD27+ (CD38+ ()))))" + 
+							" (CD3+ (CD4+ (CD25+ (CD39+ ())))))";
+
+	String[] gates = new String []
+			{	//	parent	gate	child-name
+					"All", "CD3-", "CD3-",			
+					"CD3-", "CD19+", "B",			
+					"B", "CD27+", "CD27+B",			
+					"B", "CD38+", "CD38+B" ,			
+					"CD3+", "CD4+", "CD4",	
+					"CD4", "CD25+", "CD25",	
+					"CD25", "CD39+", "Treg",	
+					"CD4", "CD161+", "TH17"	
+			};
+
+	String[] cmds1D = new String []
+			{	//	  x		parent	child
+					"CD3", "All", "CD3-",			
+					"CD19", "CD3-", "CD19+",			
+					"CD27", "CD19+", "CD27+B",			
+					"CD38", "CD19+", "CD38+" ,			
+					"CD38", "CD27+B", "Bplasma"		
+			};
+
+	String[] cmds2D = new String []
+			{	//  	x		y	base-layer	overlay
+					"CD38", "CD39", "CD27+B", "Bplasma",			
+					"CD161", "CD4", "Bplasma", "",			
+					"CD25", "CD161", "Bplasma", ""	
+			};
+	//@formatter:on
+	//--------------------------------------------------------------------------------
 	public void classify(CSVTableData table)
 	{
-//		table.addPColumn( "All", "CD3+");
-		table.addPColumn( "All", "CD3-");
-		table.addPColumn("CD3-", "CD19+", "B");
-		table.addPColumn("B", "CD27+", "CD27+B");
-		table.addPColumn("B", "CD38+");
-		table.addPColumn("CD27+B", "CD38+", "Bplasma");
+		for (int i=0; i<gates.length; i+=3)
+			table.addPColumn(gates[i], gates[i+1], gates[i+2]);
 	}
-	
+
 	public List<GraphRequest> visualize1D()
 	{
 		List<GraphRequest> requests = new ArrayList<GraphRequest>();
 //		for (String name : EDLParsingHelper.dims)		
 //			requests.add(new HistogramRequest(name, "All", "CD3-", "CD19+", "B", "CD27+B", "CD38+", "Bplasma"));
 		
-		requests.add(new HistogramRequest("CD3", "All", "CD3-"));					// THREAD
-//		requests.add(new HistogramRequest("CD3", "All", "CD3+")); 
-		requests.add(new HistogramRequest("CD19", "CD3-", "CD19+")); 
-		requests.add(new HistogramRequest("CD27", "CD19+", "CD27+B" )); 
-		requests.add(new HistogramRequest("CD38", "CD19+", "CD38+"  )); 
-		requests.add(new HistogramRequest("CD38", "CD27+B", "Bplasma" )); 
+		for (int i=0; i<cmds1D.length; i+=3)
+			requests.add(new HistogramRequest(cmds1D[i], cmds1D[i+1], cmds1D[i+2]));
 		return requests;
-	
-//		Map<String, Image> results = new HashMap<String,Image>();
-//		requests.stream().process().collect();
 	}
 
 	public List<GraphRequest> visualize2D()
 	{
 		List<GraphRequest> requests = new ArrayList<GraphRequest>();
-		requests.add(new ScatterRequest("CD38", "CD39", "CD27+B", "Bplasma")); 
-		requests.add(new ScatterRequest("CD161", "CD4", "Bplasma")); 
-		requests.add(new ScatterRequest("CD25", "CD161", "Bplasma")); 
+		for (int i=0; i<cmds2D.length; i+=4)
+			requests.add(new ScatterRequest(cmds2D[i], cmds2D[i+1], cmds2D[i+2], cmds2D[i+3])); 
 		return requests;
 	}
-//--------------------------------------------------------------------------------
-//	Histogram1D histo = firstDataset.get(name);
-//	OverlaidLineChart peakFitChart = peakFitChartMap.get(histo.getName());
-//	table.makeGatedHistogramOverlay(histo, peakFitChart, .005, );
-	
 
-	
-	
 	//--------------------------------------------------------------------------------
-//
-//	class DataSet
-//	{
-//		String name;
-//		File file;
-//	}
-//
-//	class Population
-//	{
-//		DataSet data;
-//		Population parent;
-//		String name;
-//		double frequency;
-//	}
-//	
-	//--------------------------------------------------------------------------------
+	// For each table, generate histograms and put them into datasetMap.
+	// Then, generate a histogram for each column add overlay another series for 
+	// each table and the sum of all tables.
+	
 	public void processSegmentTables(VBox container, ObservableList<Segment> items)
 	{
 		if (processSegmentTables(items)) return;	// fill it from cache
