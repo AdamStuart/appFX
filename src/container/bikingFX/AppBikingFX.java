@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package bikingFX;
+package container.bikingFX;
 
 import java.net.URL;
 import java.util.Locale;
@@ -41,7 +41,7 @@ public class AppBikingFX extends Application {
     @Override public void start(final Stage stage) throws Exception {
 	
     	ResourceBundle resources;
-	final String bundleName = "bikingFX.bundles.BikingFX"; // bundles.BikingFX";
+	final String bundleName = "container.bikingFX.bundles.BikingFX"; // bundles.BikingFX";
 	final String rootpath = "root.fxml";
 	try {
 	    resources = ResourceBundle.getBundle(bundleName, Locale.getDefault());

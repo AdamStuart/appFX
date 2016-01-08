@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package bikingFX.common;
+package container.bikingFX.common;
 
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ContentDisplay;

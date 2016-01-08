@@ -27,8 +27,8 @@
 	<classpathentry kind="lib" path="src/container/libs/pivot-wtk-2.0.4.jar"/>
 	<classpathentry kind="lib" path="src/container/libs/pivot-wtk-terra-2.0.4.jar"/>
 	<classpathentry kind="lib" path="/libFX/commons-net-3.4.jar"/>
-	<classpathentry kind="lib" path="src/bikingFX/javax.json-api-1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/adam/git/appFX/src/container/bikingFX/javax.json-api-1.0.jar"/>
 	<classpathentry kind="lib" path="/libFX/json_simple-1.1.jar"/>
-	<classpathentry kind="lib" path="src/bikingFX/javax.json-1.0.4.jar"/>
+	<classpathentry kind="lib" path="/Users/adam/git/appFX/src/container/bikingFX/javax.json-1.0.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

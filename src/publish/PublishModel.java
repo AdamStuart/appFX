@@ -9,11 +9,8 @@ import java.util.Objects;
 import gui.Borders;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.geometry.Side;
-import javafx.scene.chart.Chart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.CSVTableData;
@@ -131,12 +128,12 @@ public class PublishModel
 	
 	
 	//@formatter:off
-	String ontology = " ( All (CD3- (CD19+ (CD27+ (CD38+ ()))))" + 
+	String ontology = " ( ^ (CD3- (CD19+ (CD27+ (CD38+ ()))))" + 
 							" (CD3+ (CD4+ (CD25+ (CD39+ ())))))";
 
 	String[] gates = new String []
 			{	//	parent	gate	child-name
-					"All", "CD3-", "CD3-",			
+					"^", "CD3-", "CD3-",			
 					"CD3-", "CD19+", "B",			
 					"B", "CD27+", "CD27+B",			
 					"B", "CD38+", "CD38+B" ,			
@@ -148,7 +145,7 @@ public class PublishModel
 
 	String[] cmds1D = new String []
 			{	//	  x		parent	child
-					"CD3", "All", "CD3-",			
+					"CD3", "^", "CD3-",			
 					"CD19", "CD3-", "CD19+",			
 					"CD27", "CD19+", "CD27+B",			
 					"CD38", "CD19+", "CD38+" ,			

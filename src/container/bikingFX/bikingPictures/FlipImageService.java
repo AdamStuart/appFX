@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package bikingFX.bikingPictures;
+package container.bikingFX.bikingPictures;
 
-import bikingFX.RootController.LoadedImageFilter;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import container.bikingFX.RootController.LoadedImageFilter;
 import javafx.animation.ScaleTransition;
 import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;

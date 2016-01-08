@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package bikingFX;
+package container.bikingFX;
 
 import static java.lang.Math.round;
 import static java.lang.String.format;
@@ -33,17 +33,17 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
-import bikingFX.api.JsonRetrievalTask;
-import bikingFX.bikes.Bike;
-import bikingFX.bikes.MileageChangeListener;
-import bikingFX.bikingPictures.BikingPicture;
-import bikingFX.bikingPictures.FlipImageService;
-import bikingFX.common.ColorTableCell;
-import bikingFX.common.LocalDateTableCell;
-import bikingFX.gallery.GalleryPicture;
-import bikingFX.gallery.GalleryPictureTableCell;
-import bikingFX.tracks.Track;
-import bikingFX.tracks.Track.Type;
+import container.bikingFX.api.JsonRetrievalTask;
+import container.bikingFX.bikes.Bike;
+import container.bikingFX.bikes.MileageChangeListener;
+import container.bikingFX.bikingPictures.BikingPicture;
+import container.bikingFX.bikingPictures.FlipImageService;
+import container.bikingFX.common.ColorTableCell;
+import container.bikingFX.common.LocalDateTableCell;
+import container.bikingFX.gallery.GalleryPicture;
+import container.bikingFX.gallery.GalleryPictureTableCell;
+import container.bikingFX.tracks.Track;
+import container.bikingFX.tracks.Track.Type;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.collections.FXCollections;

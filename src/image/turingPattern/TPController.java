@@ -9,14 +9,13 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
-import javafx.animation.Timeline;
+import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -197,21 +196,21 @@ public class TPController  {
 	//-----------------------------------------------------------------------------------------
 	@FXML public void run()
 	{
-		if (getApp().getTimeline() != null)
-			getApp().getTimeline().play();
+		if (getApp().getTimer() != null)
+			getApp().getTimer().start();
 	}
 
 	@FXML public void pause()
 	{
-		if (getApp().getTimeline() != null)
-			getApp().getTimeline().pause();
+		if (getApp().getTimer() != null)
+			getApp().getTimer().stop();
 	}
 	
 	@FXML public void step()
 	{
-		Timeline t = AppTuringPatternGenerator.getInstance().getTimeline();
-		Duration duration = t.getCurrentTime();
-		t.jumpTo(duration.add(new Duration(500)));
+		AnimationTimer t = AppTuringPatternGenerator.getInstance().getTimer();
+//		Duration duration = t.getCurrentTime();
+//		t.jumpTo(duration.add(new Duration(500)));
 
 	}
 	

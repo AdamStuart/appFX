@@ -103,7 +103,7 @@ public class UploaderController implements Initializable
 			StringBuilder manifest = new StringBuilder();
 		
 			manifest.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-			manifest.append("<toc:TOC toc:parent_toc=").append("\"TOC.xml").append("\"\n");
+			manifest.append("<toc:TOC \n");
 			manifest.append(" xmlns:toc = \"http://www.isac-net.org/std/ACS/1.0/toc/\"\n");
 			manifest.append(" mlns:xsi = \"http://www.w3.org/2001/XMLSchema-instance\"\n");
 			manifest.append(" xmlns:sig = \"http://www.w3.org/2000/09/xmldsig#\"\n");
@@ -114,7 +114,7 @@ public class UploaderController implements Initializable
 			mine(topFile, objects);
 			for (String s : objects)		manifest.append(s);
 			manifest.append("</toc:TOC>");
-			FileUtil.writeTextFile(topFile, "TOC.xml", manifest.toString());
+			FileUtil.writeTextFile(topFile, "TOC1.xml", manifest.toString());
 		}
 		catch(	Exception ex) { return false;	}
 		return true;
@@ -189,6 +189,11 @@ public class UploaderController implements Initializable
 	// RELYING ON CONVENTIONS HERE -- MORE ROBUST PATTERN MATCHING REQD
 	
 
+	private boolean isEDLMethodFile(File f)
+	{
+		String name = f.getName();
+		return (name.startsWith("E") && isEDLname(name));
+	}
 	private boolean isEDLObjectFile(File f)
 	{
 		String name = f.getName();
@@ -197,11 +202,6 @@ public class UploaderController implements Initializable
 	private boolean isEDLImageFile(File f)
 	{
 		return FileUtil.isImageFile(f);
-	}
-	private boolean isEDLMethodFile(File f)
-	{
-		String name = f.getName();
-		return (name.startsWith("E") && isEDLname(name));
 	}
 	private boolean isEDLname(String s)
 	{

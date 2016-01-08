@@ -44,7 +44,7 @@ public class AppTuringPatternGenerator extends Application {
 	private PixelGrid theGridModel;
 	private ColorPool pool;
 
-	Timeline timeline;
+//	Timeline timeline;
 	AnimationTimer timer;
 	Circle node;
 	ListView<TuringPattern> patternList;
@@ -130,7 +130,7 @@ public class AppTuringPatternGenerator extends Application {
 
 		timer = new AnimationTimer() {
 			@Override public void handle(long now) {
-				if ((timeline.getStatus() == Status.RUNNING || now < 0))
+				if (now > 0)		//(timeline.getStatus() == Status.RUNNING || 
 				{
 //				System.out.println("handle");
 				patterns.step();			// expensive method - should be threaded
@@ -221,7 +221,7 @@ public class AppTuringPatternGenerator extends Application {
 	//-----------------------------------------------------------------------------------------
 	boolean verbose = true;
 	public AnimationTimer getTimer()		{ return timer;	}
-	public Timeline getTimeline()		{ return timeline;	}
+//	public Timeline getTimeline()		{ return timeline;	}
 	public void reset() {		theGridModel.init(pool, null);	}
 	// -----------------------------------------------------------------------------------------
 }

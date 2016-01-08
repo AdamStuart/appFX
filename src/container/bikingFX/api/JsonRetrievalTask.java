@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package bikingFX.api;
+package container.bikingFX.api;
 
 import java.net.MalformedURLException;
 import java.net.URL;

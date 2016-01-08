@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package bikingFX.gallery;
+package container.bikingFX.gallery;
 
-import bikingFX.api.JsonRetrievalTask;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import container.bikingFX.api.JsonRetrievalTask;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;

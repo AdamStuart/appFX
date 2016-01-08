@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package bikingFX.tracks;
+package container.bikingFX.tracks;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,11 +40,8 @@ public class Track {
      * (Pretty) ID is needed for URL construction
      */
     private final Property<String> id;
-
     private final Property<LocalDate> coveredOn;
-
     private final Property<String> name;
-         
     private final Type type;
 
     public Track(final JsonValue jsonValue) {
@@ -56,54 +53,28 @@ public class Track {
 	this.type = Type.valueOf(jsonObject.getString("type"));
     }
 
-    public final String getId() {
-	return id.getValue();
-    }
+    public final String getId() {	return id.getValue();    }
+    public Property<String> propertyId() {	return id;    }
 
-    public Property<String> propertyId() {
-	return id;
-    }
+    public final LocalDate getCoveredOn() {	return coveredOn.getValue();    }
+    public Property<LocalDate> coveredOnProperty() {	return coveredOn;    }
 
-    public final LocalDate getCoveredOn() {
-	return coveredOn.getValue();
-    }
-
-    public Property<LocalDate> coveredOnProperty() {
-	return coveredOn;
-    }
-
-    public final String getName() {
-	return name.getValue();
-    }
-
-    public Property<String> nameProperty() {
-	return name;
-    }
-
-    public final Type getType() {
-	return type;
-    }
+    public final String getName() {	return name.getValue();    }    public Property<String> nameProperty() {	return name;    }
+    public final Type getType() {	return type;    }
     
-    @Override
-    public int hashCode() {
+    @Override    public int hashCode() {
 	int hash = 7;
 	hash = 41 * hash + Objects.hashCode(this.getCoveredOn());
 	hash = 41 * hash + Objects.hashCode(this.getName());
 	return hash;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-	if (obj == null) {
-	    return false;
-	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
+    @Override    public boolean equals(Object obj) {
+	if (obj == null) 	    return false;
+	if (getClass() != obj.getClass())     return false;
 	final Track other = (Track) obj;
-	if (!Objects.equals(this.getCoveredOn(), other.getCoveredOn())) {
-	    return false;
-	}
+	if (!Objects.equals(this.getCoveredOn(), other.getCoveredOn()))    return false;
+	
 	return Objects.equals(this.getName(), other.getName());
     }
 }
