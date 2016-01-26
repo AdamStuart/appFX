@@ -38,6 +38,7 @@ import javafx.stage.Stage;
 
 
 public class BoxWhiskerApp extends Application {
+    public static void main(String[] args) { launch(args); }
     
 
     @Override public void start(Stage primaryStage) throws Exception {
@@ -47,10 +48,4 @@ public class BoxWhiskerApp extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
-    
-    /** 
-     * Java main for when running without JavaFX launcher 
-     * @param args command line arguments
-     */
-    public static void main(String[] args) { launch(args); }
 }

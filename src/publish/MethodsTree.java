@@ -62,6 +62,7 @@ public class MethodsTree
 			for (TreeItem<org.w3c.dom.Node> child : xml.getChildren())
 			{
 				String name = child.getValue().getNodeName();
+				System.out.println(name);
 				if (!"Method".equals(name))		continue;
 				org.w3c.dom.Node value = child.getValue();
 				String myId = StringUtil.chopExtension(file.getName()); // value.getNodeValue();

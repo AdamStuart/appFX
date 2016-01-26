@@ -110,9 +110,9 @@ public class UploaderController implements Initializable
 			manifest.append(" xsi:schemaLocation = \"http://www.isac-net.org/std/ACS/1.0/toc/");
 			manifest.append(" http://flowcyt.sf.net/acs/toc/TOC.v1.0.xsd\"\n>\n");
 		
-			List<String> objects = new ArrayList<String>();
-			mine(topFile, objects);
-			for (String s : objects)		manifest.append(s);
+			List<String> descriptors = new ArrayList<String>();
+			mine(topFile, descriptors);
+			for (String s : descriptors)		manifest.append(s);
 			manifest.append("</toc:TOC>");
 			FileUtil.writeTextFile(topFile, "TOC1.xml", manifest.toString());
 		}
@@ -129,7 +129,12 @@ public class UploaderController implements Initializable
 		mine(topFile, objects, methods, images, other);	
 	
 		StringBuilder manifest = new StringBuilder();
+		manifest.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		manifest.append("<UploadInformation>\n");
+		manifest.append(" xmlns:edl = \"http://www.zkw.com/toc/\"\n");				// TODO 
+		manifest.append(" mlns:xsi = \"http://www.w3.org/2001/XMLSchema-instance\"\n");// TODO 
+		manifest.append(" xmlns:sig = \"http://www.w3.org/2000/09/xmldsig#\"\n");	// TODO 
+		manifest.append(" xsi:schemaLocation = \"http://www.zkw/toc.com/\n");		// TODO 
 		manifest.append("\t<MetaInfo ID=" + topFile.getName() + "/>\n");
 		
 		manifest.append("\t<EDLEntities >\n");
@@ -175,7 +180,7 @@ public class UploaderController implements Initializable
 	}
 	private String getFileUrl(File f)
 	{
-		return "<toc:file toc:URI = \"file://" + f.getAbsolutePath() + "</toc:file>	\n";
+		return "<toc:file toc:URI = \"file://" + f.getAbsolutePath() + "\"</toc:file>	\n";
 	}
 
 	private void addSection(StringBuilder manifest, String string, List<String> objects)
@@ -186,7 +191,7 @@ public class UploaderController implements Initializable
 	}
 
 	//----------------------------------------------------------------
-	// RELYING ON CONVENTIONS HERE -- MORE ROBUST PATTERN MATCHING REQD
+	// TODO   RELYING ON CONVENTIONS HERE -- MORE ROBUST PATTERN MATCHING REQD
 	
 
 	private boolean isEDLMethodFile(File f)
@@ -217,11 +222,11 @@ public class UploaderController implements Initializable
 	
 	private String getEDLObjectDescriptor(File f)
 	{
-		return " <EDLObject ID=\"" + StringUtil.chopExtension(f.getName()) + "\">" + fileSpec(f) + "</EDLObject>\n";
+		return " <EDLObject ID=\"" + StringUtil.chopExtension(f.getName()) + "\">" + fileSpec(f) + " </EDLObject>\n";
 	}
 	private String getEDLMethodDescriptor(File f)
 	{
-		return " <EDLMethod ID=\"" + StringUtil.chopExtension(f.getName()) + "\">" + fileSpec(f) + "</EDLMethod>\n";
+		return " <EDLMethod ID=\"" + StringUtil.chopExtension(f.getName()) + "\">" + fileSpec(f) + " </EDLMethod>\n";
 	}
 	private String getEDLImageDescriptor(File f)
 	{

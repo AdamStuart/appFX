@@ -199,14 +199,14 @@ public class AppTuringPatternGenerator extends Application {
 
 		int poolsize = pool.size();
 		double baseY = h-10; // (int)(canvasH -20);
-//		int totalCt = 0;
-//		for (int n=0; n< poolsize; n++) 
-//		{
-//			int ct = counts[n];
-//			max = Math.max(max,ct);
-//			totalCt += ct;
-//		}
-//		double meanCt = totalCt / poolsize;
+		int totalCt = 0;
+		for (int n=0; n< poolsize; n++) 
+		{
+			int ct = counts[n];
+			max = Math.max(max,ct);
+			totalCt += ct;
+		}
+		double meanCt = totalCt / poolsize;
 		double histoscale = 100 * h / (Math.log(max));
 		if (max != 0) {
 			for (int n = 0; n < poolsize; n++) {

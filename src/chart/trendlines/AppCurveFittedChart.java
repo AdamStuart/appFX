@@ -17,7 +17,7 @@ public class AppCurveFittedChart extends Application
     	VBox container = controller.createContent();
 	    
     	Scene scene = new Scene(container, 500, 800);
-	    URL url = getClass().getResource("CurveFittedChart.css");		// this gets the fxml file from the same directory as this class
+	    URL url = getClass().getResource("CurveFittedChart.css");	// this gets the css file from the same directory as this class
 	    scene.getStylesheets().add(url.toExternalForm());
 	    primaryStage.setScene(scene);
 	    primaryStage.show();

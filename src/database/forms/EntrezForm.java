@@ -96,12 +96,17 @@ public class EntrezForm extends VBox
 
 		SplitPane headersplit =  new SplitPane(queryContent, savedSearches);
 		SplitPane split =  new SplitPane(resultsTable, abstField);
-		getChildren().addAll(headersplit, split);
 		split.setOrientation(Orientation.VERTICAL);
 		split.setDividerPosition(0, 0.8);
 		VBox.setVgrow(split, Priority.ALWAYS);
 
+		SplitPane pageSplit = new SplitPane(headersplit, split);
+		pageSplit.setOrientation(Orientation.VERTICAL);
+		pageSplit.setDividerPosition(0, 0.4);
+		VBox.setVgrow(pageSplit, Priority.ALWAYS);
+
 		VBox.setVgrow(resultsTable, Priority.ALWAYS);
+		getChildren().add(pageSplit);
 		
 	}
 		//------------------------------------------------------------------------------
@@ -324,7 +329,7 @@ public class EntrezForm extends VBox
 	"All Fields",
 	"Author",	"Author - Corporate",	"Author - First",	"Author - Full",	"Author - Identifier",	"Author - Last",
 	"Book",
-	"Date - Completion",	"Date - Create",	"Date - Entrez",	"Date - MeSH",	"Date -Modification",	"Date - Publication",
+	"Date - Completion",	"Date - Create",	"Date - Entrez",	"Date - MeSH",	"Date - Modification",	"Date - Publication",
 	"EC/RN Number",
 	"Editor",	"EditorFilter",	"Filter",
 	"Grant Number",

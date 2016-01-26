@@ -1,14 +1,18 @@
 package chart.flexiPie;
 
 import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
+import javafx.css.CssMetaData;
+import javafx.css.Styleable;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
@@ -19,9 +23,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
-public class FlexiPieController {
+public class FlexiPieController implements Initializable{
 	
 	@FXML Pane container;
+	public Pane getContainer()	{ return container;	}
 	@FXML TreeTableView<TreeItem> table;
 	@FXML TreeTableColumn<TreeTableView, Wedge>  colorColumn;
 	@FXML TreeTableColumn<TreeTableView, Wedge>  categoryColumn;
@@ -29,7 +34,7 @@ public class FlexiPieController {
 //	private Label label;
 	private PieModel model;
 	
-	public void initialize()
+	@Override public void initialize(URL location, ResourceBundle resources)
 	{
 		assert(container != null);
 		double rX = container.getPrefWidth() / 2;
@@ -38,9 +43,13 @@ public class FlexiPieController {
 		double centerY = rY;
 		model = new PieModel(centerX, centerY, rX, rY, this);
 		Group g = model.buildPie();
+		
 		container.getChildren().add(g);
 		container.getChildren().add(model.createHandle());
-		
+		ObservableMap<Object, Object> props = container.getProperties();
+		ObservableList<String> styles = container.getStylesheets();
+		List<CssMetaData<? extends Styleable, ?>> list = 	PieChart.getClassCssMetaData();
+//		String p = props.get("default-color").toString();
 //		label = new Label("0.0");
 //		container.getChildren().add(label);
 		model.select(0);
@@ -70,12 +79,18 @@ public class FlexiPieController {
 	}
 	
 	// ---------------------------------------------------------------------------
-   private    ObservableList<PieChart.Data> data2 =     FXCollections.observableArrayList(
-    	            new PieChart.Data("Grapefruit", 13),
-    	            new PieChart.Data("Oranges", 25),
-    	            new PieChart.Data("Plums", 10),
-    	            new PieChart.Data("Pears", 22),
-    	            new PieChart.Data("Apples", 30));		
+	  private    ObservableList<PieChart.Data> data2 =     FXCollections.observableArrayList(
+	    	            new PieChart.Data("T", 13),
+	    	            new PieChart.Data("B", 25),
+	    	            new PieChart.Data("NK", 10),
+	    	            new PieChart.Data("Myeloid", 22),
+	    	            new PieChart.Data("Other", 30));		
+	  private    ObservableList<PieChart.Data> data3 =     FXCollections.observableArrayList(
+	    	            new PieChart.Data("T", 16),
+	    	            new PieChart.Data("B", 23),
+	    	            new PieChart.Data("NK", 8),
+	    	            new PieChart.Data("Myeloid", 45),
+	    	            new PieChart.Data("Other", 23));		
 
     static String[] names = new String[]{ "Lymphocytes", "Monocytes", "Granulocytes", "Debris" };
     static double[] nums = new double[] { 123, 75, 45, 23, 20 };
@@ -84,7 +99,7 @@ public class FlexiPieController {
     private    ObservableList<PieChart.Data> data;
     private AnchorPane flexiPieRoot;
 
-    private  PieChart pieChart;
+    private  PieChart pieChart, innerPie;
  
  // ---------------------------------------------------------------------------
 	public VBox createContent()
@@ -98,16 +113,18 @@ public class FlexiPieController {
 		doughnutChart = new DoughnutChart(data2);
 		if (doughnutChart == null) System.out.println("doughnutChart = null");
 
-		String name = "chart/flexiPie/FlexiPie.fxml";
-		URL res = getClass().getClassLoader().getResource(name);
-		try
-		{
-			flexiPieRoot = (AnchorPane) FXMLLoader.load(res);
-			return new VBox(new HBox(pieChart, doughnutChart), flexiPieRoot);
-		} catch (Exception e)
-		{}
-		return null;
+	
+		
+		innerPie = new PieChart(data3);
+		innerPie.setLabelsVisible(false);
+		innerPie.setLegendVisible(false);
+		
+		
+		model.grabPalette(doughnutChart);
+			
+		return new VBox(new HBox(pieChart, doughnutChart), flexiPieRoot);
 	}
+
 }
 
 

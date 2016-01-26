@@ -1,12 +1,20 @@
 package chart.flexiPie;
 
+import java.util.List;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.css.CssMetaData;
+import javafx.css.Styleable;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
@@ -37,10 +45,37 @@ public class PieModel
 		controller = parent;
 		double total = 0;
 		wedgeList = FXCollections.observableArrayList();
+		
+		ObservableList<PieChart.Data> data = FXCollections.observableArrayList();
+		for (int i=0; i< animals.length; i++)
+			data.add(new PieChart.Data("", 1));
+		
+		PieChart dummy = new PieChart();
+		dummy.getData().add(new PieChart.Data("", 1));
+		dummy.getData().add(new PieChart.Data("", 1));
+		dummy.getData().add(new PieChart.Data("", 1));
+		dummy.getData().add(new PieChart.Data("", 1));
+		dummy.getData().add(new PieChart.Data("", 1));
+		PieChart.Data d = dummy.getData().get(0);
+		Object col = d.getNode().getProperties().get("default-color0");
+		Node node = d.getNode();
+		if (node instanceof Region)
+		{
+			Region rgn = (Region) node;
+//			Color c = rgn.get
+			
+		}
+		List<CssMetaData<? extends Styleable, ?>> list = dummy.getCssMetaData();
+		Pane p = controller.getContainer();
+//		p.getStylesheets().get(index)
+		for (int i =0; i< animals.length; i++)		total += sizes[i];			//stream()
 		for (int i =0; i< animals.length; i++)
-			total += sizes[i];
-		for (int i =0; i< animals.length; i++)
-			wedgeList.add(new Wedge(animals[i], colors[i], 360 * (	sizes[i] / total), this, i));
+		{
+			Color color = colors[i];
+			double degrees = 360 * (	sizes[i] / total);
+			wedgeList.add(new Wedge(animals[i], color, degrees, this, i));
+
+		}
 	}
 	
 	String[] animals = new String[]{"cats", "dogs", "mice", "rabbits", "apes", "humans"};
@@ -214,10 +249,14 @@ public class PieModel
 		for (Wedge w : wedgeList)
 		{
 			Arc arc = new Arc(centerX, centerY,  radiusX, radiusY,  startAngle, w.getLength());
-			arc.setFill(w.getColor());			// TODO use CSS styles
+//			arc.setFill(w.getColor());			// TODO use CSS styles
+			
 			arc.setStroke(Color.BLACK);
 			arc.setStrokeWidth(1);
-			arc.setType(ArcType.ROUND);
+			arc.setType(ArcType.ROUND);           
+			arc.getStyleClass().setAll("chart-pie", "data" + w.getIndex(),
+                            "default-color" + w.getIndex() % 8);
+
 			startAngle += w.getLength();
 			arc.setOnMouseClicked(new EventHandler<MouseEvent>() {		@Override public void handle(MouseEvent event) {	select(w);	}	});
 			g.getChildren().add(arc);
@@ -244,6 +283,19 @@ public class PieModel
 	{
 		if (i >= 0 && i < wedgeList.size())
 			select(wedgeList.get(i));
+		
+	}
+	//---------------------------------------------------------------------------------
+	public void grabPalette(PieChart other) 
+	{
+		if (other == null) return;
+		int i=0;
+		for (Wedge w : wedgeList)
+		{
+			Node nod = other.getData().get(i++).getNode();
+			
+			w.getArc().setFill(Color.BURLYWOOD);;
+		}
 		
 	}
 	//---------------------------------------------------------------------------------

@@ -242,22 +242,22 @@ public class RootController implements Initializable
 		final WebEngine webEngine = viewTrackMap.getEngine();
 		webEngine.setJavaScriptEnabled(true);
 		// Watch loading of map data
-		webEngine.getLoadWorker().stateProperty().addListener((observable, oldState, newState) ->
+		webEngine.getLoadWorker().stateProperty().addListener((obs, old, state) ->
 		{
-			if (newState == State.SUCCEEDED)
+			if (state == State.SUCCEEDED)
 			{
 				logger.log(Level.FINE, "Loading done, now preparing map.");
 				// enable javascript and set every relevant width and height to
-				// 100%
-				// so that the webview is automatically filled
+				// 100% so that the webview is automatically filled
 				webEngine.executeScript("$('html').height('100%'); $('body').height('100%'); $('#map').css('width', '100%').css('height', '100%'); ");
 			}
 		});
-		viewTracks.getSelectionModel().selectedItemProperty().addListener((observable, oldTrack, newTrack) ->
+		viewTracks.getSelectionModel().selectedItemProperty().addListener((obs, old, track) ->
 		{
-			if (newTrack != null)
+			if (track != null)
 			{
-				final String mapUrl = String.format("%s/tracks/%s/embed?width=%d&height=%d", JsonRetrievalTask.HOST_AND_PORT, newTrack.getId(), viewTrackMap.widthProperty().intValue(),
+				final String mapUrl = String.format("%s/tracks/%s/embed?width=%d&height=%d", 
+						JsonRetrievalTask.HOST_AND_PORT, track.getId(), viewTrackMap.widthProperty().intValue(),
 								viewTrackMap.heightProperty().intValue());
 				logger.log(Level.FINE, "Loading embedded map {0}", new Object[] { mapUrl });
 				webEngine.load(mapUrl);

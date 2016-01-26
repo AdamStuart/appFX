@@ -11,7 +11,6 @@ import javafx.scene.shape.Arc;
 
 public class Wedge
  {
-	
 	private	StringProperty name;
 	private	DoubleProperty length;
 	private	SimpleBooleanProperty locked;

@@ -9,6 +9,7 @@ import javafx.scene.shape.Circle;
 
 public class DoughnutChart extends PieChart {
     private final Circle innerCircle;
+//    private final PieChart innerPie;
 
     public DoughnutChart(ObservableList<Data> pieData) {
         super(pieData);
@@ -17,9 +18,18 @@ public class DoughnutChart extends PieChart {
 
         // just styled in code for demo purposes,
         // use a style class instead to style via css.
-        innerCircle.setFill(Color.WHITESMOKE);
+//        innerCircle.setFill(Color.WHITESMOKE);
         innerCircle.setStroke(Color.WHITE);
         innerCircle.setStrokeWidth(3);
+        innerCircle.setOpacity(0.3);
+        
+//        innerPie = new PieChart(innerData);
+//        innerPie.setLabelsVisible(false);
+//        innerPie.setLegendVisible(false);
+//        innerPie.setMinSize(50, 50);
+////        innerPie.prefHeightProperty().bind(innerCircle.heightProperty());
+        
+        
     }
 
     @Override  protected void layoutChartChildren(double top, double left, double contentWidth, double contentHeight) {
@@ -36,7 +46,10 @@ public class DoughnutChart extends PieChart {
             {
                 Pane parent = (Pane) pie.getParent();
                 if (!parent.getChildren().contains(innerCircle)) 
+                {
+//                	parent.getChildren().add(innerPie);
                     parent.getChildren().add(innerCircle);
+                }
             }
         }
     }
@@ -56,6 +69,11 @@ public class DoughnutChart extends PieChart {
         innerCircle.setCenterX(average(minX , maxX));
         innerCircle.setCenterY(average(minY, maxY));
         innerCircle.setRadius((maxX - minX) / 4);
+        
+//        innerPie.setLayoutX(average(minX , maxX));
+//        innerPie.setLayoutY(average(minY , maxY));
+//        innerPie.setPrefWidth((maxX - minX) / 2);
+//        innerPie.setPrefHeight((maxY - minY) / 2);
     }
     
    double average(double a, double b) {  return (a + (b-a)/2); }

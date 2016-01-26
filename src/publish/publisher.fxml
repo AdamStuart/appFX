@@ -38,19 +38,28 @@
                                           </HBox>
                                           <HBox spacing="8.0">
                                              <children>
-                                                <Label layoutX="20.0" layoutY="60.0" text="Species" />
-                                                <ChoiceBox fx:id="species" prefHeight="26.0" prefWidth="118.0" />
-                                                <Label text="Cell Type" />
-                                                <ChoiceBox fx:id="celltype" prefHeight="26.0" prefWidth="176.0" />
-                                                <Label text="Technology" />
-                                                <ChoiceBox fx:id="technology" prefHeight="27.0" prefWidth="189.0" />
+                                                <Label layoutX="20.0" layoutY="60.0" text="Species">
+                                                   <HBox.margin>
+                                                      <Insets top="6.0" />
+                                                   </HBox.margin></Label>
+                                                <ChoiceBox fx:id="species" />
+                                                <Label text="Cell Type">
+                                                   <HBox.margin>
+                                                      <Insets top="6.0" />
+                                                   </HBox.margin></Label>
+                                                <ChoiceBox fx:id="celltype" />
+                                                <Label text="Technology">
+                                                   <HBox.margin>
+                                                      <Insets top="6.0" />
+                                                   </HBox.margin></Label>
+                                                <ChoiceBox fx:id="technology" />
                                              </children>
                                           </HBox>
                                           <Label text="Keywords" />
                                        </children>
                                     </VBox>
-                                    <TextArea fx:id="keywords" prefHeight="45.0" prefWidth="763.0" />
-                                    <HTMLEditor fx:id="hypothesis" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutY="223.0" prefHeight="610.0" prefWidth="800.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="223.0" />
+                                    <TextArea fx:id="keywords" minHeight="45.0" />
+                                    <HTMLEditor fx:id="hypothesis" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutY="223.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="223.0" />
                                  </children>
                               </VBox>
                            </children>

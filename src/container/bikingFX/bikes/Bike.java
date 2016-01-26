@@ -80,22 +80,17 @@ public class Bike {
     public final void setMileage(Integer mileage) {	this.mileage.setValue(mileage);    }
     public Property<Integer> mileageProperty() {	return mileage;    }
 
-    @Override
-    public int hashCode() {
+    @Override public int hashCode() {
 	int hash = 7;
 	hash = 31 * hash + Objects.hashCode(this.getName());
 	return hash;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-	if (obj == null) {
-	    return false;
-	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	final Bike other = (Bike) obj;
-	return Objects.equals(this.getName(), other.getName());
+    @Override public boolean equals(Object obj) 
+    {	
+    	if (obj == null) 	    return false;	
+    	if (getClass() != obj.getClass()) 	    return false;	
+    	final Bike other = (Bike) obj;
+    	return Objects.equals(this.getName(), other.getName());
     }
 }
