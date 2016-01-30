@@ -24,7 +24,7 @@ import javafx.util.Pair;
 public class LoginDialog extends Dialog
 {
 
-	public static Pair<String, String> authenticate(String username, String password)
+	public static Optional<Pair<String, String>> authenticate(String username, String password)
 	{
 		LoginDialog login = new LoginDialog();
 		Optional<Pair<String, String>> result = login.showAndWait();
@@ -32,7 +32,7 @@ public class LoginDialog extends Dialog
 		result.ifPresent(usernamePassword -> {
 			System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue());
 		});
-		return null;
+		return result;
 	}
 
 	public LoginDialog()

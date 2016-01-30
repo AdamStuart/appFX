@@ -3,8 +3,8 @@ package uploader;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -24,7 +24,9 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -41,18 +43,28 @@ import util.FileUtil;
 import util.StringUtil;
 public class UploaderController implements Initializable
 {
-	static String HOST = "ftp.treister.com";
-	static String remoteParentDir = "/doc/zkw/";
+	static String HOST = "192.168.2.4";
+	static String remoteParentDir = "ftp";		// /ftp
 	static String remotePath = "";
-	static String password = null;
-	static String username = "user";
+	static String password = "CLEO";
+	static String username = "adam";
+	static String ftpPort = "21";
+//	static String username = password = null;
 	
 	
 	@FXML Pane droppane;
+	
+	@FXML TextField host;
+	@FXML TextField user;
+	@FXML TextField path;
+	@FXML TextField port;
+	@FXML PasswordField pass;
+
 	@FXML Label status;
 //	@FXML ProgressBar progress;
 	@FXML ImageView image;
 	@FXML VBox progressContainer;
+	@FXML VBox config;
 	
 	File packageFile;
 	FTPClient ftpClient = new FTPClient();
@@ -60,39 +72,83 @@ public class UploaderController implements Initializable
 	
 	@Override	public void initialize(URL location, ResourceBundle resources)
 	{
-		DropUtil.makeFileDropPane(droppane, (e) -> uploader(e));
+		DropUtil.makeFileDropPane(droppane, (e) -> testuploader(e));		// uploader
 		status.setText("Idle");
 		image.setImage(WORMHOLE);
 		image.setOpacity(0.);
+		droppane.setVisible(false);
+		config.setVisible(true);
+		host.setText(HOST);
+		user.setText(username);
+		pass.setText(password);
+		path.setText(remoteParentDir);
 	}
 	
 	//----------------------------------------------------------------
+	@FXML private void doConnect()
+	{
+		System.out.println("doConnect");
+		droppane.setVisible(true);
+		config.setVisible(false);
+		remoteParentDir = path.getText();		// /ftp
+		HOST =  host.getText();
+		username =  user.getText();
+		password = pass.getText();
+		remotePath = path.getText();
+		ftpPort = port.getText();
+	
+	}
+
 	private void uploader(DragEvent e)
 	{
-		if (validate(e))
+		e.consume();
+		File dir = validate(e);
+		if (dir != null)
 		{
-			if (connect()) 
-				doUploadTask(e);
+			File zipped = FileUtil.compress(dir);
+			if (zipped != null)
+				if (connect())
+					doUploadFile(FXCollections.observableArrayList(dir));
 			else System.out.println("connection FAILED");
 		} 	
-		else System.out.println("validation FAILED");
+		else System.out.println("validation FAILED: no validated files");
+	}
+
+	private void testuploader(DragEvent e)
+	{
+		e.consume();
+//		File dir = validate(e);
+		files.addAll(e.getDragboard().getFiles());
+		if (files != null)
+		{
+//			File zipped = FileUtil.compress(dir);
+//			if (zipped != null)
+				if (connect())
+					doUploadFile(files);
+			else System.out.println("connection FAILED");
+		} 	
+		else System.out.println("validation FAILED: no validated files");
 }
+
 	List<File> files = FXCollections.observableArrayList();
 	//----------------------------------------------------------------
-	private boolean validate(DragEvent ev)
+	private File validate(DragEvent ev)
 	{
 		List<File> topfiles = ev.getDragboard().getFiles();
-		if (topfiles.size() > 1 ) return false;			// don't overload the FTPClient with multiple connections
+		if (topfiles.size() > 1 ) return null;			// don't overload the FTPClient with multiple connections
 		File topFile = topfiles.get(0);
-		if (!topFile.isDirectory()) return false;
+		if (!topFile.isDirectory()) 
+		{
+			return null;
+		}
 		try
 		{
 			makeEDLManifest(topFile);
 			makeAcsManifest(topFile);
 			status.setText("validated");
 		}
-		catch(	Exception ex) { return false;	}
-		return true;
+		catch(	Exception ex) { return null;	}
+		return topFile;
 	}
 	
 	
@@ -111,10 +167,12 @@ public class UploaderController implements Initializable
 			manifest.append(" http://flowcyt.sf.net/acs/toc/TOC.v1.0.xsd\"\n>\n");
 		
 			List<String> descriptors = new ArrayList<String>();
-			mine(topFile, descriptors);
+			traverseFiles(topFile, descriptors);
 			for (String s : descriptors)		manifest.append(s);
 			manifest.append("</toc:TOC>");
 			FileUtil.writeTextFile(topFile, "TOC1.xml", manifest.toString());
+			
+			
 		}
 		catch(	Exception ex) { return false;	}
 		return true;
@@ -168,19 +226,20 @@ public class UploaderController implements Initializable
 	}
 	//----------------------------------------------------------------
 	// recurse thru the file system sorting files into four sets
-	private void mine(File directory,   List<String> fileUrls)
+	private void traverseFiles(File directory,   List<String> fileUrls)
 	{
 		if (!directory.isDirectory())	return;		// error
 		for (File f : directory.listFiles())
 		{
 			if (f.getName().startsWith(".")) continue;
-			else if (f.isDirectory())  		mine(f,fileUrls);
+			else if (f.isDirectory())  		traverseFiles(f,fileUrls);
 			else fileUrls.add(getFileUrl(f));
 		}
 	}
 	private String getFileUrl(File f)
 	{
-		return "<toc:file toc:URI = \"file://" + f.getAbsolutePath() + "\"</toc:file>	\n";
+		String relativePath = f.getAbsolutePath();
+		return "<toc:file toc:URI = \"file://" + relativePath + "\"</toc:file>	\n";
 	}
 
 	private void addSection(StringBuilder manifest, String string, List<String> objects)
@@ -278,21 +337,25 @@ public class UploaderController implements Initializable
 		return "<File filename=\"" + f.getName() + "\" path=\"" + path + "\" length=\""+ f.length() + "\" md5=\"" + MD5.forFile(f) + "\" /> ";
 	}
 	
+	static boolean verbose = true;
 	//----------------------------------------------------------------
 	private boolean connect() 
 	{
-		System.out.println("connect");
-		if (status != null)
-		{
-			status.setText("no connect attempted");  
-			return false;
-		}
-		// ---------------SKIPPING THIS FOR NOW----------------
+		if (verbose) System.out.println("connect");
 		
-        Pair<String, String> creds = null;
+		
+        Optional<Pair<String, String>> creds = null;
         if (username == null || password == null)
+        {
         	creds = LoginDialog.authenticate(username, password);
+        	if (creds != null)
+        	{
+        		username = creds.get().getKey();
+            	password = creds.get().getValue();
+      		}        	
+        }
 //		if (ftpClient != null) return true;
+        if (username == null || password == null) return false;
 		try
 		{
 	        ftpClient.connect(HOST, 21);
@@ -300,8 +363,8 @@ public class UploaderController implements Initializable
 	        if (!FTPReply.isPositiveCompletion(replyCode)) 
 	        	throw new FTPException("FTP server refused connection.");
 	 
-            boolean logged = ftpClient.login(creds.getKey(), creds.getValue());
-            if (!logged) {
+            boolean loggedIn = ftpClient.login(username, password);
+            if (!loggedIn) {
                 ftpClient.disconnect();		 // failed to login
                 throw new FTPException("Could not login to the server.");
             }
@@ -310,7 +373,8 @@ public class UploaderController implements Initializable
 		} 
 		catch (Exception ex)		
 		{	
-			System.out.println("connect FAILED: " + ex.getMessage());  
+			ex.printStackTrace();
+			System.out.println("connect FAILED: "  + ex.getMessage());  
 			status.setText("connect FAILED: " + ex.getMessage());
 			return false;
 		}
@@ -318,24 +382,40 @@ public class UploaderController implements Initializable
 	}
 	
 	//----------------------------------------------------------------
+	private void testUpload(VBox layout)
+	{
+//		files.add(e);
+		BlockingQueue<File> fileQueue = new PriorityBlockingQueue<File>(files);
+		uploadTask = new UploadTask(fileQueue, files.size());
+		uploaderExecutor = createExecutor("Upload");
+		uploaderExecutor.execute(uploadTask);
+		layout.getChildren().add( createProgressPane(uploadTask));		//validateTask
+	}
 
+	
+	
 	static private UploadTask uploadTask;
-	static private ValidationTask validateTask;
+//	static private ValidationTask validateTask;
 	static private ExecutorService uploaderExecutor;
 	private void setupUploadExecuter(VBox layout)
 	{
 		BlockingQueue<File> fileQueue = new PriorityBlockingQueue<File>(files);
 		uploadTask = new UploadTask(fileQueue, files.size());
 		uploaderExecutor = createExecutor("Upload");
+	    status.textProperty().bind(uploadTask.messageProperty());
 		uploaderExecutor.execute(uploadTask);
-		layout.getChildren().add( createProgressPane(validateTask, uploadTask));
+	    status.textProperty().bind(uploadTask.messageProperty());
+	    uploadTask.setOnSucceeded(e -> {
+	    	status.textProperty().unbind();
+	    	status.setText("completed successfully");
+	      });
+		layout.getChildren().add( createProgressPane(uploadTask));		//validateTask
 	}
 
 	private ExecutorService createExecutor(final String name) {       
     ThreadFactory factory = new ThreadFactory() {
       @Override public Thread newThread(Runnable r) {
-        Thread t = new Thread(r);
-        t.setName(name);
+        Thread t = new Thread(r, name);
         t.setDaemon(true);
         return t;
       }
@@ -353,8 +433,9 @@ public class UploaderController implements Initializable
 	    return progressBar;
 	  }
 	 	 //----------------------------------------------------------------------------------------
-	 private Pane createProgressPane(ValidationTask validateTask, UploadTask uploadTask) {
-	    GridPane progressPane = new GridPane();
+	  GridPane progressPane;
+	  private Pane createProgressPane(UploadTask uploadTask) {		//ValidationTask validateTask, 
+	    progressPane = new GridPane();
 	    
 	    progressPane.setHgap(5);
 	    progressPane.setVgap(5);
@@ -367,36 +448,36 @@ public class UploaderController implements Initializable
 //	    ReadOnlyDoubleProperty validationProgressProperty() {     return validateTask.progressProperty();    }
 //	    ReadOnlyDoubleProperty uploadProgressProperty() 	{     return uploadTask.progressProperty();    }
 	 //------------------------------------------------------------------------------------------
-	  class ValidationTask extends Task<Void> {
-	    private final int nFiles;
-	    private final BlockingQueue<File> files;
-	    
-	    ValidationTask(BlockingQueue<File> c, final int fileCt) {
-	    	files = c;
-	      nFiles = fileCt;
-	      updateProgress(0, nFiles);
-	    }
-	    
-	    @Override protected Void call() throws Exception {
-	      int i = nFiles;
-	      while (i > 0) {
-	        if (isCancelled())      break;
-	        wait(500);			// ARBITRARY DELAY HERE TO DEBUG
-//	        nFiles.put(createChart(getXName(i), getYName(i)));
-	        i--;
-	        File f = files.iterator().next();
-	        updateStatus("Validating: " + f.getName());
-	        updateProgress(nFiles - i, nFiles);
-	        new Transition() {
-	            { setCycleDuration(Duration.millis(250)); }
-	            protected void interpolate(double frac) {        	image.setOpacity(frac);        }
-	          }.play();
-//	        image.setOpacity(1);
-	      }
-	      return null;
-	    }
-		private void updateStatus(String str)		{		status.setText(str);		}
-	}
+//	  class ValidationTask extends Task<Void> {
+//	    private final int nFiles;
+//	    private final BlockingQueue<File> files;
+//	    
+//	    ValidationTask(BlockingQueue<File> c, final int fileCt) {
+//	    	files = c;
+//	      nFiles = fileCt;
+//	      updateProgress(0, nFiles);
+//	    }
+//	    
+//	    @Override protected Void call() throws Exception {
+//	      int i = nFiles;
+//	      while (i > 0) {
+//	        if (isCancelled())      break;
+////	        wait(500);			// ARBITRARY DELAY HERE TO DEBUG
+////	        nFiles.put(createChart(getXName(i), getYName(i)));
+//	        i--;
+//	        File f = files.iterator().next();
+//	        updateStatus("Validating: " + f.getName());
+//	        updateProgress(nFiles - i, nFiles);
+//	        new Transition() {
+//	            { setCycleDuration(Duration.millis(250)); }
+//	            protected void interpolate(double frac) {        	image.setOpacity(frac);        }
+//	          }.play();
+////	        image.setOpacity(1);
+//	      }
+//	      return null;
+//	    }
+//		private void updateStatus(String str)		{		status.setText(str);		}
+//	}
 		 //------------------------------------------------------------------------------------------
 	  class UploadTask extends Task<Void> {
 	    private final int nFiles;
@@ -410,43 +491,87 @@ public class UploaderController implements Initializable
 	    
 	    @Override protected Void call() throws Exception {
 	      int i = nFiles;
+	      for (File f : files)
+	    	  System.out.println( f.getAbsolutePath() );
 	      while (i > 0) {
 	        if (isCancelled())      break;
-	        wait(500);			// ARBITRARY DELAY HERE TO DEBUG
+//	        wait(500);			// ARBITRARY DELAY HERE TO DEBUG
 	        File f = files.take();
-			FTPUtil.uploadDirectory(ftpClient, f.getName(), f.getAbsolutePath(), remoteParentDir);
+	        updateMessage(f.getName());
+	        if (f.isDirectory())
+	        {
+	            System.out.println("PROCESSING directory: " + f.getAbsolutePath());
+	    	    String dirname = f.getAbsolutePath().substring(1 + f.getAbsolutePath().lastIndexOf("/"));
+	    	    String remoteDir = remoteParentDir + "/" + dirname;
+//	    	    System.out.println("Create remote dir: " + remoteDir);
+	    //
+	            boolean success = ftpClient.makeDirectory(remoteDir);
+	            String rpy = ftpClient.getReplyString();
+	            String msg = (success) ? "CREATED the directory: " : "COULD NOT create the directory: ";
+	            System.out.println(msg  + dirname+ " " + rpy);
+	            FTPUtil.uploadDirectory(ftpClient, f.getAbsolutePath(), remoteParentDir, f.getName());		
+	        }
+	        else
+	        	FTPUtil.uploadSingleFile(ftpClient, f.getAbsolutePath(), remoteParentDir + "/" + f.getName());
 //	        nFiles.put(createChart(getXName(i), getYName(i)));
+	        
+//	        status.setText("Uploading " + f.getName());
 	        i--;
 	        updateProgress(nFiles - i, nFiles);
 	      }
 	        new Transition() {
 	            { setCycleDuration(Duration.millis(250)); }
-	            protected void interpolate(double frac) {        	image.setOpacity(1-frac);        }
+	            protected void interpolate(double frac) {      	image.setOpacity(1-frac);  progressPane.setOpacity(1-frac);      }
 	          }.play();
-//			image.setOpacity(0.);
 	      return null;
 	    }
 	}
 
 		 //------------------------------------------------------------------------------------------
-	private void doUploadTask(DragEvent ev)
-	{
-		image.setOpacity(1.);
-		setupUploadExecuter(progressContainer);
-		try
+//		private void doUploadTask(DragEvent ev)
+//		{
+//			image.setOpacity(1.);
+//			setupUploadExecuter(progressContainer);
+//			try
+//			{
+//				List<File> topfiles = ev.getDragboard().getFiles();
+//				for (File f : topfiles)
+//				{
+//					System.out.println("upload");
+//					status.setText("uploading " + f.getName());
+//					FTPUtil.uploadDirectory(ftpClient, f.getName(), f.getAbsolutePath(), remoteParentDir);
+//				}
+//			} catch (Exception ex)
+//			{
+//				System.out.println("upload FAILED: " + ex.getMessage());
+//				status.setText("upload FAILED: " + ex.getMessage());
+//			}
+//		}
+
+		private void doUploadFile(List<File> files)
 		{
-			List<File> topfiles = ev.getDragboard().getFiles();
-			for (File f : topfiles)
+			int nFiles = files.size();
+			for (int i =0; i< nFiles; i++)
 			{
-				System.out.println("upload");
-				status.setText("uploading " + f.getName());
-				FTPUtil.uploadDirectory(ftpClient, f.getName(), f.getAbsolutePath(), remoteParentDir);
+				File f= files.get(i);
+//				if (f.isDirectory())	files.addAll(FXCollections.observableArrayList(f.listFiles()));
+//				else			
+					files.add(f);
 			}
-		} catch (Exception ex)
-		{
-			System.out.println("upload FAILED: " + ex.getMessage());
-			status.setText("upload FAILED: " + ex.getMessage());
+			image.setOpacity(1.);		// SHOW THE WORMHOLE
+			setupUploadExecuter(progressContainer);
+//			try
+//			{
+//				System.out.println("upload");
+//				status.setText("uploading " + f.getName());
+////				boolean ok = FTPUtil.uploadSingleFile(ftpClient, f.getAbsolutePath(), remoteParentDir);
+//			} catch (Exception ex)
+//			{
+//				System.out.println("upload FAILED: " + ex.getMessage());
+//				status.setText("upload FAILED: " + ex.getMessage());
+//			}
+//			image.setOpacity(0.);
+			files.clear();			//  does this need some synchronization flag??
 		}
-	}
 
 }
