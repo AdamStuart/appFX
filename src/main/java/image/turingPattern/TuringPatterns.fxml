@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.canvas.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="image.turingPattern.TPController">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem mnemonicParsing="false" text="New" />
+            <MenuItem mnemonicParsing="false" text="Open…" />
+            <Menu mnemonicParsing="false" text="Open Recent" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Close" />
+            <MenuItem mnemonicParsing="false" text="Save" />
+            <MenuItem mnemonicParsing="false" text="Save As…" />
+            <MenuItem mnemonicParsing="false" text="Revert" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Preferences…" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Quit" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Undo" />
+            <MenuItem mnemonicParsing="false" text="Redo" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Cut" />
+            <MenuItem mnemonicParsing="false" text="Copy" />
+            <MenuItem mnemonicParsing="false" text="Paste" />
+            <MenuItem mnemonicParsing="false" text="Delete" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Select All" />
+            <MenuItem mnemonicParsing="false" text="Unselect All" />
+          </items>
+        </Menu>
+            <Menu mnemonicParsing="false" text="View">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+              </items>
+            </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <SplitPane id="mainsplitter" dividerPositions="0.3380634390651085, 0.8923205342237062" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <items>
+        <AnchorPane id="inspector" maxWidth="300.0" prefHeight="549.0" prefWidth="295.0">
+          <children>
+                  <Label layoutX="11.0" layoutY="3.0" text="Seed File" textFill="#807575">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+            <Label alignment="CENTER" layoutX="15.0" layoutY="53.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Patterns" textAlignment="CENTER" wrapText="false">
+              <font>
+                <Font size="18.0" fx:id="x1" />
+              </font>
+              <textFill>
+                <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
+              </textFill>
+            </Label>
+                  <ListView id="patternlist" fx:id="patternList" layoutX="9.0" layoutY="83.0" prefHeight="115.0" prefWidth="329.0" AnchorPane.bottomAnchor="351.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="83.0" />
+                  <VBox layoutX="14.0" layoutY="240.0" maxHeight="179.0" minHeight="173.0" prefHeight="173.0" prefWidth="321.0" spacing="14.0" AnchorPane.bottomAnchor="178.0" AnchorPane.leftAnchor="14.0">
+                     <children>
+                        <Label fx:id="patternString" text="Create a new pattern" />
+                        <HBox prefHeight="100.0" prefWidth="340.0" spacing="10.0">
+                           <children>
+                              <Slider id="sliderA" fx:id="sliderA" onMouseDragged="#mouseDragged" orientation="VERTICAL">
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Slider>
+                              <Slider id="sliderB" fx:id="sliderB" onMouseDragged="#mouseDragged" orientation="VERTICAL">
+                                 <padding>
+                                    <Insets left="30.0" />
+                                 </padding>
+                              </Slider>
+                              <Slider id="sliderC" fx:id="sliderC" onMouseDragged="#mouseDragged" orientation="VERTICAL">
+                                 <padding>
+                                    <Insets left="30.0" />
+                                 </padding>
+                              </Slider>
+                              <Slider id="sliderD" fx:id="sliderD" onMouseDragged="#mouseDragged" orientation="VERTICAL">
+                                 <padding>
+                                    <Insets left="30.0" />
+                                 </padding>
+                              </Slider>
+                              <Slider id="sliderE" fx:id="sliderE" max="8.0" min="1.0" onMouseDragged="#mouseDragged" orientation="VERTICAL">
+                                 <padding>
+                                    <Insets left="30.0" />
+                                 </padding>
+                              </Slider>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="36.0" prefWidth="387.0" spacing="10.0">
+                           <children>
+                              <Label text="Instructions go here" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <TextField fx:id="seedRef" layoutX="14.0" layoutY="29.0" prefHeight="26.0" prefWidth="183.0" />
+                  <Button fx:id="search" layoutX="203.0" layoutY="29.0" mnemonicParsing="false" onAction="#seedBrowse" text="Browse..." />
+                  <Canvas fx:id="histogram" height="188.0" layoutX="13.0" layoutY="356.0" width="321.0" AnchorPane.bottomAnchor="5.0" />
+                  <Button fx:id="reset" layoutX="286.0" layoutY="29.0" mnemonicParsing="false" onMouseReleased="#resetPattern" prefHeight="26.0" prefWidth="57.0" text="Reset" />
+                  <Button fx:id="add" layoutX="93.0" layoutY="52.0" mnemonicParsing="false" onMouseReleased="#addPattern" prefHeight="26.0" prefWidth="26.0" text="+" />
+          </children>
+        </AnchorPane>
+      <AnchorPane id="content" minHeight="-1.0" minWidth="-1.0" prefHeight="549.0" prefWidth="641.0">
+        <children>
+          <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="5.0" style="&#10;" text="View" textAlignment="CENTER" textFill="$x2" wrapText="false" />
+                  <Button fx:id="run" layoutX="94.0" layoutY="7.0" mnemonicParsing="false" onMouseReleased="#run" text="Play" />
+                  <Button fx:id="pause" layoutX="164.0" layoutY="7.0" mnemonicParsing="false" onMouseReleased="#pause" text="Stop" />
+                  <Button fx:id="step" layoutX="228.0" layoutY="7.0" mnemonicParsing="false" onMouseReleased="#step" text="Step" />
+                  <HBox id="canvasBorder" layoutY="37.0" prefHeight="506.0" prefWidth="656.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="37.0">
+                     <children>
+                    <ScrollPane id="canvasScroller" pannable="true" prefHeight="493.0" prefViewportWidth="2.0" prefWidth="654.0">
+                           <content>
+                              <Canvas id="canvas" fx:id="canvas" height="500.0" translateX="5.0" translateY="5.0" width="650.0">
+                                 <cursor>
+                                    <Cursor fx:constant="MOVE" />
+                                 </cursor>
+                                 <effect>
+                                    <Bloom />
+                                 </effect>
+                              </Canvas>
+                           </content>
+                    </ScrollPane>
+                     </children>
+                  </HBox>
+                  <Button id="captureButton" fx:id="capture" layoutX="308.0" layoutY="7.0" mnemonicParsing="false" onAction="#capture" text="Capture" />
+        </children>
+      </AnchorPane>
+        <AnchorPane maxWidth="125.0" minWidth="125.0" prefHeight="549.0" prefWidth="125.0">
+          <children>
+            <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Colors" textAlignment="CENTER" textFill="$x2" wrapText="false" />
+                  <VBox id="colorTableWrapper" fx:id="colorTableWrapper" layoutX="9.0" layoutY="65.0" minWidth="107.0" prefHeight="422.0" prefWidth="107.0" />
+                  <Button layoutX="74.0" layoutY="13.0" mnemonicParsing="false" onMouseReleased="#nextColors" text="&gt;" />
+          </children>
+        </AnchorPane>
+      </items>
+    </SplitPane>
+    <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
+      <children>
+        <Label fx:id="counterLabel" maxHeight="1E308" maxWidth="-1.0" text="Count" HBox.hgrow="ALWAYS">
+          <font>
+            <Font size="11.0" fx:id="x3" />
+          </font>
+          <textFill>
+            <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
+          </textFill>
+        </Label>
+        <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
+        <Label font="$x3" maxWidth="-1.0" text="Right status" textFill="$x4" HBox.hgrow="NEVER" />
+      </children>
+      <padding>
+        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+      </padding>
+    </HBox>
+  </children>
+</VBox>

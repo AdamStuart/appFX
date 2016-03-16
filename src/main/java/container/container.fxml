@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<TabPane fx:id="tocTabPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="container.ContainerController">
+   <tabs>
+      <Tab closable="false" text="Misc">
+         <content>
+            <BorderPane fx:id="container">
+               <top>
+                  <HBox>
+                     <children>
+                        <Button fx:id="leftToggle" mnemonicParsing="false" text="Button" />
+                        <MenuBar BorderPane.alignment="CENTER" HBox.hgrow="ALWAYS">
+                           <menus>
+                              <Menu mnemonicParsing="false" text="File">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" onAction="#doOpen" text="Open..." />
+                                    <MenuItem mnemonicParsing="false" text="Save" />
+                                    <MenuItem mnemonicParsing="false" onAction="#doZip" text="Zip..." />
+                                    <MenuItem mnemonicParsing="false" onAction="#doUnzip" text="Unzip..." />
+                                    <MenuItem mnemonicParsing="false" onAction="#doClose" text="Close" />
+                                 </items>
+                              </Menu>
+                              <Menu mnemonicParsing="false" text="Edit">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="Undo" />
+                                    <MenuItem mnemonicParsing="false" text="Redo" />
+                                    <SeparatorMenuItem mnemonicParsing="false" />
+                                    <MenuItem mnemonicParsing="false" text="Cut" />
+                                    <MenuItem mnemonicParsing="false" text="Copy" />
+                                    <MenuItem mnemonicParsing="false" text="Paste" />
+                                    <SeparatorMenuItem mnemonicParsing="false" />
+                                    <MenuItem mnemonicParsing="false" text="Compare" />
+                                 </items>
+                              </Menu>
+                              <Menu mnemonicParsing="false" text="Help">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="About" />
+                                 </items>
+                              </Menu>
+                           </menus>
+                        </MenuBar>
+                        <Button fx:id="rightToggle" mnemonicParsing="false" text="Button" />
+                     </children>
+                  </HBox>
+               </top>
+               <right>
+                  <VBox fx:id="fileListContainer" minWidth="217.0" prefHeight="610.0" prefWidth="217.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label text="Files added:">
+                           <VBox.margin>
+                              <Insets left="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <ListView fx:id="list" />
+                     </children></VBox>
+               </right>
+               <center>
+                  <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="414.0" prefWidth="495.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <TreeTableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" fx:id="xmlTree">
+                          <columns>
+                            <TreeTableColumn fx:id="col0" prefWidth="285.0" text="Name" />
+                            <TreeTableColumn fx:id="col1" minWidth="0.0" prefWidth="105.0" text="Id" />
+                          </columns>
+                        </TreeTableView>
+                        <TreeTableView fx:id="ontologytree" layoutX="10.0" layoutY="10.0" prefHeight="414.0" prefWidth="712.0">
+                           <columns>
+                              <TreeTableColumn fx:id="colId" minWidth="0.0" prefWidth="185.0" text="Id" />
+                              <TreeTableColumn fx:id="colName" prefWidth="285.0" text="Name" />
+                              <TreeTableColumn fx:id="colDef" prefWidth="285.0" text="Definition" />
+                           </columns>
+                        </TreeTableView>
+                     </children>
+                  </StackPane>
+               </center>
+               <bottom>
+                  <AnchorPane fx:id="anchor" maxHeight="-Infinity" prefHeight="80.0" BorderPane.alignment="CENTER" />
+               </bottom>
+               <left>
+                  <VBox fx:id="fileTreeContainer" minWidth="200.0" BorderPane.alignment="CENTER" />
+               </left>
+            </BorderPane>
+         </content>
+      </Tab>
+   </tabs>
+</TabPane>

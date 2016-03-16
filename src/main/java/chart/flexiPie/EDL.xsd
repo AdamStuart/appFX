@@ -1,0 +1,218 @@
+<!-- XML Schema Generated from XML Document on Wed Jan 27 2016 10:55:53 GMT-0800 (PST) -->
+<!-- with XmlGrid.net Free Online Service http://xmlgrid.net -->
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+<!------------------------------------------------  START HERE ----!>
+<xsd:element name="Obj">
+   <xsd:complexType>
+	  <xsd:sequence>
+		 <xsd:element name="Identity" type="IdentityType">
+		 <xsd:element name="Container" type="Obj">
+		 <xsd:element name="Parameters" type="Parameters">
+		 <xsd:element name="ObjectRefs" type="ObjectList">
+	</xsd:sequence>
+	<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+	<xsd:attribute name="type" type="xsd:string"></xsd:attribute>
+	<xsd:attribute name="templateVersion" type="UID"></xsd:attribute>
+	<xsd:attribute name="derivedfrom" type="UID"></xsd:attribute>
+	</xsd:complexType>
+</xsd:element>
+
+
+<xsd:element name="Method">
+   <xsd:complexType>
+	  <xsd:sequence>
+		<xsd:element name="Methods" type="MethodsType" /><
+		<xsd:element name="InputObjects" type="ObjectList" />
+		<xsd:element name="OutputObjects"  type="ObjectList">
+	</xsd:sequence>
+	<xsd:attribute name="uid" type="UID"></xsd:attribute>
+	<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+	<xsd:attribute name="type" type="xsd:string"></xsd:attribute>
+	<xsd:attribute name="templateVersion" type="UID"></xsd:attribute>
+	<xsd:attribute name="derivedfrom" type="UID"></xsd:attribute>
+	<xsd:attribute name="status" type="StatusType"></xsd:attribute>
+	<xsd:attribute name="startDateTime" type="xsd:date"></xsd:attribute>
+	<xsd:attribute name="duration" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+</xsd:element>
+
+<!------------------------------------------------------  BASE TYPES ----!>
+
+<!---- UID:  The UID is how other objects and methods reference each other  ----!>
+
+<xsd:element name="UID">
+  <xsd:simpleType>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value=".\d+"/>		<!--- any char followed by digits  ----!>
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:element>
+
+<!---- IdentityType:  A meta-element to describe types and templates  ----!>
+
+ <xsd:element name="IdentityType">
+	 <xsd:complexType>
+		<xsd:attribute name="uid" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="type" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="takeOverFrom" type="xsd:int"></xsd:attribute>
+		<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+</xsd:element>
+
+<!--- RestrictionType: Like schemas, objects restrict the number of their components -!>
+
+<xsd:element name="RestrictionType">
+<xsd:complexType>
+    <xsd:attribute name="minOccurs" type="xsd:int"></xsd:attribute>
+     <xsd:attribute name="maxOccurs" type="xsd:int"></xsd:attribute>
+ </xsd:complexType>
+</xsd:element>
+
+
+<!------------------------------------------------------  ENUMERATIONS -----!>
+
+
+<xsd:element name="StatusType">
+  <xsd:simpleType>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Planned"/>
+      <xsd:enumeration value="Ready"/>
+      <xsd:enumeration value="Running"/>
+      <xsd:enumeration value="Finished"/>
+      <xsd:enumeration value="Cancelled"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:element>
+
+<!-------------------------------- Parameter:  an attribute / value / unit triple ----!>
+
+<xsd:element name="Parameter" minOccurs="0" maxOccurs="unbounded">
+<xsd:complexType>
+	 <xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+	 <xsd:attribute name="value" type="xsd:decimal"></xsd:attribute>
+	 <xsd:attribute name="unit" type="UNIT_TYPE"></xsd:attribute>
+ </xsd:complexType>
+</xsd:element>
+
+<!--------------------- Environment:  probably should be moved to a Lab schema ----!>
+
+<xsd:element name="Environment">
+   <xsd:complexType>
+	  <xsd:sequence>
+		 <xsd:element name="AirTemperature">
+			<xsd:complexType>
+			   <xsd:attribute name="Value" type="xsd:string"></xsd:attribute>
+			   <xsd:attribute name="Unit" type="xsd:string"></xsd:attribute>
+		   </xsd:complexType>
+		</xsd:element>
+		 <xsd:element name="AirHumidity">
+			<xsd:complexType>
+			   <xsd:attribute name="Value" type="xsd:string"></xsd:attribute>
+			  <xsd:attribute name="Unit" type="xsd:string"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		 <xsd:element name="AirCO2">
+				<xsd:complexType>
+					   <xsd:attribute name="Value" type="xsd:string"></xsd:attribute>
+					   <xsd:attribute name="Unit" type="xsd:string"></xsd:attribute>
+				   </xsd:complexType>
+			</xsd:element>
+		 </xsd:sequence>
+	  </xsd:complexType>
+   </xsd:element>
+
+<!----------------------  Connection is a link between objects and methods----!>
+
+<xsd:element name="Connection">
+	 <xsd:complexType>
+	  <xsd:attribute name="sourceMethod" type="UID"/>
+	  <xsd:attribute name="sourceObject" type="UID"/>
+	  <xsd:attribute name="targetMethod" type="UID"/>
+	  <xsd:attribute name="targetObject" type="UID"/>
+	  <xsd:attribute name="decimeTargetByXAliquots" type="xsd:string" />	<!- ?? -!>
+	  </xsd:complexType>
+</xsd:element>
+
+<!----------------------  Lists of Objects, Methods and Parameters  ----!>
+
+<xsd:element name="Objects" minOccurs="0" maxOccurs="1">
+ <xsd:simpleType>
+   <xsd:list base="Obj">
+    </xsd:list>
+</xsd:simpleType>
+</xsd:element>
+
+<xsd:element name="Methods" minOccurs="0" maxOccurs="1">
+ <xsd:simpleType>
+   <xsd:list base="Method">
+    </xsd:list>
+</xsd:simpleType>
+</xsd:element>
+
+<xsd:element name="Parameters" minOccurs="0" maxOccurs="1">
+ <xsd:simpleType>
+   <xsd:list base="Parameter">
+    </xsd:list>
+</xsd:simpleType>
+</xsd:element>
+
+
+<!----------------------------  New elements defined for analysis  ----!>
+<xsd:element name="Statistic">
+  <xsd:simpleType>
+  	<xsd:attribute name="type" type="StatisticFlavor"/>
+  	<xsd:attribute name="dimension" type="xsd:string"/>
+	<xsd:attribute name="unit" type="UNIT_TYPE"></xsd:attribute>
+	<xsd:attribute name="value" type="xsd:decimal"></xsd:attribute>  ????MOVE TO TEXT
+  </xsd:simpleType>
+</xsd:element>
+
+
+<xsd:element name="Chart">
+  <xsd:simpleType>
+  	<xsd:attribute name="type" type="ChartFlavor"/>
+  	<xsd:attribute name="x" type="xsd:string"/>
+  	<xsd:attribute name="y" type="xsd:string"/>
+  </xsd:simpleType>
+</xsd:element>
+
+
+<xsd:element name="StatisticFlavor">
+  <xsd:simpleType>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Mean"/>
+      <xsd:enumeration value="Median"/>
+      <xsd:enumeration value="Mode"/>
+      <xsd:enumeration value="StdDev"/>
+      <xsd:enumeration value="CV"/>
+      <xsd:enumeration value="RCV"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:element>
+
+
+<xsd:element name="ChartFlavor">
+  <xsd:simpleType>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Line"/>
+      <xsd:enumeration value="Bar"/>
+      <xsd:enumeration value="Pie"/>
+      <xsd:enumeration value="XY"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:element>
+
+
+<xsd:simpleType name="PercentileType">
+  <xsd:restriction base="xsd:integer">
+    <xsd:minInclusive value="1"/>
+    <xsd:maxInclusive value="99"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+</xsd:schema>

@@ -1,0 +1,19 @@
+package table.networkTable;
+
+
+public enum ArrowShapeOption
+{
+	ARROW,
+	ARROW_SHORT,
+	CIRCLE,
+	DELTA,
+	DELTA_SHORT1,
+	DELTA_SHORT2,
+	DIAMOND,
+	DIAMOND_SHORT1,
+	DIAMOND_SHORT2,
+	HALF_BOTTOM,
+	HALF_TOP,
+	NONE,
+	T
+};
