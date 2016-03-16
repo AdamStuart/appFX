@@ -231,6 +231,23 @@ public class ContainerController implements Initializable
 				ontologytree.setVisible(true);
 				xmlTree.setVisible(false);
 				o.dump();
+				File homeDir = new File("");
+				String output = o.createSIF("CL");
+				FileUtil.writeTextFile(homeDir, "CL.SIF", output);
+				
+				String txns = o.createSIF("NCBIT");
+				FileUtil.writeTextFile(homeDir, "Taxons.SIF", txns);
+				
+				String goTerms = o.createSIF("GO");
+				FileUtil.writeTextFile(homeDir, "GoTerms.SIF", goTerms);
+			
+				String ubers = o.createSIF("UBERON");
+				FileUtil.writeTextFile(homeDir, "Uberons.SIF", ubers);
+			
+				String pato = o.createSIF("PATO");
+				FileUtil.writeTextFile(homeDir, "PATO.SIF", pato);
+			
+				System.out.println("SIF FILE GENERATED\n" + output);
 				
 			}
 			makeDraggable(label);

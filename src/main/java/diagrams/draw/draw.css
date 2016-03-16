@@ -1,4 +1,3 @@
-@CHARSET "UTF-8";
 
 .text-area {
     -fx-background-color: rgba(53,89,119,0.4);
@@ -8,18 +7,15 @@
     -fx-background-color: transparent;
 }
 
-.text-area .scroll-pane .viewport{
+.text-area .scroll-pane .viewport {
     -fx-background-color: transparent;
 }
 
-
-.text-area .scroll-pane .content{
+.text-area .scroll-pane .content {
     -fx-background-color: transparent;
 }
 
-
-.drawpane
-{
--fx-border-width: 4px; 
--fx-border-color: green; 	
+.drawpane {
+	-fx-border-width: 2px; 
+	-fx-border-color: green; 	
 }

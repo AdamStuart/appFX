@@ -25,7 +25,7 @@ import util.RectangleUtil;
 
 public class Selection
 {
-	public Selection(Canvas layer)
+	public Selection(Pasteboard layer)
 	{
 		root = layer;
 		items = FXCollections.observableArrayList(); 
@@ -34,7 +34,7 @@ public class Selection
 	
 	private Controller getController() { return root.getController();	}
 	private NodeFactory getNodeFactory() { return getController().getNodeFactory();	}
-	private Canvas root;
+	private Pasteboard root;
 	private ObservableList<Node> items;
 	//--------------------------------------------------------------------------
 	public ObservableList<Node> getAll()				{ return items;	}
@@ -257,6 +257,7 @@ public class Selection
 	
 	public void ungroup()
 	{
+		// TODO items.stream().filter(n instanceof Group).forEach
 		for (Node n : items)
 			if (n instanceof Group)
 			{

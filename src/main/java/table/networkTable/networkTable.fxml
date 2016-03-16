@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="827.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="table.networkTable.NetworkTableController">
+   <center>
+      <TableView fx:id="nodeTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="idCol" prefWidth="75.0" text="ID" />
+          <TableColumn fx:id="nodeNameCol" prefWidth="152.0" text="Name" />
+            <TableColumn fx:id="defCol" prefWidth="172.0" text="Definition" />
+            <TableColumn fx:id="descCol" prefWidth="152.0" text="Description" />
+        </columns>
+      </TableView>
+   </center>
+   <left>
+      <TableView fx:id="netTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="typeCol" prefWidth="30.0" text="Type" />
+          <TableColumn fx:id="netNameCol" prefWidth="109.0" text="Table" />
+        </columns>
+      </TableView>
+   </left>
+   <right>
+      <TableView fx:id="edgeTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="srcCol" prefWidth="75.0" text="Source" />
+          <TableColumn fx:id="interactionCol" prefWidth="75.0" text="Interaction" />
+            <TableColumn fx:id="targetCol" prefWidth="75.0" text="Target" />
+        </columns>
+      </TableView>
+   </right>
+   <top>
+      <HBox>
+         <children>
+            <MenuBar maxWidth="-Infinity" prefWidth="1000.0" BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <Button fx:id="tableOptions" alignment="CENTER_RIGHT" mnemonicParsing="false" text="Button" />
+         </children>
+      </HBox>
+   </top>
+   <bottom>
+      <VBox spacing="8.0">
+         <children>
+            <HBox spacing="8.0">
+               <children>
+                  <Label layoutX="10.0" layoutY="10.0" text="Shape" />
+                  <ChoiceBox fx:id="shapes" prefHeight="26.0" prefWidth="103.0" />
+                  <Label text="Width" />
+                  <TextField minWidth="50.0" prefHeight="26.0" prefWidth="50.0" />
+                  <Label layoutX="10.0" layoutY="10.0" text="Height" />
+                  <TextField layoutX="43.0" layoutY="10.0" minHeight="26.0" minWidth="50.0" prefWidth="50.0" />
+                  <Label layoutX="268.0" layoutY="10.0" text="Label" />
+                  <TextField layoutX="199.0" layoutY="10.0" prefHeight="26.0" prefWidth="182.0" />
+                  <Label text="Label" />
+                  <ColorPicker style="-fx-color-label-visible: false;" />
+               </children>
+            </HBox>
+            <HBox fx:id="footer" spacing="8.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label layoutX="10.0" layoutY="10.0" text="Fill" />
+                  <ColorPicker style="-fx-color-label-visible: false;" />
+                  <Label layoutX="130.0" layoutY="10.0" text="Border" />
+                  <ColorPicker layoutX="163.0" layoutY="10.0" style="-fx-color-label-visible: false;" />
+                  <Label text="Border Width" />
+                  <TextField prefHeight="26.0" prefWidth="40.0" />
+               </children>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="10.0" spacing="8.0">
+               <children>
+                  <Label text="Pen" />
+                  <ColorPicker style="-fx-color-label-visible: false;" />
+                  <Label text="Source" />
+                  <ChoiceBox fx:id="srcArrow" prefHeight="26.0" prefWidth="71.0" />
+                  <Label layoutX="10.0" layoutY="10.0" text="Stroke" />
+                  <ChoiceBox fx:id="strokes" prefWidth="150.0" />
+                  <Label layoutX="268.0" layoutY="10.0" text="Target" />
+                  <ChoiceBox fx:id="targetArrow" prefHeight="26.0" prefWidth="71.0" />
+                  <Label text="Width" />
+                  <TextField prefHeight="26.0" prefWidth="40.0" />
+                  <Label text="Label" />
+                  <TextField prefHeight="26.0" prefWidth="79.0" />
+               </children>
+            </HBox>
+            <HBox spacing="8.0">
+               <children>
+                  <Label text="Background" />
+                  <ColorPicker style="-fx-color-label-visible: false;" />
+                  <CheckBox mnemonicParsing="false" text="Node Selection" />
+                  <CheckBox mnemonicParsing="false" text="Edge Selection" />
+                  <Label layoutX="268.0" layoutY="10.0" text="Title" />
+                  <TextField layoutX="199.0" layoutY="10.0" prefHeight="26.0" prefWidth="182.0" />
+               </children>
+            </HBox>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </VBox>
+   </bottom>
+</BorderPane>

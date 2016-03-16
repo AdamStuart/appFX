@@ -1,9 +1,12 @@
 package diagrams.draw;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+
+import javax.imageio.ImageIO;
 
 import animation.BorderPaneAnimator;
 import animation.NodeVisAnimator;
@@ -16,6 +19,7 @@ import icon.GlyphIcon;
 import icon.GlyphsDude;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -41,10 +45,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
@@ -71,9 +75,9 @@ public class Controller implements Initializable
 {
 	private Model model;
 	public Model getDrawModel()   		{ 		return model;  }
-	private Canvas canvas;
-	public Canvas getCanvas()   		{ 		return canvas;  }
-	public NodeFactory getNodeFactory()	{		return canvas.getNodeFactory();	}
+	private Pasteboard pasteboard;
+	public Pasteboard getPasteboard()   		{ 		return pasteboard;  }
+	public NodeFactory getNodeFactory()	{		return pasteboard.getNodeFactory();	}
 	private UndoStack undoStack;
 	public UndoStack getUndoStack()		{		return undoStack;	}
 	private Document doc;
@@ -98,10 +102,10 @@ public class Controller implements Initializable
 	@FXML private Button toggleGridButton;
 
 	
-	@FXML private void setArrow()		{ canvas.setTool(Tool.Arrow);	}
-	@FXML private void setRectangle()	{ canvas.setTool(Tool.Rectangle);}	// TODO capture double click for stickiness
-	@FXML private void setOval()		{ canvas.setTool(Tool.Circle);		}
-	@FXML private void setPolygon()		{ canvas.setTool(Tool.Polygon);	}
+	@FXML private void setArrow()		{ pasteboard.setTool(Tool.Arrow);	}
+	@FXML private void setRectangle()	{ pasteboard.setTool(Tool.Rectangle);}	// TODO capture double click for stickiness
+	@FXML private void setOval()		{ pasteboard.setTool(Tool.Circle);		}
+	@FXML private void setPolygon()		{ pasteboard.setTool(Tool.Polygon);	}
 	
 	@FXML private ToggleButton arrow;
 	@FXML private ToggleButton rectangle;
@@ -113,9 +117,9 @@ public class Controller implements Initializable
 	@FXML private Slider weight;
 	@FXML private Slider opacity;
 	@FXML private Slider rotation;
-	@FXML private Label status;
 	@FXML private Label status1;
 	@FXML private Label status2;
+	@FXML private Label status3;
 	@FXML private Label strokeLabel;
 	@FXML private Label fillLabel;
 	
@@ -158,7 +162,7 @@ public class Controller implements Initializable
 	@FXML public  void group()			{ 		undoStack.push(ActionType.Group);	getSelectionManager().doGroup();  }
 	@FXML public  void ungroup()		{ 		undoStack.push(ActionType.Ungroup);	getSelectionManager().ungroup(); }
 	@FXML public  void toFront()		{		undoStack.push(ActionType.Reorder);	getSelectionManager().toFront(); 	}
-	@FXML public  void toBack()			{		undoStack.push(ActionType.Reorder);	getSelectionManager().toBack();  canvas.getGrid().toBack();  	}
+	@FXML public  void toBack()			{		undoStack.push(ActionType.Reorder);	getSelectionManager().toBack();  pasteboard.getGrid().toBack();  	}
 
 	// **-------------------------------------------------------------------------------
 	static String CSS_Gray2 = "-fx-border-width: 2; -fx-border-color: gray;";
@@ -169,19 +173,20 @@ public class Controller implements Initializable
 	// **-------------------------------------------------------------------------------
 	private ToggleGroup paletteGroup;
 	public ToggleGroup getToolGroup()	{ return paletteGroup;	}
-	public Selection getSelectionManager() 		{ 	return canvas.getSelectionMgr();  }
+	public Selection getSelectionManager() 		{ 	return pasteboard.getSelectionMgr();  }
 	public ObservableList<Node> getSelection() 		{ 	return getSelectionManager().getAll();  }
 
 	// **-------------------------------------------------------------------------------
 	@Override public void initialize(URL location, ResourceBundle resources)
 	{
+		final double SCALE_DELTA = 1.1;
 		model = new Model(this);
 		assert(drawPane != null);
 		assert attributeCol != null : missing("attributeCol");
 		assert valueCol != null : missing("valueCol");
 		assert attributeTable != null : missing("attributeTable");
 		undoStack = new UndoStack(this, undoview);
-		canvas = new Canvas(drawPane, this);
+		pasteboard = new Pasteboard(drawPane, this);
 		doc = new Document(this);
 		paletteGroup = new ToggleGroup();
 		paletteGroup.getToggles().addAll(arrow, rectangle, circle, polygon);
@@ -190,6 +195,14 @@ public class Controller implements Initializable
 		drawPane.getStylesheets().add(cssURL);
 		
 		drawContainer.setBorder(Borders.etchedBorder);
+		drawContainer.setOnScroll(ev -> {
+			ev.consume();
+	        if (ev.getDeltaY() == 0)   return;	
+	        double scaleFactor = (ev.getDeltaY() > 0) ? SCALE_DELTA : 1 / SCALE_DELTA;
+	        scale.valueProperty().set(scale.valueProperty().get() * scaleFactor);
+//	        drawContainer.setScaleX(drawContainer.getScaleX() * scaleFactor);
+//	        drawContainer.setScaleY(drawContainer.getScaleY() * scaleFactor);
+		});
 		bottomDash.setBorder(Borders.dashedBorder );
 		bottomDash.setPadding(new Insets(3,3,4,4));
 
@@ -197,7 +210,7 @@ public class Controller implements Initializable
 		setupPalette();
 		setupListviews();
 		setupZoomView();
-		new NodeVisAnimator(canvas.getGrid(), toggleGridButton);
+		new NodeVisAnimator(pasteboard.getGrid(), toggleGridButton);
 		new BorderPaneAnimator(container, leftSideBarButton, Side.LEFT, false, 80);
 		new BorderPaneAnimator(container, rightSideBarButton, Side.RIGHT, false, 300);
 		new BorderPaneAnimator(container, bottomSideBarButton, Side.BOTTOM, false, 100);
@@ -219,9 +232,12 @@ public class Controller implements Initializable
 			attrMap.putAll( "radius", "60", "centerX", "500", "centerY", "200");
 			add(getNodeFactory().getShapeFactory().makeNewNode(Tool.Circle, attrMap));
 
-			refreshZoomPane();
-		}
+	        new Thread(() ->
+	           Platform.runLater(() -> { refreshZoomPane(); })).start();    
+	    }
+			
 	}
+	
 		// **-------------------------------------------------------------------------------
 
 	private ZoomView zoomView;
@@ -247,22 +263,23 @@ public class Controller implements Initializable
 //		
 		// binding sliders to drawPane's scale and offset
 		
-		scale.valueProperty().addListener((ov, old_val, new_val) ->  {
-            	double scale = Math.pow(2, (double) new_val);
+		scale.valueProperty().addListener((ov, old, val) ->  {
+            	double scale = Math.pow(2, (double) val);
     			drawPane.setScaleX(scale); 	
     			drawPane.setScaleY(scale); 	
     			zoomView.zoomChanged();
 	        });	
-		translateX.valueProperty().addListener((ov, old_val, new_val) ->  {
-				drawPane.setTranslateX((double) new_val);  
+		translateX.valueProperty().addListener((ov, old, val) ->  {
+				drawPane.setTranslateX((double) val);  
     			zoomView.zoomChanged();
+    			status2.setText(translateX.toString());
         });	
 		
-		translateY.valueProperty().addListener((ov, old_val, new_val) ->   {
-				drawPane.setTranslateY((double) new_val);  
+		translateY.valueProperty().addListener((ov, old, val) ->   {
+				drawPane.setTranslateY((double) val);  
     			zoomView.zoomChanged();
-        });	
-		
+    			status3.setText(translateY.toString());
+       });	
 
 	}
 	// **-------------------------------------------------------------------------------
@@ -390,9 +407,9 @@ public class Controller implements Initializable
 		fillColor.setOnAction(evt -> apply(true, fillColor));
 		lineColor.addEventHandler(ActionEvent.ACTION, evt -> apply(true, lineColor));
 
-		opacity.valueProperty().addListener((ov, old_val, new_val) ->   {  	apply(false, opacity);        });	
-		weight.valueProperty().addListener((ov, old_val, new_val) ->    {     	apply(false, weight);   });	
-		rotation.valueProperty().addListener((ov, old_val, new_val) ->    {     	apply(false, rotation);  });	
+		opacity.valueProperty().addListener((ov, old, val) ->   {  	apply(false, opacity);        });	
+		weight.valueProperty().addListener((ov, old, val) ->    {   apply(false, weight);   });	
+		rotation.valueProperty().addListener((ov, old, val) ->  {   apply(false, rotation);  });	
 
 		
 		// sliders don't record undoable events (because they make so many) so snapshot the state on mousePressed
@@ -503,7 +520,7 @@ public class Controller implements Initializable
 	// **-------------------------------------------------------------------------------
 	public void selectAll(ObservableList<Node> n)	{		getSelectionManager().selectAll(n);	}
 
-	public void setStatus(String s)					{ 		status.setText(s);	}
+	public void setStatus(String s)					{ 		status1.setText(s);	}
 	public void remove(Node n)						{		drawPane.getChildren().remove(n);	}
 	public void add(Node n)							
 	{		
@@ -513,16 +530,18 @@ public class Controller implements Initializable
 	}
 	public void addAll(ObservableList<Node> n)		{		drawPane.getChildren().addAll(n);	}
 	// **-------------------------------------------------------------------------------
-	public String getState()			{ return Model.traverseSceneGraph(drawPane).toString();  }
+	public String getState()			{ 	return Model.traverseSceneGraph(drawPane).toString();  }
 	
-	public void refreshZoomPane()	{zoomView.zoomChanged();}
+	public void refreshZoomPane()		{	zoomView.zoomChanged();}
 
 	// **-------------------------------------------------------------------------------
 	public void reportStatus(String string)	
 	{		
-		status.setText(string);	
+		status1.setText(string);	
 		refreshZoomPane();
 	}
+	public void setStatus2(String status)	{	status2.setText(status);	}
+	public void setStatus3(String status)	{	status3.setText(status);	}
 	// **-------------------------------------------------------------------------------
 	public void addStylesheet(File f)
 	{

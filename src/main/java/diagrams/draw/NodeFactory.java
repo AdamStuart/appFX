@@ -59,7 +59,7 @@ public class NodeFactory
   */
 	int verbose = 1;
 	
-	public NodeFactory(Canvas layer)
+	public NodeFactory(Pasteboard layer)
 	{
 		drawLayer = layer;
 //		drawPane = pane;
@@ -67,7 +67,7 @@ public class NodeFactory
 		shapeFactory = new ShapeFactory(drawLayer, undoStack);
 	}
 	// **-------------------------------------------------------------------------------
-	private Canvas drawLayer;
+	private Pasteboard drawLayer;
 	private UndoStack undoStack;
 	private ShapeFactory shapeFactory;		// refactoring shapes to a new file, because they all have different mouse handlers
 	//@formatter:off
@@ -715,9 +715,8 @@ public class NodeFactory
 				{
 					StackPane r = (StackPane) event.getTarget();
 					Point2D local = r.localToParent(currentPoint);
-					double dx, dy;
-					dx = prevPoint.getX() - local.getX();
-					 dy = prevPoint.getY() - local.getY();
+					double dx = prevPoint.getX() - local.getX();
+					double dy = prevPoint.getY() - local.getY();
 				
 	//				System.out.println("Delta: " + dx + ", " + dy);
 					drawLayer.getSelectionMgr().translate(dx, dy);

@@ -76,18 +76,21 @@ public class Ontology
 	}
 	
 	//--------------------------------------------------------------
-	String createSIF()
+	public String createSIF(String filterByPrefix)
 	{
 		StringBuilder builder = new StringBuilder();
 		for (Onterm term : terms)
 		{
-			List<KeyValue> ids = term.getProperties("is_a");
-			for (KeyValue kv : ids)
+			if (term.getId().startsWith(filterByPrefix))
 			{
-				String id = StringUtil.firstWord(kv.getValue());
-				Onterm parent = map.get(id);
-				if (parent != null)
-					builder.append(term.getId()).append(" is_a ").append(parent.getId());
+				List<KeyValue> ids = term.getProperties("is_a");
+				for (KeyValue kv : ids)
+				{
+					String id = StringUtil.firstWord(kv.getValue());
+					Onterm parent = map.get(id);
+					if (parent != null)
+						builder.append(term.getId()).append("\tis_a\t").append(parent.getId()).append("\n");
+				}
 			}
 		}
 		return builder.toString();

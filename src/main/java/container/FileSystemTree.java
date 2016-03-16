@@ -7,6 +7,7 @@ import java.util.Date;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
@@ -73,7 +74,6 @@ public class FileSystemTree extends TreeTableView<File>
 					super.updateItem(item, empty);
 					TreeTableView treeTable = p.getTreeTableView();
 					TreeItem<File> treeItem = treeTable.getTreeItem(getIndex());
-
 					String txt = null;
 					if (item == null || empty || treeItem == null || treeItem.getValue() == null)
 						txt = "";

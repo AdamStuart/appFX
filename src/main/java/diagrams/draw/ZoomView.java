@@ -29,11 +29,11 @@ public class ZoomView
 	private Rectangle zoomClip;				// dynamically resizing clipping to this control
 	private AnchorPane zoomAnchor;			// the parent of the zoomImageView and viewport
 	private Pane drawPane;					// the window onto the canvas
-	private Controller controller;					// the Controller, to can access other components
+	private Controller controller;			// the Controller, to can access other components
 
-	static int CANVAS_W = 2000;
-	static int CANVAS_H = 2000;
-	static Dimension CANVAS_SIZE = new Dimension(CANVAS_W,CANVAS_H);
+//	static int CANVAS_W = 2000;
+//	static int CANVAS_H = 2000;
+////	static Dimension CANVAS_SIZE = new Dimension(CANVAS_W,CANVAS_H);
 	// **-------------------------------------------------------------------------------
 	
 	public ZoomView(AnchorPane parent, Pane inPane, Controller ctrl)
@@ -51,15 +51,15 @@ public class ZoomView
 		zoomClip.widthProperty().bind(zoomImageView.fitWidthProperty());
 		zoomClip.heightProperty().bind(zoomImageView.fitHeightProperty());
 		zoomAnchor.setClip(zoomClip);
-		zoomAnchor.setBorder(Borders.redBorder);
+//		zoomAnchor.setBorder(Borders.redBorder);
 		zoomAnchor.getChildren().addAll(zoomImageView, viewport );
 
 	}
 	public void zoomChanged()
 	{
-		WritableImage img = new WritableImage(CANVAS_W, CANVAS_H);
+		Pasteboard canvas = controller.getCanvas();
+		WritableImage img = new WritableImage((int)canvas.getWidth(), (int)canvas.getHeight());
 		Node clip = drawPane.getClip();
-		Canvas canvas = controller.getCanvas();
 		boolean showGrid = canvas.isGridVisible();
 		canvas.showGrid(false);
 		Border b = drawPane.getBorder();
@@ -78,14 +78,13 @@ public class ZoomView
 	
 	private void setViewPortToPaneTransform()
 	{
-		double scaleX = 1;
-		double scaleY = 1;
-		Rectangle canvasBounds = new Rectangle(0,0,CANVAS_W,CANVAS_H);
+		Pasteboard canvas = controller.getCanvas();
+		Rectangle canvasBounds = new Rectangle(0,0,canvas.getWidth(),canvas.getHeight());
 		Bounds canvasViewport = drawPane.getBoundsInParent();
 		Bounds controlBounds = zoomAnchor.getBoundsInLocal();
 
-		scaleX = drawPane.getScaleX() * canvasBounds.getWidth() / controlBounds.getWidth();
-		scaleY = drawPane.getScaleY() * canvasBounds.getHeight() / controlBounds.getHeight();
+		double scaleX = drawPane.getScaleX() * canvasBounds.getWidth() / controlBounds.getWidth();
+		double scaleY = drawPane.getScaleY() * canvasBounds.getHeight() / controlBounds.getHeight();
 		
 		double offsetX = canvasViewport.getMinX() / scaleX;
 		double offsetY = canvasViewport.getMinY() / scaleY;
@@ -97,7 +96,7 @@ public class ZoomView
 	// ZOOM RECT MOUSE HANDLERS
 
 	private Point2D startPoint, currentPoint;
-	private boolean dragging = false;
+//	private boolean dragging = false;
 	private boolean resizing = false;
 	private double startX = 0, startY = 0;
 	
@@ -107,7 +106,7 @@ public class ZoomView
 		viewport.setId("viewport");
 		viewport.setFill(Color.TRANSPARENT);			// note:  setFill(null) will disable mouse events!
 		viewport.setStroke(Color.DARKORCHID);
-		viewport.setStrokeWidth(1);
+		viewport.setStrokeWidth(2);
 		viewport.getStrokeDashArray().addAll(5.,10., 8. ,10.);
 		
 		viewport.setOnMousePressed(event -> {
@@ -115,111 +114,89 @@ public class ZoomView
 			startY = event.getY();
 			currentPoint = new Point2D(startX, startY);
 			startPoint = currentPoint;
-			dragging = resizing = false;
+			resizing = false;		//dragging = 
 			if (RectangleUtil.inCorner(event))
 			{
 				resizing = true;
 				startPoint = RectangleUtil.oppositeCorner(event);
 			}
-			else dragging = true;
+//			else dragging = true;
 			event.consume();
 		}) ;
 		
 		viewport.setOnMouseDragged(event -> {
 			assert( (event.getTarget() instanceof Rectangle));
-			Rectangle viewport = (Rectangle) event.getTarget();
-			AnchorPane p = (AnchorPane) viewport.getParent();
-			double w = zoomImageView.getFitWidth();
-			double h = zoomImageView.getFitHeight();
-			Point2D parentSize = new Point2D(w, h);
+			Rectangle vp = (Rectangle) event.getTarget();
+			AnchorPane p = (AnchorPane) vp.getParent();
+//			double w = zoomImageView.getFitWidth();
+//			double h = zoomImageView.getFitHeight();
+//			Point2D parentSize = new Point2D(w, h);
 			
 			currentPoint = new Point2D(event.getX(), event.getY());
-			if (parentSize.getX() < event.getX()) return;
-			if (parentSize.getY() < event.getY()) return;
-			if (w < event.getX()) return;
-			if (h < event.getY()) return;
+//			if (parentSize.getX() < event.getX()) return;
+//			if (parentSize.getY() < event.getY()) return;
+//			if (w < event.getX()) return;
+//			if (h < event.getY()) return;
 			
 			if (resizing)
 			{
-				double aspectRatio = viewport.getWidth() / viewport.getHeight();
+				double aspectRatio = vp.getWidth() / vp.getHeight();
 				Rectangle r = RectangleUtil.constrainedUnion(startPoint, currentPoint, aspectRatio);
-				RectangleUtil.setRect(viewport, r);
+				RectangleUtil.setRect(vp, r);
 			}
 			else
 			{
-				RectangleUtil.moveRect(viewport, RectangleUtil.diff(currentPoint,  startPoint), parentSize);
+//				Point2D delta = RectangleUtil.diff(currentPoint,  startPoint);
+//				System.out.println("Delta: " + delta);
+//				RectangleUtil.moveRect(vp, delta, null);//parentSize
+				vp.setX(vp.getX() + currentPoint.getX() - startPoint.getX());
+				vp.setY(vp.getY() + currentPoint.getY() - startPoint.getY());
 				startPoint = currentPoint;
 			}
 			event.consume();
-			zoomToRect(viewport);
+			setDrawPaneToViewPort();
 		});
-	
 	}
-
-	// **-------------------------------------------------------------------------------
-// unused
-//	void zoomToRect(Rectangle canvas, Rectangle viewport )
-//	{
-//		double scaleX = viewport.getWidth() * drawPane.getWidth() / canvas.getWidth();		
-//		double scaleY = viewport.getHeight()  * drawPane.getHeight() / canvas.getHeight();	
-//		double offsetX = scaleX * (viewport.getX() - canvas.getX());
-//		double offsetY = scaleY * (viewport.getY() - canvas.getY());
-//		drawPane.setScaleX(scaleX); 
-//		drawPane.setScaleY(scaleY); 
-//		drawPane.setTranslateX(-offsetX * scaleX); 
-//		drawPane.setTranslateY(-offsetY * scaleY); 
-////		scale.setValue(scaleX);	
-////		translateX.setValue(-offsetX * scaleX);	
-////		translateY.setValue(-offsetY * scaleY);	
-//	}
 	
+	String rectToStr(final Rectangle r)
+	{
+		return String.format("%s: [%4.1f, %4.1f, %4.1f, %4.1f]",
+			r.getId(),  r.getX(), r.getY(), r.getWidth(), r.getHeight());
+	}
 	// **-------------------------------------------------------------------------------
 	// reset the window's scale and translate onto the canvas to match the change in 
 	//	our viewport within the ZoomView.
 	
 	
-	void zoomToRect(Rectangle r)
+	void setDrawPaneToViewPort()	//Rectangle r
 	{
-		Rectangle canvasBounds = new Rectangle(0,0,CANVAS_W,CANVAS_H);
 		
-		double scaleX = canvasBounds.getWidth() / zoomAnchor.getWidth();		
-		double scaleY =  canvasBounds.getHeight() / zoomAnchor.getHeight();		
-		double dx = -scaleX * r.getX();
-		double dy = -scaleY * r.getY();
-		drawPane.setTranslateX(drawPane.getTranslateX() + dx); 
-		drawPane.setTranslateY(drawPane.getTranslateY() +dy); 
-		double oldXscale = drawPane.getScaleX();
-		double oldYscale = drawPane.getScaleY();
+		Pasteboard canvas = controller.getCanvas();
+		double scaleX = canvas.getWidth() / zoomAnchor.getWidth();		
+		double scaleY =  canvas.getHeight() / zoomAnchor.getHeight();		
+		double dx = scaleX * viewport.getX();		//
+		double dy = scaleY * viewport.getY();  //
+		double x = drawPane.getTranslateX() + dx;
+		double y = drawPane.getTranslateY() + dy;
+		drawPane.setTranslateX(x); 
+		drawPane.setTranslateY(y); 
+//		viewport.setX(x);
+//		viewport.setY(y);
+//		drawPane.setScaleX(scaleX); 
+//		drawPane.setScaleY(scaleY); 
+		
+		
+		String rstatus = rectToStr(viewport);
+		String status = String.format("%4.1f,\t %4.1f", x, y);
+		String dxdy = String.format("%4.1f,\t %4.1f", dx, dy);
+		controller.reportStatus(dxdy);
+		controller.setStatus2(status);
+		controller.setStatus3(rstatus);
+//		double oldXscale = drawPane.getScaleX();
+//		double oldYscale = drawPane.getScaleY();
 //		drawPane.setScaleX(scaleX * oldXscale); 
 //		drawPane.setScaleY(scaleY * oldYscale); 
 	}
 	
-	// **-------------------------------------------------------------------------------
-	// derive a rectangle that expresses how the kid lies within the parent
-	
-	public static Rectangle ratioRect(Rectangle parent, Rectangle kid)
-	{
-		assert(parent.getWidth() > 0 && kid.getHeight() > 0);
-		double relX = kid.getWidth() / parent.getWidth();
-		double relY = kid.getHeight() / parent.getHeight();
-		double ratioX = (kid.getX() - parent.getX()) * relX;
-		double ratioY = (kid.getY() - parent.getX()) * relX;
-		double ratioW = kid.getWidth() * relX;
-		double ratioH = kid.getHeight() * relY;
-		return new Rectangle(ratioX, ratioY, ratioW, ratioH);
-	}
-	
-	// **-------------------------------------------------------------------------------
-	// apply a ratio rectangle to derive the kid from the parent
-
-	public static Rectangle kidRect(Rectangle parent, Rectangle ratio)
-	{
-		double kidW = parent.getWidth() * ratio.getWidth();
-		double kidH = parent.getHeight() * ratio.getHeight();
-		double kidX = (parent.getX() + ratio.getX() * kidW);
-		double kidY = (parent.getY() + ratio.getY() * kidH);
-		return new Rectangle(kidX, kidY, kidW, kidH);
-	}
-
 
 }

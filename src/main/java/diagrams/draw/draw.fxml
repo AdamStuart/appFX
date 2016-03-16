@@ -179,7 +179,7 @@
       </VBox>
    </left>
    <right>
-      <VBox style="-fx-border-width: 1; -fx-border-style: 3;">
+      <VBox style="-fx-border-width: 1;">
          <children>
             <HBox spacing="23.0" />
             <SplitPane dividerPositions="0.24077046548956663, 0.6468699839486356" orientation="VERTICAL">
@@ -219,7 +219,7 @@
       </BorderPane>
    </center>
    <bottom>
-      <HBox fx:id="bottomDash" maxHeight="86.0" minHeight="50.0" prefHeight="86.0" prefWidth="851.0" spacing="25.0" BorderPane.alignment="CENTER">
+      <HBox fx:id="bottomDash" maxHeight="100.0" minHeight="50.0" prefHeight="100" spacing="25.0" BorderPane.alignment="CENTER">
          <children>
             <VBox>
                <children>
@@ -242,9 +242,9 @@
             </VBox>
             <VBox prefHeight="86.0" prefWidth="244.0" spacing="10.0">
                <children>
-                  <Label fx:id="status" text="Label" />
+                  <Label fx:id="status1" text="Label" />
                   <Label fx:id="status2" text="Label" />
-                  <Label fx:id="status2" text="Label" />
+                  <Label fx:id="status3" text="Label" />
                </children>
                <padding>
                   <Insets left="5.0" />

@@ -36,7 +36,7 @@ import diagrams.draw.App.Tool;
 public class ShapeFactory
 {
 	private Model model;
-	private Canvas drawLayer;
+	private Pasteboard drawLayer;
 	private UndoStack undoStack;
 	static double EPSILON = 4;
 	/*
@@ -45,7 +45,7 @@ public class ShapeFactory
 	 *  
 	 *  makeMarquee creates the selection rectangle that is added on canvas drags.
 	 */
-	public ShapeFactory(Canvas l, UndoStack u)
+	public ShapeFactory(Pasteboard l, UndoStack u)
 	{
 		drawLayer = l;
 		undoStack = u;
@@ -229,7 +229,7 @@ public class ShapeFactory
 
 	private class RectMouseHandler extends NodeMouseHandler
 	{
-		public RectMouseHandler(Rectangle r, Canvas d)
+		public RectMouseHandler(Rectangle r, Pasteboard d)
 		{
 			super(d);
 			r.addEventHandler(MouseEvent.MOUSE_PRESSED, this);
@@ -298,7 +298,7 @@ public class ShapeFactory
 	
 	protected class CircleMouseHandler extends NodeMouseHandler
 	{
-		public CircleMouseHandler(Circle c, Canvas d)
+		public CircleMouseHandler(Circle c, Pasteboard d)
 			{
 				super(d);
 				c.addEventHandler(MouseEvent.MOUSE_PRESSED, this);
@@ -374,7 +374,7 @@ public class ShapeFactory
 	// **-------------------------------------------------------------------------------
 	protected class PolygonMouseHandler extends NodeMouseHandler
 	{
-		public PolygonMouseHandler(Polygon p, Canvas d)
+		public PolygonMouseHandler(Polygon p, Pasteboard d)
 		{
 			super(d);
 			p.addEventHandler(MouseEvent.MOUSE_PRESSED, this);
@@ -430,7 +430,7 @@ public class ShapeFactory
 	//-----------------------------------------------------------------------------------
 	public class NodeMouseHandler implements EventHandler<MouseEvent>
 	{
-		public NodeMouseHandler(Canvas d)
+		public NodeMouseHandler(Pasteboard d)
 		{
 			 drawLayer = d;
 		}
@@ -449,7 +449,7 @@ public class ShapeFactory
 		}
 		//**-------------------------------------------------------------------------------
 		protected Point2D startPoint, currentPoint, prevPoint, offset;
-		private Canvas drawLayer;
+		private Pasteboard drawLayer;
 		private Pane getPane() { return drawLayer.getPane(); }
 		private Controller getController()		{			return drawLayer.getController();		}
 		protected int verbose = 0;
@@ -489,7 +489,7 @@ public class ShapeFactory
 				sel.select(node, !wasSelected);
 			else if ((event.isShiftDown()))
 				sel.select(node);
-			else	sel.selectX(node);
+			else if (!wasSelected)	sel.selectX(node);
 			
 			if (sel.count() > 0)
 			{

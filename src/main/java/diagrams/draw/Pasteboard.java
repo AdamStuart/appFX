@@ -5,6 +5,7 @@ import java.util.List;
 
 import diagrams.draw.Action.ActionType;
 import diagrams.draw.App.Tool;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -41,20 +42,20 @@ import model.AttributeMap;
 import util.FileUtil;
 import util.RectangleUtil;
 
-// Canvas 
+// Pasteboard 
 /*
- *  The primary role of the canvas is to handle mouse events that don't hit any node,
+ *  The primary role of the Pasteboard is to handle mouse events that don't hit any node,
  *  and drop events that will create new nodes depending on the files / data that 
  *  are in the drop.  Key events are also caught.
  *  
- *  The canvas also remember the state of which tool is active and what default
+ *  The Pasteboard also remember the state of which tool is active and what default
  *  attributes will be assigned to new nodes.
  */
-public class Canvas
+public class Pasteboard
 {
 	//@formatter:off
 	private static final String INFO_LABEL_ID = "infoLabel";
-	private static final String ELEMENT_NAME = "Canvas";
+	private static final String ELEMENT_NAME = "Pasteboard";
 	
 	private Pane pane;
 	public Pane getPane()			{ return pane;	}
@@ -76,16 +77,28 @@ public class Canvas
 	
 	private Controller controller;
 	public Controller getController()	{ return controller; }
-	 //@formatter:on
+	SimpleDoubleProperty widthProperty = new SimpleDoubleProperty();
+	SimpleDoubleProperty heightProperty = new SimpleDoubleProperty();
+	
+	public double getWidth()	{ return widthProperty.get();	}
+	public double getHeight()	{ return heightProperty.get();	}
+	public  void setWidth(double d)	{  widthProperty.set(d);	}
+	public void setHeight(double d)	{  heightProperty.set(d);	}
+	public SimpleDoubleProperty widthProperty()	{  return widthProperty;	}
+	public SimpleDoubleProperty heightProperty()	{  return heightProperty;	}
+
+	//@formatter:on
 	/**-------------------------------------------------------------------------------
 	/**Canvas (Pane pane, Controller ctrl
 	 * @param ctrl	-- the Controller that is parent to this object
 	 * @param pane
 	 *            the pane on which the selection rectangle will be drawn.
 	 */
-	public Canvas(Pane pane, Controller ctrl) 
+	public Pasteboard(Pane pane, Controller ctrl) 
 	{
 		this.pane = pane;
+		setWidth(2000);
+		setHeight(2000);
 		controller = ctrl;
 		factory = new NodeFactory(this);
 		shapeFactory = factory.getShapeFactory();
@@ -97,8 +110,7 @@ public class Canvas
 		pane.addEventHandler(MouseEvent.MOUSE_DRAGGED, new MouseDraggedHandler());
 		pane.addEventHandler(MouseEvent.MOUSE_RELEASED, new MouseReleasedHandler());
 		pane.addEventHandler(KeyEvent.KEY_RELEASED, new KeyHandler());
-		setupCanvasDrops(pane);
-
+		setupPasteboardDrops(pane);
 		infoLabel = new Label("");
 		infoLabel.setId(INFO_LABEL_ID);
 		pane.getChildren().add(infoLabel);
@@ -119,15 +131,15 @@ public class Canvas
 	 * // Handle highlighting the canvas as mouse enters, and resetting as it leaves
 	 */
 	
-	private void setupCanvasDrops(Pane canvas)
+	private void setupPasteboardDrops(Pane pasteboard)
 	{
-		canvas.setOnDragEntered(e -> 	{  	highlightCanvas(true);						e.consume();	});
-		canvas.setOnDragExited(e -> 	{	highlightCanvas(false);						e.consume();	});
-		canvas.setOnDragOver(e -> 		{	e.acceptTransferModes(TransferMode.ANY);	e.consume();  	});
-		canvas.setOnDragDropped(e ->	{ 	handleCanvasDrop(e);						e.consume();  	});
+		pasteboard.setOnDragEntered(e -> 	{  	highlightPasteboard(true);						e.consume();	});
+		pasteboard.setOnDragExited(e -> 	{	highlightPasteboard(false);						e.consume();	});
+		pasteboard.setOnDragOver(e -> 		{	e.acceptTransferModes(TransferMode.ANY);	e.consume();  	});
+		pasteboard.setOnDragDropped(e ->	{ 	handlePasteboardDrop(e);						e.consume();  	});
 	}	
 
-	private void highlightCanvas(boolean isHighlighted)
+	private void highlightPasteboard(boolean isHighlighted)
 	{
 		InnerShadow shadow = null;
 		if (isHighlighted)
@@ -140,7 +152,7 @@ public class Canvas
 //		pane.setEffect(shadow);
 	}
 	
-	private void handleCanvasDrop(DragEvent e)
+	private void handlePasteboardDrop(DragEvent e)
 	{
 		Dragboard db = e.getDragboard();
 		e.acceptTransferModes(TransferMode.ANY);
@@ -198,9 +210,9 @@ public class Canvas
 	private void makeGrid()
 	{
 		grid = new Group();
-		double res = Screen.getPrimary().getDpi();
-		int canvasWidth = 5000;
-		int canvasHeight = 5000;
+		double res = Screen.getPrimary().getDpi();			// assumes inches
+		double canvasWidth = getWidth();
+		double canvasHeight = getHeight();
 		double nLines = canvasWidth / res;
 		for (int i = 0; i< nLines; i++)
 		{
