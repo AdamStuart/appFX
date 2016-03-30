@@ -12,6 +12,14 @@ import javafx.scene.control.TreeItem;
 import model.KeyValue;
 import util.StringUtil;
 
+// reading the Cell Type Ontology from a file
+// paper is at:  http://www.ncbi.nlm.nih.gov/pmc/articles/PMC551541
+// file downloaded from https://bioportal.bioontology.org/ontologies/CL
+
+// 15 March 2016  Adam Treister
+// https://github.com/AdamStuart/
+
+
 public class Ontology
 {
 	List<Onterm> terms = new ArrayList<Onterm>();
@@ -47,7 +55,7 @@ public class Ontology
 		return root;
 	}
 	
-	
+	// recursive tree traversal core
 	private void traverse(TreeItem<Onterm> parent, Onterm term)
 	{
 		TreeItem<Onterm> self = new TreeItem<Onterm>(term);
@@ -106,6 +114,7 @@ public class Ontology
 		}
 	}
 	//--------------------------------------------------------------
+	// TODO crude debug message to report by nParents
 	public void dump()
 	{
 		int orphans = 0, singleParents = 0; 
