@@ -61,8 +61,12 @@ public class Segment
 		line = br.readLine();
 		String[] row = line.split("\t"); 
 		int len = row.length;
-
-		while (line != null) {
+		System.out.println( len + " columns");
+		if (len != 13)
+		{
+			System.out.println( len + "CSV file with " + len + " columns was skipped.");
+		}
+		else while (line != null) {
 			row = line.split("\t");  
 			if (row.length != len)	throw new IllegalArgumentException();		// there must be the same number of tabs in every row
 			IntegerDataRow dataRow = new IntegerDataRow(row.length); 
