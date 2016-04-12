@@ -145,17 +145,17 @@
                            <children>
                               <VBox layoutX="29.0" layoutY="14.0" spacing="8.0">
                                  <children>
-                                    <CheckBox fx:id="showAllColumns" mnemonicParsing="false" text="Show All Columns" />
+                                    <CheckBox fx:id="showAllColumns" disable="true" mnemonicParsing="false" text="Show All Columns" />
                                     <HBox spacing="4.0">
                                        <children>
                                           <Button fx:id="plotButton" layoutX="21.0" layoutY="564.0" mnemonicParsing="false" onAction="#doPlot" text="Plot 1D" />
                                           <Button fx:id="plot2DButton" mnemonicParsing="false" onAction="#doPlot2D" text="Plot 2D" />
                                        </children>
                                     </HBox>
-                                    <Button fx:id="plotAllButton" mnemonicParsing="false" onAction="#doPlotAll" prefHeight="26.0" text=" Overlay" />
                                     <Button fx:id="histogramProfiles" layoutX="10.0" layoutY="70.0" mnemonicParsing="false" onAction="#doHistogramProfiles" prefHeight="26.0" text="Histogram Profiles" />
-                                    <CheckBox fx:id="addYOffset" mnemonicParsing="false" text="Add Y Offset" />
-                                    <CheckBox fx:id="showSumCk" mnemonicParsing="false" text="Show Sum" />
+                                    <Button fx:id="plotAllButton" disable="true" mnemonicParsing="false" onAction="#doPlotAll" prefHeight="26.0" text=" Overlay" />
+                                    <CheckBox fx:id="addYOffset" disable="true" mnemonicParsing="false" text="Add Y Offset" />
+                                    <CheckBox fx:id="showSumCk" disable="true" mnemonicParsing="false" text="Show Sum" />
                                     <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="653.0" prefWidth="202.0">
                                        <items>
                                           <VBox prefHeight="346.0" prefWidth="200.0">

@@ -415,7 +415,7 @@ public class PublishController implements Initializable
 	@FXML private void doPlotAll()
 	{
 		
-		System.out.println("doPlotAll   				 NEEDS THREADING");
+		System.out.println("doPlotAll   	 NEEDS THREADING");
 		graphVBox.getChildren().clear();
 		graphVBox.setPrefWidth(750);
 		graphVBox.setBorder(Borders.dashedBorder);
@@ -445,6 +445,17 @@ public class PublishController implements Initializable
 			graphVBox.getChildren().clear();
 			model.generateRawHistogramCharts(graphVBox);
 		}
+	}
+	//--------------------------------------------------------------------------------
+	@FXML private void doViz()
+	{
+		System.out.println("doViz");
+	}
+	//--------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------
+	@FXML private void doViz2D()
+	{
+		System.out.println("doViz2D");
 	}
 	//--------------------------------------------------------------------------------
 	@FXML private void doPlot2D()
@@ -485,6 +496,10 @@ public class PublishController implements Initializable
 				String manifest = FileUtil.decompress(f);
 				System.out.println("\nunzipped these files: \n" + manifest);
 				f = new File(StringUtil.chopExtension(f.getAbsolutePath()));
+			}
+			if (FileUtil.isCSV(f))
+			{
+				EDLParsingHelper.addCSVFilesToSegments(f, segments);
 			}
 			if (f.isDirectory())
 			{		
@@ -654,9 +669,22 @@ public class PublishController implements Initializable
 	
 	@FXML void doOpen()
 	{
-		Document xmlDoc = PublishDocument.open();
-		if (xmlDoc != null)
-			doc.install(xmlDoc);
+		FileChooser chooser = new FileChooser();	
+		chooser.setTitle("Open Document");
+		File file = chooser.showOpenDialog(PublishController.getStage());
+		if (file == null)		return;			// open was canceled		
+		
+		Document w3cdoc = null;
+		if (FileUtil.isCSV(file))
+		{
+			EDLParsingHelper.addCSVFilesToSegments(file, segments);
+		}
+		else if (FileUtil.isXML(file))
+		{
+			w3cdoc = FileUtil.openXML(file);
+			if (w3cdoc != null)
+				doc.install(w3cdoc);
+		}
 	}
 	@FXML void save()		{	if (doc != null) doc.save();		}
 	@FXML void saveas()		{	if (doc != null) doc.saveas();		}

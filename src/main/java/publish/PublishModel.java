@@ -44,8 +44,11 @@ public class PublishModel
 		{
 			for (Segment seg : items)
 			{	
-				tablenames.add(seg.getName());
-				tablemap.put(seg.getName(), seg.getData());
+				if (seg.getData().getColumnNames().size() == 13)
+				{
+					tablenames.add(seg.getName());
+					tablemap.put(seg.getName(), seg.getData());
+				}
 			}
 		}
 		return tablemap.isEmpty();
@@ -84,7 +87,7 @@ public class PublishModel
 	
 		for (int i = 0; i< nCols; i++)		
 		{
-			if (i > 2) continue;			// DEBUG
+//			if (i > 2) continue;			// DEBUG
 			String dim = EDLParsingHelper.dims[i];
 			Histogram1D histo = firstDataset.get(dim);
 			if (histo == null) continue;
@@ -106,7 +109,7 @@ public class PublishModel
 			peakFitChart.setLegendVisible(false);
 //			peakFitChart.setLegendSide(Side.RIGHT);
 			HBox dimensionBox = new HBox(peakFitChart);		//rawChart, smoothedChart, statLabel, 
-			if (i < 13)
+//			if (i < 13)
 				vbox.getChildren().add(dimensionBox);
 			
 			// important:  we can't add the markers before the chart is shown!
@@ -116,14 +119,14 @@ public class PublishModel
 		}
 		
 	}
-	public List<XYChart<Number, Number>> analyze1D(CSVTableData table)
-	{
-		classify(table);
-		List<GraphRequest> requests = visualize1D();
-		List<XYChart<Number, Number>> charts = table.process(requests);			// THREAD
-		return charts;
-		
-	}
+//	public List<XYChart<Number, Number>> analyze1D(CSVTableData table)
+//	{
+//		classify(table);
+//		List<GraphRequest> requests = visualize1D();
+//		List<XYChart<Number, Number>> charts = table.process(requests);			// THREAD
+//		return charts;
+//		
+//	}
 	
 	
 	
@@ -166,24 +169,24 @@ public class PublishModel
 			table.addPColumn(gates[i], gates[i+1], gates[i+2]);
 	}
 
-	public List<GraphRequest> visualize1D()
-	{
-		List<GraphRequest> requests = new ArrayList<GraphRequest>();
-//		for (String name : EDLParsingHelper.dims)		
-//			requests.add(new HistogramRequest(name, "All", "CD3-", "CD19+", "B", "CD27+B", "CD38+", "Bplasma"));
-		
-		for (int i=0; i<cmds1D.length; i+=3)
-			requests.add(new HistogramRequest(cmds1D[i], cmds1D[i+1], cmds1D[i+2]));
-		return requests;
-	}
-
-	public List<GraphRequest> visualize2D()
-	{
-		List<GraphRequest> requests = new ArrayList<GraphRequest>();
-		for (int i=0; i<cmds2D.length; i+=4)
-			requests.add(new ScatterRequest(cmds2D[i], cmds2D[i+1], cmds2D[i+2], cmds2D[i+3])); 
-		return requests;
-	}
+//	public List<GraphRequest> visualize1D()
+//	{
+//		List<GraphRequest> requests = new ArrayList<GraphRequest>();
+////		for (String name : EDLParsingHelper.dims)		
+////			requests.add(new HistogramRequest(name, "All", "CD3-", "CD19+", "B", "CD27+B", "CD38+", "Bplasma"));
+//		
+//		for (int i=0; i<cmds1D.length; i+=3)
+//			requests.add(new HistogramRequest(cmds1D[i], cmds1D[i+1], cmds1D[i+2]));
+//		return requests;
+//	}
+//
+//	public List<GraphRequest> visualize2D()
+//	{
+//		List<GraphRequest> requests = new ArrayList<GraphRequest>();
+//		for (int i=0; i<cmds2D.length; i+=4)
+//			requests.add(new ScatterRequest(cmds2D[i], cmds2D[i+1], cmds2D[i+2], cmds2D[i+3])); 
+//		return requests;
+//	}
 
 	//--------------------------------------------------------------------------------
 	// For each table, generate histograms and put them into datasetMap.
