@@ -498,8 +498,11 @@ public class PublishController implements Initializable
 					if (xmlTreeRoot == null)
 					{
 						xmlTreeRoot = (XMLTreeItem) xmlTree.getRoot();
-						org.w3c.dom.Node node = xmlTreeRoot.getChildren().get(0).getValue();
-						xmlTreeRoot.setValue(node);
+						if (xmlTreeRoot != null)
+						{
+							org.w3c.dom.Node node = xmlTreeRoot.getChildren().get(0).getValue();
+							xmlTreeRoot.setValue(node);
+						}
 					}
 				}
 				break;			//  add the first directory, then break
