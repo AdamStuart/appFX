@@ -33,7 +33,7 @@ public class Player
 	public static Player readPlayerInfo(long id)
 	{
 		boolean verbose = true;
-		String jsonString = StringUtil.callURL("http://secret-world.herokuapp.com/users/" + id);
+		String jsonString = StringUtil.callURL("http://secret-world.herokuapp.com/users/" + id, false);
 		if (verbose) System.out.println("\n\nPlayer: " + jsonString + id);
 
 		try {  

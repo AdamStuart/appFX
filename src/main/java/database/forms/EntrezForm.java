@@ -150,7 +150,7 @@ public class EntrezForm extends VBox
 	public void search(EntrezQuery query)
 	{	
 		String url = EUTILS + "esearch.fcgi?db=pubmed&term=" + query.getName();
-		String result = StringUtil.callURL(url);
+		String result = StringUtil.callURL(url, false);
 		System.out.println(result);
 		Document doc = FileUtil.convertStringToDocument(result);
 		if (doc != null)
@@ -188,7 +188,7 @@ public class EntrezForm extends VBox
 	
 	private void getSummaryRecords(String summaryReq)
 	{
-		String summary = StringUtil.callURL(summaryReq);		// TODO put in task
+		String summary = StringUtil.callURL(summaryReq, false);		// TODO put in task
 		System.out.println(summary);
 		Document summaryDoc = FileUtil.convertStringToDocument(summary);
 		if (summaryDoc != null)

@@ -271,6 +271,7 @@ public class EDLParsingHelper
 		}
 	}
 
+	public static ObservableList<String> organismList = FXCollections.observableArrayList("Human", "Mouse", "Cow", "Dog", "Pig", "Yeast");
 	public static ObservableList<String> speciesList = FXCollections.observableArrayList("Mouse", "Human", "More...");
 	public static ObservableList<String> cellTypes = FXCollections.observableArrayList("T Cells", "B Cells", "NK Cells", "More...");
 	public static ObservableList<String> technologyList = FXCollections.observableArrayList("ChipCytometry", "PCR", "Mass Spec", "HPLC", "More...");
