@@ -75,10 +75,15 @@
                      <content>
                         <AnchorPane id="Research" fx:id="bridgeDBAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <TextArea fx:id="inputBridgeDB" layoutX="43.0" layoutY="115.0" prefHeight="200.0" prefWidth="429.0" />
+                              <TextArea fx:id="inputBridgeDB" layoutX="27.0" layoutY="102.0" prefHeight="200.0" prefWidth="210.0" />
                               <Label layoutX="43.0" layoutY="83.0" text="Identifiers to Map:" />
                               <HBox layoutX="43.0" layoutY="29.0" prefHeight="32.0" prefWidth="651.0" spacing="8.0">
                                  <children>
+                                    <Button fx:id="bridgeDB" mnemonicParsing="false" onAction="#doBridgeDB" prefHeight="32.0" prefWidth="112.0" text="Search">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Button>
                                     <Label layoutX="20.0" layoutY="60.0" text="Organism">
                                        <HBox.margin>
                                           <Insets top="6.0" />
@@ -93,22 +98,17 @@
                                     <ChoiceBox fx:id="technology1" />
                                  </children>
                               </HBox>
-                              <Button fx:id="bridgeDB" layoutX="536.0" layoutY="124.0" mnemonicParsing="false" onAction="#doBridgeDB" prefHeight="32.0" prefWidth="112.0" text="Search">
+                              <Button fx:id="attributes" layoutX="255.0" layoutY="102.0" mnemonicParsing="false" onAction="#doAttributeSet" prefHeight="32.0" prefWidth="113.0" text="Attributes">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Button>
-                              <Button fx:id="attributes" layoutX="536.0" layoutY="170.0" mnemonicParsing="false" onAction="#doAttributeSet" prefHeight="32.0" prefWidth="113.0" text="Attributes">
+                              <Button fx:id="targets" layoutX="255.0" layoutY="196.0" mnemonicParsing="false" onAction="#doTargets" prefHeight="32.0" prefWidth="112.0" text="Targets">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Button>
-                              <Button fx:id="targets" layoutX="536.0" layoutY="264.0" mnemonicParsing="false" onAction="#doTargets" prefHeight="32.0" prefWidth="112.0" text="Targets">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Button>
-                              <Button fx:id="sources" layoutX="536.0" layoutY="215.0" mnemonicParsing="false" onAction="#doSources" prefHeight="32.0" prefWidth="114.0" text="Sources">
+                              <Button fx:id="sources" layoutX="255.0" layoutY="147.0" mnemonicParsing="false" onAction="#doSources" prefHeight="32.0" prefWidth="114.0" text="Sources">
                                  <font>
                                     <Font size="16.0" />
                                  </font>

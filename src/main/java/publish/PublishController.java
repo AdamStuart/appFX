@@ -468,25 +468,24 @@ public class PublishController implements Initializable
 		if (keys.length() == 0) return;
 		String lines[] = keys.split("\n");
 		for (String line : lines)
-			brideDBcall("search/" + line);
+			bridgeDBcall("search/" + line);
 	}
 
 	//--------------------------------------------------------------------------------
-	private void brideDBcall(String command)
+	private void bridgeDBcall(String command)
 	{
 		System.out.println(command);
-		String beast = organism.getValue();
-		String urlStr = "http://webservice.bridgedb.org/" + beast + "/" + command;
+		String species = organism.getValue();
+		String urlStr = "http://webservice.bridgedb.org/" + species + "/" + command;
 		String response = StringUtil.callURL(urlStr, true);
-//			response = response.replace('\t', '\n');
 		System.out.println(response);
-		outputBridgeDB.appendText( "\n===========================\n" + command + "\n\n");
+		outputBridgeDB.appendText( "\n===========================\n" + species + "/" + command + "\n\n");
 		outputBridgeDB.appendText(response);
 	}
 	//--------------------------------------------------------------------------------
-	@FXML private void doAttributeSet()	{	brideDBcall("attributeSet");	}
-	@FXML private void doSources()	{		brideDBcall("sourceDataSources");	}
-	@FXML private void doTargets()	{		brideDBcall("targetDataSources");	}
+	@FXML private void doAttributeSet()	{	bridgeDBcall("attributeSet");	}
+	@FXML private void doSources()	{		bridgeDBcall("sourceDataSources");	}
+	@FXML private void doTargets()	{		bridgeDBcall("targetDataSources");	}
 	//--------------------------------------------------------------------------------
 	//--------------------------------------------------------------------------------
 	@FXML private void doViz()
