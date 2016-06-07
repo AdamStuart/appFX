@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.SimpleStringProperty;
-import model.KeyValue;
+import model.AttributeValue;
 import util.StringUtil;
 
 public class Onterm
@@ -13,7 +13,7 @@ public class Onterm
 	private SimpleStringProperty id = new SimpleStringProperty();
 	private SimpleStringProperty name = new SimpleStringProperty();
 	private SimpleStringProperty def = new SimpleStringProperty();
-	private List<KeyValue> properties = new ArrayList<KeyValue>();
+	private List<AttributeValue> properties = new ArrayList<AttributeValue>();
 	private List<Onterm> children = new ArrayList<Onterm>();
 	
 	public Onterm(String idtag)
@@ -33,8 +33,8 @@ public class Onterm
 	public SimpleStringProperty nameProperty() { return name;	}
 	public SimpleStringProperty defProperty() { return def;	}
 	
-	public void addProperty(String line)			{ properties.add(new KeyValue(line));	}
-	public void addProperty(String key, String v)	{ properties.add(new KeyValue(key,v));	}
+	public void addProperty(String line)			{ properties.add(new AttributeValue(line));	}
+	public void addProperty(String key, String v)	{ properties.add(new AttributeValue(key,v));	}
 
 	public void add(String line)
 	{
@@ -45,7 +45,7 @@ public class Onterm
 	public String toString()	{		return getId() + ": " + getName();	}
 	public void dump()	{		System.out.println(toString());			}
 
-	public List<KeyValue> getProperties(String attr)
+	public List<AttributeValue> getProperties(String attr)
 	{
 		return properties.stream()
 			.filter((keyVal) -> keyVal.getAttribute().equals(attr))
@@ -62,6 +62,6 @@ public class Onterm
 			.collect(Collectors.joining());
 		
 	}
-	static String getKVString(KeyValue kv)	{	return kv.getAttribute() + SEP + kv.getValue() + EOL;	}
+	static String getKVString(AttributeValue kv)	{	return kv.getAttribute() + SEP + kv.getValue() + EOL;	}
 
 }

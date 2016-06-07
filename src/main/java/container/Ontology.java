@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
-import model.KeyValue;
+import model.AttributeValue;
 import util.StringUtil;
 
 // reading the Cell Type Ontology from a file
@@ -39,8 +39,8 @@ public class Ontology
 		root.setExpanded(true);
 		for (Onterm term : terms)
 		{
-			List<KeyValue> ids = term.getProperties("is_a");
-			for (KeyValue kv : ids)
+			List<AttributeValue> ids = term.getProperties("is_a");
+			for (AttributeValue kv : ids)
 			{
 				String id = StringUtil.firstWord(kv.getValue());
 				Onterm parent = map.get(id);
@@ -91,8 +91,8 @@ public class Ontology
 		{
 			if (term.getId().startsWith(filterByPrefix))
 			{
-				List<KeyValue> ids = term.getProperties("is_a");
-				for (KeyValue kv : ids)
+				List<AttributeValue> ids = term.getProperties("is_a");
+				for (AttributeValue kv : ids)
 				{
 					String id = StringUtil.firstWord(kv.getValue());
 					Onterm parent = map.get(id);
@@ -124,7 +124,7 @@ public class Ontology
 		for (Onterm term : terms)
 			if (term.getId().startsWith("CL"))
 			{
-				List<KeyValue> parents = term.getProperties("is_a");
+				List<AttributeValue> parents = term.getProperties("is_a");
 				int nParents = parents.size();
 				
 				if (nParents == 0)	orphans++;

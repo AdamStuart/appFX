@@ -4,7 +4,7 @@ import java.util.List;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import model.KeyValue;
+import model.AttributeValue;
 
 public class AbstractTableRow
 {
@@ -16,7 +16,7 @@ public class AbstractTableRow
 	protected SimpleStringProperty id = new SimpleStringProperty();
 	protected SimpleStringProperty name = new SimpleStringProperty();
 	protected SimpleBooleanProperty selected = new SimpleBooleanProperty();
-	protected List<KeyValue> properties;
+	protected List<AttributeValue> properties;
 
 	public SimpleStringProperty idProperty()	{ return id;	};
 	public 	String  getId()			{ return id.get();	};

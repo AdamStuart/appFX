@@ -68,7 +68,7 @@ public class Document
 	{ 	
 //		if (fileDirty)	askToSave();
 		file = null;
-		drawController.getCanvas().clearAll();
+		drawController.getPasteboard().clearAll();
 	}
 	// **-------------------------------------------------------------------------------
 	// TODO:  only prints first page, without scaling it.
@@ -77,7 +77,7 @@ public class Document
 	{
 		PrinterJob job = PrinterJob.createPrinterJob();
 		if (job == null) return;
-		boolean success = job.printPage(drawController.getCanvas().getPane());
+		boolean success = job.printPage(drawController.getPasteboard().getPane());
 		if (success)
 			job.endJob();
 	}
