@@ -85,6 +85,7 @@ public class PublishController implements Initializable
 	@FXML AnchorPane analysisAnchor;
 	@FXML AnchorPane discussionAnchor;
 	@FXML AnchorPane mosaicAnchor;
+	@FXML AnchorPane bridgeDBAnchor;
 //	@FXML AnchorPane specsAnchor;
 	AnchorPane[]  anchors;
 
@@ -96,7 +97,11 @@ public class PublishController implements Initializable
 	@FXML ChoiceBox<String> species;
 	@FXML ChoiceBox<String> celltype;
 	@FXML ChoiceBox<String> technology;
+	@FXML ChoiceBox<String> organism;
+	@FXML ChoiceBox<String> system;
+
 	@FXML TextArea keywords;
+	public String getSelectedOrganism()	{		return organism.getSelectionModel().getSelectedItem();	}
 	public String getSelectedSpecies()	{		return species.getSelectionModel().getSelectedItem();	}
 	public String getSelectedCellType()	{		return celltype.getSelectionModel().getSelectedItem();	}
 	public String getSelectedTechnology(){		return technology.getSelectionModel().getSelectedItem();	}
@@ -118,7 +123,11 @@ public class PublishController implements Initializable
 	@FXML CheckBox qc;
 	@FXML CheckBox lucky;
 	@FXML Label droplabel;
-	
+	@FXML Button bridgeDB;
+	@FXML Button attributes;
+	@FXML Button sources;
+	@FXML Button targets;
+
 	// Methods
 	@FXML private VBox connectionsBox; 
 	@FXML private TreeTableView<org.w3c.dom.Node> xmlTree;
@@ -126,6 +135,8 @@ public class PublishController implements Initializable
 	private XMLFileTree fileTree = new XMLFileTree(null);
 	@FXML ListView<SOPLink> soplist = new ListView<SOPLink>();
 	@FXML private TextField filterText; 
+	@FXML private TextArea inputBridgeDB; 
+	@FXML private TextArea outputBridgeDB; 
 	
 	public String getFilterText()		{ return filterText.getText();	}
 	public void setFilterText(String s)	{ filterText.setText(s); }
@@ -209,6 +220,10 @@ public class PublishController implements Initializable
 		AnchorPane.setLeftAnchor(querier, 10d);
 		AnchorPane.setRightAnchor(querier, 10d);
 
+		organism.setItems(EDLParsingHelper.organismList);
+		organism.getSelectionModel().selectFirst();
+
+		
 		//Methods---------
 		setupXMLTree();
 		setupSOPList();
@@ -415,7 +430,7 @@ public class PublishController implements Initializable
 	@FXML private void doPlotAll()
 	{
 		
-		System.out.println("doPlotAll   				 NEEDS THREADING");
+		System.out.println("doPlotAll   	 NEEDS THREADING");
 		graphVBox.getChildren().clear();
 		graphVBox.setPrefWidth(750);
 		graphVBox.setBorder(Borders.dashedBorder);
@@ -445,6 +460,42 @@ public class PublishController implements Initializable
 			graphVBox.getChildren().clear();
 			model.generateRawHistogramCharts(graphVBox);
 		}
+	}
+	//--------------------------------------------------------------------------------
+	@FXML private void doBridgeDB()
+	{
+		String keys = inputBridgeDB.getText().trim();
+		if (keys.length() == 0) return;
+		String lines[] = keys.split("\n");
+		for (String line : lines)
+			bridgeDBcall("search/" + line);
+	}
+
+	//--------------------------------------------------------------------------------
+	private void bridgeDBcall(String command)
+	{
+		System.out.println(command);
+		String species = organism.getValue();
+		String urlStr = "http://webservice.bridgedb.org/" + species + "/" + command;
+		String response = StringUtil.callURL(urlStr, true);
+		System.out.println(response);
+		outputBridgeDB.appendText( "\n===========================\n" + species + "/" + command + "\n\n");
+		outputBridgeDB.appendText(response);
+	}
+	//--------------------------------------------------------------------------------
+	@FXML private void doAttributeSet()	{	bridgeDBcall("attributeSet");	}
+	@FXML private void doSources()	{		bridgeDBcall("sourceDataSources");	}
+	@FXML private void doTargets()	{		bridgeDBcall("targetDataSources");	}
+	//--------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------
+	@FXML private void doViz()
+	{
+		System.out.println("doViz");
+	}
+	//--------------------------------------------------------------------------------
+	@FXML private void doViz2D()
+	{
+		System.out.println("doViz2D");
 	}
 	//--------------------------------------------------------------------------------
 	@FXML private void doPlot2D()
@@ -486,6 +537,10 @@ public class PublishController implements Initializable
 				System.out.println("\nunzipped these files: \n" + manifest);
 				f = new File(StringUtil.chopExtension(f.getAbsolutePath()));
 			}
+			if (FileUtil.isCSV(f))
+			{
+				EDLParsingHelper.addCSVFilesToSegments(f, segments);
+			}
 			if (f.isDirectory())
 			{		
 				if (f.getName().toUpperCase().contains("GATE"))
@@ -498,8 +553,11 @@ public class PublishController implements Initializable
 					if (xmlTreeRoot == null)
 					{
 						xmlTreeRoot = (XMLTreeItem) xmlTree.getRoot();
-						org.w3c.dom.Node node = xmlTreeRoot.getChildren().get(0).getValue();
-						xmlTreeRoot.setValue(node);
+						if (xmlTreeRoot != null)
+						{
+							org.w3c.dom.Node node = xmlTreeRoot.getChildren().get(0).getValue();
+							xmlTreeRoot.setValue(node);
+						}
 					}
 				}
 				break;			//  add the first directory, then break
@@ -651,9 +709,22 @@ public class PublishController implements Initializable
 	
 	@FXML void doOpen()
 	{
-		Document xmlDoc = PublishDocument.open();
-		if (xmlDoc != null)
-			doc.install(xmlDoc);
+		FileChooser chooser = new FileChooser();	
+		chooser.setTitle("Open Document");
+		File file = chooser.showOpenDialog(PublishController.getStage());
+		if (file == null)		return;			// open was canceled		
+		
+		Document w3cdoc = null;
+		if (FileUtil.isCSV(file))
+		{
+			EDLParsingHelper.addCSVFilesToSegments(file, segments);
+		}
+		else if (FileUtil.isXML(file))
+		{
+			w3cdoc = FileUtil.openXML(file);
+			if (w3cdoc != null)
+				doc.install(w3cdoc);
+		}
 	}
 	@FXML void save()		{	if (doc != null) doc.save();		}
 	@FXML void saveas()		{	if (doc != null) doc.saveas();		}

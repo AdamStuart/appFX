@@ -40,8 +40,18 @@ public class PublishDocument
 		FileChooser chooser = new FileChooser();	
 		chooser.setTitle("Open Document");
 		File file = chooser.showOpenDialog(PublishController.getStage());
-		if (file == null)			return null;			// open was canceled
-		Document doc = FileUtil.openXML(file);
+		if (file == null)			return null;			// open was canceled		
+		
+		Document doc = null;
+		if (FileUtil.isXML(file))
+		{
+			doc = FileUtil.openXML(file);
+			return doc;
+		}
+		if (FileUtil.isCSV(file))
+		{
+//			controller.openCSVfile(file);
+		}
 		return doc;
 	}
 	

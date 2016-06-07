@@ -9,8 +9,16 @@ import java.util.stream.Collectors;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
-import model.KeyValue;
+import model.AttributeValue;
 import util.StringUtil;
+
+// reading the Cell Type Ontology from a file
+// paper is at:  http://www.ncbi.nlm.nih.gov/pmc/articles/PMC551541
+// file downloaded from https://bioportal.bioontology.org/ontologies/CL
+
+// 15 March 2016  Adam Treister
+// https://github.com/AdamStuart/
+
 
 public class Ontology
 {
@@ -31,8 +39,8 @@ public class Ontology
 		root.setExpanded(true);
 		for (Onterm term : terms)
 		{
-			List<KeyValue> ids = term.getProperties("is_a");
-			for (KeyValue kv : ids)
+			List<AttributeValue> ids = term.getProperties("is_a");
+			for (AttributeValue kv : ids)
 			{
 				String id = StringUtil.firstWord(kv.getValue());
 				Onterm parent = map.get(id);
@@ -47,7 +55,7 @@ public class Ontology
 		return root;
 	}
 	
-	
+	// recursive tree traversal core
 	private void traverse(TreeItem<Onterm> parent, Onterm term)
 	{
 		TreeItem<Onterm> self = new TreeItem<Onterm>(term);
@@ -83,8 +91,8 @@ public class Ontology
 		{
 			if (term.getId().startsWith(filterByPrefix))
 			{
-				List<KeyValue> ids = term.getProperties("is_a");
-				for (KeyValue kv : ids)
+				List<AttributeValue> ids = term.getProperties("is_a");
+				for (AttributeValue kv : ids)
 				{
 					String id = StringUtil.firstWord(kv.getValue());
 					Onterm parent = map.get(id);
@@ -106,6 +114,7 @@ public class Ontology
 		}
 	}
 	//--------------------------------------------------------------
+	// TODO crude debug message to report by nParents
 	public void dump()
 	{
 		int orphans = 0, singleParents = 0; 
@@ -115,7 +124,7 @@ public class Ontology
 		for (Onterm term : terms)
 			if (term.getId().startsWith("CL"))
 			{
-				List<KeyValue> parents = term.getProperties("is_a");
+				List<AttributeValue> parents = term.getProperties("is_a");
 				int nParents = parents.size();
 				
 				if (nParents == 0)	orphans++;

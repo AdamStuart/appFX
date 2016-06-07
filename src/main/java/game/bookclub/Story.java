@@ -25,7 +25,7 @@ public class Story
 	{
 		List<Story> stories  = FXCollections.observableArrayList();
 		boolean verbose = true;
-		String jsonString = StringUtil.callURL("http://secret-world.herokuapp.com/story_worlds");
+		String jsonString = StringUtil.callURL("http://secret-world.herokuapp.com/story_worlds", false);
 		if (verbose) System.out.println("\n\nraw String: " + jsonString);
 	
 		try {  

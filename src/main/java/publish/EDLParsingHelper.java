@@ -238,7 +238,11 @@ public class EDLParsingHelper
 					File[] grandkids = kid.listFiles();
 					for (File gkid : grandkids)
 						if (FileUtil.isCSV(gkid))
-							segments.getItems().add(new Segment(id, gkid));		// read the file, build the table
+						{
+							Segment seg = new Segment(id, gkid);	// read the file, build the table
+							if (seg.getData() != null)
+								segments.getItems().add(seg);	
+						}
 				}
 			}
 		}
@@ -246,14 +250,28 @@ public class EDLParsingHelper
 	}
 
 	//--------------------------------------------------------------------------------
-	public static void addCSVFilesToSegments(File dir, ListView<Segment> segments)
+	public static void addCSVFilesToSegments(File fileOrDir, ListView<Segment> segments)
 	{
-		File[] kids = dir.listFiles();
-		for (File kid : kids)
-			if (FileUtil.isCSV(kid))
-				segments.getItems().add(new Segment(kid.getName(), kid));		// read the file, build the table
+		if (fileOrDir.isDirectory())
+		{
+			File[] kids = fileOrDir.listFiles();
+			for (File kid : kids)
+				if (FileUtil.isCSV(kid))
+				{
+					Segment seg = new Segment(kid.getName(), kid);	// read the file, build the table
+					if (seg.getData() != null)
+						segments.getItems().add(seg);	
+				}
+		}
+		else
+		{
+			Segment seg = new Segment(fileOrDir.getName(), fileOrDir);	// read the file, build the table
+			if (seg.getData() != null)
+				segments.getItems().add(seg);	
+		}
 	}
 
+	public static ObservableList<String> organismList = FXCollections.observableArrayList("Human", "Mouse", "Cow", "Dog", "Pig", "Yeast");
 	public static ObservableList<String> speciesList = FXCollections.observableArrayList("Mouse", "Human", "More...");
 	public static ObservableList<String> cellTypes = FXCollections.observableArrayList("T Cells", "B Cells", "NK Cells", "More...");
 	public static ObservableList<String> technologyList = FXCollections.observableArrayList("ChipCytometry", "PCR", "Mass Spec", "HPLC", "More...");

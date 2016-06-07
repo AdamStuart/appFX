@@ -57,7 +57,7 @@ public class ZoomView
 	}
 	public void zoomChanged()
 	{
-		Pasteboard canvas = controller.getCanvas();
+		Pasteboard canvas = controller.getPasteboard();
 		WritableImage img = new WritableImage((int)canvas.getWidth(), (int)canvas.getHeight());
 		Node clip = drawPane.getClip();
 		boolean showGrid = canvas.isGridVisible();
@@ -78,7 +78,7 @@ public class ZoomView
 	
 	private void setViewPortToPaneTransform()
 	{
-		Pasteboard canvas = controller.getCanvas();
+		Pasteboard canvas = controller.getPasteboard();
 		Rectangle canvasBounds = new Rectangle(0,0,canvas.getWidth(),canvas.getHeight());
 		Bounds canvasViewport = drawPane.getBoundsInParent();
 		Bounds controlBounds = zoomAnchor.getBoundsInLocal();
@@ -171,7 +171,7 @@ public class ZoomView
 	void setDrawPaneToViewPort()	//Rectangle r
 	{
 		
-		Pasteboard canvas = controller.getCanvas();
+		Pasteboard canvas = controller.getPasteboard();
 		double scaleX = canvas.getWidth() / zoomAnchor.getWidth();		
 		double scaleY =  canvas.getHeight() / zoomAnchor.getHeight();		
 		double dx = scaleX * viewport.getX();		//
