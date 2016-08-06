@@ -37,8 +37,8 @@ public class LoginDialog extends Dialog
 
 	public LoginDialog()
 	{
-	super();
-    initModality(Modality.WINDOW_MODAL);
+		super();
+		initModality(Modality.WINDOW_MODAL);
 
 		// Create the custom dialog.
 //			Dialog<Pair<String, String>> dialog = new Dialog<>();

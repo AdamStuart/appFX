@@ -21,7 +21,7 @@ public class AppNetworkTable extends Application
 
     private NetworkTableController controller;
 
-	private static final String VIEW_DEF = "networkTable.fxml";
+	private static final String VIEW_DEF = "networkTableNoInspector.fxml";
 	private static final String STYLE_DEF = "application.css";
 
 	@Override

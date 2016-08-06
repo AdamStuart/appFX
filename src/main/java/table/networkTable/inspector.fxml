@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="180.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="1.7E308" tabMaxWidth="1.7E308" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65">
+  <tabs>
+      <Tab text="Networks">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <VBox layoutX="8.0" layoutY="8.0" prefHeight="426.0" prefWidth="403.0" spacing="12.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="8.0">
+                     <padding>
+                        <Insets top="12.0" />
+                     </padding>
+                     <children>
+                        <HBox spacing="8.0">
+                           <children>
+                              <Label text="Title" />
+                              <TextField prefHeight="27.0" prefWidth="220.0" />
+                              <Label text="Background" />
+                              <ColorPicker style="-fx-color-label-visible: false;" />
+                           </children>
+                        </HBox>
+                        <HBox spacing="8.0">
+                           <children>
+                              <CheckBox mnemonicParsing="false" text="Node Selection" />
+                              <CheckBox mnemonicParsing="false" text="Edge Selection" />
+                           </children>
+                        </HBox>
+                        <HBox />
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+    <Tab text="Nodes">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <VBox spacing="12.0">
+                     <children>
+                        <HBox spacing="8.0">
+                           <children>
+                              <Label layoutX="10.0" layoutY="10.0" text="Shape" />
+                              <ChoiceBox fx:id="shapes" prefHeight="26.0" prefWidth="103.0" />
+                              <Label text="Width" />
+                              <TextField minWidth="50.0" prefHeight="26.0" prefWidth="50.0" />
+                              <Label layoutX="10.0" layoutY="10.0" text="Height" />
+                              <TextField layoutX="43.0" layoutY="10.0" minHeight="26.0" minWidth="50.0" prefWidth="50.0" />
+                           </children>
+                        </HBox>
+                        <HBox fx:id="footer" spacing="15.0">
+                           <children>
+                              <Label layoutX="10.0" layoutY="10.0" text="Fill" />
+                              <ColorPicker style="-fx-color-label-visible: false;" />
+                              <Label layoutX="10.0" layoutY="10.0" text="Border" />
+                              <ColorPicker layoutX="163.0" layoutY="10.0" style="-fx-color-label-visible: false;" />
+                              <Label layoutX="107.0" layoutY="10.0" text="Border Width" />
+                              <TextField prefHeight="26.0" prefWidth="40.0" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets top="12.0" />
+                     </padding>
+                  </VBox>
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab text="Edges">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <VBox layoutX="8.0" layoutY="8.0" prefHeight="426.0" prefWidth="403.0" spacing="12.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="8.0">
+                     <padding>
+                        <Insets top="12.0" />
+                     </padding>
+                     <children>
+                        <HBox spacing="8.0">
+                           <children>
+                              <Label text="Pen" />
+                              <ColorPicker style="-fx-color-label-visible: false;" />
+                              <Label text="Width" />
+                              <TextField prefHeight="26.0" prefWidth="40.0" />
+                              <Label text="Label" />
+                              <TextField prefWidth="200.0" />
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="8.0">
+                           <children>
+                              <Label text="Source" />
+                              <ChoiceBox fx:id="srcArrow" prefHeight="26.0" prefWidth="71.0" />
+                              <Label text="Stroke" />
+                              <ChoiceBox fx:id="strokes" prefWidth="150.0" />
+                              <Label text="Target" />
+                              <ChoiceBox fx:id="targetArrow" prefHeight="26.0" prefWidth="71.0" />
+                           </children>
+                        </HBox>
+                        <HBox />
+                     </children>
+                  </VBox>
+               </children></AnchorPane>
+      </content>
+    </Tab>
+  </tabs>
+</TabPane>

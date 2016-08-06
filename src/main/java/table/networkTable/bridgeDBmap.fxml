@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="625.0" prefWidth="624.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="table.networkTable.BridgeDbController">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem mnemonicParsing="false" text="New" />
+            <MenuItem mnemonicParsing="false" text="Open…" />
+            <Menu mnemonicParsing="false" text="Open Recent" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Close" />
+            <MenuItem mnemonicParsing="false" text="Save" />
+            <MenuItem mnemonicParsing="false" text="Save As…" />
+            <MenuItem mnemonicParsing="false" text="Revert" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Preferences…" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Quit" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Undo" />
+            <MenuItem mnemonicParsing="false" text="Redo" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Cut" />
+            <MenuItem mnemonicParsing="false" text="Copy" />
+            <MenuItem mnemonicParsing="false" text="Paste" />
+            <MenuItem mnemonicParsing="false" text="Delete" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Select All" />
+            <MenuItem mnemonicParsing="false" text="Unselect All" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+      <HBox spacing="10.0">
+         <children>
+            <Label text="Species" />
+            <ChoiceBox fx:id="organism" />
+         </children>
+      </HBox>
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+         <items>
+            <HBox prefHeight="32.0" prefWidth="414.0" spacing="8.0">
+               <children>
+                  <SplitPane dividerPositions="0.75" prefHeight="263.0" prefWidth="474.0" HBox.hgrow="ALWAYS">
+                     <items>
+                        <VBox>
+                           <children>
+                              <HBox spacing="10.0">
+                                 <children>
+                                    <Label text="Sources" />
+                                    <CheckBox fx:id="allRows" mnemonicParsing="false" onAction="#showAllRows" text="Show All Rows">
+                                       <font>
+                                          <Font size="9.0" />
+                                       </font>
+                                    </CheckBox>
+                                    <CheckBox fx:id="allColumns" mnemonicParsing="false" onAction="#showAllColumns" text="Show All Columns">
+                                       <font>
+                                          <Font size="9.0" />
+                                       </font>
+                                    </CheckBox>
+                                 </children>
+                              </HBox>
+                              <TableView fx:id="sourceTable" prefHeight="243.0" prefWidth="251.0">
+                                <columns>
+                                  <TableColumn fx:id="nameCol" prefWidth="75.0" text="Name" />
+                                  <TableColumn fx:id="systemCol" prefWidth="75.0" text="System" />
+                                    <TableColumn fx:id="urlCol" prefWidth="75.0" text="URL" />
+                                    <TableColumn fx:id="usageCol" prefWidth="75.0" text="Usage" />
+                                    <TableColumn fx:id="exampleCol" prefWidth="75.0" text="Example" />
+                                    <TableColumn fx:id="entityCol" prefWidth="75.0" text="Entity" />
+                                    <TableColumn fx:id="speciesCol" prefWidth="75.0" text="Species" />
+                                    <TableColumn fx:id="uriCol" prefWidth="75.0" text="URI" />
+                                    <TableColumn fx:id="regexCol" prefWidth="75.0" text="Regex" />
+                                    <TableColumn fx:id="officialNameCol" prefWidth="75.0" text="Official Name" />
+                                    <TableColumn fx:id="gravityStrCol" prefWidth="75.0" text="Gravity" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                        <VBox prefWidth="116.0">
+                           <children>
+                              <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="Targets" textAlignment="RIGHT" VBox.vgrow="NEVER">
+                                 <VBox.margin>
+                                    <Insets left="20.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <ListView fx:id="targetList" prefHeight="238.0" prefWidth="432.0" />
+                           </children>
+                        </VBox>
+                     </items>
+                  </SplitPane>
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <SplitPane dividerPositions="0.5">
+                     <items>
+                        <VBox>
+                           <children>
+                              <Label text="Identifiers to Map" />
+                              <TextArea fx:id="input" minWidth="-Infinity" prefHeight="459.0" prefWidth="200.0" text="Input" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label text="Results" />
+                              <TextArea fx:id="outputBridgeDB" prefHeight="343.0" prefWidth="770.0" promptText="Output From Queries" text="Output&#10;" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                     </items>
+                  </SplitPane>
+               </children>
+            </HBox>
+         </items>
+      </SplitPane>
+      <HBox>
+         <children>
+            <Button fx:id="attributes" mnemonicParsing="false" onAction="#doAttributeSet" prefHeight="32.0" prefWidth="113.0" text="Attributes">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+            <Button fx:id="search" mnemonicParsing="false" onAction="#doSearch" prefHeight="32.0" prefWidth="112.0" text="Search">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+  </children>
+</VBox>

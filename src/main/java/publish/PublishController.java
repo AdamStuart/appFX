@@ -23,7 +23,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -56,7 +55,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.web.HTMLEditor;
-import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.CSVTableData;
@@ -97,11 +95,8 @@ public class PublishController implements Initializable
 	@FXML ChoiceBox<String> species;
 	@FXML ChoiceBox<String> celltype;
 	@FXML ChoiceBox<String> technology;
-	@FXML ChoiceBox<String> organism;
-	@FXML ChoiceBox<String> system;
-
+	//---------------------------------------------- 
 	@FXML TextArea keywords;
-	public String getSelectedOrganism()	{		return organism.getSelectionModel().getSelectedItem();	}
 	public String getSelectedSpecies()	{		return species.getSelectionModel().getSelectedItem();	}
 	public String getSelectedCellType()	{		return celltype.getSelectionModel().getSelectedItem();	}
 	public String getSelectedTechnology(){		return technology.getSelectionModel().getSelectedItem();	}
@@ -123,10 +118,8 @@ public class PublishController implements Initializable
 	@FXML CheckBox qc;
 	@FXML CheckBox lucky;
 	@FXML Label droplabel;
-	@FXML Button bridgeDB;
-	@FXML Button attributes;
-	@FXML Button sources;
-	@FXML Button targets;
+	
+	
 
 	// Methods
 	@FXML private VBox connectionsBox; 
@@ -135,8 +128,6 @@ public class PublishController implements Initializable
 	private XMLFileTree fileTree = new XMLFileTree(null);
 	@FXML ListView<SOPLink> soplist = new ListView<SOPLink>();
 	@FXML private TextField filterText; 
-	@FXML private TextArea inputBridgeDB; 
-	@FXML private TextArea outputBridgeDB; 
 	
 	public String getFilterText()		{ return filterText.getText();	}
 	public void setFilterText(String s)	{ filterText.setText(s); }
@@ -220,10 +211,6 @@ public class PublishController implements Initializable
 		AnchorPane.setLeftAnchor(querier, 10d);
 		AnchorPane.setRightAnchor(querier, 10d);
 
-		organism.setItems(EDLParsingHelper.organismList);
-		organism.getSelectionModel().selectFirst();
-
-		
 		//Methods---------
 		setupXMLTree();
 		setupSOPList();
@@ -261,12 +248,14 @@ public class PublishController implements Initializable
 		
 //		String agendaUrl = "https://docs.google.com/document/d/1VT5hmAjFJSIQT_1YsJpF6ELrzmJ1iT2Lng0s-DyZnSg/edit?ts=563105e1";
 //		agendaPage.getEngine().load(agendaUrl);
-		anchors = new AnchorPane[] {abstractAnchor, research, methodsAnchor, checkpointAnchor, resultsAnchor, analysisAnchor, discussionAnchor};
+		anchors = new AnchorPane[] {abstractAnchor, research, bridgeDBAnchor, methodsAnchor, checkpointAnchor, resultsAnchor, analysisAnchor, discussionAnchor};
 		//, specsAnchor
 	}
-	//-------------------------------------------------------------------------------------				
+	//----------------------------------------------------------------------------------
 	public void start()
-	{
+	{ 
+		
+		
 		TabPaneDetacher.create().makeTabsDetachable(tocTabPane);
 	}
 				
@@ -461,32 +450,6 @@ public class PublishController implements Initializable
 			model.generateRawHistogramCharts(graphVBox);
 		}
 	}
-	//--------------------------------------------------------------------------------
-	@FXML private void doBridgeDB()
-	{
-		String keys = inputBridgeDB.getText().trim();
-		if (keys.length() == 0) return;
-		String lines[] = keys.split("\n");
-		for (String line : lines)
-			bridgeDBcall("search/" + line);
-	}
-
-	//--------------------------------------------------------------------------------
-	private void bridgeDBcall(String command)
-	{
-		System.out.println(command);
-		String species = organism.getValue();
-		String urlStr = "http://webservice.bridgedb.org/" + species + "/" + command;
-		String response = StringUtil.callURL(urlStr, true);
-		System.out.println(response);
-		outputBridgeDB.appendText( "\n===========================\n" + species + "/" + command + "\n\n");
-		outputBridgeDB.appendText(response);
-	}
-	//--------------------------------------------------------------------------------
-	@FXML private void doAttributeSet()	{	bridgeDBcall("attributeSet");	}
-	@FXML private void doSources()	{		bridgeDBcall("sourceDataSources");	}
-	@FXML private void doTargets()	{		bridgeDBcall("targetDataSources");	}
-	//--------------------------------------------------------------------------------
 	//--------------------------------------------------------------------------------
 	@FXML private void doViz()
 	{

@@ -1,0 +1,111 @@
+.root {
+	-fx-text-alignment: RIGHT;
+	-fx-background-color: BEIGE;
+    -fx-font-size: 11px;
+}
+.table-cell {
+    -fx-text-fill: #333333;
+    -fx-text-alignment: right;
+    -fx-font-size: 10px;
+}
+.label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+.chart-symbol { /* solid circle */
+    -fx-background-color: #093900;
+    -fx-background-radius: 2px;
+    -fx-padding: 2px;
+}
+.list {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+/*  hide the header of the Analysis:Classify tree */
+.classifierTree .column-header-background { -fx-font-size: 8px; -fx-text-alignment: center; -fx-padding: 1em; }		/* visibility: hidden;*/ 
+
+
+
+.cell {							
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+/*     -fx-background-color: linear-gradient(#FFEFEF, #EFFFFF); */
+
+	}
+.cell .selected {							
+    -fx-font-size: 12px;
+    -fx-background-color: linear-gradient(#FF3FEF, #EFFFFF);
+
+	}
+	
+/* 
+.label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+
+.cell {							
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#FFEFEF, #EFFFFF);
+
+	}
+.cell .selected {							
+    -fx-font-size: 46px;
+    -fx-background-color: linear-gradient(#FF3FEF, #EFFFFF);
+
+	}
+	
+	.selected {
+    -fx-background-color: green;
+	}
+	
+.subgrid {							
+    -fx-font-size: 24px;
+    -fx-background-color: white;
+
+	}
+
+.button {
+    -fx-text-fill: blue;
+    -fx-font-family: "Arial Narrow";
+    -fx-font-weight: bold;
+ /*     -fx-background-color: linear-gradient(#61a2b1, #2A5058);
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+.button:hover {
+    -fx-background-color: linear-gradient(#2A5058, #61a2b1);
+}
+
+
+ */
+/* Style for default table rows  
+.defaultTableStyle { 
+    -fx-font-size: 12px;
+    -fx-base: rgb(0,0,0,0);
+    -fx-background-color: 
+        linear-gradient( to top, derive(-fx-color, 35.77966101694915%) 0%, derive(-fx-color, 10.05084745762713%) 50%, derive(-fx-color, -8.559322033898283%) 50.5%, derive(-fx-color, -30.0%) 100%);                   
+    -fx-background-image: url('low_contrast_linen.png');
+    -fx-background-color: rgba(0,0,0,.75);        
+    -fx-border-color: gray;
+    -fx-border-width: 1 1 0 0;
+}
+
+ .numeric {
+    -fx-text-alignment: right;
+    -fx-alignment: bottom-right;
+}
+ .prompt {
+    -fx-text-alignment: right;
+    -fx-alignment: bottom-right;
+}
+ .color-picker .color-picker-label .text {	visibility: false;	}
+ 
+ */

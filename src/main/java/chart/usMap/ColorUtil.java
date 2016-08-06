@@ -108,7 +108,8 @@ public class ColorUtil
 		return r;
 
 	}
-	public static Color gray(double i)	{		return new Color(i, i, i, 1) ;	}
+	public static Color gray(double i)			{		return new Color(i, i, i, 1) ;	}
+	public static Color blueYellow(double i)	{		return new Color(1-i, 1-i, i, 1) ;	}
 
 
  }

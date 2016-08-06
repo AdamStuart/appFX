@@ -457,34 +457,43 @@ private String variableSubstitue(String s)
 	//---------------------------------------------------------------------
 	private ImageView makeImageView(Group parent, String filename)
 	{
-	    Image image = new Image(filename);
+	   try
+	   {
+		   Image image = new Image(filename);
 	    ImageView view =  new ImageView(image);
 	    parent.setOnDragEntered((DragEvent ev) -> dragenter(ev));
 	    parent.setOnDragOver((DragEvent ev) -> dragover(ev));
 	    parent.getChildren().add(view);
 	    return view;
-	}
+	   }
+	catch (Exception e) {  return null;}
+	 }
 	//---------------------------------------------------------------------
 	private void makeMediaView()
 	{
-		String path = "src/bookclub/video1.mp4";
-		// https://youtu.be/EU8rPW2KyAY
-		Media media = new Media(new File(path).toURI().toString());
-
-		MediaPlayer mediaPlayer = new MediaPlayer(media);
-		mediaPlayer.setAutoPlay(false);
-		MediaControl ctrol = new MediaControl(mediaPlayer);
-		mediaContainer.getChildren().add(ctrol);
-		ctrol.getMediaView().fitWidthProperty().bind(mediaContainer.widthProperty().divide(1.6));
-		ctrol.getMediaView().fitHeightProperty().bind(mediaContainer.heightProperty().divide(1.6));
-
-		// DropShadow effect
-		DropShadow dropshadow = new DropShadow();
-		dropshadow.setOffsetY(5.0);
-		dropshadow.setOffsetX(5.0);
-		dropshadow.setColor(Color.BROWN);
-		mediaContainer.setStyle("-fx-background-color: black;");
-		ctrol.setEffect(dropshadow);
+		try
+		{
+					
+			String path = "https://youtu.be/EU8rPW2KyAY"; //"src/bookclub/video1.mp4";
+			// https://youtu.be/EU8rPW2KyAY
+			Media media = new Media(new File(path).toURI().toString());
+	
+			MediaPlayer mediaPlayer = new MediaPlayer(media);
+			mediaPlayer.setAutoPlay(false);
+			MediaControl ctrol = new MediaControl(mediaPlayer);
+			mediaContainer.getChildren().add(ctrol);
+			ctrol.getMediaView().fitWidthProperty().bind(mediaContainer.widthProperty().divide(1.6));
+			ctrol.getMediaView().fitHeightProperty().bind(mediaContainer.heightProperty().divide(1.6));
+	
+			// DropShadow effect
+			DropShadow dropshadow = new DropShadow();
+			dropshadow.setOffsetY(5.0);
+			dropshadow.setOffsetX(5.0);
+			dropshadow.setColor(Color.BROWN);
+			mediaContainer.setStyle("-fx-background-color: black;");
+			ctrol.setEffect(dropshadow);
+		}
+		catch (Exception e) {}
 	}
 
 	//---------------------------------------------------------------------
