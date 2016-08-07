@@ -63,15 +63,24 @@
          <children>
             <Label text="Species" />
             <ChoiceBox fx:id="organism" />
+            <Button fx:id="match" layoutX="129.0" layoutY="10.0" mnemonicParsing="false" onAction="#doMatch" text="Match" />
+            <Button fx:id="search" mnemonicParsing="false" onAction="#doSearch" text="Search" />
+            <Button fx:id="join" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutY="10.0" mnemonicParsing="false" onAction="#doJoin" text="Join..." translateX="100.0" />
          </children>
       </HBox>
-      <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+      <SplitPane orientation="VERTICAL" VBox.vgrow="ALWAYS">
          <items>
             <HBox prefHeight="32.0" prefWidth="414.0" spacing="8.0">
                <children>
-                  <SplitPane dividerPositions="0.75" prefHeight="263.0" prefWidth="474.0" HBox.hgrow="ALWAYS">
+                  <SplitPane dividerPositions="0.5903225806451613, 0.7451612903225806, 0.5" prefHeight="263.0" prefWidth="474.0" HBox.hgrow="ALWAYS">
                      <items>
-                        <VBox>
+                        <VBox maxWidth="130.0">
+                           <children>
+                              <Label text="IDs to Map" />
+                              <TextArea fx:id="inputText" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                        <VBox minWidth="300.0" prefWidth="500.0">
                            <children>
                               <HBox spacing="10.0">
                                  <children>
@@ -88,7 +97,7 @@
                                     </CheckBox>
                                  </children>
                               </HBox>
-                              <TableView fx:id="sourceTable" prefHeight="243.0" prefWidth="251.0">
+                              <TableView fx:id="sourceTable" prefHeight="243.0" prefWidth="251.0" VBox.vgrow="ALWAYS">
                                 <columns>
                                   <TableColumn fx:id="nameCol" prefWidth="75.0" text="Name" />
                                   <TableColumn fx:id="systemCol" prefWidth="75.0" text="System" />
@@ -101,38 +110,25 @@
                                     <TableColumn fx:id="regexCol" prefWidth="75.0" text="Regex" />
                                     <TableColumn fx:id="officialNameCol" prefWidth="75.0" text="Official Name" />
                                     <TableColumn fx:id="gravityStrCol" prefWidth="75.0" text="Gravity" />
+                                    <TableColumn fx:id="targetsCol" prefWidth="75.0" text="Supported Targets" />
                                 </columns>
                               </TableView>
                            </children>
                         </VBox>
                         <VBox prefWidth="116.0">
                            <children>
-                              <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="Targets" textAlignment="RIGHT" VBox.vgrow="NEVER">
+                              <Label contentDisplay="RIGHT" minWidth="100.0" text="Targets" VBox.vgrow="NEVER">
                                  <VBox.margin>
-                                    <Insets left="20.0" />
+                                    <Insets left="2.0" />
                                  </VBox.margin>
                               </Label>
-                              <ListView fx:id="targetList" prefHeight="238.0" prefWidth="432.0" />
-                           </children>
-                        </VBox>
-                     </items>
-                  </SplitPane>
-               </children>
-            </HBox>
-            <HBox>
-               <children>
-                  <SplitPane dividerPositions="0.5">
-                     <items>
-                        <VBox>
-                           <children>
-                              <Label text="Identifiers to Map" />
-                              <TextArea fx:id="input" minWidth="-Infinity" prefHeight="459.0" prefWidth="200.0" text="Input" />
+                              <ListView fx:id="targetList" prefHeight="238.0" prefWidth="432.0" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
                         <VBox>
                            <children>
                               <Label text="Results" />
-                              <TextArea fx:id="outputBridgeDB" prefHeight="343.0" prefWidth="770.0" promptText="Output From Queries" text="Output&#10;" VBox.vgrow="ALWAYS" />
+                              <TableView fx:id="resultsTable" prefHeight="114.0" prefWidth="429.0" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
                      </items>
@@ -141,19 +137,5 @@
             </HBox>
          </items>
       </SplitPane>
-      <HBox>
-         <children>
-            <Button fx:id="attributes" mnemonicParsing="false" onAction="#doAttributeSet" prefHeight="32.0" prefWidth="113.0" text="Attributes">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Button>
-            <Button fx:id="search" mnemonicParsing="false" onAction="#doSearch" prefHeight="32.0" prefWidth="112.0" text="Search">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Button>
-         </children>
-      </HBox>
   </children>
 </VBox>

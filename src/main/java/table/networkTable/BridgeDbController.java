@@ -1,9 +1,15 @@
 package table.networkTable;
 
+import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,7 +18,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
-import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -22,16 +27,18 @@ import util.StringUtil;
 
 public class BridgeDbController implements Initializable
 {
+	@FXML ChoiceBox<String> organism;
+	@FXML private Button search;
+	@FXML private Button match;
 	@FXML private Button bridgeDB;
 	@FXML private Button attributes;
 	@FXML private Button sources;
 	@FXML private Button targets;
 	@FXML private CheckBox allRows;
 	@FXML private CheckBox allColumns;
-	@FXML private TextArea inputBridgeDB; 
-	@FXML private TextArea outputBridgeDB; 
+	@FXML private TextArea inputText; 
+	@FXML private TableView<GenericRecord> resultsTable; 
 
-	@FXML ChoiceBox<String> organism;
 //	@FXML ChoiceBox<String> system;
 	@FXML TableView<DataSourceRecord> sourceTable;
 	@FXML ListView<String> targetList;
@@ -46,6 +53,7 @@ public class BridgeDbController implements Initializable
 	@FXML TableColumn<DataSourceRecord, String> uriCol;
 	@FXML TableColumn<DataSourceRecord, String> regexCol;
 	@FXML TableColumn<DataSourceRecord, String> officialNameCol;
+	@FXML TableColumn<DataSourceRecord, String> targetsCol;
 	@FXML TableColumn<DataSourceRecord, String> gravityStrCol;
 	
 	//----------------------------------------------------------------------------------
@@ -53,15 +61,13 @@ public class BridgeDbController implements Initializable
 	{
 		organism.setItems(getSpeciesList());
 
-		organism.getSelectionModel().selectedIndexProperty().addListener(ev -> 
+		organism.getSelectionModel().selectedIndexProperty().addListener((obs, old, val) -> 
 		{ 
-			int idx = organism.getSelectionModel().getSelectedIndex();
-			String species =organism.getItems().get(idx);
-			setSpeciesInfo(species); 
-			species = species.substring(0, species.indexOf(" ("));
+			String species = organism.getItems().get(val.intValue());
 			System.out.println("setting species to " + species);
+			setSpeciesInfo(species); 
 			}); 
-		sourceTable.getSelectionModel().selectedIndexProperty().addListener(ev -> { setTargetForSource(); }); 
+		sourceTable.getSelectionModel().selectedIndexProperty().addListener((obs, old, val) -> { sourceChangeHandler(val); }); 
 //		TableColumn[] allCols = new TableColumn[]{nameCol, systemCol, urlCol, patternCol, 
 //				exampleCol, entityCol, speciesCol, entityTypeCol,
 //				uriCol, regexCol,officialNameCol };
@@ -77,15 +83,39 @@ public class BridgeDbController implements Initializable
 		uriCol.setCellValueFactory( cell -> cell.getValue().uriProperty());
 		regexCol.setCellValueFactory( cell -> cell.getValue().patternProperty());
 		officialNameCol.setCellValueFactory( cell -> cell.getValue().fullnameProperty());
+		targetsCol.setCellValueFactory( cell -> cell.getValue().supportedSystemsStrProperty());
 		organism.getSelectionModel().select(9);
 		nameCol.setPrefWidth(200);
 		speciesCol.setPrefWidth(100);
+		targetsCol.setPrefWidth(400);		// has a long string of target systems
 		targetList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-//		targetList.getSelectionModel().selectedItemProperty().addListener((obs,ov,nv)->{
-//			targetList.setItems(targetList.getSelectionModel().getSelectedItems());
-//        });
+		targetList.getSelectionModel().selectedItemProperty().addListener(ev->{ targetSelectionChanged(ev);});
 
        	}
+	//----------------------------------------------------------------------------------
+	
+	private String getSelectedSource()
+	{
+		DataSourceRecord rec =sourceTable.getSelectionModel().getSelectedItem();
+		return (rec != null) ? rec.getName() : "";
+				
+	}
+	//----------------------------------------------------------------------------------
+	private void targetSelectionChanged(Observable ev) {			// FIXME NOT TRIGGERING ON CMD CLICK DESELECTION
+		
+		List<String> selectedTargets = targetList.getSelectionModel().getSelectedItems();
+		resultsTable.getColumns().clear();
+		String selSrc  = getSelectedSource();
+		if (selSrc.length() > 0)
+		{
+			resultsTable.getColumns().add(new TableColumn(selSrc));
+			for (String col : selectedTargets)
+			{
+				TableColumn column = new TableColumn(col);
+				resultsTable.getColumns().add(column);
+			}
+		}
+	}
 	public void start()
 	{ 
 	}
@@ -108,37 +138,54 @@ public class BridgeDbController implements Initializable
 		return speciesList;
 	}
 	//--------------------------------------------------------------------------------
+	SimpleStringProperty species = new SimpleStringProperty();
 
-	private void setSpeciesInfo(String species)
+	private void setSpeciesInfo(String newSpecies)
 	{
 //		if (species.indexOf(" (") > 0)
 //			species = species.substring(0, species.indexOf(" ("));
-		readDataSources(species);	
-		readTargetSources(species);
+		species.set(newSpecies);
+		readDataSources();	
+		readTargetSources(getSpeciesShort());
 	}
 
 	//--------------------------------------------------------------------------------
-	private void setTargetForSource()
+	private void sourceChangeHandler(Number newSelectedIndex)
 	{
-		int idx = sourceTable.getSelectionModel().getSelectedIndex();
+		int idx = newSelectedIndex.intValue();
+		if (idx < 0) return;
+		targetList.getItems().clear();
+		DataSourceRecord rec = sourceTable.getItems().get(idx);
+		rec.checkSupportMap(getSpeciesShort(), this);
+		String supp = rec.getSupportedSystemsStr();
+		System.out.println("supported targets: " + supp);
+		for (String s : supp.split(" "))
+			targetList.getItems().add(systemToNameLookup.get(s));
 	}
 	
-	public void doSearch()
+//	//--------------------------------------------------------------------------------
+	@FXML public void doJoin()
 	{
-		String id = inputBridgeDB.getText();
-		int idx = id.indexOf("\n");
-		if (idx > 0)
-			id = id.substring(0, idx);
-		String species = getSpecies();
-		if (!id.trim().isEmpty())
+		System.out.println("doJoin");
+	}
+	@FXML public void doSearch()
+	{
+		String id = inputText.getText();  // TODO cleanup text   // listItemsToString();
+		String species = getSpeciesShort();
+		if (species.trim().isEmpty()) return;
+		
+		String lines[] = id.split("\n");
+		for (String line : lines)		
+		if (!line.trim().isEmpty())
 		{
-			String urlStr = BDB + species + "/search/" + id + "?limit=1";
+			String urlStr = BDB + species + "/search/" + line + "?limit=1";
 			String response = StringUtil.callURL(urlStr, true);
 			parseSearchResponse(id, response);
 		}
 	}
-	
+
 	private void parseSearchResponse(String inID, String response) {
+		int listIndex = -1;
 		for (String line : response.split("\n"))
 		{
 			if (line.contains(inID))
@@ -146,9 +193,17 @@ public class BridgeDbController implements Initializable
 				String [] parts = line.split("\t");
 				if (parts.length > 1)
 				{
-					if (parts[1].equals(inID))
+					if (parts[0].equals(inID))
 					{
-						int listIndex = sourceTable.getItems().indexOf(parts[1]);
+						for (int i=0; i<parts.length; i++)
+						{
+							DataSourceRecord rec = sourceTable.getItems().get(i);
+							if (rec.getName().equals(parts[1]))
+							{
+								listIndex = i;
+								break;
+							}
+						}			
 						if (listIndex >= 0)
 						{
 							sourceTable.getSelectionModel().select(listIndex);
@@ -167,111 +222,231 @@ public class BridgeDbController implements Initializable
 	}
 
 	//----------------------------------------------------------------------------------
-	List<DataSourceRecord> allDataSources = FXCollections.observableArrayList();;
-	List<DataSourceRecord> minimalDataSources = FXCollections.observableArrayList();;
+	ObservableList<DataSourceRecord> allDataSources = FXCollections.observableArrayList();
+	ObservableList<DataSourceRecord> minimalDataSources = FXCollections.observableArrayList();
+	ObservableList<DataSourceRecord> matchingDataSources = FXCollections.observableArrayList();
 	
-	public void readDataSources(String fullSpecies)
+	public void readDataSources()
 	{
 		allDataSources.clear();
 		minimalDataSources.clear();
+		matchingDataSources.clear();
 		List<String> lines = FileUtil.readFileIntoStringList("/Users/adamtreister/Desktop/datasources.txt");
-		for (String line : lines)
+		for (String line : lines)			// read in all DataSourceRecords unfiltered
 		{
 			if (line.trim().length() == 0) continue;
+			if (line.startsWith("name\tsystem")) continue;		// ignore first line as column heads
 			DataSourceRecord rec= new DataSourceRecord(line);
-			String exclusive = rec.getExclusiveSpecies();
 			allDataSources.add(rec);
-			if (rec.speciesIncluded(fullSpecies))
-			{
-				if (rec.gravity() > 0 || exclusive.length() > 0) 
-					minimalDataSources.add(rec);
-			}
 		}
-		loadSourceTable();
+		buildSourceMap(allDataSources);		// be able to convert system <-> name
+		loadSourceTable();					// filter full set down to a few and populate the table
 	}
-	
-	private boolean allRows() { return allRows.isSelected();  }
-	private boolean allColumns() { return allColumns.isSelected();  }
-	@FXML private void showAllRows() {   loadSourceTable();  }
-	@FXML private void showAllColumns() { loadSourceTable();   }
-	
-	private void loadSourceTable() 
-	{   
-		sourceTable.getItems().clear();
-		sourceTable.getItems().addAll(allRows() ? allDataSources : minimalDataSources);
-		
-		boolean showAll = allColumns();
-		TableColumn[] optionalCols = new TableColumn[]{urlCol, usageCol, exampleCol, entityCol, uriCol, regexCol,officialNameCol,gravityStrCol };
-		for (TableColumn col : optionalCols)
-			col.setVisible(showAll);
-	}
-
-	
-	public void readTargetSources(String species)
+	@FXML private void doMatch()
 	{
-		if (species.indexOf(" (") > 0)
-			species = species.substring(0, species.indexOf(" ("));
-		String urlStr = BDB + species + "/targetDataSources";
-		String response = StringUtil.callURL(urlStr, true);
-		System.out.println(response);
-		targetList.getItems().clear();
-		for (String s : response.split("\n"))
+		generateMatchingSourcesFields();
+		
+		String s = inputText.getText();
+		match(s);
+	}
+	private void generateMatchingSourcesFields()
+	{
+		ObservableList<DataSourceRecord> visibleDataSources = FXCollections.observableArrayList();
+		visibleDataSources.addAll(sourceTable.getItems());
+		int i = 0;
+		StringBuilder builder = new StringBuilder();
+		for (DataSourceRecord rec : visibleDataSources)
 		{
-			if (!s.trim().isEmpty())
-				targetList.getItems().add(s);
+			System.err.println("checkSupportMapping " + i++);
+			rec.checkSupportMap(getSpeciesShort(), this);
+			builder.append(rec.getSystem() + "\t" + rec.getSupportedSystemsStr() + "\n");
 		}
+		FileUtil.writeTextFile(new File("/Users/adamtreister/Desktop/"), 
+				"jointable.txt", builder.toString());
+	}
+	
+	public void match(String s)
+	{
+		loadSourceTable();
+//		matchingDataSources.clear();
+//		for (DataSourceRecord rec : allDataSources)
+//			if (rec.patternMatch(s))
+//				matchingDataSources.add(rec);
+//		sourceTable.setItems(matchingDataSources);
+		System.out.println("sourceTable has  -> " + sourceTable.getItems().size() + " matches");
 	}
 	//--------------------------------------------------------------------------------
-	private void bridgeDBcall(String command)
+//	public Map<String, String> targetsFor(List<DataSourceRecord> dataSourceList, String species, String srcSystem) {
+//		Map<String, String> map = new HashMap<String, String>();
+//		
+//		System.out.print(srcSystem + "\t");
+//		for (DataSourceRecord record : dataSourceList)
+//		{
+//			String targets = targetsForRec(record, species);
+//			map.put(record.getSystem(), targets);
+//			System.out.println(targets);
+//		}
+//		return map;
+//	}
+	//--------------------------------------------------------------------------------
+	// builds a string of all targets supporting this source
+	
+	public String targetsForRec(DataSourceRecord dataSource, String species) {
+		String systemSrc = dataSource.getSystem();
+		StringBuilder builder = new StringBuilder();		//systemSrc + "\t"
+		for (String targ : speciesTargets)
+		{
+			String targSys = nameToSystemLookup.get(targ);
+			if (targSys == null) continue;
+			String sys = dataSource.getSystem();
+//			if (targSys.equals(systemSrc)) continue;		if this is removed its harder to compare the targets for any given source
+			String compatReq = "isMappingSupported/" + systemSrc + "/" + sys;
+			String response = bridgeDbcall(compatReq);
+			boolean supported = response.toLowerCase().contains("true");
+			if (supported) 
+				builder.append(targSys + " ");
+		}
+		System.out.println(systemSrc + " -> " + builder.toString());
+		return builder.toString();
+	}
+	//--------------------------------------------------------------------------------
+	private String bridgeDbcall(String command)
 	{
-		System.out.println(command);
-		String id = command.substring(command.indexOf("/") + 1);
+//		System.out.println(command);
 		String species = organism.getValue();
 		int idx = species.indexOf(" (");
 		if (idx > 0) species = species.substring(0, idx);
 		String urlStr =BDB + species + "/" + command;
-		String response = StringUtil.callURL(urlStr, true);
-		System.out.println(response);
-		outputBridgeDB.appendText( "\n===========================\n" + species + "/" + command + "\n\n");
-		for (String line : response.split("\n"))
+		return StringUtil.callURL(urlStr, true);
+	}
+
+	//--------------------------------------------------------------------------------
+	HashMap<String, String> systemToNameLookup;
+	HashMap<String, String> nameToSystemLookup;
+	
+	private void buildSourceMap(List<DataSourceRecord> sources) {
+		systemToNameLookup= new HashMap<String, String>();
+		nameToSystemLookup= new HashMap<String, String>();
+		for (DataSourceRecord rec : sources)
 		{
-			String[] flds = line.split("\t");
-			if (flds.length > 1)
-				if (id.equals(flds[0]))
-					outputBridgeDB.appendText("\n" + line);
+			String name = rec.getName();
+			String sys=rec.getSystem();
+			systemToNameLookup.put(sys, name);
+			nameToSystemLookup.put(name, sys);
 		}
 	}
-	public String getSpecies()		{ 		return organism.getSelectionModel().getSelectedItem();} 
-	public String getSpeciesShort()		{ 	String s = getSpecies(); 
-											int idx = s.indexOf(" (");
-											return s.substring(0, idx);} 
 	//--------------------------------------------------------------------------------
-	@FXML private void doAttributeSet()	{	bridgeDBcall("attributeSet");	}
-	@FXML private void doSources()	{		readDataSources(getSpecies());			}			// bridgeDBcall("sourceDataSources");
-	@FXML private void doTargets()	{		bridgeDBcall("targetDataSources");	}
+	private boolean allRowsVisible() 	{ return allRows.isSelected();  }
+	private boolean allColumns() 		{ return allColumns.isSelected();  }
+	@FXML private void showAllRows() 	{ loadSourceTable();  }
+	@FXML private void showAllColumns() { loadSourceTable();   }
+	
 	//--------------------------------------------------------------------------------
-	//--------------------------------------------------------------------------------
-	@FXML private void doBridgeDB()
-	{
-		String keys = inputBridgeDB.getText().trim();
-		if (keys.length() == 0) return;
-		String lines[] = keys.split("\n");
-		for (String line : lines)
-			if (line.trim().length() > 0)
-				bridgeDBcall("search/" + line);
+	private void loadSourceTable() 
+	{   
+		ObservableList<DataSourceRecord> items = sourceTable.getItems();
+		items.clear();
+//		items.addAll(allRows() ? allDataSources : minimalDataSources);
+
+		String input =  inputText.getText().trim();
+		items.addAll(allDataSources.stream()
+				.filter(isSpeciesSpecific(getSpeciesLatin()))
+				.filter(positveGravity(allRowsVisible()))
+				.filter(inputMatchesPattern(input))
+				.filter(hasAvailableTargets())
+				.collect(Collectors.toList()));
+
+		if (items.size() > 0) 
+			sourceTable.getSelectionModel().select(0);
+
+		boolean showAll = allColumns();
+		TableColumn[] optionalCols = new TableColumn[]{urlCol, usageCol, entityCol, uriCol, regexCol,officialNameCol,gravityStrCol, targetsCol };
+		for (TableColumn col : optionalCols)
+			col.setVisible(showAll);
+	}
+	Predicate<DataSourceRecord> nameEmpty = p -> p.getName() != null;
+	public static Predicate<DataSourceRecord> isSpeciesSpecific() {
+	    return rec -> StringUtil.isEmpty(rec.getExclusiveSpecies()); }
+
+	public static Predicate<DataSourceRecord> isSpeciesSpecific(String species) {
+	    return rec -> {
+	    	String excl = rec.getExclusiveSpecies();
+	    	return StringUtil.isEmpty(excl) || species.contains(excl);   };
+	}
+	
+	private static Predicate<DataSourceRecord> positveGravity(boolean allRows) {
+		return rec -> allRows || rec.gravity() > 0;
+	}
+	
+	private static Predicate<DataSourceRecord> inputMatchesPattern(String input) {
+		return rec -> {
+			if (input.trim().isEmpty()) return true;
+			return rec.patternMatch(input);
+		};
+	}
+	private static Predicate<DataSourceRecord> hasAvailableTargets() {
+		return rec -> rec.anySupportedSystems();
 	}
 
 	//--------------------------------------------------------------------------------
-	@FXML private void setSpecies()
+	// called when the organism is set, filters down targets for that species
+	ObservableList<String> speciesTargets = FXCollections.observableArrayList();
+	
+	public void readTargetSources(String species)
 	{
-		String keys = inputBridgeDB.getText().trim();
-		if (keys.length() == 0) return;
-		String lines[] = keys.split("\n");
-		for (String line : lines)
-			bridgeDBcall("search/" + line);
+		if (StringUtil.isEmpty(species)) return;
+		String urlStr = BDB + species + "/targetDataSources";
+		String response = StringUtil.callURL(urlStr, true);
+		System.out.println(urlStr + "\n\n" + response+ "\n\n");
+		speciesTargets.clear();
+		targetList.getItems().clear();
+		for (String s : response.split("\n"))
+			if (!s.trim().isEmpty())
+				speciesTargets.add(s);
+		targetList.getItems().addAll(speciesTargets);
 	}
 
-	//---------------------------------------------- BridgeDB panel
+	//--------------------------------------------------------------------------------
+	public String getSpecies()		{ 		return species.get();} 
+
+	public String getSpeciesShort()		{ 	
+		String s = getSpecies(); 
+		if (s == null) return "";
+		int idx = s.indexOf(" (");
+		return s.substring(0, idx);
+	} 
+	
+	public String getSpeciesLatin()		{ 	
+		String s = getSpecies(); 
+		if (s == null) return "";
+		int idx = s.indexOf(" (");
+		return s.substring(idx, s.indexOf(")"));
+	} 
+	//--------------------------------------------------------------------------------
+//	@FXML private void doAttributeSet()	{	bridgeDBcall("attributeSet");	}
+//	private void doSources()		{		readDataSources(getSpecies());			}			// bridgeDBcall("sourceDataSources");
+//	private void doTargets()		{		bridgeDBcall("targetDataSources");	}
+	//--------------------------------------------------------------------------------
+
+//	//--------------------------------------------------------------------------------
+//	@FXML private void doSearch()
+//	{
+//		String keys = listItemsToString(inputList);
+//		if (keys.length() == 0) return;
+//		String lines[] = keys.split("\n");
+//		for (String line : lines)
+//			if (line.trim().length() > 0)
+//				bridgeDBcall("search/" + line);
+//	}
+//	
+//	
+//	private String listItemsToString(ListView<String> aList) {
+//		StringBuilder str = new StringBuilder();
+//		for (String a : aList.getItems())
+//			str.append(a + "\n");
+//		return str.toString();
+//	}
+//	
 
 
 }

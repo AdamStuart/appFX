@@ -1,7 +1,11 @@
 package table.networkTable;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import util.StringUtil;
 
 public class DataSourceRecord {
 
@@ -17,9 +21,11 @@ public class DataSourceRecord {
 	StringProperty idtype = new SimpleStringProperty();
 	StringProperty pattern = new SimpleStringProperty();
 	StringProperty fullname = new SimpleStringProperty();
+	StringProperty supportedSystemsStr = new SimpleStringProperty();
 	double gravity;
 
-
+	public String toString() {  return getName() + " " + getExample(); }
+	
 	public String getName() 				{		return name.get();	}
 	public void setName(String s) 			{		name.set(s);	}
 	public StringProperty nameProperty()	{		return name;	}
@@ -64,25 +70,24 @@ public class DataSourceRecord {
 	public void setPattern(String s) 		{		pattern.set(s);	}
 	public StringProperty patternProperty()	{		return pattern;	}
 
-	
 	public String getFullname() 			{		return fullname.get();	}
 	public void setFullname(String s) 		{		fullname.set(s);	}
 	public StringProperty fullnameProperty(){		return fullname;	}
 
+	public String getSupportedSystemsStr() 			{		return supportedSystemsStr.get();	}
+	public void setSupportedSystemsStr(String s) 		{		supportedSystemsStr.set(s);	}
+	public StringProperty supportedSystemsStrProperty(){		return supportedSystemsStr;	}
+
+	
+	
 	public DataSourceRecord(String inputLine)
 	{
+		StringProperty[] model = new StringProperty[] { name, system, site, usage, example, entity, exclusiveSpecies, gravityStr, uri, pattern, fullname, supportedSystemsStr };
 		String[] flds = inputLine.split("\t");
-		name.set(flds[0].trim());
-		system.set(flds[1].trim());
-		site.set(flds[2].trim());
-		usage.set(flds[3].trim());
-		example.set(flds[4].trim());
-		entity.set(flds[5].trim());
-		exclusiveSpecies.set(flds[6].trim());
-		gravityStr.set(flds[7].trim());
-		uri.set(flds[8].trim());
-		pattern.set(flds[9].trim());
-		fullname.set(flds[10].trim());
+		
+		for (int i = 0; i < flds.length; i++)
+			model[i].set(flds[i].trim());
+
 		try 
 		{
 			gravity = Double.parseDouble(gravityStr.get());
@@ -93,16 +98,38 @@ public class DataSourceRecord {
 		}
 	}
 
-
-
 	public double gravity() {		return gravity;	}
 
-
+	public boolean patternMatch(String s)
+	{
+		if (getPattern().trim().length() == 0) return true;
+		Pattern pat = Pattern.compile(getPattern());
+		Matcher match = pat.matcher(s);
+		boolean itsaMatch = match.matches();
+		System.out.println((itsaMatch ? "YES" : " NO") + ": " + getName()+ " [ " + getPattern() + " ] \t matches " + s);
+		return itsaMatch;
+	}
 
 	public boolean speciesIncluded(String fullSpecies) {
 		if (exclusiveSpecies.get().length() > 0)
 				return fullSpecies.contains(exclusiveSpecies.get());
 		return true;
+	}
+	
+	// this is the map of all the target systems this source could write to
+	public void checkSupportMap(String speciesShort, BridgeDbController ctrol) {
+		String str = getSupportedSystemsStr();
+		if (StringUtil.isEmpty(str))
+		{
+			String supported = ctrol.targetsForRec(this, speciesShort);
+			setSupportedSystemsStr(supported);
+		}
+	}
+
+	public boolean anySupportedSystems() {
+		String val = getSupportedSystemsStr();
+		if (val == null) return false;
+		return	val.trim().length() > 0;  
 	}
 
 }
