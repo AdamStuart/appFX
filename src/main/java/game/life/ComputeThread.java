@@ -150,7 +150,7 @@ import javafx.scene.shape.Rectangle;
   					if (count > 0) {
 	  						/*
 					 * create the object of res futures; that is a
-					 * "promise" of Point ("live" or. "Dead")
+					 * "promise" of Point ("live" or "dead")
 					 */
 					ComputeTask tsk = new ComputeTask(adjoining9, i, j);
 					Future<Rectangle> res = executor.submit(tsk);

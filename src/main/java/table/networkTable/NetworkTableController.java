@@ -1,29 +1,31 @@
 package table.networkTable;
 
+import java.awt.Paint;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.h2.store.PageInputStream;
+
+import gui.Backgrounds;
 import icon.FontAwesomeIcons;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
@@ -32,10 +34,9 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import util.DialogUtil;
-import util.FileUtil;
-import util.StringUtil;
 
 public class NetworkTableController implements Initializable
 {
@@ -169,6 +170,8 @@ public class NetworkTableController implements Initializable
 
         return row ;
     });
+		
+		showHeatmap();
 	}
 
 	private void getInfo(int idx) {
@@ -230,28 +233,51 @@ public class NetworkTableController implements Initializable
 
 	private void initializeModel()
 	{
+		int nNodes = 100;
+		NodeRecord[] nodes = new NodeRecord[nNodes];
+		for (int i=0; i<nNodes; i++)
+			nodes[i] =  new NodeRecord("00"+i, "A"+(i+1), "N"+i, "Unknown Table Node");
+		nodeTable.getItems().addAll(nodes);
+//		
+//		
+//		NodeRecord node1 = new NodeRecord("0001", "A", "TNF", "Terminal Necrosis Factor");
+//		NodeRecord node2 = new NodeRecord("0002", "B", "TP53", "Tumor Protein 53");
+//		NodeRecord node3 = new NodeRecord("0003", "C", "DAPK2", "Death-associated protein kinase 2 ");
+//		NodeRecord node4 = new NodeRecord("0004", "D", "MLH1", "mutL homolog 1, colon cancer, nonpolyposis type 2");
+//		NodeRecord node5 = new NodeRecord("0005", "E", "E2F3", "E2F transcription factor 3");
+//		NodeRecord node6 = new NodeRecord("0006", "F", "LAMC3", "Laminin, gamma 3");
+//		NodeRecord node7 = new NodeRecord("0007", "G", "BRCA", "Breast Cancer 1");
+//		NodeRecord node8 = new NodeRecord("0008", "H", "PDGFB", "Platelet-derived growth factor beta polypeptide");
+//		nodeTable.getItems().addAll(node1, node2, node3, node4, node5, node6, node7, node8	);
+//
+//		EdgeRecord edge1 = new EdgeRecord("E001", node1, node2, "coex");
+//		EdgeRecord edge2 = new EdgeRecord("E002", node1, node3, "coex");
+//		EdgeRecord edge3 = new EdgeRecord("E003", node3, node4, "coex");
+//		edgeTable.getItems().addAll(edge1, edge2, edge3);
+//
+//		NetworkRecord net1 = new NetworkRecord("N001", "PrimaryNet");
+//		NetworkRecord net2 = new NetworkRecord("N002", "SecondaryNet");
+//		NetworkRecord net3 = new NetworkRecord("N003", "TertiaryNet");
+//		netTable.getItems().addAll(net1, net2, net3);
+
 		
-		NodeRecord node1 = new NodeRecord("0001", "TNF", "Terminal Necrosis Factor");
-		NodeRecord node2 = new NodeRecord("0002", "TP53", "Tumor Protein 53");
-		NodeRecord node3 = new NodeRecord("0003", "DAPK2", "Death-associated protein kinase 2 ");
-		NodeRecord node4 = new NodeRecord("0004", "MLH1", "mutL homolog 1, colon cancer, nonpolyposis type 2");
-		NodeRecord node5 = new NodeRecord("0005", "E2F3", "E2F transcription factor 3");
-		NodeRecord node6 = new NodeRecord("0006", "LAMC3", "Laminin, gamma 3");
-		NodeRecord node7 = new NodeRecord("0007", "BRCA", "Breast Cancer 1");
-		NodeRecord node8 = new NodeRecord("0008", "PDGFB", "Platelet-derived growth factor beta polypeptide");
-
-		EdgeRecord edge1 = new EdgeRecord("E001", node1, node2, "coex");
-		EdgeRecord edge2 = new EdgeRecord("E002", node1, node3, "coex");
-		EdgeRecord edge3 = new EdgeRecord("E003", node3, node4, "coex");
-
-		NetworkRecord net1 = new NetworkRecord("N001", "PrimaryNet");
-		NetworkRecord net2 = new NetworkRecord("N0021", "SecondaryNet");
-		NetworkRecord net3 = new NetworkRecord("N003", "TertiaryNet");
-
-		netTable.getItems().addAll(net1, net2, net3);
-		nodeTable.getItems().addAll(node1, node2, node3, node4, node5, node6, node7, node8);
-		edgeTable.getItems().addAll(edge1, edge2, edge3);
+		squareMap = generateSquareMap();
 	}
+	Group squareMap;
+	
+	private Group generateSquareMap() {
+		ObservableList<NodeRecord> items = nodeTable.getItems();
+		SquareMap sqMap = new SquareMap(items);
+		sqMap.makeRows();
+		sqMap.fillSquares();
+		return sqMap.getParentGroup();
+	}
+//
+//	private Map<? extends String, ? extends HashMap<String, Double>> buildCoexpressionMatrix(
+//			ObservableList<NodeRecord> items) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	private Stage stage;
 	public void setStage(Stage primaryStage)	{		stage = primaryStage;	}
@@ -336,6 +362,21 @@ public class NetworkTableController implements Initializable
 		// Create the custom dialog.
 //			Dialog<Pair<String, String>> dialog = new Dialog<>();
 		dlog.showAndWait();
+	}
+	//----------------------------------------------------------------------------------
+	@FXML private void showHeatmap()
+	{
+		System.out.println("showHeatmap");
+		Group coexGroup = generateSquareMap();
+		Dialog dlog = new HeatmapDialog("Coex", coexGroup, this);
+		// Create the custom dialog.
+//			Dialog<Pair<String, String>> dialog = new Dialog<>();
+		dlog.showAndWait();
+	}
+
+	public void reset(Dialog dlog) {
+		dlog.getDialogPane().getChildren().clear();		
+		dlog.getDialogPane().getChildren().add(generateSquareMap());		
 	}
 
 }

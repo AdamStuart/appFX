@@ -52,7 +52,6 @@ public class ColorUtil
       {
           if (colors[i] <= 0.04045)   	colors[i] = colors[i] / 12.92;
            else               			colors[i] = Math.pow((colors[i] + 0.055) / 1.055, 2.4);
-          
       }
       return Color.color(colors[0], colors[1], colors[2], color.getOpacity());
   }
@@ -109,7 +108,7 @@ public class ColorUtil
 
 	}
 	public static Color gray(double i)			{		return new Color(i, i, i, 1) ;	}
-	public static Color blueYellow(double i)	{		return new Color(1-i, 1-i, i, 1) ;	}
+	public static Color blueYellow(double i)	{		return new Color(i, i, 1-i, 1) ;	}
 
 
  }

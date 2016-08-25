@@ -25,15 +25,17 @@ package chart.waterloo.markers;
 
 import javafx.scene.shape.Polygon;
 
-/**
- *
- * @author Malcolm Lidierth
- */
 public class Square extends Polygon implements CenteredShapeInterface {
     
     public Square(double h){
         double[] x={-h, h, h, -h};
         double[] y={h, h, -h, -h};
+        getPoints().addAll(x[0], y[0], x[1], y[1], x[2], y[2], x[3], y[3]);
+    }
+
+    public Square(double xIn, double yIn, double h){
+        double[] x={xIn -h, xIn + h, xIn + h, xIn -h };
+        double[] y={yIn + h, yIn + h,yIn -h,yIn -h};
         getPoints().addAll(x[0], y[0], x[1], y[1], x[2], y[2], x[3], y[3]);
     }
 

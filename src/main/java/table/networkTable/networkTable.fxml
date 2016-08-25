@@ -74,7 +74,7 @@
                   <Menu mnemonicParsing="false" text="Annotate">
                      <items>
                         <MenuItem mnemonicParsing="false" text="Map IDs..." />
-                        <MenuItem mnemonicParsing="false" text="Enrich..." />
+                        <MenuItem mnemonicParsing="false" text="Enrich..." onAction="#showHeatmap" />
                         <MenuItem mnemonicParsing="false" text="Set Color..." />
                      </items>
                   </Menu>

@@ -128,7 +128,11 @@
                         <VBox>
                            <children>
                               <Label text="Results" />
-                              <TableView fx:id="resultsTable" prefHeight="114.0" prefWidth="429.0" VBox.vgrow="ALWAYS" />
+                              <TableView fx:id="resultsTable" prefHeight="114.0" prefWidth="429.0" VBox.vgrow="ALWAYS">
+                                 <columns>
+                                    <TableColumn fx:id="attributeCol" prefWidth="75.0" text="ID" />
+                                    <TableColumn fx:id="valueCol" prefWidth="75.0" text="Value" />
+                                 </columns></TableView>
                            </children>
                         </VBox>
                      </items>
