@@ -1,23 +1,16 @@
-package table.networkTable;
+package chart.heatmap.draggable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import animation.AnimationUtils;
-import chart.usMap.ColorUtil;
-import chart.waterloo.markers.Square;
 import gui.Backgrounds;
-import gui.Borders;
-import javafx.animation.Transition;
-import javafx.collections.ObservableList;
 import javafx.scene.Group;
-import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import model.Range;
+import table.networkTable.NodeRecord;
 
 public class SquareMap extends HashMap<String, HashMap<String, Double>> {
 
@@ -44,7 +37,7 @@ public class SquareMap extends HashMap<String, HashMap<String, Double>> {
 	public String getName(int col) {		return names.get(col);	}	
 	
 	//---------------------------------------------------
-	public SquareMap(ObservableList<NodeRecord> items) {
+	public SquareMap(List<NodeRecord> items) {
 
 		len = items.size();
 		double totalSize = len *  SquareMap.CELL_WIDTH + 2 * MARGIN;
@@ -56,12 +49,8 @@ public class SquareMap extends HashMap<String, HashMap<String, Double>> {
 		
 		for (NodeRecord rec : items)
 			names.add(rec.getName());
-		double x = 0.2;
 		for (NodeRecord rec : items)
-		{
-			put(rec.getName(), rec.buildCoexpressionMap(items, x));
-			x += 0.05;
-		}
+			put(rec.getName(), rec.buildCoexpressionMap(items));	
 		range = getTotalRange(items);
 //		for (NodeRecord rec : items)
 //			rec.normalize(range);
@@ -136,37 +125,37 @@ public class SquareMap extends HashMap<String, HashMap<String, Double>> {
 		fillSquares();
 	}
 	
-	private void dump()
-	{
-		for (int i=0; i<len; i++)
-			rowGroups[i].dump(names.get(i));
-		System.out.println("");
-	}
+//	private void dump()
+//	{
+//		for (int i=0; i<len; i++)
+//			rowGroups[i].dump(names.get(i));
+//		System.out.println("");
+//	}
 	//-----------------------------------------------------------------------------------------
 	// model based utilities to get ranges and fill / normalize arrays.
 	
-	private Range getTotalRange(ObservableList<NodeRecord> items)
+	private Range getTotalRange(List<NodeRecord> items)
 	{
 		Range r = new Range(Double.MAX_VALUE, Double.MIN_VALUE);
 		for (NodeRecord rec : items)
 			r.union(rec.getRange());
 		return r;
 	}
-
-	private Range getValueRange() {
-
-		double min = Double.MAX_VALUE;
-		double max = Double.MIN_VALUE;
-		for (String name : names) {
-			HashMap<String, Double> row = get(name);
-			for (String str : names) {
-				double d = row.get(str);
-				if (d < min)	min = d;
-				if (d > max)	max = d;
-			}
-		}
-		return new Range(min, max);
-	}
+//
+//	private Range getValueRange() {
+//
+//		double min = Double.MAX_VALUE;
+//		double max = Double.MIN_VALUE;
+//		for (String name : names) {
+//			HashMap<String, Double> row = get(name);
+//			for (String str : names) {
+//				double d = row.get(str);
+//				if (d < min)	min = d;
+//				if (d > max)	max = d;
+//			}
+//		}
+//		return new Range(min, max);
+//	}
 	
 	private Range getValueRange(double [][] values) {
 

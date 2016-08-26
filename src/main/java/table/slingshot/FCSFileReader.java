@@ -134,7 +134,7 @@ public class FCSFileReader
 				int bytesPerInt = Integer.SIZE / Byte.SIZE;
 				int idx = bodyStart + i * bytesPerInt;
 				if (idx > byteBuffer.limit()-4)
-					System.out.println("errror");
+					System.out.println("error");
 				int nextI = byteBuffer.getInt(idx);
 				if (i % parms == 0)
 					xData[i / parms] = nextI;

@@ -1,9 +1,9 @@
 package table.networkTable;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.ObservableList;
 import model.Range;
 
 public class NodeRecord extends AbstractTableRow
@@ -24,7 +24,7 @@ public class NodeRecord extends AbstractTableRow
 	public SimpleStringProperty descriptionProperty()	{ return description;	};
 	public 	String  getDescription()					{ return description.get();	};
 	public 	void setDescription(String s)				{ description.set(s);	}
-	public boolean equals(NodeRecord other) {	return description.equals(other.getDescription());}
+	public boolean equals(NodeRecord other) {	return getName().equals(other.getName());}
 	// ---------------------------------------------------------
 	double[] coexpression = null;
 	HashMap<String, Double> coexpressionMap = null;
@@ -32,19 +32,18 @@ public class NodeRecord extends AbstractTableRow
 	Range range = new Range();			// for now its always 0-1
 	public Range getRange() {		return range;	}
 	
-	public void buildCoexpressionArray(ObservableList<NodeRecord> items) {
+	public void buildCoexpressionArray(List<NodeRecord> items) {
 		if (coexpression == null)
 		{
 			int siz = items.size();
 			coexpression = new double[siz];
 			for (int i = 0; i< siz; i++)
-			{
 				coexpression[i] = (items.get(i).equals(this)) ? 1 : 0.1 * i;
-			}
 		}
 	}
-	public HashMap<String, Double> buildCoexpressionMap(ObservableList<NodeRecord> items, double val) {
-		
+	
+	public HashMap<String, Double> buildCoexpressionMap(List<NodeRecord> items) //, double val
+	{
 		buildCoexpressionArray(items);
 		if (coexpressionMap == null)
 		{
@@ -53,16 +52,16 @@ public class NodeRecord extends AbstractTableRow
 			for (int i = 0; i< siz; i++)
 			{
 				NodeRecord rec = items.get(i);
-				coexpressionMap.put(rec.getName(), (rec.equals(this)) ? 1. : val + 0.1 * i);
+				coexpressionMap.put(rec.getName(), (rec.equals(this)) ? 1. : 0.85 * Math.random());
 			}
 		}
 		return coexpressionMap;
 	}
-	private HashMap<String, Double> getCoexpressionMap() {
-		return coexpressionMap;
-	}
+//	private HashMap<String, Double> getCoexpressionMap() {
+//		return coexpressionMap;
+//	}
 
-	public void resetCoexpression() { coexpression = null;	}
+	public void resetCoexpression() { coexpression = null;	coexpressionMap = null;	}
 
 
 }

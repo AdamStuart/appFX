@@ -1,6 +1,5 @@
-package table.networkTable;
+package table.idmap;
 
-import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -221,22 +220,22 @@ public class BridgeDbController implements Initializable
 	}
 	 
 
-	private Map<String, String> parseSearchResponse(String inID, String inTarget, String response)
-	{
-		Map<String, String> results = new HashMap<String, String>();
-		for (String line : response.split("\n"))
-		{
-			String [] parts = line.split("\t");
-			if (parts.length == 2)			// expecting 2 columns back: id + src
-			{
-				String id = parts[0];
-				String src = parts[1];
-				if (src.equals(inTarget))
-					results.put(inID, id);
-			}
-		}
-		return results;
-	}
+//	private Map<String, String> parseSearchResponse(String inID, String inTarget, String response)
+//	{
+//		Map<String, String> results = new HashMap<String, String>();
+//		for (String line : response.split("\n"))
+//		{
+//			String [] parts = line.split("\t");
+//			if (parts.length == 2)			// expecting 2 columns back: id + src
+//			{
+//				String id = parts[0];
+//				String src = parts[1];
+//				if (src.equals(inTarget))
+//					results.put(inID, id);
+//			}
+//		}
+//		return results;
+//	}
 
 	//----------------------------------------------------------------------------------
 	ObservableList<DataSourceRecord> allDataSources = FXCollections.observableArrayList();
@@ -266,8 +265,8 @@ public class BridgeDbController implements Initializable
 		String s = inputText.getText();
 		match(s);
 	}
-	private void generateMatchingSourcesFields()
-	{
+//	private void generateMatchingSourcesFields()
+//	{
 //		ObservableList<DataSourceRecord> visibleDataSources = FXCollections.observableArrayList();
 //		visibleDataSources.addAll(sourceTable.getItems());
 //		int i = 0;
@@ -280,7 +279,7 @@ public class BridgeDbController implements Initializable
 //		}
 //		FileUtil.writeTextFile(new File("/Users/adamtreister/Desktop/"), 
 //				"join.txt", builder.toString());
-	}
+//	}
 	
 	public void match(String s)
 	{
@@ -341,7 +340,7 @@ public class BridgeDbController implements Initializable
 		}
 	}
 	//--------------------------------------------------------------------------------
-	private boolean allRowsVisible() 	{ return allRows.isSelected();  }
+//	private boolean allRowsVisible() 	{ return allRows.isSelected();  }
 	private boolean allColumns() 		{ return allColumns.isSelected();  }
 	@FXML private void showAllRows() 	{ loadSourceTable();  }
 	@FXML private void showAllColumns() { loadSourceTable();   }
@@ -365,7 +364,8 @@ public class BridgeDbController implements Initializable
 			sourceTable.getSelectionModel().select(0);
 
 		boolean showAll = allColumns();
-		TableColumn[] optionalCols = new TableColumn[]{urlCol, usageCol, entityCol, uriCol, regexCol,officialNameCol,gravityStrCol, targetsCol };
+		TableColumn<DataSourceRecord, String>[] optionalCols = 
+				new TableColumn[]{urlCol, usageCol, entityCol, uriCol, regexCol,officialNameCol,gravityStrCol, targetsCol };
 		for (TableColumn col : optionalCols)
 			col.setVisible(showAll);
 	}

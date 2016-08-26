@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="625.0" prefWidth="624.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="table.networkTable.BridgeDbController">
+<VBox prefHeight="625.0" prefWidth="624.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="table.idmap.BridgeDbController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>

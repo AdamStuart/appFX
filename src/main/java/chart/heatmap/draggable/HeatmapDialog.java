@@ -1,4 +1,4 @@
-package table.networkTable;
+package chart.heatmap.draggable;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -8,15 +8,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.control.ButtonBar.ButtonData;
+import table.networkTable.NetworkTableController;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 
 public class HeatmapDialog extends Dialog implements Initializable {
-	NetworkTableController controller;
+//	NetworkTableController controller;
 	
-	public HeatmapDialog(String title, Group inputGroup, NetworkTableController ctrlr) {
+	public HeatmapDialog(String title, Group inputGroup) {
 		super();
-		controller = ctrlr;
+//		controller = ctrlr;
 		setTitle(title);
 		getDialogPane().setPrefWidth(1200 );
 		getDialogPane().setPrefHeight(1125);
@@ -33,7 +34,7 @@ public class HeatmapDialog extends Dialog implements Initializable {
 
 	public void doOK(ActionEvent ev) {
 		System.out.println("doOK");
-		controller.reset(this);
+//		controller.reset(this);
 
 	}
 

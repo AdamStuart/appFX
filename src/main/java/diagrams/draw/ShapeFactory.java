@@ -1,11 +1,12 @@
 package diagrams.draw;
 
-import gui.Effects;
-
 import java.io.File;
 import java.util.List;
 import java.util.Set;
 
+import diagrams.draw.Action.ActionType;
+import diagrams.draw.App.Tool;
+import gui.Effects;
 import javafx.event.EventHandler;
 import javafx.event.EventTarget;
 import javafx.event.EventType;
@@ -24,14 +25,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import model.AttributeMap;
 import util.FileUtil;
 import util.RectangleUtil;
 import util.StringUtil;
-import diagrams.draw.Action.ActionType;
-import diagrams.draw.App.Tool;
 
 public class ShapeFactory
 {
@@ -71,6 +71,7 @@ public class ShapeFactory
 		if (type == Tool.Circle)	return makeNewShape("Circle", attrMap);	
 		if (type == Tool.Rectangle)	return makeNewShape("Rectangle", attrMap);	
 		if (type == Tool.Polygon)	return makeNewShape("Polygon", attrMap);	
+		if (type == Tool.Polyline)	return makeNewShape("Polyline", attrMap);	
 		return null;
 	}
 	// **-------------------------------------------------------------------------------
@@ -81,6 +82,7 @@ public class ShapeFactory
 		if ("Circle".equals(s))					newShape = new Circle();
 		else if ("Rectangle".equals(s))			newShape = new Rectangle();
 		else if ("Polygon".equals(s))			newShape = new Polygon();
+		else if ("Polyline".equals(s))			newShape = new Polyline();
 		else return null;
 		
 		makeHandlers(newShape);
@@ -132,6 +134,11 @@ public class ShapeFactory
 				Polygon poly = (Polygon) shape;
 				if (k.equals("points"))			parsePolygonPoints(poly, map.get(k));
 			}
+			if (shape instanceof Polyline)
+			{
+				Polyline poly = (Polyline) shape;
+				if (k.equals("points"))			parsePolylinePoints(poly, map.get(k));
+			}
 			if (shape instanceof Shape)
 			try
 			{
@@ -159,6 +166,14 @@ public class ShapeFactory
 		for (String d : doubles)
 			poly.getPoints().add(Double.parseDouble(d));
 	}
+	private void parsePolylinePoints(Polyline poly, String string)
+	{
+		String s = string.trim();
+		s = s.substring(1, s.length());
+		String[] doubles = s.split(",");
+		for (String d : doubles)
+			poly.getPoints().add(Double.parseDouble(d));
+	}
 	// **-------------------------------------------------------------------------------
 	// MouseEvents and DragEvents
 	public void makeHandlers(Shape s)
@@ -167,6 +182,7 @@ public class ShapeFactory
 		if (s instanceof Circle)			new CircleMouseHandler((Circle)s, drawLayer);
 		if (s instanceof Rectangle)			new RectMouseHandler((Rectangle)s, drawLayer);
 		if (s instanceof Polygon)			new PolygonMouseHandler((Polygon) s, drawLayer);
+		if (s instanceof Polyline)			new PolylineMouseHandler((Polyline) s, drawLayer);
 
 		//		s.addEventHandler(MouseEvent.MOUSE_ENTERED, new NodeMouseEnteredHandler());
 
@@ -427,6 +443,71 @@ public class ShapeFactory
 				p.setCursor(Cursor.HAND);
 		}
 	}
+	// **-------------------------------------------------------------------------------
+	protected class PolylineMouseHandler extends NodeMouseHandler
+	{
+		public PolylineMouseHandler(Polyline p, Pasteboard d)
+		{
+			super(d);
+			p.addEventHandler(MouseEvent.MOUSE_PRESSED, this);
+			p.addEventHandler(MouseEvent.MOUSE_DRAGGED, this);
+			p.addEventHandler(MouseEvent.MOUSE_MOVED, this);
+			p.addEventHandler(MouseEvent.MOUSE_RELEASED, this);
+		}
+		@Override
+		protected void handleMousePressed(final MouseEvent event)
+		{
+			super.handleMousePressed(event);
+			if (event.getTarget() == drawLayer.getActiveShape())
+			{
+				drawLayer.setActiveShape(null);
+				event.consume();
+				return;
+			}
+			if (verbose>3) System.out.println("PolylineMousePressedHandler: " + event.getTarget());
+			Polyline p = (Polyline) target;
+			int idx = onVertex(currentPoint, p);
+	//			System.out.println("" + idx);
+			if (idx >= 0)
+				activeIndex = idx;
+			else dragging = true;
+		}
+
+		int activeIndex = -1;
+	
+		@Override
+		protected void handleMouseDragged(final MouseEvent event)
+		{
+			super.handleMouseDragged(event);
+			if (verbose>1) System.out.println("Index: " + activeIndex);
+			Polyline p = (Polyline) target;				
+			if (activeIndex>= 0)
+			{
+				p.getPoints().set(activeIndex, currentPoint.getX());
+				p.getPoints().set(activeIndex+1, currentPoint.getY());
+			}
+		}
+
+		@Override
+		protected void handleMouseMoved(final MouseEvent event)
+		{
+			super.handleMouseMoved(event);
+			Polyline p = (Polyline) target;				
+			if (onVertex(currentPoint, p) >= 0)
+				p.setCursor(Cursor.H_RESIZE);
+			else
+				p.setCursor(Cursor.HAND);
+		}
+		
+	}
+	static public int onVertex(Point2D pt, Polyline p) {
+		Object[] pts = p.getPoints().toArray();
+		for ( int i = 0; i < pts.length; i += 2)
+			if (Math.abs(pt.getX() - (double) pts[i]) < EPSILON)
+				if (Math.abs(pt.getY() - (double) pts[i+1]) < EPSILON)
+					return i;
+		return -1;
+	}
 	//-----------------------------------------------------------------------------------
 	public class NodeMouseHandler implements EventHandler<MouseEvent>
 	{
@@ -452,7 +533,7 @@ public class ShapeFactory
 		private Pasteboard drawLayer;
 		private Pane getPane() { return drawLayer.getPane(); }
 		private Controller getController()		{			return drawLayer.getController();		}
-		protected int verbose = 0;
+		protected int verbose = 5;
 		protected boolean dragging = false;
 		protected boolean resizing = false;
 		protected EventTarget target;
@@ -509,7 +590,7 @@ public class ShapeFactory
 			MenuItem toBack = new MenuItem("Send To Back");		toBack.setOnAction(a -> {   getController().toBack();    });
 			MenuItem group = new MenuItem("Group");				group.setOnAction(a -> 	{   getController().group();    });
 			MenuItem ungroup = new MenuItem("Ungroup");			ungroup.setOnAction(a ->{	getController().ungroup();    });
-			menu.getItems().addAll(toFront, toBack, group, ungroup);
+			menu.getItems().addAll(toFront, toBack, group, ungroup,dup, del);
 			return menu;
 		}
 		

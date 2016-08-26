@@ -1,4 +1,4 @@
-package table.networkTable;
+package table.idmap;
 
 import java.net.URL;
 

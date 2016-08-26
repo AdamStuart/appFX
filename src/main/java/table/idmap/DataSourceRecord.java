@@ -1,4 +1,4 @@
-package table.networkTable;
+package table.idmap;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

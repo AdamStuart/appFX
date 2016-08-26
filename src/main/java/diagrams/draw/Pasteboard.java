@@ -35,6 +35,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Screen;
@@ -274,6 +275,18 @@ public class Pasteboard
 				event.consume();
 				return;
 			}
+			if (activeShape instanceof Polyline)
+			{
+				if (verbose) System.out.println("MousePressedHandler, Polyline: " );
+				Polyline p = (Polyline) activeShape;
+				if (event.getClickCount() > 1)
+					activeShape = null;
+				else if (ShapeFactory.onVertex(startPoint, p) >= 0)
+					activeShape = null;
+				else p.getPoints().addAll(event.getX(), event.getY());
+				event.consume();
+				return;
+			}
 //			controller.getUndoStack().push(ActionType.Select);
 			getSelectionMgr().clear();  
 	
@@ -402,6 +415,19 @@ public class Pasteboard
 					p.getPoints().set(nPts-1, curPoint.getY());
 				}
 			}
+			
+			if (activeShape instanceof Polyline)
+			{
+				Polyline p = (Polyline) activeShape;
+				p.setVisible(true);
+				p.setFill(null);
+				int nPts = p.getPoints().size();
+				if (nPts > 1)
+				{
+					p.getPoints().set(nPts-2, curPoint.getX());
+					p.getPoints().set(nPts-1, curPoint.getY());
+				}
+			}
 		}
 	}
 	//---------------------------------------------------------------------------
@@ -454,6 +480,7 @@ public class Pasteboard
 			if (KeyCode.R.equals(key)) 			setTool(Tool.Rectangle);
 			else if (KeyCode.C.equals(key)) 	setTool(Tool.Circle);
 			else if (KeyCode.P.equals(key)) 	setTool(Tool.Polygon);
+			else if (KeyCode.L.equals(key)) 	setTool(Tool.Polyline);
 //			else if (KeyCode.X.equals(key)) 	setTool(Tool.Xhair);
 			else if (KeyCode.DELETE.equals(key)) 		getController().deleteSelection();		// create an undoable action
 			else if (KeyCode.BACK_SPACE.equals(key)) 	getController().deleteSelection();

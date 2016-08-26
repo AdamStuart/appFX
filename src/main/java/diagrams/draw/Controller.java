@@ -106,11 +106,13 @@ public class Controller implements Initializable
 	@FXML private void setRectangle()	{ pasteboard.setTool(Tool.Rectangle);}	// TODO capture double click for stickiness
 	@FXML private void setOval()		{ pasteboard.setTool(Tool.Circle);		}
 	@FXML private void setPolygon()		{ pasteboard.setTool(Tool.Polygon);	}
+	@FXML private void setPolyline()	{ pasteboard.setTool(Tool.Polyline);	}
 	
 	@FXML private ToggleButton arrow;
 	@FXML private ToggleButton rectangle;
 	@FXML private ToggleButton circle;
 	@FXML private ToggleButton polygon;
+	@FXML private ToggleButton polyline;
 	
 	@FXML private ColorPicker fillColor;
 	@FXML private ColorPicker lineColor;
@@ -189,7 +191,7 @@ public class Controller implements Initializable
 		pasteboard = new Pasteboard(drawPane, this);
 		doc = new Document(this);
 		paletteGroup = new ToggleGroup();
-		paletteGroup.getToggles().addAll(arrow, rectangle, circle, polygon);
+		paletteGroup.getToggles().addAll(arrow, rectangle, circle, polygon, polyline);
 		bindInspector();
 		String cssURL = this.getClass().getResource("draw.css").toExternalForm();
 		drawPane.getStylesheets().add(cssURL);
@@ -289,10 +291,12 @@ public class Controller implements Initializable
 		rectangle.setGraphic(	GlyphsDude.createIcon(FontAwesomeIcons.SQUARE, GlyphIcon.DEFAULT_ICON_SIZE));
 		circle.setGraphic(		GlyphsDude.createIcon(FontAwesomeIcons.CIRCLE, GlyphIcon.DEFAULT_ICON_SIZE));
 		polygon.setGraphic(		GlyphsDude.createIcon(FontAwesomeIcons.STAR, GlyphIcon.DEFAULT_ICON_SIZE));
+		polyline.setGraphic(	GlyphsDude.createIcon(FontAwesomeIcons.PENCIL, GlyphIcon.DEFAULT_ICON_SIZE));
 		arrow.setId(Tool.Arrow.name());
 		rectangle.setId(Tool.Rectangle.name());
 		circle.setId(Tool.Circle.name());
 		polygon.setId(Tool.Polygon.name());
+		polyline.setId(Tool.Polyline.name());
 
 		leftSideBarButton.setGraphic(	GlyphsDude.createIcon(FontAwesomeIcons.ARROW_CIRCLE_O_RIGHT, GlyphIcon.DEFAULT_ICON_SIZE));
 		rightSideBarButton.setGraphic(	GlyphsDude.createIcon(FontAwesomeIcons.ARROW_CIRCLE_O_LEFT, GlyphIcon.DEFAULT_ICON_SIZE));

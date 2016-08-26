@@ -10,6 +10,8 @@ import java.util.ResourceBundle;
 
 import org.h2.store.PageInputStream;
 
+import chart.heatmap.draggable.HeatmapDialog;
+import chart.heatmap.draggable.SquareMap;
 import gui.Backgrounds;
 import icon.FontAwesomeIcons;
 import javafx.collections.ObservableList;
@@ -260,17 +262,6 @@ public class NetworkTableController implements Initializable
 //		NetworkRecord net3 = new NetworkRecord("N003", "TertiaryNet");
 //		netTable.getItems().addAll(net1, net2, net3);
 
-		
-		squareMap = generateSquareMap();
-	}
-	Group squareMap;
-	
-	private Group generateSquareMap() {
-		ObservableList<NodeRecord> items = nodeTable.getItems();
-		SquareMap sqMap = new SquareMap(items);
-		sqMap.makeRows();
-		sqMap.fillSquares();
-		return sqMap.getParentGroup();
 	}
 //
 //	private Map<? extends String, ? extends HashMap<String, Double>> buildCoexpressionMatrix(
@@ -367,16 +358,6 @@ public class NetworkTableController implements Initializable
 	@FXML private void showHeatmap()
 	{
 		System.out.println("showHeatmap");
-		Group coexGroup = generateSquareMap();
-		Dialog dlog = new HeatmapDialog("Coex", coexGroup, this);
-		// Create the custom dialog.
-//			Dialog<Pair<String, String>> dialog = new Dialog<>();
-		dlog.showAndWait();
-	}
-
-	public void reset(Dialog dlog) {
-		dlog.getDialogPane().getChildren().clear();		
-		dlog.getDialogPane().getChildren().add(generateSquareMap());		
 	}
 
 }

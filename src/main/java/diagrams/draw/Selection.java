@@ -8,7 +8,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Bounds;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
@@ -19,6 +18,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import model.AttributeMap;
 import util.RectangleUtil;
@@ -167,6 +167,15 @@ public class Selection
 			if (n instanceof Polygon)
 			{
 				Polygon c = (Polygon) n;
+				for ( int i = 0; i < c.getPoints().size(); i += 2)
+				{
+					c.getPoints().set(i, c.getPoints().get(i) - dx);
+					c.getPoints().set(i+1, c.getPoints().get(i+1) - dy);
+				}
+			}
+			if (n instanceof Polyline)
+			{
+				Polyline c = (Polyline) n;
 				for ( int i = 0; i < c.getPoints().size(); i += 2)
 				{
 					c.getPoints().set(i, c.getPoints().get(i) - dx);

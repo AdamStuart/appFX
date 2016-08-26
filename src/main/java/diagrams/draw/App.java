@@ -68,7 +68,7 @@ import javafx.stage.Stage;
 	public enum Tool {
 	
 		Arrow,
-		Rectangle, Circle, Polygon,				// Shapes
+		Rectangle, Circle, Polygon,	Polyline,	// Shapes
 		Browser, Text, Table, Image, Media,		// Controls
 		;
 	
@@ -78,6 +78,7 @@ import javafx.stage.Stage;
 			if ("rectangle".equals(t))	return Rectangle;
 			if ("circle".equals(t))		return Circle;
 			if ("polygon".equals(t))	return Polygon;
+			if ("polyline".equals(t))	return Polyline;
 			if ("browser".equals(t))	return Browser;
 			if ("text".equals(t))		return Text;
 			if ("table".equals(t))		return Table;
@@ -87,7 +88,7 @@ import javafx.stage.Stage;
 		}
 		public boolean isShape()
 		{
-			return this == Rectangle || this == Circle || this == Polygon;
+			return this == Rectangle || this == Circle || this == Polygon || this == Polyline;
 		}
 		public boolean isControl()
 		{

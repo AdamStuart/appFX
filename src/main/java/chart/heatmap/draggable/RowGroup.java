@@ -1,15 +1,15 @@
-package table.networkTable;
+package chart.heatmap.draggable;
 
 import chart.usMap.ColorUtil;
 import chart.waterloo.markers.Square;
 import gui.Backgrounds;
-import gui.Borders;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import model.Range;
 
 public class RowGroup extends Group {
@@ -57,6 +57,7 @@ public class RowGroup extends Group {
 	
 	private Label makeHeaderLabel(String name, int i) {
 		Label label = new Label(name);
+		label.setFont(Font.font(8));
 		label.setPrefWidth(SquareMap.XOFFSET);
 		label.setPrefHeight(SquareMap.CELL_WIDTH-6);
 		label.setMaxHeight(SquareMap.CELL_WIDTH-6);
