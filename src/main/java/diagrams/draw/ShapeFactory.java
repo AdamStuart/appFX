@@ -7,6 +7,8 @@ import java.util.Set;
 import diagrams.draw.Action.ActionType;
 import diagrams.draw.App.Tool;
 import gui.Effects;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.event.EventTarget;
 import javafx.event.EventType;
@@ -24,6 +26,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
@@ -98,10 +101,7 @@ public class ShapeFactory
 	//-----------------------------------------------------------------------
 	public Shape parseNode(AttributeMap attrMap)
 	{
-		Shape shape = makeNewShape(attrMap.get("type"), attrMap);
-//		if (shape != null)
-//			setAttributes(shape, attrMap);
-		return shape;
+		return makeNewShape(attrMap.get("type"), attrMap);
 	}
 	
 	private void setAttributes(Shape shape, AttributeMap map)
@@ -160,34 +160,32 @@ public class ShapeFactory
 	
 	private void parsePolygonPoints(Polygon poly, String string)
 	{
-		String s = string.trim();
-		s = s.substring(1, s.length());
-		String[] doubles = s.split(",");
-		for (String d : doubles)
-			poly.getPoints().add(Double.parseDouble(d));
+		parsePoints(poly.getPoints(), string);
 	}
 	private void parsePolylinePoints(Polyline poly, String string)
+	{
+		parsePoints(poly.getPoints(), string);
+	}
+	private void parsePoints(ObservableList<Double> points, String string)
 	{
 		String s = string.trim();
 		s = s.substring(1, s.length());
 		String[] doubles = s.split(",");
 		for (String d : doubles)
-			poly.getPoints().add(Double.parseDouble(d));
+			points.add(Double.parseDouble(d));
 	}
 	// **-------------------------------------------------------------------------------
 	// MouseEvents and DragEvents
 	public void makeHandlers(Shape s)
 	{
 		if (s == null) return;
-		if (s instanceof Circle)			new CircleMouseHandler((Circle)s, drawLayer);
-		if (s instanceof Rectangle)			new RectMouseHandler((Rectangle)s, drawLayer);
-		if (s instanceof Polygon)			new PolygonMouseHandler((Polygon) s, drawLayer);
-		if (s instanceof Polyline)			new PolylineMouseHandler((Polyline) s, drawLayer);
-
-		//		s.addEventHandler(MouseEvent.MOUSE_ENTERED, new NodeMouseEnteredHandler());
+		if (s instanceof Circle)		new CircleMouseHandler((Circle)s, drawLayer);
+		if (s instanceof Rectangle)		new RectMouseHandler((Rectangle)s, drawLayer);
+		if (s instanceof Polygon)		new PolygonMouseHandler((Polygon) s, drawLayer);
+		if (s instanceof Polyline)		new PolylineMouseHandler((Polyline) s, drawLayer);
 
 		s.setOnDragEntered(e -> {	s.setEffect(Effects.sepia);	e.consume();	});
-		s.setOnDragExited(e -> 	{	s.setEffect(null);				e.consume();	});
+		s.setOnDragExited(e -> 	{	s.setEffect(null);			e.consume();	});
 		s.setOnDragOver(e -> 	{	e.acceptTransferModes(TransferMode.ANY);	e.consume();		});
 		s.setOnDragDropped(e -> {	e.acceptTransferModes(TransferMode.ANY);	handleDrop(s, e);	e.consume();	});	
 
@@ -210,7 +208,7 @@ public class ShapeFactory
 				if (sel.isSelected(shape))
 					sel.setAttributes(attrMap);
 			}
-				System.out.println(q);
+			System.out.println(q);
 		}
 		
 		if (db.hasFiles())
@@ -471,8 +469,8 @@ public class ShapeFactory
 			if (idx >= 0)
 				activeIndex = idx;
 			else dragging = true;
+			drawLayer.setLastClick(event.getX(), event.getX());
 		}
-
 		int activeIndex = -1;
 	
 		@Override
@@ -492,6 +490,7 @@ public class ShapeFactory
 		protected void handleMouseMoved(final MouseEvent event)
 		{
 			super.handleMouseMoved(event);
+			drawLayer.setLastClick(event.getX(), event.getY());
 			Polyline p = (Polyline) target;				
 			if (onVertex(currentPoint, p) >= 0)
 				p.setCursor(Cursor.H_RESIZE);

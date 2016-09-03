@@ -106,7 +106,7 @@ public class RowGroup extends Group {
 	{
 		yOffset = ev.getY();
 		yRef = yStart = ev.getSceneY(); //  - getTranslateY();
-		String name = "" + getUserData();
+//		String name = "" + getUserData();
 		yBase = SquareMap.MARGIN + (dragIndex * SquareMap.CELL_WIDTH);
 		yMin = SquareMap.MARGIN + yOffset - getTranslateY(); 		//yStart - (dragIndex * SquareMap.CELL_WIDTH)
 		yOffset = yRef - yBase;
@@ -126,11 +126,13 @@ public class RowGroup extends Group {
 		parentMap.addDragImage(imgView);
 		setVisible(false);
 	ev.consume();
+	System.out.println("rowDragStart" );
 	}
 
 
 	private void rowDrag(MouseEvent ev)		//, String name
 	{
+		System.out.println("rowDrag" );
 		if (yOffset < 0) return;
 		double dy = ev.getSceneY() - yStart;
 		if (imgView != null && ev.getSceneY() > yMin  && ev.getSceneY() < yMax)  //  )
@@ -172,6 +174,5 @@ public class RowGroup extends Group {
 		}
 		parentMap.finishDrag(ev);
 	}
-
 	
 }

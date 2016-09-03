@@ -134,10 +134,10 @@ public class Pasteboard
 	
 	private void setupPasteboardDrops(Pane pasteboard)
 	{
-		pasteboard.setOnDragEntered(e -> 	{  	highlightPasteboard(true);						e.consume();	});
-		pasteboard.setOnDragExited(e -> 	{	highlightPasteboard(false);						e.consume();	});
+		pasteboard.setOnDragEntered(e -> 	{  	highlightPasteboard(true);					e.consume();	});
+		pasteboard.setOnDragExited(e -> 	{	highlightPasteboard(false);					e.consume();	});
 		pasteboard.setOnDragOver(e -> 		{	e.acceptTransferModes(TransferMode.ANY);	e.consume();  	});
-		pasteboard.setOnDragDropped(e ->	{ 	handlePasteboardDrop(e);						e.consume();  	});
+		pasteboard.setOnDragDropped(e ->	{ 	handlePasteboardDrop(e);					e.consume();  	});
 	}	
 
 	private void highlightPasteboard(boolean isHighlighted)
@@ -252,7 +252,14 @@ public class Pasteboard
 	private Point2D curPoint = null;
 
 	static boolean verbose = false;
-	
+	Line dragLine;
+
+	public void setLastClick(double x, double y) {
+		dragLine.setEndX(x);
+		dragLine.setEndY(y);
+	}
+
+
 	private final class MousePressedHandler implements EventHandler<MouseEvent> 
 	{
 		@Override public void handle(final MouseEvent event) 
@@ -267,10 +274,8 @@ public class Pasteboard
 			{
 				if (verbose) System.out.println("MousePressedHandler, Polygon: " );
 				Polygon p = (Polygon) activeShape;
-				if (event.getClickCount() > 1)
-					activeShape = null;
-				else if (ShapeFactory.onVertex(startPoint, p) >= 0)
-					activeShape = null;
+				if (event.getClickCount() > 1)							activeShape = null;
+				else if (ShapeFactory.onVertex(startPoint, p) >= 0)		activeShape = null;
 				else p.getPoints().addAll(event.getX(), event.getY());
 				event.consume();
 				return;
@@ -284,6 +289,14 @@ public class Pasteboard
 				else if (ShapeFactory.onVertex(startPoint, p) >= 0)
 					activeShape = null;
 				else p.getPoints().addAll(event.getX(), event.getY());
+				if (dragLine == null)
+				{
+					dragLine = new Line();
+					dragLine.setStartX(event.getX());
+					dragLine.setStartY(event.getY());
+					pane.getChildren().add(dragLine);
+		}
+				
 				event.consume();
 				return;
 			}
@@ -294,6 +307,11 @@ public class Pasteboard
 			if (activeShape instanceof Polygon)
 			{
 				Polygon p = (Polygon) activeShape;
+				p.getPoints().addAll(event.getX(), event.getY());
+			}
+			if (activeShape instanceof Polyline)
+			{
+				Polyline p = (Polyline) activeShape;
 				p.getPoints().addAll(event.getX(), event.getY());
 			}
 			if (activeShape == null) 
@@ -453,6 +471,7 @@ public class Pasteboard
 			startPoint = curPoint = null;
 			pane.requestFocus();		// needed for the key event handler to receive events
 			resetTool();
+			pane.getChildren().remove(dragLine);
 			event.consume();
 		}
 	}
@@ -521,7 +540,6 @@ public class Pasteboard
 	public Paint getDefaultStroke()		{		return defaultStroke;	}
 	public void setDefaultFill(Paint p)	{		defaultFill = p;	}
 	public void setDefaultStroke(Paint p){		defaultStroke = p;	}
-
 	
 }
 

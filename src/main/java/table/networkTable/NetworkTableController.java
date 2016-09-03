@@ -1,24 +1,14 @@
 package table.networkTable;
 
-import java.awt.Paint;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.h2.store.PageInputStream;
-
-import chart.heatmap.draggable.HeatmapDialog;
-import chart.heatmap.draggable.SquareMap;
-import gui.Backgrounds;
 import icon.FontAwesomeIcons;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
@@ -36,7 +26,6 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import util.DialogUtil;
 

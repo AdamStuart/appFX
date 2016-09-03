@@ -37,27 +37,75 @@ public class SquareMap extends HashMap<String, HashMap<String, Double>> {
 	public String getName(int col) {		return names.get(col);	}	
 	
 	//---------------------------------------------------
-	public SquareMap(List<NodeRecord> items) {
+	public SquareMap(List<NodeRecord> items, int mode) {
 
 		len = items.size();
 		double totalSize = len *  SquareMap.CELL_WIDTH + 2 * MARGIN;
 		
 		Rectangle background = new Rectangle(0, 0, totalSize + SquareMap.XOFFSET, totalSize);
 		background.setFill(Backgrounds.sand);
+		parentGroup.getChildren().clear();
+		foregroundGroup.getChildren().clear();
 		parentGroup.getChildren().add(background);
 		parentGroup.getChildren().add(foregroundGroup);
 		
 		for (NodeRecord rec : items)
 			names.add(rec.getName());
+		int ct = 0;
 		for (NodeRecord rec : items)
-			put(rec.getName(), rec.buildCoexpressionMap(items));	
+			put(rec.getName(), rec.buildCoexpressionMap(items, mode, 0.01 * ct++));	
 		range = getTotalRange(items);
 //		for (NodeRecord rec : items)
 //			rec.normalize(range);
 
 	}
 	
+	// ---------------------------------------------------
+	public void selfSwap() {
+		boolean swapped = true;
+		int ct = 0;
+		int swaps = 0;
+		while (ct < 1 && swapped) {
+			swapped = false;
+			for (int row = 2; row < len; row++) {
+				double upper = compare(row, row - 2);
+				double lower = compare(row, row - 1);
+				if (lower > upper) {
+					System.out.println(row + ": " + (int) lower + " v. " + (int) upper);
+					swaps++;
+					swapped = true;
+					swap(row - 1, true);
+//					Thread thread = new Thread(() -> {
+//						try {
+//							Thread.sleep(50);
+//						} catch (InterruptedException exc) {
+//							throw new Error("Unexpected interruption", exc);
+//						}
+//					});
+				}
+			}
+			makeRows();
+			fillSquares();
+			// refresh();
+			ct++;
+		}
+		System.out.println(swaps + " swaps ");
+	}
+
+	public double compare(int idx1 , int idx2) {
+		
+		double sumOfDiff = 0;
+		for (int i=0; i<len; i++)
+		{
+			double v1 = normalizedArray[idx1][i];
+			double v2 = normalizedArray[idx2][i];
+			sumOfDiff += (v1-v2) * (v1-v2);
+		}
+		return sumOfDiff;
+	}
+
 	//---------------------------------------------------
+	
 	public void makeRows()
 	{
 		if (rowGroups == null)			rowGroups = new RowGroup[len];
@@ -68,13 +116,14 @@ public class SquareMap extends HashMap<String, HashMap<String, Double>> {
 			foregroundGroup.getChildren().add(rowGroup);
 		}
 	}
+	double[][] normalizedArray;
 	
 	public void fillSquares()
 	{
 		double[][] rawArray = buildArray();
-		double[][] inputArray = normalize(rawArray, false);
+		normalizedArray = normalize(rawArray, false);
 		for (int row=0; row<len; row++) 
-			rowGroups[row].setSquares(inputArray[row], range);
+			rowGroups[row].setSquares(normalizedArray[row], range);
 	}
 
 	void swap(int idx, boolean swapUp)
@@ -83,6 +132,7 @@ public class SquareMap extends HashMap<String, HashMap<String, Double>> {
 		if (neighbor < 0 || neighbor >= names.size()) return;
 		swapNames(idx, swapUp);
 		swapGroups(idx, swapUp);
+		System.out.println("swapped" );
 		
 //		Transition t = AnimationUtils.makeSliderY(rowGroups[neighbor], swapUp ? CELL_WIDTH : -CELL_WIDTH);
 //		t.setOnFinished(e -> {		
@@ -93,7 +143,6 @@ public class SquareMap extends HashMap<String, HashMap<String, Double>> {
 
 	private void swapNames(int idx, boolean swapUp) {
 		String name = names.get(idx);
-//		String otherName = names.get(idx + (swapUp ? -1 : 1));
 		names.remove(idx);
 		names.add(idx+ (swapUp ? -1 : 1)  , name);
 //		System.out.println(name + " <-> " + otherName + ":   " + names.toString());
@@ -178,8 +227,8 @@ public class SquareMap extends HashMap<String, HashMap<String, Double>> {
 		for (int i = 0; i < nRows; i++) {
 			String name = names.get(i);
 			HashMap<String, Double> row = get(name);
-			for (int j = 0; j < nRows; j++)
-				matrix[i][j] = row.get(names.get(j));
+			for (int j = i; j < nRows; j++)
+				matrix[i][j] = matrix[j][i] = row.get(names.get(j));
 		}
 		return matrix;
 	}

@@ -38,11 +38,11 @@ public class NodeRecord extends AbstractTableRow
 			int siz = items.size();
 			coexpression = new double[siz];
 			for (int i = 0; i< siz; i++)
-				coexpression[i] = (items.get(i).equals(this)) ? 1 : 0.1 * i;
+				coexpression[i] = (items.get(i).equals(this)) ? 1 : 0.01 * i;
 		}
 	}
 	
-	public HashMap<String, Double> buildCoexpressionMap(List<NodeRecord> items) //, double val
+	public HashMap<String, Double> buildCoexpressionMap(List<NodeRecord> items, int mode, double base) //, double val
 	{
 		buildCoexpressionArray(items);
 		if (coexpressionMap == null)
@@ -52,7 +52,10 @@ public class NodeRecord extends AbstractTableRow
 			for (int i = 0; i< siz; i++)
 			{
 				NodeRecord rec = items.get(i);
-				coexpressionMap.put(rec.getName(), (rec.equals(this)) ? 1. : 0.85 * Math.random());
+				boolean identity = rec.equals(this);
+				boolean random = mode == 0;
+				double val = (identity ? 1. : (random ? Math.random() :  (base + i * 0.02)));
+				coexpressionMap.put(rec.getName(), val );	
 			}
 		}
 		return coexpressionMap;
@@ -62,6 +65,6 @@ public class NodeRecord extends AbstractTableRow
 //	}
 
 	public void resetCoexpression() { coexpression = null;	coexpressionMap = null;	}
-
+	public String toString()	{ return  getName(); }
 
 }
