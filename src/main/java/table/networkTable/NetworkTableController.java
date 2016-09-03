@@ -252,12 +252,6 @@ public class NetworkTableController implements Initializable
 //		netTable.getItems().addAll(net1, net2, net3);
 
 	}
-//
-//	private Map<? extends String, ? extends HashMap<String, Double>> buildCoexpressionMatrix(
-//			ObservableList<NodeRecord> items) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 
 	private Stage stage;
 	public void setStage(Stage primaryStage)	{		stage = primaryStage;	}

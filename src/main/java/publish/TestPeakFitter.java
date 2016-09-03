@@ -24,13 +24,8 @@ public class TestPeakFitter extends Application
 //    VBox col3 = new VBox();
     SplitPane page = new SplitPane(col1);		//,col2, new ScrollPane(col3)
     StackPane stack = new StackPane();
-//    URL resource = getClass().getResource(path);
 	@Override public void start(Stage stage) throws Exception
-	{
-		// TODO Auto-generated method stub
-//        if (resource == null)
-//        	System.out.println("resource == null");
-        
+	{        
         Scene scene = new Scene(page);
 		scene.getStylesheets().add(getClass().getResource(STYLE).toExternalForm());
         stage.setTitle("Testing Curve Fitting");
