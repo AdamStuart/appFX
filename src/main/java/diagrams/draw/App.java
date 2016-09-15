@@ -2,6 +2,7 @@ package diagrams.draw;
 
 import java.net.URL;
 
+import diagrams.draw.App.Tool;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

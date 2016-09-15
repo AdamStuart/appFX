@@ -89,6 +89,7 @@ public class Action
 		Ungroup,
 		Zoom,
 		Duplicate,
+		Connect,
 		;
 	
 	}

@@ -13,7 +13,7 @@ public class UndoStack
 	private ListView<Action> undostackView;
 
 	int curStackPtr = 0; //  or number of actions available to redo
-	int verbose = 1;
+	int verbose = 0;
 
 	// -------------------------------------------------------
 	public UndoStack(Controller c, ListView<Action> undoview)

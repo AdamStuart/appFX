@@ -3,17 +3,25 @@ package diagrams.draw;
 import java.io.File;
 import java.util.List;
 
+import animation.NodeVisAnimator;
 import diagrams.draw.Action.ActionType;
 import diagrams.draw.App.Tool;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Skin;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Toggle;
@@ -49,7 +57,7 @@ import util.RectangleUtil;
  *  and drop events that will create new nodes depending on the files / data that 
  *  are in the drop.  Key events are also caught.
  *  
- *  The Pasteboard also remember the state of which tool is active and what default
+ *  The Pasteboard also remembers the state of which tool is active and what default
  *  attributes will be assigned to new nodes.
  */
 public class Pasteboard
@@ -58,8 +66,8 @@ public class Pasteboard
 	private static final String INFO_LABEL_ID = "infoLabel";
 	private static final String ELEMENT_NAME = "Pasteboard";
 	
-	private Pane pane;
-	public Pane getPane()			{ return pane;	}
+	private Pane drawPane;
+	public Pane getPane()			{ return drawPane;	}
 	
 	private Rectangle marquee;
 	public Rectangle getMarquee()	{ return marquee;	}
@@ -97,7 +105,7 @@ public class Pasteboard
 	 */
 	public Pasteboard(Pane pane, Controller ctrl) 
 	{
-		this.pane = pane;
+		drawPane = pane;
 		setWidth(2000);
 		setHeight(2000);
 		controller = ctrl;
@@ -106,38 +114,38 @@ public class Pasteboard
 		marquee = shapeFactory.makeMarquee();
 		selectionMgr = new Selection(this);
 //		pane.getChildren().add(marquee);
-		pane.addEventHandler(MouseEvent.MOUSE_PRESSED, new MousePressedHandler());
-		pane.addEventHandler(MouseEvent.MOUSE_CLICKED, new MouseClickHandler());
-		pane.addEventHandler(MouseEvent.MOUSE_DRAGGED, new MouseDraggedHandler());
-		pane.addEventHandler(MouseEvent.MOUSE_RELEASED, new MouseReleasedHandler());
-		pane.addEventHandler(KeyEvent.KEY_RELEASED, new KeyHandler());
-		setupPasteboardDrops(pane);
+		drawPane.addEventHandler(MouseEvent.MOUSE_PRESSED, new MousePressedHandler());
+		drawPane.addEventHandler(MouseEvent.MOUSE_CLICKED, new MouseClickHandler());
+		drawPane.addEventHandler(MouseEvent.MOUSE_MOVED, new MouseMovedHandler());
+		drawPane.addEventHandler(MouseEvent.MOUSE_DRAGGED, new MouseDraggedHandler());
+		drawPane.addEventHandler(MouseEvent.MOUSE_RELEASED, new MouseReleasedHandler());
+		drawPane.addEventHandler(KeyEvent.KEY_RELEASED, new KeyHandler());
+		setupPasteboardDrops(drawPane);
 		infoLabel = new Label("");
 		infoLabel.setId(INFO_LABEL_ID);
-		pane.getChildren().add(infoLabel);
+		drawPane.getChildren().add(infoLabel);
 		StackPane.setAlignment(infoLabel, Pos.TOP_RIGHT);
 		infoLabel.setVisible(false);
-		turnOnClipping();
-		makeGrid();
+//		turnOnClipping();
 	}
 	
 	Rectangle clipRect = new Rectangle();
 	private void turnOnClipping()
 	{
-		pane.setClip(clipRect);
-		pane.heightProperty().addListener((o, oldVal, newVal) -> { clipRect.heightProperty().set((double) newVal);    });
-		pane.widthProperty().addListener((o, oldVal, newVal) -> { clipRect.widthProperty().set((double) newVal);    });
+		drawPane.setClip(clipRect);
+		drawPane.heightProperty().addListener((o, oldVal, newVal) -> { clipRect.heightProperty().set((double) newVal);    });
+		drawPane.widthProperty().addListener((o, oldVal, newVal) -> { clipRect.widthProperty().set((double) newVal);    });
 	}
 	/*
 	 * // Handle highlighting the canvas as mouse enters, and resetting as it leaves
 	 */
 	
-	private void setupPasteboardDrops(Pane pasteboard)
+	private void setupPasteboardDrops(Pane drawPane)
 	{
-		pasteboard.setOnDragEntered(e -> 	{  	highlightPasteboard(true);					e.consume();	});
-		pasteboard.setOnDragExited(e -> 	{	highlightPasteboard(false);					e.consume();	});
-		pasteboard.setOnDragOver(e -> 		{	e.acceptTransferModes(TransferMode.ANY);	e.consume();  	});
-		pasteboard.setOnDragDropped(e ->	{ 	handlePasteboardDrop(e);					e.consume();  	});
+		drawPane.setOnDragEntered(e -> 	{  	highlightPasteboard(true);					e.consume();	});
+		drawPane.setOnDragExited(e -> 	{	highlightPasteboard(false);					e.consume();	});
+		drawPane.setOnDragOver(e -> 	{	e.acceptTransferModes(TransferMode.ANY);	e.consume();  	});
+		drawPane.setOnDragDropped(e ->	{ 	handlePasteboardDrop(e);					e.consume();  	});
 	}	
 
 	private void highlightPasteboard(boolean isHighlighted)
@@ -146,9 +154,9 @@ public class Pasteboard
 		if (isHighlighted)
 		{
 			shadow = new InnerShadow();
-			shadow.setOffsetX(4.0);
+			shadow.setOffsetX(5.0);
 			shadow.setColor(Color.web("#2FD6FF"));
-			shadow.setOffsetY(4.0);
+			shadow.setOffsetY(5.0);
 		}
 //		pane.setEffect(shadow);
 	}
@@ -208,51 +216,75 @@ public class Pasteboard
 	//-------------------------------------------------------------------------------
 	private Group grid;
 	public Group getGrid()	{  return grid;  }
-	private void makeGrid()
+	
+	public void makeGrid(Button toggler, ScrollPane scrlPane)
 	{
 		grid = new Group();
 		double res = Screen.getPrimary().getDpi();			// assumes inches
-		double canvasWidth = getWidth();
-		double canvasHeight = getHeight();
-		double nLines = canvasWidth / res;
-		for (int i = 0; i< nLines; i++)
+		Parent p  = getPane().getParent();
+		if (scrlPane != null)
 		{
-			Line vert = new Line(res * i, 0, res * i,canvasHeight);
-			vert.setStrokeWidth(0.25);
-			Line horz = new Line(0, res * i,canvasWidth, res * i);
-			grid.getChildren().addAll(vert, horz);
-			horz.setStrokeWidth(0.25);
+			Pane drawPane = (Pane) scrlPane.getContent();
+			ReadOnlyObjectProperty<Bounds> bds = drawPane.boundsInParentProperty();
+			DoubleBinding leftProp = Bindings.selectDouble(bds, "minX");
+			DoubleBinding rightProp = Bindings.selectDouble(bds, "maxX");
+//			drawPane.layoutXProperty();
+//			DoubleProperty yProp = drawPane.layoutYProperty();
+//			ReadOnlyDoubleProperty widthProp = drawPane.widthProperty();
+//			ReadOnlyDoubleProperty heightProp = drawPane.heightProperty();
+			
+			double canvasWidth = getWidth();
+			double canvasHeight = getHeight();
+			double nLines = canvasWidth / res;
+			for (int i = 0; i< nLines; i++)
+			{
+				Line vert = new Line(res * i, 0, res * i, canvasHeight);
+				vert.setStrokeWidth(0.25);
+//				drawPane.heightProperty().addListener((o, oldVal, newVal) -> { clipRect.heightProperty().set((double) newVal);  });
+//				drawPane.layoutYProperty().addListener((o, oldVal, newVal) -> { vert.layoutYProperty().set((double) newVal); 	});
+//				drawPane.heightProperty().addListener((o, oldVal, newVal) -> { System.out.println("height changed");  vert.endYProperty().set((double) newVal);  });
+
+				
+				
+//				vert.startYProperty().bind(drawPane.layoutYProperty());
+//				vert.endYProperty().bind(drawPane.heightProperty());
+				Line horz = new Line(0, res * i, canvasWidth, res * i);
+				horz.setStrokeWidth(0.25);
+//				horz.startXProperty().bind(leftProp);
+//				horz.endXProperty().bind(rightProp);
+				grid.getChildren().addAll(vert, horz);
+			}		
+			grid.setMouseTransparent(true);
+			getController().add(grid);
 		}
-		grid.setMouseTransparent(true);
-		getController().add(grid);
+		new NodeVisAnimator(grid, toggler);
+
 	}
-	public void showGrid(boolean vis)	{		grid.setVisible(vis);	}
-	public boolean isGridVisible()		{		return	grid.isVisible();	}
+	public void showGrid(boolean vis)	{	grid.setVisible(vis);	}
+	public boolean isGridVisible()		{	return	grid.isVisible();	}
 
 	//-------------------------------------------------------------------------------
 	public void clearAll()		// done on close, not undoable
 	{
 		selectionMgr.clear();
-		pane.getChildren().clear();
+		drawPane.getChildren().clear();
 	}
 	
 	//-------------------------------------------------------------------------------
 	public void showInfo(String s) {	infoLabel.setText(s);	infoLabel.setVisible(true);		}
 	
-	
-	
-	/**-------------------------------------------------------------------------------
-	 *		These are the mouse handlers for the canvas layer 
-	 *		Nodes will intercept their own events, so this is just to create new nodes
-	 *		based on the current tool, and draw the marquee if the selection arrow is active
-	 *		
-	 */
+/**-------------------------------------------------------------------------------
+ *		These are the mouse handlers for the canvas layer 
+ *		Nodes will intercept their own events, so this is just to create new nodes
+ *		based on the current tool, and draw the marquee if the selection arrow is active
+ *		
+ */
 	private Point2D startPoint = null;
 //	private Point2D offset = null;
 	private Point2D curPoint = null;
 
 	static boolean verbose = false;
-	Line dragLine;
+	Line dragLine = null;
 
 	public void setLastClick(double x, double y) {
 		dragLine.setEndX(x);
@@ -294,7 +326,7 @@ public class Pasteboard
 					dragLine = new Line();
 					dragLine.setStartX(event.getX());
 					dragLine.setStartY(event.getY());
-					pane.getChildren().add(dragLine);
+					drawPane.getChildren().add(dragLine);	
 		}
 				
 				event.consume();
@@ -321,7 +353,7 @@ public class Pasteboard
 				marquee.setVisible(true);
 				if (marquee.getParent() == null)
 					controller.add(marquee);
-				if (event.getClickCount() > 1)
+				if (event.getClickCount() > 2)
 				{
 					TextArea newText = new TextArea("Comments: ");
 					newText.setBackground(null);
@@ -362,7 +394,7 @@ public class Pasteboard
 			else
 			{
 				controller.getUndoStack().push(ActionType.New, " " + curTool.name());
-				pane.getChildren().add(activeShape);
+				drawPane.getChildren().add(activeShape);
 				getSelectionMgr().select(activeShape);
 			}
 			
@@ -469,9 +501,9 @@ public class Pasteboard
 //				
 //			}
 			startPoint = curPoint = null;
-			pane.requestFocus();		// needed for the key event handler to receive events
+			drawPane.requestFocus();		// needed for the key event handler to receive events
 			resetTool();
-			pane.getChildren().remove(dragLine);
+			drawPane.getChildren().remove(dragLine);
 			event.consume();
 		}
 	}
@@ -483,9 +515,22 @@ public class Pasteboard
 		{			
 			controller.remove(marquee);
 			startPoint = curPoint = null;
-			pane.requestFocus();		// needed for the key event handler to receive events
+			drawPane.requestFocus();		// needed for the key event handler to receive events
 			resetTool();
 			event.consume();
+		}
+	}
+	//---------------------------------------------------------------------------
+
+	private final class MouseMovedHandler implements EventHandler<MouseEvent> 
+	{
+		@Override public void handle(final MouseEvent event) 
+		{			
+			if (dragLine != null)
+			{
+				dragLine.setEndX(event.getX());
+				dragLine.setEndY(event.getY());
+			}
 		}
 	}
 	//---------------------------------------------------------------------------

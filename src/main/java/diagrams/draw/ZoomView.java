@@ -161,7 +161,7 @@ public class ZoomView
 	String rectToStr(final Rectangle r)
 	{
 		return String.format("%s: [%4.1f, %4.1f, %4.1f, %4.1f]",
-			r.getId(),  r.getX(), r.getY(), r.getWidth(), r.getHeight());
+			r.getId(), r.getX(), r.getY(), r.getWidth(), r.getHeight());
 	}
 	// **-------------------------------------------------------------------------------
 	// reset the window's scale and translate onto the canvas to match the change in 
@@ -170,10 +170,9 @@ public class ZoomView
 	
 	void setDrawPaneToViewPort()	//Rectangle r
 	{
-		
-		Pasteboard canvas = controller.getPasteboard();
-		double scaleX = canvas.getWidth() / zoomAnchor.getWidth();		
-		double scaleY =  canvas.getHeight() / zoomAnchor.getHeight();		
+		Pasteboard board = controller.getPasteboard();
+		double scaleX = board.getWidth() / zoomAnchor.getWidth();		
+		double scaleY =  board.getHeight() / zoomAnchor.getHeight();		
 		double dx = scaleX * viewport.getX();		//
 		double dy = scaleY * viewport.getY();  //
 		double x = drawPane.getTranslateX() + dx;

@@ -22,6 +22,7 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import model.AttributeMap;
 import util.RectangleUtil;
+import util.StringUtil;
 
 public class Selection
 {
@@ -131,6 +132,18 @@ public class Selection
 			}
 			if (n != null)
 				n.setStyle(styleSettings);
+			
+			String opacStr = "-fx-opacity: ";
+			int index = styleSettings.indexOf(opacStr);
+			if (index > 0)
+			{
+				int start = index + opacStr.length();
+				int end = styleSettings.indexOf(";", start);
+				double d = StringUtil.toDouble(styleSettings.substring(start, end));
+				if (!Double.isNaN(d))
+					n.setOpacity(d / 100.);
+			}
+			
 		}
 	}
 	
@@ -149,6 +162,8 @@ public class Selection
 	{		//undoStack.push(new AMove(selection, dx, dy));	
 		for (Node n : items)
 		{
+			if (n.getParent() instanceof Group)
+				n = n.getParent();
 			if (n instanceof Rectangle)
 			{
 				Rectangle r = (Rectangle) n;
@@ -184,8 +199,8 @@ public class Selection
 			}
 			if (n instanceof Group)
 			{
-				n.setTranslateX(n.getTranslateX() + dx);
-				n.setTranslateY(n.getTranslateY() + dy);
+				n.setLayoutX(n.getLayoutX() - dx);
+				n.setLayoutY(n.getLayoutY() - dy);
 			}
 			
 			if (n instanceof ImageView)
@@ -282,7 +297,7 @@ public class Selection
 	{
 		StringBuilder b = new StringBuilder();
 		for (Node n : items)
-			if (!n.getId().equals("Marquee"))
+			if (n != null && !n.getId().equals("Marquee"))
 				b.append(Model.describe(n));
 		return b.toString();
 	}

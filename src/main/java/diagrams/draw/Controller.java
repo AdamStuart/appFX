@@ -1,17 +1,15 @@
 package diagrams.draw;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
-import javax.imageio.ImageIO;
-
 import animation.BorderPaneAnimator;
-import animation.NodeVisAnimator;
 import diagrams.draw.Action.ActionType;
 import diagrams.draw.App.Tool;
+import dialogs.AboutDialog;
 import gui.BorderPaneRulers;
 import gui.Borders;
 import icon.FontAwesomeIcons;
@@ -19,7 +17,6 @@ import icon.GlyphIcon;
 import icon.GlyphsDude;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -28,6 +25,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -37,6 +35,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
@@ -48,7 +47,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
@@ -63,8 +61,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
 import javafx.util.Callback;
 import model.AttributeMap;
 import model.AttributeValue;
@@ -76,7 +77,7 @@ public class Controller implements Initializable
 	private Model model;
 	public Model getDrawModel()   		{ 		return model;  }
 	private Pasteboard pasteboard;
-	public Pasteboard getPasteboard()   		{ 		return pasteboard;  }
+	public Pasteboard getPasteboard()   { 		return pasteboard;  }
 	public NodeFactory getNodeFactory()	{		return pasteboard.getNodeFactory();	}
 	private UndoStack undoStack;
 	public UndoStack getUndoStack()		{		return undoStack;	}
@@ -85,6 +86,7 @@ public class Controller implements Initializable
 	int verbose = 0;
 	
 	@FXML private Pane drawPane;
+	@FXML private ScrollPane scrollPane;
 	@FXML private ListView<Action> undoview;
 	@FXML private ListView<Node> resourceListView;
 	@FXML private TableView<AttributeValue> attributeTable;
@@ -100,7 +102,6 @@ public class Controller implements Initializable
 	@FXML private Button rightSideBarButton;
 	@FXML private Button toggleRulerButton;
 	@FXML private Button toggleGridButton;
-
 	
 	@FXML private void setArrow()		{ pasteboard.setTool(Tool.Arrow);	}
 	@FXML private void setRectangle()	{ pasteboard.setTool(Tool.Rectangle);}	// TODO capture double click for stickiness
@@ -140,26 +141,30 @@ public class Controller implements Initializable
 	@FXML private MenuItem delete;
 	@FXML private VBox inspector;
 	@FXML private HBox bottomDash;
-
-	@FXML private void undo()		{ 	undoStack.undo();	}
-	@FXML private void redo()		{ 	undoStack.redo();		}
+	
+	@FXML private void undo()			{ 	undoStack.undo();	}
+	@FXML private void redo()			{ 	undoStack.redo();		}
 	
 	// **-------------------------------------------------------------------------------
-	@FXML private void doNew()		{ 	App.getInstance().doNew(null);			}
-	@FXML private void open()		{ 	doc.open();	}
-	@FXML private void save()		{ 	doc.save();	}
-	@FXML private void saveas()		{	doc.saveas();		}
-	@FXML private void close()		{ 	doc.close();	}
-	@FXML private void print()		{ 	doc.print();			}
-	@FXML private void quit()		{ 	Platform.exit();			}
+	@FXML private void doNew()			{ 	App.getInstance().doNew(null);			}
+	@FXML private void open()			{ 	doc.open();	}			//doc.open();
+	@FXML private void save()			{ 	doc.save();	}
+	@FXML private void saveas()			{	doc.saveas();		}
+	@FXML private void close()			
+	{ 
+		doc.close();	
+		App.getInstance().getStage().close();
+	}
+	@FXML private void print()			{ 	doc.print();			}
+	@FXML private void quit()			{ 	Platform.exit();			}
 	// **-------------------------------------------------------------------------------
-	@FXML private  void cut()			{ 		undoStack.push(ActionType.Cut);		getSelectionManager().cut();	}
-	@FXML private  void copy()			{ 		getSelectionManager().copy();		}	// not undoable
-	@FXML private  void paste()			{ 		undoStack.push(ActionType.Paste);	doPaste();		}
-	@FXML private  void clearUndo()		{		undoStack.clear(); 	}
-	@FXML private void selectAll()		{ 		undoStack.push(ActionType.Select); getSelectionManager().selectAll(); 		}
-	@FXML public void deleteSelection(){ 		undoStack.push(ActionType.Delete);	getSelectionManager().deleteSelection(); 	}
-	@FXML public void duplicateSelection(){ 		undoStack.push(ActionType.Delete);	getSelectionManager().deleteSelection(); 	}
+	@FXML private  void cut()			{ 	undoStack.push(ActionType.Cut);		getSelectionManager().cut();	}
+	@FXML private  void copy()			{ 	getSelectionManager().copy();		}	// not undoable
+	@FXML private  void paste()			{ 	undoStack.push(ActionType.Paste);	doPaste();		}
+	@FXML private  void clearUndo()		{	undoStack.clear(); 	}
+	@FXML private void selectAll()		{ 	undoStack.push(ActionType.Select); getSelectionManager().selectAll(); 		}
+	@FXML public void deleteSelection(){ 	undoStack.push(ActionType.Delete);	getSelectionManager().deleteSelection(); 	}
+	@FXML public void duplicateSelection(){ 	undoStack.push(ActionType.Duplicate);	getNodeFactory().cloneSelection(); 	}
 	// **-------------------------------------------------------------------------------
 	@FXML public  void group()			{ 		undoStack.push(ActionType.Group);	getSelectionManager().doGroup();  }
 	@FXML public  void ungroup()		{ 		undoStack.push(ActionType.Ungroup);	getSelectionManager().ungroup(); }
@@ -167,6 +172,18 @@ public class Controller implements Initializable
 	@FXML public  void toBack()			{		undoStack.push(ActionType.Reorder);	getSelectionManager().toBack();  pasteboard.getGrid().toBack();  	}
 
 	// **-------------------------------------------------------------------------------
+	@FXML private MenuItem connect;			// TODO bind enableProperty to selection size > 2
+	@FXML private void addEdges()		
+	{ 	
+		if (getSelection().size() >= 2)		
+		{
+			List<Edge> edges = getDrawModel().connectSelectedNodes();
+			for (Edge e: edges)
+				add(0, e);
+		}
+	}
+
+	
 	static String CSS_Gray2 = "-fx-border-width: 2; -fx-border-color: gray;";
 	static String CSS_cellBackground(boolean undone) 	{		return "-fx-background-color: " + (undone ? "GREY; " : "BEIGE; ");	}
 	static String ctrlStr = "fx:id=\"%s\" was not injected: check your FXML file '%s'.";
@@ -196,7 +213,7 @@ public class Controller implements Initializable
 		String cssURL = this.getClass().getResource("draw.css").toExternalForm();
 		drawPane.getStylesheets().add(cssURL);
 		
-		drawContainer.setBorder(Borders.etchedBorder);
+//		drawContainer.setBorder(Borders.etchedBorder);
 		drawContainer.setOnScroll(ev -> {
 			ev.consume();
 	        if (ev.getDeltaY() == 0)   return;	
@@ -205,43 +222,110 @@ public class Controller implements Initializable
 //	        drawContainer.setScaleX(drawContainer.getScaleX() * scaleFactor);
 //	        drawContainer.setScaleY(drawContainer.getScaleY() * scaleFactor);
 		});
-		bottomDash.setBorder(Borders.dashedBorder );
+//		bottomDash.setBorder(Borders.dashedBorder );
 		bottomDash.setPadding(new Insets(3,3,4,4));
 
 		inspector.setBorder(Borders.lineBorder);
 		setupPalette();
 		setupListviews();
 		setupZoomView();
-		new NodeVisAnimator(pasteboard.getGrid(), toggleGridButton);
 		new BorderPaneAnimator(container, leftSideBarButton, Side.LEFT, false, 80);
 		new BorderPaneAnimator(container, rightSideBarButton, Side.RIGHT, false, 300);
 		new BorderPaneAnimator(container, bottomSideBarButton, Side.BOTTOM, false, 100);
 		new BorderPaneRulers(drawContainer, toggleRulerButton);
+		pasteboard.makeGrid(toggleGridButton, scrollPane);
 
 		boolean startWithShapes = true;
-		if (startWithShapes)
-		{
-			AttributeMap attrMap = new AttributeMap();
-			attrMap.putFillStroke(Color.PINK, Color.INDIGO);
-			attrMap.putRect(new Rectangle(120, 230, 160, 60));
-			add(getNodeFactory().getShapeFactory().makeNewNode(Tool.Rectangle, attrMap));
-
-			attrMap.putFillStroke(Color.CORNSILK, Color.BLUE);
-			attrMap.putRect(new Rectangle(220, 130, 60, 90));
-			add(getNodeFactory().getShapeFactory().makeNewNode(Tool.Rectangle, attrMap));
-
-			attrMap.putFillStroke(Color.LIGHTSKYBLUE, Color.DARKOLIVEGREEN);
-			attrMap.putAll( "radius", "60", "centerX", "500", "centerY", "200");
-			add(getNodeFactory().getShapeFactory().makeNewNode(Tool.Circle, attrMap));
-
-	        new Thread(() ->
-	           Platform.runLater(() -> { refreshZoomPane(); })).start();    
-	    }
+		if (startWithShapes) test1();
 			
+		
+        new Thread(() ->
+           Platform.runLater(() -> { refreshZoomPane(); })).start();    
+	}
+	//-----------------------------------------------------------------------
+	@FXML private void doAbout()
+	{
+		AboutDialog dlog = new AboutDialog();
+		dlog.showAndWait();
 	}
 	
-		// **-------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------
+	@FXML private void test1()
+	{
+	ShapeFactory f = getNodeFactory().getShapeFactory();
+	AttributeMap attrMap = new AttributeMap();
+	attrMap.putFillStroke(Color.PINK, Color.INDIGO);
+	attrMap.putCircle(new Circle(120, 230, 40));
+	Shape n1 = f.makeNewShape(Tool.Circle, attrMap);
 
+	final Label text = new Label("melvin");
+	text.setFont(new Font(18));
+	text.setMouseTransparent(true);
+	NodeCenter ctr = new NodeCenter(n1);
+	text.translateXProperty().bind(ctr.centerXProperty());
+	text.translateYProperty().bind(ctr.centerYProperty());
+	add(n1);
+	add(text);
+
+
+	attrMap.putFillStroke(Color.CORNSILK, Color.BLUE);
+	attrMap.putCircle(new Circle(220, 130, 60));
+	StackPane stk = f.makeLabeledShapePane(Tool.Circle, attrMap, "Eli");
+	f.makeNodeMouseHandler(stk);
+	add(stk);
+
+	attrMap.putFillStroke(Color.LIGHTSKYBLUE, Color.DARKOLIVEGREEN);
+	attrMap.putCircle(new Circle(220, 330, 60));
+	Group n3 = f.makeLabeledShapeGroup(Tool.Circle, attrMap, "Fristcut");
+	add(n3);
+	
+	Edge line1 = model.addEdge(stk, n3);
+	Edge line2 = model.addEdge(stk, n1);
+	
+	add(0, line1);
+	add(0, line2);
+	
+	Rectangle r1 = new Rectangle(290, 230, 60, 60);
+	attrMap.putRect(r1);
+	attrMap.putFillStroke(Color.CORNSILK, Color.DARKOLIVEGREEN);
+	Rectangle n4 = (Rectangle) f.makeNewNode(Tool.Rectangle, attrMap);
+	add(n4);
+		
+	Edge line3 = model.addEdge(n4, stk);
+	line3.setStrokeWidth(2);
+	add(0, line3);
+
+	Line line4 = model.addEdge(n1, n3);
+	line4.setStrokeWidth(2);
+	add(0, line4);
+}
+
+// **-------------------------------------------------------------------------------
+	@FXML private void test2()
+	{
+		double WIDTH = 20;
+		double HEIGHT = 20;
+		double RADIUS = 10;
+		double spacer = 5 * RADIUS;
+		ShapeFactory f = getNodeFactory().getShapeFactory();
+		AttributeMap attrMap = new AttributeMap();
+		attrMap.putFillStroke(Color.PINK, Color.INDIGO, 1.0);
+		for (int i=0; i<WIDTH; i++)
+			for (int j=0; j<HEIGHT; j++)
+			{
+				Circle c1 = new Circle(i * spacer, j * spacer, RADIUS);
+				attrMap.putCircle(c1);
+				attrMap.put("id", i + ", " + j);
+				add(f.makeNewNode(Tool.Circle, attrMap));
+			}
+	}
+	
+	@FXML private void test3()
+	{
+	}
+	//--------------------------------------------------------------------
+	
+	
 	private ZoomView zoomView;
 	
 	private void setupZoomView()
@@ -516,8 +600,7 @@ public class Controller implements Initializable
 	}
 	// **-------------------------------------------------------------------------------
 	private void apply(boolean undoable, Control src)							
-	{ 	 	
-		getSelectionManager().applyStyle(getStyleSettings(src));	
+	{ 	 			getSelectionManager().applyStyle(getStyleSettings(src));	
 		if (undoable) 
 			undoStack.push(ActionType.Property); 
 	}
@@ -525,10 +608,20 @@ public class Controller implements Initializable
 	public void selectAll(ObservableList<Node> n)	{		getSelectionManager().selectAll(n);	}
 
 	public void setStatus(String s)					{ 		status1.setText(s);	}
-	public void remove(Node n)						{		drawPane.getChildren().remove(n);	}
+	public void remove(Node n)						
+	{		
+		getDrawModel().removeNode(n);
+		drawPane.getChildren().remove(n);	
+	}
 	public void add(Node n)							
 	{		
 		drawPane.getChildren().add(n);	
+		if ("Marquee".equals(n.getId())) 	return;
+		model.addResource(n.getId(), n);
+	}
+	public void add(int idx, Node n)							
+	{		
+		drawPane.getChildren().add(idx, n);	
 		if ("Marquee".equals(n.getId())) 	return;
 		model.addResource(n.getId(), n);
 	}

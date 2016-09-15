@@ -1,6 +1,10 @@
 package diagrams.draw;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
@@ -9,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import util.StringUtil;
@@ -16,7 +21,7 @@ import util.StringUtil;
 public class Model
 {
 /*
- *  draw.model - this program uses the Scene Graph (the View!) as the model	
+ *  draw.Model - this program uses the Scene Graph (the View!) as the model	
  *  
  *  So, most of this class is a map to keep resources in, and utilities to look into nodes.
  *  Normally the Model is the access to the key data structures.
@@ -30,10 +35,15 @@ public class Model
 	private void refresh() {	resourceListView.setItems(resourceListView.getItems()); }		// HACK to update list
 	
 	public Controller getController() { return controller; } 
+
+	private List<Edge> edgeTable;
+	private ListView<Edge> edgeListView;
+
 	
 	public Model(Controller ct)
 	{
 		controller = ct;
+		edgeTable = FXCollections.observableArrayList();
 		resourceMap = FXCollections.observableHashMap();
 		nodeCounter = 0;
 		resourceListView = controller.getResourceListView();
@@ -46,6 +56,77 @@ public class Model
 		{
 			resourceMap.put(key, n);	
 			resourceListView.getItems().add(n);
+			refresh();
+		}
+	}
+	public Edge addEdge(Node start, Node end)		
+	{  
+		Edge edge = new Edge(start, end);
+		edgeTable.add(edge);
+		return edge;
+	}
+	
+	public List<Edge> connectSelectedNodes()		
+	{  
+		List<Edge> edges = new ArrayList<Edge>();
+		List<Node> selection = controller.getSelection();
+		for (int i=0; i<selection.size()-1; i++)
+		{
+			Node start = selection.get(i);
+			if (start instanceof Line) continue;
+			for (int j=i+1; j < selection.size(); j++)
+			{
+				Node end = selection.get(j);
+				if (end instanceof Line) continue;
+				edges.add(addEdge( start, end));
+			}
+		}
+		return edges;
+	}
+	public void removeEdge(Edge edge)		
+	{  
+		edgeTable.remove(edge);
+	}
+	public void removeEdges(Node node)		
+	{  
+		for (int z = edgeTable.size()-1; z >= 0; z--)
+		{
+			Edge e = edgeTable.get(z);
+			if (e.isStart(node) || e.isEnd(node))
+			{
+				e.setVisible(false);
+				edgeTable.remove(e);
+			}
+		}
+//		List<Edge> okEdges = edgeTable.stream().filter(new TouchingNodeFilter(node)).collect(Collectors.toList());
+//		edgeTable.clear();
+//		edgeTable.addAll(okEdges);
+	}
+	
+	public static class TouchingNodeFilter implements Predicate<Edge>
+	{
+		Node node;
+		TouchingNodeFilter(Node n)
+		{
+			node = n;
+		}
+		@Override public boolean test(Edge e)
+		{
+			return (!e.isStart(node) && !e.isEnd(node));
+		}
+	}
+	
+	public void removeNode(Node node)		
+	{  
+		if (node != null && ! "Marquee".equals(node.getId()))
+			removeEdges(node);
+	}
+	public void addResource(int idx, String key, Node n)		
+	{  
+		if (resourceMap.get(key) == null)
+		{
+			resourceMap.put(key, n);	
+			resourceListView.getItems().add(idx, n);
 			refresh();
 		}
 	}
@@ -78,7 +159,7 @@ public class Model
 	}
 	
 	
-		// **-------------------------------------------------------------------------------
+// **-------------------------------------------------------------------------------
 	
 	static public StringBuilder traverseSceneGraph(Pane root)
 	{
@@ -110,6 +191,7 @@ public class Model
 	
 	static String LINEDIM = "\n";
 	
+	// **-------------------------------------------------------------------------------
 	static public String describe(Node node)
 	{		
 		Map<Object, Object> props = node.getProperties();

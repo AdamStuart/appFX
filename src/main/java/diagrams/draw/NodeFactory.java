@@ -55,9 +55,9 @@ public class NodeFactory
 /*
  *  NodeFactory has responsibility of creating nodes of all types, whether by command, mouse action, drops,
  *  files being read in, or undo.  The DrawLayer is the "parent" of the NodeFactory, but the term is
- *  not the same is node.parent.  
+ *  not the same as node.parent().  
   */
-	int verbose = 1;
+	int verbose = 0;
 	
 	public NodeFactory(Pasteboard layer)
 	{
@@ -71,10 +71,10 @@ public class NodeFactory
 	private UndoStack undoStack;
 	private ShapeFactory shapeFactory;		// refactoring shapes to a new file, because they all have different mouse handlers
 	//@formatter:off
-	private Model getModel()		{ return drawLayer.getController().getDrawModel();	}
-	private Controller getController()		{ return drawLayer.getController();	}
-	private String gensym(String s)	{		return getModel().gensym(s);	}
-	public ShapeFactory getShapeFactory()	{ return shapeFactory; }
+	private Model getModel()				{ 	return drawLayer.getController().getDrawModel();	}
+	private Controller getController()		{ 	return drawLayer.getController();	}
+	private String gensym(String s)			{	return getModel().gensym(s);	}
+	public ShapeFactory getShapeFactory()	{ 	return shapeFactory; }
 	boolean showId = true;
 
 	

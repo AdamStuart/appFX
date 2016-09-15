@@ -17,6 +17,7 @@ public class Document
 	
 	Controller drawController;
 	File file = null;
+	private int verbose = 0;
 	
 	public Document(Controller inDC)
 	{
@@ -31,7 +32,7 @@ public class Document
 		if (file == null)			return;			// open was canceled
 		String s = FileUtil.openXMLfile(file);
 		drawController.addState(s);					//  parse XML to sceneGraph
-		System.out.println(s);
+		if (verbose  > 0) 	System.out.println(s);
 	}
 	
 	// **-------------------------------------------------------------------------------
@@ -45,9 +46,9 @@ public class Document
 			if (file == null) return;
 			App.getInstance().getStage().setTitle(file.getName());
 		}
-		System.out.println("about to do the save traversal");
+		if (verbose > 0) System.out.println("about to do the save traversal");
 		String buff =  drawController.getState();
-		System.out.println(buff);
+		if (verbose > 0) System.out.println(buff);
 		 try (FileOutputStream out = new FileOutputStream(file)) 
 		 {
 		    out.write( buff.getBytes());
@@ -68,7 +69,6 @@ public class Document
 	{ 	
 //		if (fileDirty)	askToSave();
 		file = null;
-		drawController.getPasteboard().clearAll();
 	}
 	// **-------------------------------------------------------------------------------
 	// TODO:  only prints first page, without scaling it.
