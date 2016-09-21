@@ -73,6 +73,7 @@ public class Action
 	public enum ActionType {
 		
 		Undefined,
+		Test,
 		Add,			// Files
 		Align,
 		Cut,

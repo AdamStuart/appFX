@@ -158,7 +158,7 @@ public class AppCubicCurveWithArrows extends Application {
     stage.show();
   }
 
-
+//------------------------------------------------------------------
 private CubicCurve createStartingCurve() {
     CubicCurve curve = new CubicCurve();
     curve.setStartX(100);
@@ -203,6 +203,7 @@ private CubicCurve createStartingCurve() {
       enableDrag();
     }
 
+  //------------------------------------------------------------------
     // make a node movable by dragging it around with the mouse.
     private void enableDrag() {
       final Delta dragDelta = new Delta();
@@ -214,41 +215,27 @@ private CubicCurve createStartingCurve() {
           getScene().setCursor(Cursor.MOVE);
         }
       });
-      setOnMouseReleased(new EventHandler<MouseEvent>() {
-        @Override public void handle(MouseEvent mouseEvent) {
-          getScene().setCursor(Cursor.HAND);
-        }
-      });
-      setOnMouseDragged(new EventHandler<MouseEvent>() {
-        @Override public void handle(MouseEvent mouseEvent) {
+      setOnMouseReleased(mouseEvent -> {     getScene().setCursor(Cursor.HAND);   });
+      setOnMouseDragged( mouseEvent -> {
           double newX = mouseEvent.getX() + dragDelta.x;
-          if (newX > 0 && newX < getScene().getWidth()) {
+          if (newX > 0 && newX < getScene().getWidth()) 
             setCenterX(newX);
-          }  
-          double newY = mouseEvent.getY() + dragDelta.y;
-          if (newY > 0 && newY < getScene().getHeight()) {
-            setCenterY(newY);
-          }
 
+          double newY = mouseEvent.getY() + dragDelta.y;
+          if (newY > 0 && newY < getScene().getHeight()) 
+            setCenterY(newY);
           // update arrow positions
-          for( Arrow arrow: arrows) {
+          for( Arrow arrow: arrows)
               arrow.update();
-          }
-        }
       });
-      setOnMouseEntered(new EventHandler<MouseEvent>() {
-        @Override public void handle(MouseEvent mouseEvent) {
-          if (!mouseEvent.isPrimaryButtonDown()) {
-            getScene().setCursor(Cursor.HAND);
-          }
-        }
-      });
-      setOnMouseExited(new EventHandler<MouseEvent>() {
-        @Override public void handle(MouseEvent mouseEvent) {
-          if (!mouseEvent.isPrimaryButtonDown()) {
+      setOnMouseEntered(    (mouseEvent) -> {
+            if (!mouseEvent.isPrimaryButtonDown())      
+            	getScene().setCursor(Cursor.HAND);
+        });
+      
+      setOnMouseExited(mouseEvent -> {
+          if (!mouseEvent.isPrimaryButtonDown()) 
             getScene().setCursor(Cursor.DEFAULT);
-          }
-        }
       });
     }
 

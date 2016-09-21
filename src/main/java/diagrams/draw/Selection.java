@@ -17,10 +17,12 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import model.AttributeMap;
+import util.LineUtil;
 import util.RectangleUtil;
 import util.StringUtil;
 
@@ -86,7 +88,11 @@ public class Selection
 	{	
 		if (kids == null) kids = root.getPane().getChildrenUnmodifiable();
 		for (Node n : kids) 
+		{	
+			if ("grid".equals(n.getId())) continue;
+			if (n instanceof Edge) continue;
 			select(n); 
+		}
 	}
 
 	//--------------------------------------------------------------------------
@@ -95,6 +101,7 @@ public class Selection
 		for (int i= items.size()-1; i>= 0; i--)
 		{
 			Node node = items.get(i);
+			if (node.getId().equals("grid")) continue;
 			items.remove(node);
 			getController().remove(node);
 		}
@@ -229,6 +236,10 @@ public class Selection
 				double x = r.getLayoutX() - dx;
 				double y = r.getLayoutY() - dy;
 				RectangleUtil.setRect(r, x, y, width, height);
+			}
+			if (n instanceof Line)
+			{
+				LineUtil.translateLine((Line) n, -dx, -dy);
 			}
 		}
 	}

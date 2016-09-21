@@ -171,6 +171,7 @@ public class Model
 	static private void traverse(StringBuilder buff,Node node, int indent)
 	{
 		if (ShapeFactory.isMarquee(node)) return;
+		if (node instanceof Edge)			buff.append(describe(node));	
 		if (node instanceof Shape)			buff.append(describe(node));	
 		if (node instanceof StackPane)		buff.append(describe(node));
 		if (node instanceof Parent)

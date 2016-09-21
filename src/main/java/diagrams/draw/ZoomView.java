@@ -1,16 +1,14 @@
 package diagrams.draw;
 
-import gui.Borders;
+import com.sun.javafx.scene.control.skin.ScrollPaneSkin;
 
-import java.awt.Dimension;
-
-import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.Pane;
@@ -25,7 +23,7 @@ import util.RectangleUtil;
 public class ZoomView
 {
 	private ImageView zoomImageView;		// this holds the snapshot taken of the drawPane
-	private Rectangle viewport;				// internal rectangle to represent the window
+	private Rectangle viewport;				// internal rectangle to represent the window with a purple dash
 	private Rectangle zoomClip;				// dynamically resizing clipping to this control
 	private AnchorPane zoomAnchor;			// the parent of the zoomImageView and viewport
 	private Pane drawPane;					// the window onto the canvas
@@ -80,7 +78,16 @@ public class ZoomView
 	{
 		Pasteboard canvas = controller.getPasteboard();
 		Rectangle canvasBounds = new Rectangle(0,0,canvas.getWidth(),canvas.getHeight());
-		Bounds canvasViewport = drawPane.getBoundsInParent();
+		Bounds canvasViewport = drawPane.getBoundsInLocal();  // was getBoundsInParent
+	
+		Parent parent = drawPane.getParent();
+		while (parent != null && !(parent instanceof ScrollPane))
+			parent = parent.getParent();
+		
+		if (parent instanceof ScrollPane)
+		{
+			canvasViewport = ((ScrollPane) parent).getViewportBounds();
+		}
 		Bounds controlBounds = zoomAnchor.getBoundsInLocal();
 
 		double scaleX = drawPane.getScaleX() * canvasBounds.getWidth() / controlBounds.getWidth();
@@ -106,8 +113,8 @@ public class ZoomView
 		viewport.setId("viewport");
 		viewport.setFill(Color.TRANSPARENT);			// note:  setFill(null) will disable mouse events!
 		viewport.setStroke(Color.DARKORCHID);
-		viewport.setStrokeWidth(2);
-		viewport.getStrokeDashArray().addAll(5.,10., 8. ,10.);
+		viewport.setStrokeWidth(1.618);
+		viewport.getStrokeDashArray().addAll(5.,10., 8. ,10., 2., 10., 8. ,10.);
 		
 		viewport.setOnMousePressed(event -> {
 			startX = event.getX();
@@ -127,6 +134,7 @@ public class ZoomView
 		viewport.setOnMouseDragged(event -> {
 			assert( (event.getTarget() instanceof Rectangle));
 			Rectangle vp = (Rectangle) event.getTarget();
+			assert( (vp == viewport));
 			AnchorPane p = (AnchorPane) vp.getParent();
 //			double w = zoomImageView.getFitWidth();
 //			double h = zoomImageView.getFitHeight();

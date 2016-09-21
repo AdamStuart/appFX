@@ -6,14 +6,10 @@ import java.util.List;
 import animation.NodeVisAnimator;
 import diagrams.draw.Action.ActionType;
 import diagrams.draw.App.Tool;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -49,6 +45,7 @@ import javafx.scene.shape.Shape;
 import javafx.stage.Screen;
 import model.AttributeMap;
 import util.FileUtil;
+import util.LineUtil;
 import util.RectangleUtil;
 
 // Pasteboard 
@@ -65,30 +62,24 @@ public class Pasteboard
 	//@formatter:off
 	private static final String INFO_LABEL_ID = "infoLabel";
 	private static final String ELEMENT_NAME = "Pasteboard";
-	
-	private Pane drawPane;
-	public Pane getPane()			{ return drawPane;	}
-	
-	private Rectangle marquee;
-	public Rectangle getMarquee()	{ return marquee;	}
 
-	private Label infoLabel;
 	
-	private Shape activeShape;
-	public Shape getActiveShape()		{ return activeShape;	}
-	public void setActiveShape(Shape s)	{ activeShape = s;	}
+	private Controller controller;
+	public Controller getController()	{ return controller; }
 	private NodeFactory factory;
 	public NodeFactory getNodeFactory()	{ return factory; }
 	private ShapeFactory shapeFactory;
 	public ShapeFactory getShapeFactory()	{ return shapeFactory; }
 	private Selection selectionMgr;
 	public Selection getSelectionMgr()	{ return selectionMgr; }
-	
-	private Controller controller;
-	public Controller getController()	{ return controller; }
+	private Pane drawPane;
+	public Pane getPane()			{ return drawPane;	}
+	private Rectangle marquee;
+	public Rectangle getMarquee()	{ return marquee;	}
+	private Label infoLabel;
+
 	SimpleDoubleProperty widthProperty = new SimpleDoubleProperty();
 	SimpleDoubleProperty heightProperty = new SimpleDoubleProperty();
-	
 	public double getWidth()	{ return widthProperty.get();	}
 	public double getHeight()	{ return heightProperty.get();	}
 	public  void setWidth(double d)	{  widthProperty.set(d);	}
@@ -96,6 +87,9 @@ public class Pasteboard
 	public SimpleDoubleProperty widthProperty()	{  return widthProperty;	}
 	public SimpleDoubleProperty heightProperty()	{  return heightProperty;	}
 
+	private Shape activeShape;
+	public Shape getActiveShape()		{ return activeShape;	}
+	public void setActiveShape(Shape s)	{ activeShape = s;	}
 	//@formatter:on
 	/**-------------------------------------------------------------------------------
 	/**Canvas (Pane pane, Controller ctrl
@@ -114,12 +108,7 @@ public class Pasteboard
 		marquee = shapeFactory.makeMarquee();
 		selectionMgr = new Selection(this);
 //		pane.getChildren().add(marquee);
-		drawPane.addEventHandler(MouseEvent.MOUSE_PRESSED, new MousePressedHandler());
-		drawPane.addEventHandler(MouseEvent.MOUSE_CLICKED, new MouseClickHandler());
-		drawPane.addEventHandler(MouseEvent.MOUSE_MOVED, new MouseMovedHandler());
-		drawPane.addEventHandler(MouseEvent.MOUSE_DRAGGED, new MouseDraggedHandler());
-		drawPane.addEventHandler(MouseEvent.MOUSE_RELEASED, new MouseReleasedHandler());
-		drawPane.addEventHandler(KeyEvent.KEY_RELEASED, new KeyHandler());
+		setupMouseKeyHandlers(drawPane);
 		setupPasteboardDrops(drawPane);
 		infoLabel = new Label("");
 		infoLabel.setId(INFO_LABEL_ID);
@@ -220,14 +209,15 @@ public class Pasteboard
 	public void makeGrid(Button toggler, ScrollPane scrlPane)
 	{
 		grid = new Group();
+		grid.setId("grid");
 		double res = Screen.getPrimary().getDpi();			// assumes inches
 		Parent p  = getPane().getParent();
 		if (scrlPane != null)
 		{
 			Pane drawPane = (Pane) scrlPane.getContent();
-			ReadOnlyObjectProperty<Bounds> bds = drawPane.boundsInParentProperty();
-			DoubleBinding leftProp = Bindings.selectDouble(bds, "minX");
-			DoubleBinding rightProp = Bindings.selectDouble(bds, "maxX");
+//			ReadOnlyObjectProperty<Bounds> bds = drawPane.boundsInParentProperty();
+//			DoubleBinding leftProp = Bindings.selectDouble(bds, "minX");
+//			DoubleBinding rightProp = Bindings.selectDouble(bds, "maxX");
 //			drawPane.layoutXProperty();
 //			DoubleProperty yProp = drawPane.layoutYProperty();
 //			ReadOnlyDoubleProperty widthProp = drawPane.widthProperty();
@@ -262,13 +252,6 @@ public class Pasteboard
 	}
 	public void showGrid(boolean vis)	{	grid.setVisible(vis);	}
 	public boolean isGridVisible()		{	return	grid.isVisible();	}
-
-	//-------------------------------------------------------------------------------
-	public void clearAll()		// done on close, not undoable
-	{
-		selectionMgr.clear();
-		drawPane.getChildren().clear();
-	}
 	
 	//-------------------------------------------------------------------------------
 	public void showInfo(String s) {	infoLabel.setText(s);	infoLabel.setVisible(true);		}
@@ -279,17 +262,37 @@ public class Pasteboard
  *		based on the current tool, and draw the marquee if the selection arrow is active
  *		
  */
-	private Point2D startPoint = null;
-//	private Point2D offset = null;
-	private Point2D curPoint = null;
+	private void setupMouseKeyHandlers(Pane drawPane2) {
+		drawPane.addEventHandler(MouseEvent.MOUSE_PRESSED, new MousePressedHandler());
+		drawPane.addEventHandler(MouseEvent.MOUSE_CLICKED, new MouseClickHandler());
+		drawPane.addEventHandler(MouseEvent.MOUSE_MOVED, new MouseMovedHandler());
+		drawPane.addEventHandler(MouseEvent.MOUSE_DRAGGED, new MouseDraggedHandler());
+		drawPane.addEventHandler(MouseEvent.MOUSE_RELEASED, new MouseReleasedHandler());
+		drawPane.addEventHandler(KeyEvent.KEY_RELEASED, new KeyHandler());
+		
+	}
+
+	private Point2D startPoint = null;		// remember where the mouse was pressed
+//	private Point2D offset = null;			// distance from startPoint to the origin of the target
+	private Point2D curPoint = null;		// mouse location in current event
+//	private Line dragLine = null;			// a polyline edge
 
 	static boolean verbose = false;
-	Line dragLine = null;
 
-	public void setLastClick(double x, double y) {
-		dragLine.setEndX(x);
-		dragLine.setEndY(y);
-	}
+//
+//	public void setFirstClick(double x, double y) {
+//		if (dragLine == null)
+//			dragLine = new Line();
+//		dragLine.setStartX(x);
+//		dragLine.setStartY(y);
+//		dragLine.setEndX(x);
+//		dragLine.setEndY(y);
+//	}
+//	public void setLastClick(double x, double y) {
+//		dragLine.setEndX(x);
+//		dragLine.setEndY(y);
+//	}
+
 
 
 	private final class MousePressedHandler implements EventHandler<MouseEvent> 
@@ -299,16 +302,42 @@ public class Pasteboard
 			if (verbose)
 				System.out.println("MousePressedHandler, activeShape: " + activeShape);
 			// do nothing for a right-click
-			if (event.isSecondaryButtonDown()) { return;	}		// TODO popup canvas commands
-			startPoint = new Point2D(event.getX(), event.getY());
+			if (event.isSecondaryButtonDown()) 
+			{ 
+				// TODO popup canvas commands
+				event.consume();
+				return;	
+			}
 			
+			startPoint = new Point2D(event.getX(), event.getY());
 			if (activeShape instanceof Polygon)
 			{
 				if (verbose) System.out.println("MousePressedHandler, Polygon: " );
 				Polygon p = (Polygon) activeShape;
 				if (event.getClickCount() > 1)							activeShape = null;
-				else if (ShapeFactory.onVertex(startPoint, p) >= 0)		activeShape = null;
+				else if (LineUtil.onVertex(startPoint, p) >= 0)		activeShape = null;
 				else p.getPoints().addAll(event.getX(), event.getY());
+				event.consume();
+				return;
+			}
+			if (activeShape instanceof Line)
+			{
+				if (verbose) System.out.println("MousePressedHandler, Line: " );
+				Line line = (Line) activeShape;
+//				if (dragLine != null && dragLine.isVisible())		
+//				{
+//					LineUtil.set(line, dragLine);
+//					drawPane.getChildren().remove(dragLine);
+////					dragLine = null;
+//					line.setVisible(true);
+//					resetTool();
+//					event.consume();
+//				}
+//				else 
+				{
+					line.setVisible(false);
+//					setFirstClick(event.getX(), event.getY());				
+				}
 				event.consume();
 				return;
 			}
@@ -318,16 +347,16 @@ public class Pasteboard
 				Polyline p = (Polyline) activeShape;
 				if (event.getClickCount() > 1)
 					activeShape = null;
-				else if (ShapeFactory.onVertex(startPoint, p) >= 0)
+				else if (LineUtil.onVertex(startPoint, p) >= 0)
 					activeShape = null;
 				else p.getPoints().addAll(event.getX(), event.getY());
-				if (dragLine == null)
-				{
-					dragLine = new Line();
-					dragLine.setStartX(event.getX());
-					dragLine.setStartY(event.getY());
-					drawPane.getChildren().add(dragLine);	
-		}
+//				if (dragLine == null)
+//				{
+//					dragLine = new Line();
+//					dragLine.setStartX(event.getX());
+//					dragLine.setStartY(event.getY());
+//					drawPane.getChildren().add(dragLine);	
+//				}
 				
 				event.consume();
 				return;
@@ -345,6 +374,23 @@ public class Pasteboard
 			{
 				Polyline p = (Polyline) activeShape;
 				p.getPoints().addAll(event.getX(), event.getY());
+			}
+			if (activeShape instanceof Line)
+			{
+//				if (dragLine == null)
+//				{
+//					dragLine = new Line();
+//					dragLine.setStartX(event.getX());
+//					dragLine.setStartY(event.getY());
+//					drawPane.getChildren().add(dragLine);	
+//				}
+//				else dragLine.setVisible(true);
+				
+				Line p = (Line) activeShape;
+				p.setStartX(event.getX());
+				p.setStartY(event.getY());
+				p.setEndX(event.getX());
+				p.setEndY(event.getY());
 			}
 			if (activeShape == null) 
 			{
@@ -441,13 +487,13 @@ public class Pasteboard
 			if (activeShape instanceof Rectangle)
 			{
 				Rectangle r = (Rectangle) activeShape;
-				r.setVisible(true);
+//				r.setVisible(true);
 				RectangleUtil.setRect(r, left, top ,w, h);
 			}
 			if (activeShape instanceof Circle)
 			{
 				Circle c = (Circle) activeShape;
-				c.setVisible(true);
+//				c.setVisible(true);
 				c.setCenterX(startPoint.getX());
 				c.setCenterY(startPoint.getY());
 				double rad = Math.sqrt(w * w + h * h);
@@ -457,7 +503,7 @@ public class Pasteboard
 			if (activeShape instanceof Polygon)
 			{
 				Polygon p = (Polygon) activeShape;
-				p.setVisible(true);
+//				p.setVisible(true);
 				int nPts = p.getPoints().size();
 				if (nPts > 1)
 				{
@@ -469,7 +515,7 @@ public class Pasteboard
 			if (activeShape instanceof Polyline)
 			{
 				Polyline p = (Polyline) activeShape;
-				p.setVisible(true);
+//				p.setVisible(true);
 				p.setFill(null);
 				int nPts = p.getPoints().size();
 				if (nPts > 1)
@@ -477,6 +523,13 @@ public class Pasteboard
 					p.getPoints().set(nPts-2, curPoint.getX());
 					p.getPoints().set(nPts-1, curPoint.getY());
 				}
+			}
+			
+			if (activeShape instanceof Line)
+			{
+				Line p = (Line) activeShape;
+				p.setEndX(curPoint.getX());
+				p.setEndY(curPoint.getY());
 			}
 		}
 	}
@@ -503,7 +556,6 @@ public class Pasteboard
 			startPoint = curPoint = null;
 			drawPane.requestFocus();		// needed for the key event handler to receive events
 			resetTool();
-			drawPane.getChildren().remove(dragLine);
 			event.consume();
 		}
 	}
@@ -526,11 +578,11 @@ public class Pasteboard
 	{
 		@Override public void handle(final MouseEvent event) 
 		{			
-			if (dragLine != null)
-			{
-				dragLine.setEndX(event.getX());
-				dragLine.setEndY(event.getY());
-			}
+//			if (dragLine != null)
+//			{
+//				dragLine.setEndX(event.getX());
+//				dragLine.setEndY(event.getY());
+//			}
 		}
 	}
 	//---------------------------------------------------------------------------
@@ -544,7 +596,8 @@ public class Pasteboard
 			if (KeyCode.R.equals(key)) 			setTool(Tool.Rectangle);
 			else if (KeyCode.C.equals(key)) 	setTool(Tool.Circle);
 			else if (KeyCode.P.equals(key)) 	setTool(Tool.Polygon);
-			else if (KeyCode.L.equals(key)) 	setTool(Tool.Polyline);
+			else if (KeyCode.L.equals(key)) 	setTool(Tool.Line);
+			else if (KeyCode.W.equals(key)) 	setTool(Tool.Polyline);
 //			else if (KeyCode.X.equals(key)) 	setTool(Tool.Xhair);
 			else if (KeyCode.DELETE.equals(key)) 		getController().deleteSelection();		// create an undoable action
 			else if (KeyCode.BACK_SPACE.equals(key)) 	getController().deleteSelection();
@@ -553,7 +606,13 @@ public class Pasteboard
 	//---------------------------------------------------------------------------
 	Tool curTool = Tool.Arrow;
 	boolean sticky = false;
-	public void resetTool()		{		if (!sticky) setTool(Tool.Arrow);	}
+	public Tool getTool()	{ return curTool;	}
+	public void resetTool()		
+	{		
+		if (sticky) return;
+//		if (dragLine != null && dragLine.isVisible()) return;
+		setTool(Tool.Arrow);	
+	}
 	
 	public void setTool(Tool inTool)
 	{
@@ -578,7 +637,7 @@ public class Pasteboard
 			System.out.println("Tool set to: " + inTool.toString() + (sticky ? "!!" : ""));
 	}
 	//---------------------------------------------------------------------------
-	Paint defaultStroke = Color.BLUE;
+	Paint defaultStroke = Color.BLUE;			// TODO  pref
 	Paint defaultFill = Color.GREY;
 	
 	public Paint getDefaultFill()		{		return 	defaultFill;	}

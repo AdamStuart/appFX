@@ -179,13 +179,14 @@
    <left>
       <VBox fx:id="inspector" prefHeight="727.0" prefWidth="70.0" spacing="10.0" BorderPane.alignment="CENTER_LEFT">
          <children>
-            <ToolBar orientation="VERTICAL" prefHeight="170.0" prefWidth="31.0">
+            <ToolBar orientation="VERTICAL" prefHeight="197.0" prefWidth="31.0">
                <items>
                   <ToggleButton fx:id="arrow" mnemonicParsing="false" onAction="#setArrow" />
                   <ToggleButton fx:id="rectangle" mnemonicParsing="false" onAction="#setRectangle" />
                   <ToggleButton fx:id="circle" mnemonicParsing="false" onAction="#setOval" />
                   <ToggleButton fx:id="polygon" mnemonicParsing="false" onAction="#setPolygon" />
                   <ToggleButton fx:id="polyline" layoutX="10.0" layoutY="103.0" mnemonicParsing="false" onAction="#setPolyline" />
+                  <ToggleButton fx:id="line" layoutX="10.0" layoutY="134.0" mnemonicParsing="false" onAction="#setLine" />
                </items>
             </ToolBar>
             <HBox>
@@ -208,7 +209,7 @@
             <Slider fx:id="rotation" layoutX="10.0" layoutY="389.0" majorTickUnit="20.0" max="180.0" min="-180.0" minorTickCount="5" orientation="VERTICAL" prefHeight="69.0" prefWidth="60.0" showTickLabels="true" showTickMarks="true" />
          </children>
          <padding>
-            <Insets top="20.0" />
+            <Insets left="4.0" top="4.0" />
          </padding>
       </VBox>
    </left>

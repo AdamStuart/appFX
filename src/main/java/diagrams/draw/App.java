@@ -2,7 +2,7 @@ package diagrams.draw;
 
 import java.net.URL;
 
-import diagrams.draw.App.Tool;
+import edu.stanford.nlp.util.ArrayUtils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -69,32 +69,22 @@ import javafx.stage.Stage;
 	public enum Tool {
 	
 		Arrow,
-		Rectangle, Circle, Polygon,	Polyline,	// Shapes
-		Browser, Text, Table, Image, Media,		// Controls
+		Rectangle, Circle, Polygon,	Polyline, Line,	// Shapes
+		Browser, Text, Table, Image, Media,			// Controls
 		;
 	
 		public static Tool fromString(String type)
 		{
 			String t = type.toLowerCase();
-			if ("rectangle".equals(t))	return Rectangle;
-			if ("circle".equals(t))		return Circle;
-			if ("polygon".equals(t))	return Polygon;
-			if ("polyline".equals(t))	return Polyline;
-			if ("browser".equals(t))	return Browser;
-			if ("text".equals(t))		return Text;
-			if ("table".equals(t))		return Table;
-			if ("image".equals(t))		return Image;
-			if ("media".equals(t))		return Media;
+			for (Tool tool : values())
+				if (tool.name().equals(t))	return tool;
 			return Arrow;
 		}
-		public boolean isShape()
-		{
-			return this == Rectangle || this == Circle || this == Polygon || this == Polyline;
-		}
-		public boolean isControl()
-		{
-			return this == Browser || this == Text || this == Table || this == Image || this == Media;
-		}
+		static Tool[] shapes =  { Rectangle,Circle,Polygon,Polyline,Polyline};
+		static Tool[] controls = { Browser,Text,Table,Image,Media};
+
+		public boolean isShape()		{	return ArrayUtils.contains(shapes, this);		}
+		public boolean isControl()		{	return ArrayUtils.contains(controls, this);		}
 	}
 
 }

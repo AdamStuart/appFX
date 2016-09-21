@@ -68,6 +68,7 @@ public class SudokuController
 				int row =3 * ( i / 3) + j / 3;
 				int col = 3 * (i % 3) + j % 3;
 				subGrid.getChildren().add(new Cell(row,col));
+//				subGrid.getChildren().add(new Cell(col,row));
 			}
 		}
 		doNew();
@@ -116,17 +117,22 @@ public class SudokuController
 		
 		private void clickCell(MouseEvent ev)
 		{
-			String text = ((ToggleButton)numButtons.getSelectedToggle()).getText();
+			System.out.println("clickCell on " + column + ", " + row);
+			ToggleButton btn = ((ToggleButton)numButtons.getSelectedToggle());
+			if (btn == null) return;
+			String text = btn.getText();
+			int x = row;		// hack to fix unexpected transposition
+			int y = column;
 			if (StringUtil.hasText(text))
 			{
-				int curVal = game.getNumber(column, row);
+				int curVal = game.getNumber(x,y);
 				if (curVal == 0)
 				{
 					int guess = StringUtil.toInteger(text);
-					int correctVal = game.getSolution(column,row);
+					int correctVal = game.getSolution(x,y);
 					if (correctVal == guess)
 					{
-						game.setNumber(column,row, guess);
+						game.setNumber(x,y, guess);
 						setCursor(Cursor.NONE);
 						install();
 					}

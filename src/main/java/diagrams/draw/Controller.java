@@ -2,7 +2,9 @@ package diagrams.draw;
 
 import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -16,6 +18,7 @@ import icon.FontAwesomeIcons;
 import icon.GlyphIcon;
 import icon.GlyphsDude;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -25,7 +28,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -65,7 +67,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
 import javafx.util.Callback;
 import model.AttributeMap;
 import model.AttributeValue;
@@ -108,12 +109,14 @@ public class Controller implements Initializable
 	@FXML private void setOval()		{ pasteboard.setTool(Tool.Circle);		}
 	@FXML private void setPolygon()		{ pasteboard.setTool(Tool.Polygon);	}
 	@FXML private void setPolyline()	{ pasteboard.setTool(Tool.Polyline);	}
+	@FXML private void setLine()		{ pasteboard.setTool(Tool.Line);	}
 	
 	@FXML private ToggleButton arrow;
 	@FXML private ToggleButton rectangle;
 	@FXML private ToggleButton circle;
 	@FXML private ToggleButton polygon;
 	@FXML private ToggleButton polyline;
+	@FXML private ToggleButton line;
 	
 	@FXML private ColorPicker fillColor;
 	@FXML private ColorPicker lineColor;
@@ -208,7 +211,7 @@ public class Controller implements Initializable
 		pasteboard = new Pasteboard(drawPane, this);
 		doc = new Document(this);
 		paletteGroup = new ToggleGroup();
-		paletteGroup.getToggles().addAll(arrow, rectangle, circle, polygon, polyline);
+		paletteGroup.getToggles().addAll(arrow, rectangle, circle, polygon, polyline, line);
 		bindInspector();
 		String cssURL = this.getClass().getResource("draw.css").toExternalForm();
 		drawPane.getStylesheets().add(cssURL);
@@ -248,61 +251,72 @@ public class Controller implements Initializable
 		AboutDialog dlog = new AboutDialog();
 		dlog.showAndWait();
 	}
-	
+	Map<Object, Object> dependents = new HashMap<Object, Object>();
 	//-----------------------------------------------------------------------
+	private final ChangeListener<Object> changeListener = 
+		    (obs, oldValue, newValue) ->  System.out.println("The binding is now invalid.");
 	@FXML private void test1()
 	{
-	ShapeFactory f = getNodeFactory().getShapeFactory();
-	AttributeMap attrMap = new AttributeMap();
-	attrMap.putFillStroke(Color.PINK, Color.INDIGO);
-	attrMap.putCircle(new Circle(120, 230, 40));
-	Shape n1 = f.makeNewShape(Tool.Circle, attrMap);
-
-	final Label text = new Label("melvin");
-	text.setFont(new Font(18));
-	text.setMouseTransparent(true);
-	NodeCenter ctr = new NodeCenter(n1);
-	text.translateXProperty().bind(ctr.centerXProperty());
-	text.translateYProperty().bind(ctr.centerYProperty());
-	add(n1);
-	add(text);
-
-
-	attrMap.putFillStroke(Color.CORNSILK, Color.BLUE);
-	attrMap.putCircle(new Circle(220, 130, 60));
-	StackPane stk = f.makeLabeledShapePane(Tool.Circle, attrMap, "Eli");
-	f.makeNodeMouseHandler(stk);
-	add(stk);
-
-	attrMap.putFillStroke(Color.LIGHTSKYBLUE, Color.DARKOLIVEGREEN);
-	attrMap.putCircle(new Circle(220, 330, 60));
-	Group n3 = f.makeLabeledShapeGroup(Tool.Circle, attrMap, "Fristcut");
-	add(n3);
+		undoStack.push(ActionType.Test);	
+		ShapeFactory f = getNodeFactory().getShapeFactory();
+		AttributeMap attrMap = new AttributeMap();
+		attrMap.putFillStroke(Color.PINK, Color.INDIGO);
+		attrMap.putCircle(new Circle(120, 230, 40));
+		Shape n1 = f.makeNewShape(Tool.Circle, attrMap);
+		final Label text = f.createLabel("root");
+    	NodeCenter ctr = new NodeCenter(n1);
+    	text.layoutXProperty().bind(ctr.centerXProperty().subtract(text.widthProperty().divide(2.)));	// width / 2
+    	text.layoutYProperty().bind(ctr.centerYProperty().subtract(text.heightProperty().divide(2.)));
+//    	n1.addEventHandler(EventType.CHANGE, e -> {});
+//        n1.boundsInLocalProperty().addListener(changeListener);
+//  	n1.visibleProperty().addListener(changeListener);
+//    	n1.visibleProperty().addListener((obs, old, val) ->
+//    	{  
+//    		System.out.println("val: " + val.toString());
+//    		if (val == null) {}
+//    		});
+////		n1.addListenerToDelete(text)
+		add(n1);
+		add(text);
+		dependents.put(n1, text);
 	
-	Edge line1 = model.addEdge(stk, n3);
-	Edge line2 = model.addEdge(stk, n1);
 	
-	add(0, line1);
-	add(0, line2);
+		attrMap.putFillStroke(Color.CORNSILK, Color.BLUE);
+		attrMap.putCircle(new Circle(220, 130, 60));
+		Shape circ = f.makeNewShape(Tool.Circle, attrMap);		//, "Eli"
+//		f.makeNodeMouseHandler(stk);
+		add(circ);
 	
-	Rectangle r1 = new Rectangle(290, 230, 60, 60);
-	attrMap.putRect(r1);
-	attrMap.putFillStroke(Color.CORNSILK, Color.DARKOLIVEGREEN);
-	Rectangle n4 = (Rectangle) f.makeNewNode(Tool.Rectangle, attrMap);
-	add(n4);
+		attrMap.putFillStroke(Color.LIGHTSKYBLUE, Color.DARKOLIVEGREEN);
+		attrMap.putCircle(new Circle(220, 330, 60));
+		Shape n3 = f.makeNewShape(Tool.Circle, attrMap);	//, "Fristcut"
+		add(n3);
 		
-	Edge line3 = model.addEdge(n4, stk);
-	line3.setStrokeWidth(2);
-	add(0, line3);
-
-	Line line4 = model.addEdge(n1, n3);
-	line4.setStrokeWidth(2);
-	add(0, line4);
-}
+		Edge line1 = model.addEdge(circ, n3);
+		Edge line2 = model.addEdge(circ, n1);
+		
+		add(0, line1);
+		add(0, line2);
+		
+		Rectangle r1 = new Rectangle(290, 230, 60, 60);
+		attrMap.putRect(r1);
+		attrMap.putFillStroke(Color.CORNSILK, Color.DARKOLIVEGREEN);
+		Rectangle n4 = (Rectangle) f.makeNewNode(Tool.Rectangle, attrMap);
+		add(n4);
+			
+		Edge line3 = model.addEdge(n4, circ);
+		line3.setStrokeWidth(2);
+		add(0, line3);
+	
+		Line line4 = model.addEdge(n1, n3);
+		line4.setStrokeWidth(2);
+		add(0, line4);
+	}
 
 // **-------------------------------------------------------------------------------
 	@FXML private void test2()
 	{
+		undoStack.push(ActionType.Test);	
 		double WIDTH = 20;
 		double HEIGHT = 20;
 		double RADIUS = 10;
@@ -376,11 +390,13 @@ public class Controller implements Initializable
 		circle.setGraphic(		GlyphsDude.createIcon(FontAwesomeIcons.CIRCLE, GlyphIcon.DEFAULT_ICON_SIZE));
 		polygon.setGraphic(		GlyphsDude.createIcon(FontAwesomeIcons.STAR, GlyphIcon.DEFAULT_ICON_SIZE));
 		polyline.setGraphic(	GlyphsDude.createIcon(FontAwesomeIcons.PENCIL, GlyphIcon.DEFAULT_ICON_SIZE));
+		line.setGraphic(		GlyphsDude.createIcon(FontAwesomeIcons.LONG_ARROW_RIGHT, GlyphIcon.DEFAULT_ICON_SIZE));
 		arrow.setId(Tool.Arrow.name());
 		rectangle.setId(Tool.Rectangle.name());
 		circle.setId(Tool.Circle.name());
 		polygon.setId(Tool.Polygon.name());
 		polyline.setId(Tool.Polyline.name());
+		line.setId(Tool.Line.name());
 
 		leftSideBarButton.setGraphic(	GlyphsDude.createIcon(FontAwesomeIcons.ARROW_CIRCLE_O_RIGHT, GlyphIcon.DEFAULT_ICON_SIZE));
 		rightSideBarButton.setGraphic(	GlyphsDude.createIcon(FontAwesomeIcons.ARROW_CIRCLE_O_LEFT, GlyphIcon.DEFAULT_ICON_SIZE));
@@ -398,6 +414,7 @@ public class Controller implements Initializable
 	public void setState(String s)
 	{
 		drawPane.getChildren().clear();
+		drawPane.getChildren().add(pasteboard.getGrid());
 		addState(s);
 	}
 	public void addState(String s)
@@ -611,6 +628,12 @@ public class Controller implements Initializable
 	public void remove(Node n)						
 	{		
 		getDrawModel().removeNode(n);
+		Object dependent = dependents.get(n);
+		if (dependent != null)
+		{
+			drawPane.getChildren().remove(dependent);	
+			dependents.remove(n);
+		}
 		drawPane.getChildren().remove(n);	
 	}
 	public void add(Node n)							

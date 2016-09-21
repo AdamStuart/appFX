@@ -38,7 +38,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.web.WebView;
@@ -62,7 +64,6 @@ public class NodeFactory
 	public NodeFactory(Pasteboard layer)
 	{
 		drawLayer = layer;
-//		drawPane = pane;
 		undoStack = drawLayer.getController().getUndoStack();
 		shapeFactory = new ShapeFactory(drawLayer, undoStack);
 	}
@@ -112,10 +113,8 @@ public class NodeFactory
 
 //		System.out.println("Everything should be cached!!");
 		Tool tool = Tool.fromString(type);
-		if (tool.isShape())
-			return shapeFactory.parseNode(attrMap);
-		if (tool.isControl())			
-			return makeNewNode(tool, attrMap);
+		if (tool.isShape())		return shapeFactory.parseNode(attrMap);
+		if (tool.isControl())	return makeNewNode(tool, attrMap);
 		return null;
 	}
 
@@ -146,6 +145,19 @@ public class NodeFactory
 			{
 				Polygon poly = (Polygon) shape;
 				if (k.equals("points"))			parsePolygonPoints(poly, map.get(k));
+			}
+			if (shape instanceof Polyline)
+			{
+				Polyline poly = (Polyline) shape;
+				if (k.equals("points"))			parsePolylinePoints(poly, map.get(k));
+			}
+			if (shape instanceof Line)
+			{
+				Line line = (Line) shape;
+				if (k.equals("startX"))			line.setStartX(d);
+				else if (k.equals("startY"))	line.setStartY(d);
+				else if (k.equals("endX"))		line.setEndX(d);
+				else if (k.equals("endY"))		line.setEndY(d);
 			}
 			if (shape instanceof StackPane)
 			{
@@ -179,15 +191,23 @@ public class NodeFactory
 			catch (Exception e) { System.err.println("Parse errors: " + k); }
 		}	
 	}
-	
+	// **-------------------------------------------------------------------------------
+	// Polygons and polylines are stored the same, but have different base types
 	private void parsePolygonPoints(Polygon poly, String string)
+	{
+		parsePolyPoints(poly.getPoints(), string);
+	}	
+	private void parsePolylinePoints(Polyline poly, String string)
+	{
+		parsePolyPoints(poly.getPoints(), string);
+	}	
+	private void parsePolyPoints(ObservableList<Double> pts, String string)
 	{
 		String s = string.trim();
 		s = s.substring(1, s.length()-1);
 		String[] doubles = s.split(",");
-		
 		for (String d : doubles)
-			poly.getPoints().add(StringUtil.toDouble(d));
+			pts.add(StringUtil.toDouble(d));
 	}
 
 	// **-------------------------------------------------------------------------------
@@ -201,7 +221,6 @@ public class NodeFactory
 		return null;
 	}
 	// **-------------------------------------------------------------------------------
-
 	public StackPane handleFileDrop(File f, double x, double y)
 	{
 		AttributeMap attrs = new AttributeMap(f, x, y);
@@ -219,7 +238,6 @@ public class NodeFactory
 		group.getChildren().addAll(items);
 		return group;
 	}
-
 	// **-------------------------------------------------------------------------------
 	public StackPane makeBrowser(AttributeMap attrMap)
 	{
@@ -395,39 +413,26 @@ public class NodeFactory
 	{
 
 		final ContextMenu contextMenu = new ContextMenu();
-		contextMenu.setOnShowing(new EventHandler<WindowEvent>() {
-		    @Override
-			public void handle(WindowEvent e) {
-		        System.out.println("showing");
-		    }
-		});
-		contextMenu.setOnShown(new EventHandler<WindowEvent>() {
-		    @Override
-			public void handle(WindowEvent e) {
-		        System.out.println("shown");
-		    }
-		});
+		contextMenu.setOnShowing((e) -> {     System.out.println("showing");		});
+		contextMenu.setOnShown((e) -> {       System.out.println("shown");		});
 		attachee.setContextMenu(contextMenu);
-	
-		MenuItem item1 = new MenuItem("Bring To Front");
-		item1.setOnAction(new EventHandler<ActionEvent>() {    @Override
-		public void handle(ActionEvent e) {     System.out.println("Bring To Front");    }});
-		MenuItem item2 = new MenuItem("Send To Back");
-		item2.setOnAction(new EventHandler<ActionEvent>() {    @Override
-		public void handle(ActionEvent e) {      System.out.println("Send To Back");   }});
+
+		MenuItem item1 = makeItem("Bring To Front", e -> System.out.println("Bring To Front")  );
+		MenuItem item2 = makeItem("Send To Back", e -> System.out.println("Send To Back")  );
 		contextMenu.getItems().addAll(item1, item2);
 		
 		if (content instanceof TableView)
 		{
-			MenuItem item3 = new MenuItem("Line Chart");
-			item3.setOnAction(new EventHandler<ActionEvent>() {    @Override
-			public void handle(ActionEvent e) {      System.out.println("Line Chart");   }});
-			MenuItem item4 = new MenuItem("Scatter Chart");
-			item4.setOnAction(new EventHandler<ActionEvent>() {    @Override
-			public void handle(ActionEvent e) {      System.out.println("Scatter Chart");   }});
+			MenuItem item3 = makeItem("Line Chart", e -> System.out.println("Line Chart") );
+			MenuItem item4 = makeItem("Scatter Chart", e -> System.out.println("Scatter Chart") );
 			contextMenu.getItems().addAll(item3, item4);
-			
 		}
+	}
+	private MenuItem makeItem(String name, EventHandler<ActionEvent> foo)
+	{
+		MenuItem item = new MenuItem(name);	
+		item.setOnAction(foo);
+		return item;
 	}
 	// **-------------------------------------------------------------------------------
 	public void addBorderMouseHandlers(StackPane border)
@@ -705,7 +710,6 @@ public class NodeFactory
 			{
 				if (resizing)
 				{
-	
 					StackPane r = (StackPane) event.getTarget();
 					Point2D local = r.localToParent(currentPoint);
 					RectangleUtil.setRect(r, startPoint, local);
