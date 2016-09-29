@@ -676,7 +676,7 @@ public class Pasteboard
 	}
 	//---------------------------------------------------------------------------
 	Paint defaultStroke = Color.BLUE;			// TODO  pref
-	Paint defaultFill = Color.GREY;
+	Paint defaultFill = Color.TRANSPARENT;
 	
 	public Paint getDefaultFill()		{		return 	defaultFill;	}
 	public Paint getDefaultStroke()		{		return defaultStroke;	}

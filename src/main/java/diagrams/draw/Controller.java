@@ -22,6 +22,7 @@ import icon.GlyphsDude;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -47,7 +48,6 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.TreeItem;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
@@ -74,6 +74,7 @@ import javafx.util.Callback;
 import model.AttributeMap;
 import model.AttributeValue;
 import model.RandomAttributeValueData;
+import util.StringUtil;
 
 
 public class Controller implements Initializable
@@ -437,6 +438,7 @@ public class Controller implements Initializable
 	public void addState(org.w3c.dom.Document doc)
 	{
 		NodeList nodes = doc.getElementsByTagName("DataNode");
+		ShapeFactory f = getNodeFactory().getShapeFactory();
 		for (int i=0; i<nodes.getLength(); i++)
 		{
 			org.w3c.dom.Node child = nodes.item(i);
@@ -444,7 +446,20 @@ public class Controller implements Initializable
 			System.out.println(name);
 			Node node = getNodeFactory().parseGPML(child);
 			if (node != null)
-				add(node);
+			{
+				ObservableMap<Object, Object> map = node.getProperties();
+				String label = map.get("TextLabel").toString();
+				if (StringUtil.hasText(label)) {
+					final Label text = f.createLabel(label);
+			    	NodeCenter ctr = new NodeCenter(node);
+			    	text.layoutXProperty().bind(ctr.centerXProperty().subtract(text.widthProperty().divide(2.)));	// width / 2
+			    	text.layoutYProperty().bind(ctr.centerYProperty().subtract(text.heightProperty().divide(2.)));
+					dependents.put(node, text);
+					add(node);
+					add(text);
+				}
+				else	add(node);
+			}
 		}
 		NodeList shapes = doc.getElementsByTagName("Shape");
 		for (int i=0; i<shapes.getLength(); i++)
@@ -464,7 +479,10 @@ public class Controller implements Initializable
 			System.out.println(name);
 			Edge edge = getEdgeFactory().parseGPML(child);
 			if (edge != null)
+			{
+				add(edge);
 				model.addEdge(edge);
+			}
 		}
 		
 		handleBiopax(doc.getElementsByTagName("Biopax"));
@@ -489,6 +507,10 @@ public class Controller implements Initializable
 			org.w3c.dom.Node child = elements.item(i);
 			String name = child.getNodeName();
 			System.out.println(name);
+			Label label = getNodeFactory().parseGPMLLabel(child);
+			if (label != null)
+				add(label);
+	
 		}
 	}
 	private void handleLines(NodeList elements) {

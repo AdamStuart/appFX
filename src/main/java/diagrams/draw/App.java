@@ -2,7 +2,6 @@ package diagrams.draw;
 
 import java.net.URL;
 
-import diagrams.draw.App.Tool;
 import edu.stanford.nlp.util.ArrayUtils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -92,9 +91,11 @@ import javafx.stage.Stage;
 			if ("Pentagon".equals(type)) 	return Rectangle;
 			if ("Oval".equals(type)) 		return Circle;
 			if ("Mitochondria".equals(type)) return Circle;
-			if ("Protein".equals(type)) 	return Circle;
+			if ("Protein".equals(type)) 	return Rectangle;
 			if ("Pathway".equals(type)) 	return Rectangle;
-			if ("GeneProduct".equals(type)) return Circle;
+			if ("GeneProduct".equals(type)) return Rectangle;
+			if ("Metabolite".equals(type)) 	return Circle;
+			if ("Rna".equals(type)) 		return Circle;
 			return null;
 		}
 	}

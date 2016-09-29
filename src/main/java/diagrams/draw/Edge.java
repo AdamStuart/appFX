@@ -12,7 +12,7 @@ import model.AttributeMap;
 
 public class Edge extends Line {
 
-	private Node startNode, endNode;
+	private Node startNode=null, endNode=null;
 	public Node getStartNode()	{ return startNode;	}
 	public Node getEndNode()	{ return endNode;	}
 	
@@ -21,6 +21,12 @@ public class Edge extends Line {
     	startNode = start;
     	endNode = end;
     	init();
+     }
+    	
+	public Edge(Double startX, Double startY, Double endX, Double endY) 
+    {
+		super(startX, startY, endX, endY);
+		startNode =  endNode = null;
      }
     	
     public Edge(ReadOnlyDoubleProperty startX, ReadOnlyDoubleProperty startY, ReadOnlyDoubleProperty endX, ReadOnlyDoubleProperty endY) 

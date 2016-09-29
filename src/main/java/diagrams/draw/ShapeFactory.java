@@ -90,7 +90,7 @@ public class ShapeFactory {
 		sh.setId(attrMap.get("GraphId"));
 		if (sh instanceof  Circle)
 		{
-			double rad = attrMap.getDouble("Radius");
+			double rad = attrMap.getDouble("radius");
 			if (Double.isNaN(rad))
 				rad = attrMap.getDouble("Width") / 2;
 				((Circle) sh).setRadius(rad);

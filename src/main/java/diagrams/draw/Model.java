@@ -113,14 +113,8 @@ public class Model
 	public static class TouchingNodeFilter implements Predicate<Edge>
 	{
 		Node node;
-		TouchingNodeFilter(Node n)
-		{
-			node = n;
-		}
-		@Override public boolean test(Edge e)
-		{
-			return (!e.isStart(node) && !e.isEnd(node));
-		}
+		TouchingNodeFilter(Node n)				{	node = n;		}
+		@Override public boolean test(Edge e)	{	return (!e.isStart(node) && !e.isEnd(node));	}
 	}
 	
 	public void removeNode(Node node)		
@@ -170,7 +164,8 @@ public class Model
 	
 	public StringBuilder traverseSceneGraph(Pane root)
 	{
-		StringBuilder buff = new StringBuilder("<Pathway>\n");
+		StringBuilder buff = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		buff.append("<Pathway>\n");
 		Pasteboard board  = controller.getPasteboard();
 		int width = (int) board.getWidth();
 		int height = (int) board.getHeight();

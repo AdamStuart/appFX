@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
 import diagrams.draw.Action.ActionType;
@@ -39,6 +40,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
@@ -99,12 +101,74 @@ public class NodeFactory
 			System.out.println(name);
 		}
 		String type = attrMap.get("Type");
+		if (type == null)
+			type = attrMap.get("ShapeType");
 		Tool tool = Tool.lookup(type);
 		if (tool == null) return null;
 		if (tool.isShape())
 			return shapeFactory.makeNewShape(tool, attrMap);
 		return makeNewNode(tool, attrMap);
 	}
+	
+	public Label parseGPMLLabel(org.w3c.dom.Node labelNode) {
+		AttributeMap attrMap = new AttributeMap();
+		NodeList elems = labelNode.getChildNodes();
+		attrMap.add(labelNode.getAttributes());
+		Label label = new Label("Undefined");
+		String name = "";
+		for (int i=0; i<elems.getLength(); i++)
+		{
+			org.w3c.dom.Node child = elems.item(i);
+			name = child.getNodeName();
+			if (name != null && name.equals("TextLabel")) 
+				label.setText(child.getNodeValue());
+			if (name != null && name.equals("Attribute")) 
+			{
+				NamedNodeMap attrs = child.getAttributes();
+				String key = "", val = "";
+				for (int j=0; j<attrs.getLength(); j++)
+				{
+					org.w3c.dom.Node grandchild = attrs.item(j);
+					String grandname = grandchild.getNodeName();
+					{
+						if ("Key".equals(grandname))	key = grandchild.getNodeValue();
+						if ("Value".equals(grandname))	val = grandchild.getNodeValue();
+					}
+				}
+				if (StringUtil.hasText(key) && StringUtil.hasText(val))
+				{
+					label.setText(key + ": " + val);
+				}
+			}
+			if (name != null && name.equals("Graphics")) 
+			{
+				applyGraphicsNode(label, child);
+			}
+		}
+		return label;
+	}
+
+	private void applyGraphicsNode(Node label, org.w3c.dom.Node child) {
+		NamedNodeMap attrs = child.getAttributes();
+		String name = "";
+		for (int i=0; i<attrs.getLength(); i++)
+		{
+			org.w3c.dom.Node item = attrs.item(i);
+			String val = item.getNodeValue();
+			double d = StringUtil.toDouble(val);
+			name = item.getNodeName();
+			if ("CenterX".equals(name)) 	 {	label.setLayoutX(d);}
+			else if ("CenterY".equals(name)) 	 {	label.setLayoutY(d);}
+			else if ("Width".equals(name)) 		 {	label.maxWidth(d);}
+			else if ("Height".equals(name)) 	{	label.maxHeight(d);}
+			else if ("ZOrder".equals(name)) {}
+			else if ("FillColor".equals(name)) 	{	if (label instanceof Shape) ((Shape) label).setFill(Paint.valueOf(val));}
+			else if ("FontSize".equals(name)) {}
+			else if ("Valign".equals(name)) {}
+			else if ("ShapeType".equals(name)) {}
+		}
+		}
+		
 	// **-------------------------------------------------------------------------------
 	/*
 	 * 	convert a string representation into a node.  

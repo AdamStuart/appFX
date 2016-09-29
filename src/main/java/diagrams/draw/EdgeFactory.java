@@ -23,9 +23,11 @@ public class EdgeFactory {
 	private String gensym(String s)			{	return getModel().gensym(s);	}
 	public ShapeFactory getShapeFactory()	{ 	return shapeFactory; }
 
-	public Edge parseGPML(org.w3c.dom.Node datanode) {
+	public Edge parseGPML(org.w3c.dom.Node edgeML) {
 		AttributeMap attrMap = new AttributeMap();
-		NodeList elems = datanode.getChildNodes();
+		NodeList elems = edgeML.getChildNodes();
+		String startId="", endId="";
+		double startx=0, starty=0, endx=0, endy=0;
 		for (int i=0; i<elems.getLength(); i++)
 		{
 			org.w3c.dom.Node n = elems.item(i);
@@ -36,36 +38,42 @@ public class EdgeFactory {
 				for (int j=0; j<pts.getLength(); j++)
 				{
 					org.w3c.dom.Node pt = pts.item(j);
-					if ("Point".equals(n.getNodeName()))
+					if ("Point".equals(pt.getNodeName()))
 					{
 						NamedNodeMap map = pt.getAttributes();
 						if (firstPt)
 						{
-							String startId = attrMap.get("GraphRef");
-							double startx = StringUtil.toDouble(map.getNamedItem("X").getNodeName());
-							double starty = StringUtil.toDouble(map.getNamedItem("Y").getNodeName());
+							startId = getStr(map, "GraphRef");
+							startx = getVal(map, "X");
+							starty = getVal(map, "Y");
 							firstPt = false;
 						}
 						else
 						{
-							String endId = attrMap.get("GraphRef");
-							double endx = StringUtil.toDouble(map.getNamedItem("X").getNodeName());
-							double endy = StringUtil.toDouble(map.getNamedItem("Y").getNodeName());
-
+							endId = getStr(map, "GraphRef");
+							endx = getVal(map, "X");
+							endy = getVal(map, "Y");
 						}
-							
 					}
-	
 				}
 			}
 		}
-		attrMap.add(datanode.getAttributes());
-		String startId = attrMap.get("GraphRef");
-		String endId = attrMap.get("GraphRef");
+		attrMap.add(edgeML.getAttributes());
 		Node startNode = getModel().find(startId);
 		Node endNode = getModel().find(endId);
-		if (startNode == null || endNode == null) return null;
-		Edge edge = new Edge(startNode, endNode);
+		if (startNode != null && endNode != null) 
+			return new Edge(startNode, endNode);
+		Edge edge = new Edge(startx, starty, endx, endy);
 		return edge;
 	}
+	//--------------------------------------------
+	private String getStr(NamedNodeMap map, String key) {
+		org.w3c.dom.Node node = map.getNamedItem(key);
+		return 	node == null ? null : node.getNodeValue();
+	}
+	private double getVal(NamedNodeMap map, String key) {
+		org.w3c.dom.Node node = map.getNamedItem(key);
+		return 	node == null ? Double.NaN : StringUtil.toDouble(node.getNodeValue());
+	}
+	//--------------------------------------------
 }
