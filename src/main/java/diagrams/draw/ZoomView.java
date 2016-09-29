@@ -1,7 +1,5 @@
 package diagrams.draw;
 
-import com.sun.javafx.scene.control.skin.ScrollPaneSkin;
-
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -154,11 +152,11 @@ public class ZoomView
 			}
 			else
 			{
-//				Point2D delta = RectangleUtil.diff(currentPoint,  startPoint);
-//				System.out.println("Delta: " + delta);
-//				RectangleUtil.moveRect(vp, delta, null);//parentSize
-				vp.setX(vp.getX() + currentPoint.getX() - startPoint.getX());
-				vp.setY(vp.getY() + currentPoint.getY() - startPoint.getY());
+				Point2D delta = RectangleUtil.diff(currentPoint,  startPoint);
+				System.out.println("Delta: " + delta);
+				RectangleUtil.moveRect(vp, delta, null);//parentSize
+				viewport.setX(vp.getX() + currentPoint.getX() - startPoint.getX());
+				viewport.setY(vp.getY() + currentPoint.getY() - startPoint.getY());
 				startPoint = currentPoint;
 			}
 			event.consume();

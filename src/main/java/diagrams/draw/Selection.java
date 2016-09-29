@@ -101,7 +101,7 @@ public class Selection
 		for (int i= items.size()-1; i>= 0; i--)
 		{
 			Node node = items.get(i);
-			if (node.getId().equals("grid")) continue;
+			if ("grid".equals(node.getId())) continue;
 			items.remove(node);
 			getController().remove(node);
 		}
@@ -179,6 +179,18 @@ public class Selection
 				double x = r.getX() - dx;
 				double y = r.getY() - dy;
 				RectangleUtil.setRect(r, x, y, width, height);
+			}
+			if (n instanceof Shape1)
+			{
+				Shape1 r = (Shape1) n;
+				r.setTranslateX(r.getTranslateX() - dx);
+				r.setTranslateY(r.getTranslateY() - dy);
+			}			
+			if (n instanceof Shape2)
+			{
+				Shape2 r = (Shape2) n;
+				r.setTranslateX(r.getTranslateX() - dx);
+				r.setTranslateY(r.getTranslateY() - dy);
 			}
 			if (n instanceof Circle)
 			{

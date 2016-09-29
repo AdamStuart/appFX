@@ -179,14 +179,28 @@
    <left>
       <VBox fx:id="inspector" prefHeight="727.0" prefWidth="70.0" spacing="10.0" BorderPane.alignment="CENTER_LEFT">
          <children>
-            <ToolBar orientation="VERTICAL" prefHeight="197.0" prefWidth="31.0">
+            <ToolBar orientation="VERTICAL" prefHeight="143.0" prefWidth="64.0">
                <items>
-                  <ToggleButton fx:id="arrow" mnemonicParsing="false" onAction="#setArrow" />
-                  <ToggleButton fx:id="rectangle" mnemonicParsing="false" onAction="#setRectangle" />
-                  <ToggleButton fx:id="circle" mnemonicParsing="false" onAction="#setOval" />
-                  <ToggleButton fx:id="polygon" mnemonicParsing="false" onAction="#setPolygon" />
-                  <ToggleButton fx:id="polyline" layoutX="10.0" layoutY="103.0" mnemonicParsing="false" onAction="#setPolyline" />
-                  <ToggleButton fx:id="line" layoutX="10.0" layoutY="134.0" mnemonicParsing="false" onAction="#setLine" />
+                  <HBox spacing="4.0">
+                     <children>
+                        <VBox spacing="4.0">
+                           <children>
+                              <ToggleButton fx:id="arrow" mnemonicParsing="false" onAction="#setArrow" />
+                              <ToggleButton fx:id="rectangle" mnemonicParsing="false" onAction="#setRectangle" />
+                              <ToggleButton fx:id="circle" mnemonicParsing="false" onAction="#setOval" />
+                              <ToggleButton fx:id="polygon" mnemonicParsing="false" onAction="#setPolygon" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="4.0">
+                           <children>
+                              <ToggleButton fx:id="polyline" mnemonicParsing="false" onAction="#setPolyline" />
+                              <ToggleButton fx:id="line" mnemonicParsing="false" onAction="#setLine" />
+                              <ToggleButton fx:id="shape1" layoutX="10.0" layoutY="37.0" mnemonicParsing="false" onAction="#setShape1" />
+                              <ToggleButton fx:id="shape2" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" onAction="#setShape2" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
                </items>
             </ToolBar>
             <HBox>

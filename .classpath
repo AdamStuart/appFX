@@ -11,9 +11,8 @@
 	<classpathentry kind="lib" path="libs/org.eclipse.emf.ecore-2.9.2-v20131212-0545.jar"/>
 	<classpathentry kind="lib" path="libs/org.eclipse.emf.ecore.xmi-2.9.1-v20131212-0545.jar"/>
 	<classpathentry kind="lib" path="libs/slf4j-api-1.7.5.jar"/>
-	<classpathentry kind="lib" path="libs/commons-validator-1.4.1.jar"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/libFX"/>
-	<classpathentry kind="lib" path="/libFX/json_simple-1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/adamtreister/git/libFX/commons-validator-1.4.1.jar"/>
+	<classpathentry kind="lib" path="/Users/adamtreister/git/libFX/json_simple-1.1.jar"/>
 	<classpathentry kind="lib" path="libs/jsoup-1.8.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="libs/jackson-annotations-2.4.4.jar"/>
@@ -25,8 +24,9 @@
 	<classpathentry kind="lib" path="libs/pivot-wtk-terra-2.0.4.jar"/>
 	<classpathentry kind="lib" path="libs/stanford-corenlp-3.5.2.jar"/>
 	<classpathentry kind="lib" path="libs/org.h2_1.3.168.v201212121212.jar"/>
-	<classpathentry kind="lib" path="/libFX/commons-net-3.4.jar"/>
+	<classpathentry kind="lib" path="/Users/adamtreister/git/libFX/commons-net-3.4.jar"/>
 	<classpathentry kind="lib" path="libs/json-20090211.jar"/>
 	<classpathentry kind="lib" path="libs/javax.json-api-1.0 (1).jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/libFX"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

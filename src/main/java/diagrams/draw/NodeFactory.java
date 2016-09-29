@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
+import org.w3c.dom.NodeList;
+
 import diagrams.draw.Action.ActionType;
 import diagrams.draw.App.Tool;
 import javafx.beans.binding.Bindings;
@@ -44,7 +46,6 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.web.WebView;
-import javafx.stage.WindowEvent;
 import model.AttributeMap;
 import model.CSVTableData;
 import util.FileUtil;
@@ -80,6 +81,30 @@ public class NodeFactory
 
 	
 	//@formatter:on
+	// **-------------------------------------------------------------------------------
+	/*
+	 * 	convert an org.w3c.dom.Node  a local node.  
+	 * 
+	 */
+	public Node parseGPML(org.w3c.dom.Node datanode) {
+		AttributeMap attrMap = new AttributeMap();
+		NodeList elems = datanode.getChildNodes();
+		attrMap.add(datanode.getAttributes());
+		for (int i=0; i<elems.getLength(); i++)
+		{
+			org.w3c.dom.Node child = elems.item(i);
+			String name = child.getNodeName();
+			if (name.equals("#text")) continue;
+			attrMap.add(child.getAttributes());
+			System.out.println(name);
+		}
+		String type = attrMap.get("Type");
+		Tool tool = Tool.lookup(type);
+		if (tool == null) return null;
+		if (tool.isShape())
+			return shapeFactory.makeNewShape(tool, attrMap);
+		return makeNewNode(tool, attrMap);
+	}
 	// **-------------------------------------------------------------------------------
 	/*
 	 * 	convert a string representation into a node.  

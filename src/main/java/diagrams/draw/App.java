@@ -2,6 +2,7 @@ package diagrams.draw;
 
 import java.net.URL;
 
+import diagrams.draw.App.Tool;
 import edu.stanford.nlp.util.ArrayUtils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +13,7 @@ import javafx.stage.Stage;
 //---------------------------------------------------------------------------------------
 	/*
 	 * The Application in JavaFX doesn't do much except load a FXML file 
-	 * and put it in a window.  Put your setup code in init, and the steps
+	 * and put it in a window.  Put your model setup code in init, and the steps
 	 * to make a new window in start
 	 */
 	public class App extends Application
@@ -27,7 +28,7 @@ import javafx.stage.Stage;
 	    @Override public  void start(Stage stage) throws Exception 
 	    {
 	    	theStage = stage;	//  keep a pointer to the stage used to position global dialogs, or set window title
-	    	doNew(theStage);	// put this into a method so we can do it from the File menu
+	    	doNew(theStage);	//  put this into a method so we can do it from the File menu
 	    }
 
 	 static public App getInstance()	{ return instance;	}
@@ -69,7 +70,7 @@ import javafx.stage.Stage;
 	public enum Tool {
 	
 		Arrow,
-		Rectangle, Circle, Polygon,	Polyline, Line,	// Shapes
+		Rectangle, Circle, Polygon,	Polyline, Line,	Shape1, Shape2, // Shapes
 		Browser, Text, Table, Image, Media,			// Controls
 		;
 	
@@ -80,11 +81,22 @@ import javafx.stage.Stage;
 				if (tool.name().equals(t))	return tool;
 			return Arrow;
 		}
-		static Tool[] shapes =  { Rectangle,Circle,Polygon,Polyline,Polyline};
-		static Tool[] controls = { Browser,Text,Table,Image,Media};
+		static Tool[] shapes =  { Rectangle, Circle, Polygon, Polyline, Line, Shape1, Shape2};
+		static Tool[] controls = { Browser, Text, Table, Image, Media};
 
 		public boolean isShape()		{	return ArrayUtils.contains(shapes, this);		}
 		public boolean isControl()		{	return ArrayUtils.contains(controls, this);		}
+
+		// HACK -- convert from GPML type to shape
+		public static Tool lookup(String type) {
+			if ("Pentagon".equals(type)) 	return Rectangle;
+			if ("Oval".equals(type)) 		return Circle;
+			if ("Mitochondria".equals(type)) return Circle;
+			if ("Protein".equals(type)) 	return Circle;
+			if ("Pathway".equals(type)) 	return Rectangle;
+			if ("GeneProduct".equals(type)) return Circle;
+			return null;
+		}
 	}
 
 }

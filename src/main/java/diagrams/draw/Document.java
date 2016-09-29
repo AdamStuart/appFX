@@ -30,9 +30,10 @@ public class Document
 		chooser.setTitle("Open Drawing");
 		file = chooser.showOpenDialog(App.getInstance().getStage());
 		if (file == null)			return;			// open was canceled
-		String s = FileUtil.openXMLfile(file);
-		drawController.addState(s);					//  parse XML to sceneGraph
-		if (verbose  > 0) 	System.out.println(s);
+		org.w3c.dom.Document doc = FileUtil.openXML(file);
+		if (doc != null)
+			drawController.addState(doc);					//  parse XML to sceneGraph
+//		if (verbose  > 0) 	System.out.println(s);
 	}
 	
 	// **-------------------------------------------------------------------------------

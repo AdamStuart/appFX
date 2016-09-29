@@ -86,13 +86,24 @@ public class ShapeFactory {
 
 	// **-------------------------------------------------------------------------------
 	public Shape makeNewShape(Tool type, AttributeMap attrMap) {
-		return makeNewShape(type.toString(), attrMap, true);
+		Shape sh = makeNewShape(type.toString(), attrMap, true);
+		sh.setId(attrMap.get("GraphId"));
+		if (sh instanceof  Circle)
+		{
+			double rad = attrMap.getDouble("Radius");
+			if (Double.isNaN(rad))
+				rad = attrMap.getDouble("Width") / 2;
+				((Circle) sh).setRadius(rad);
+		}
+		return sh;
 	}
 
 	public Shape makeNewShape(String s, AttributeMap attrMap, boolean addHandlers) {
 		Shape newShape;
 		if ("Circle".equals(s))					newShape = new Circle();
 		else if ("Rectangle".equals(s))			newShape = new Rectangle();
+		else if ("Shape1".equals(s))			newShape = new Shape1();
+		else if ("Shape2".equals(s))			newShape = new Shape2();
 		else if ("Polygon".equals(s))			newShape = new Polygon();
 		else if ("Polyline".equals(s))			newShape = new Polyline();
 		else if ("Line".equals(s))	{ newShape = new Line(); 
@@ -107,9 +118,37 @@ public class ShapeFactory {
 		newShape.setStrokeWidth(1f);
 		newShape.setManaged(false);
 		setAttributes(newShape, attrMap);
+		newShape.getProperties().putAll(attrMap);
 		return newShape;
 	}
-	// **-------------------------------------------------------------------------------
+
+	public Shape nodeFromGPML(String gpmlStr,  AttributeMap attrMap, boolean addHandlers) {
+		String txt = gpmlStr.trim();
+		if (txt.startsWith("<DataNode "))
+		{
+			String graphics =  txt.substring(10 + txt.indexOf("<Graphics "), txt.indexOf("</Graphics>"));
+			String xref = txt.substring(10 + txt.indexOf(6 + "<Xref "), txt.indexOf("</Xref>"));
+			attrMap.addGPML(graphics);
+			attrMap.addGPML(xref);
+		}
+		String shapeType = attrMap.get("ShapeType");
+		Shape newShape = makeNewShape(shapeType, attrMap, addHandlers); 
+		return newShape;
+	}
+
+	public Edge edgeFromGPML(String gpmlStr, AttributeMap attrMap,  boolean addHandlers) {
+		String txt = gpmlStr.trim();
+		if (txt.startsWith("<Interaction>"))
+		{
+			String graphics =  txt.substring(10 + txt.indexOf("<Graphics "), txt.indexOf("</Graphics>"));
+			String xref = txt.substring(10 + txt.indexOf(6 + "<Xref "), txt.indexOf("</Xref>"));
+			attrMap.addGPMLEdgeInfo(graphics);
+			attrMap.addGPML(xref);
+			return new Edge(attrMap, model);
+		}
+		return null;
+	}
+// **-------------------------------------------------------------------------------
 // this doesn't work because it can't pass the text back to be added to the drawLayer
 	//	public Shape makeLabeledShape(Tool tool, AttributeMap attrMap, String s) {
 //		Shape newShape = makeNewShape(tool, attrMap);
@@ -155,7 +194,10 @@ public class ShapeFactory {
 		return text;
 	}
 	// -----------------------------------------------------------------------
+	boolean UseGPML = true;
 	public Shape parseNode(AttributeMap attrMap) {
+		if (UseGPML) 	
+			return nodeFromGPML(attrMap.get("type"), attrMap, false);
 		return makeNewShape(attrMap.get("type"), attrMap, false);
 	}
 
@@ -163,24 +205,30 @@ public class ShapeFactory {
 		// if (verbose>0) System.out.println(map.toString());
 		for (String k : map.keySet()) 
 		{
+			String val = map.get(k);
+			k = k.toLowerCase();
 			if (k.equals("stroke"))				k = "-fx-stroke";
 			if (k.equals("strokeWidth"))		k = "-fx-stroke-weight";
-			String val = map.get(k);
 			if (k.equals("id"))					shape.setId(val);
 			double d = StringUtil.toDouble(val); // exception safe: comes back
 													// NaN if val is not a
 													// number
 			if (shape instanceof Rectangle) {
 				Rectangle r = (Rectangle) shape;
-				if (k.equals("x"))				r.setX(d);
+				if (k.equals("centerx"))		r.setX(d);
+				else if (k.equals("centery"))	r.setY(d);
+				else if (k.equals("x"))			r.setX(d);
 				else if (k.equals("y"))			r.setY(d);
 				else if (k.equals("width"))		r.setWidth(d);
 				else if (k.equals("height"))	r.setHeight(d);
 			}
 			if (shape instanceof Circle) {
 				Circle circ = (Circle) shape;
-				if (k.equals("centerX"))		circ.setCenterX(d);
-				else if (k.equals("centerY"))	circ.setCenterY(d);
+				if (k.equals("centerx"))		circ.setCenterX(d);
+				else if (k.equals("centery"))	circ.setCenterY(d);
+				else if (k.equals("x"))			circ.setCenterX(d);
+				else if (k.equals("y"))			circ.setCenterY(d);
+				else if (k.equals("width"))		circ.setRadius(d/2);
 				else if (k.equals("radius"))	circ.setRadius(d);
 			}
 			if (shape instanceof Polygon) {
@@ -246,6 +294,8 @@ public class ShapeFactory {
 		if (s instanceof Polygon)		new PolygonMouseHandler((Polygon) s, drawLayer);
 		if (s instanceof Polyline)		new PolylineMouseHandler((Polyline) s, drawLayer);
 		if (s instanceof Line)			new LineMouseHandler((Line) s, drawLayer);
+		if (s instanceof Shape1)		new ShapeMouseHandler((Shape1) s, drawLayer);
+		if (s instanceof Shape2)		new ShapeMouseHandler((Shape2) s, drawLayer);
 
 		s.setOnDragEntered(e -> {	s.setEffect(Effects.sepia);			e.consume();		});
 		s.setOnDragExited(e -> 	{	s.setEffect(null);					e.consume();		});
@@ -280,9 +330,9 @@ public class ShapeFactory {
 			List<File> files = db.getFiles();
 			if (files != null) {
 				// controller.getUndoStack().push(ActionType.Add, " file");
-				int offset = 0;
+//				int offset = 0;
 				for (File f : files) {
-					offset += 20;
+//					offset += 20;
 					System.out.println("File: " + f.getAbsolutePath());
 					if (FileUtil.isCSS(f)) {
 						StringBuilder buff = new StringBuilder();
@@ -366,6 +416,64 @@ public class ShapeFactory {
 			}
 		}
 	}
+	// **-------------------------------------------------------------------------------
+
+	private class ShapeMouseHandler extends NodeMouseHandler {
+		public ShapeMouseHandler(Shape s, Pasteboard d) {
+			super(d);
+			s.addEventHandler(MouseEvent.MOUSE_PRESSED, this);
+			s.addEventHandler(MouseEvent.MOUSE_DRAGGED, this);
+			s.addEventHandler(MouseEvent.MOUSE_MOVED, this);
+			s.addEventHandler(MouseEvent.MOUSE_RELEASED, this);
+		}
+
+		@Override
+		protected void handleMousePressed(final MouseEvent event) {
+			if (drawLayer.getTool() != Tool.Arrow) return;
+			if (((Node) event.getTarget()).getParent() instanceof Group)
+				return;
+			super.handleMousePressed(event);
+		}
+
+		@Override
+		protected void handleMouseDragged(final MouseEvent event) {
+			if (drawLayer.getTool() != Tool.Arrow) return;
+			if (((Node) event.getTarget()).getParent() instanceof Group)
+				return;
+			if (verbose > 3)
+				System.out.println("RectMouseDraggedHandler, Target: " + event.getTarget());
+			super.handleMouseDragged(event);
+
+//			if (resizing) {
+////				System.out.println("startPoint: " + startPoint.toString());
+////				System.out.println("CurrentPoint: " + currentPoint.toString());
+//				double x, y, width, height;
+//				x = Math.min(startPoint.getX(), currentPoint.getX());
+//				y = Math.min(startPoint.getY(), currentPoint.getY());
+//				width = Math.abs(startPoint.getX() - currentPoint.getX());
+//				height = Math.abs(startPoint.getY() - currentPoint.getY());
+//
+////				System.out.println("( " + x + ", " + y + ") Width = " + width + " height = " + height);
+//
+//				if (event.getTarget() instanceof Rectangle) {
+//					Rectangle r = (Rectangle) event.getTarget();
+//					RectangleUtil.setRect(r, x, y, width, height);
+//				}
+//			}
+		}
+
+		@Override
+		protected void handleMouseMoved(final MouseEvent event) {
+			if (((Node) event.getTarget()).getParent() instanceof Group)
+				return;
+			super.handleMouseMoved(event);
+//			if (event.getTarget() instanceof Rectangle) {
+//				Rectangle r = (Rectangle) event.getTarget();
+//				r.setCursor(RectangleUtil.inCorner(currentPoint, r) ? Cursor.H_RESIZE : Cursor.HAND);
+//			}
+		}
+	}
+	// **-------------------------------------------------------------------------------
 	// **-------------------------------------------------------------------------------
 
 	protected class CircleMouseHandler extends NodeMouseHandler {
@@ -475,6 +583,10 @@ public class ShapeFactory {
 	}
 
 	// **-------------------------------------------------------------------------------
+	// **-------------------------------------------------------------------------------
+	// **-------------------------------------------------------------------------------
+	// **-------------------------------------------------------------------------------
+	// **-------------------------------------------------------------------------------
 	protected class PolylineMouseHandler extends NodeMouseHandler {
 		public PolylineMouseHandler(Polyline p, Pasteboard d) {
 			super(d);
@@ -483,30 +595,31 @@ public class ShapeFactory {
 			p.addEventHandler(MouseEvent.MOUSE_MOVED, this);
 			p.addEventHandler(MouseEvent.MOUSE_RELEASED, this);
 		}
-		SimpleDoubleProperty mouseX, mouseY;
+//		SimpleDoubleProperty mouseX, mouseY;
 		
 
 		@Override
 		protected void handleMousePressed(final MouseEvent event) {
 			super.handleMousePressed(event);
-			if (event.getTarget() == drawLayer.getActiveShape()) {
+			Polyline p = (Polyline) target;
+			int idx = LineUtil.onVertex(currentPoint, p);
+			if (event.getTarget() == drawLayer.getActiveShape() && idx == 0) {
 				drawLayer.setActiveShape(null);
+				activeIndex = p.getPoints().size();
+				p.getPoints().addAll(currentPoint.getX(), currentPoint.getY());
 				event.consume();
+				drawLayer.removeDragLine();
+				drawLayer.resetTool();
 				return;
 			}
 			if (verbose > 3)
 				System.out.println("PolylineMousePressedHandler: " + event.getTarget());
-			Polyline p = (Polyline) target;
-			int idx = LineUtil.onVertex(currentPoint, p);
 			// System.out.println("" + idx);
 			if (idx >= 0)		activeIndex = idx;
 			else				dragging = true;
-//			drawLayer.setLastClick(event.getX(), event.getX());
 
-//			mouseX = new SimpleDoubleProperty();
-//			mouseY = new SimpleDoubleProperty();
-//			dragLine.setStartY(event.getY());
-			
+			p.getPoints().set(activeIndex, currentPoint.getX());
+			p.getPoints().set(activeIndex+1, currentPoint.getY());
 		}
 		int activeIndex = -1;
 
@@ -519,8 +632,13 @@ public class ShapeFactory {
 				p.getPoints().set(activeIndex, currentPoint.getX());
 				p.getPoints().set(activeIndex + 1, currentPoint.getY());
 			}
-			if (mouseX != null) 	mouseX.set(event.getX());
-			if (mouseY != null) 	mouseY.set(event.getY());
+			if (dragLine != null) 	
+			{
+				dragLine.setEndX(event.getX());
+				dragLine.setEndY(event.getY());
+			}
+//			if (mouseX != null) 	mouseX.set(event.getX());
+//			if (mouseY != null) 	mouseY.set(event.getY());
 		}
 
 		@Override
@@ -530,12 +648,21 @@ public class ShapeFactory {
 			Polyline p = (Polyline) target;
 			if (LineUtil.onVertex(currentPoint, p.getPoints()) >= 0)			p.setCursor(Cursor.H_RESIZE);
 			else p.setCursor(Cursor.HAND);
-			if (mouseX != null) 	mouseX.set(event.getX());
-			if (mouseY != null) 	mouseY.set(event.getY());
+			if (dragLine != null) 	
+			{
+				dragLine.setEndX(event.getX());
+				dragLine.setEndY(event.getY());
+			}
+//			if (mouseY != null) 	
+		}
+		@Override
+		protected void handleMouseReleased(final MouseEvent event) {
+			
+//			drawLayer.getPane().getChildren().remove(dragLine);
+//			dragLine = null;
 		}
 
 	}
-
 	// **-------------------------------------------------------------------------------
 	protected class LineMouseHandler extends NodeMouseHandler {
 		public LineMouseHandler(Line p, Pasteboard d) {
@@ -545,7 +672,7 @@ public class ShapeFactory {
 			p.addEventHandler(MouseEvent.MOUSE_MOVED, this);
 			p.addEventHandler(MouseEvent.MOUSE_RELEASED, this);
 		}
-		SimpleDoubleProperty mouseX, mouseY;
+//		SimpleDoubleProperty mouseX, mouseY;
 		
 
 		@Override
@@ -559,15 +686,10 @@ public class ShapeFactory {
 			if (verbose > 3)
 				System.out.println("LineMousePressedHandler: " + event.getTarget());
 			Line p = (Line) target;
-			int idx = LineUtil.onEndpoint(currentPoint, p);
+			activeIndex = LineUtil.onEndpoint(currentPoint, p);
 			// System.out.println("" + idx);
-			if (idx >= 0)		activeIndex = idx;
-			else				dragging = true;
-//			drawLayer.setFirstClick(event.getX(), event.getX());
-
-//			mouseX = new SimpleDoubleProperty();
-//			mouseY = new SimpleDoubleProperty();
-//			dragLine.setStartY(event.getY());
+//			if (idx >= 0)		activeIndex = idx;
+//			else				dragging = true;
 			
 		}
 		int activeIndex = -1;
@@ -585,17 +707,12 @@ public class ShapeFactory {
 				p.setEndX(currentPoint.getX());
 				p.setEndY(currentPoint.getY());
 			}
-			else
-			{
-				super.handleMouseDragged(event);
-			}
-//			if (mouseX != null) 	mouseX.set(event.getX());
-//			if (mouseY != null) 	mouseY.set(event.getY());
+			else super.handleMouseDragged(event);
 		}
 
-		@Override
-		protected void handleMouseMoved(final MouseEvent event) {
-			super.handleMouseMoved(event);
+//		@Override
+//		protected void handleMouseMoved(final MouseEvent event) {
+//			super.handleMouseMoved(event);
 //			drawLayer.setLastClick(event.getX(), event.getY());
 //			Line p = (Line) target;
 //			if (onEndpoint(currentPoint, p) >= 0)	p.setCursor(Cursor.H_RESIZE);
@@ -604,7 +721,7 @@ public class ShapeFactory {
 //			if (mouseY != null) 	mouseY.set(event.getY());
 //			p.setEndX(event.getX());
 //			p.setEndY(event.getY());
-		}
+//		}
 	}
 
 	// -----------------------------------------------------------------------------------
@@ -647,7 +764,7 @@ public class ShapeFactory {
 		protected boolean dragging = false;
 		protected boolean resizing = false;
 		protected EventTarget target;
-//		Line dragLine = new Line();
+		Line dragLine = new Line();
 		private ContextMenu menu;
 
 		// **-------------------------------------------------------------------------------

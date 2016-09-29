@@ -9,6 +9,7 @@ import diagrams.draw.App.Tool;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -65,17 +66,19 @@ public class Pasteboard
 
 	
 	private Controller controller;
-	public Controller getController()	{ return controller; }
+	public Controller getController()		{ return controller; }
 	private NodeFactory factory;
-	public NodeFactory getNodeFactory()	{ return factory; }
+	private EdgeFactory edgeFactory;
+	public NodeFactory getNodeFactory()		{ return factory; }
+	public EdgeFactory getEdgeFactory()		{ return edgeFactory; }
 	private ShapeFactory shapeFactory;
 	public ShapeFactory getShapeFactory()	{ return shapeFactory; }
 	private Selection selectionMgr;
-	public Selection getSelectionMgr()	{ return selectionMgr; }
+	public Selection getSelectionMgr()		{ return selectionMgr; }
 	private Pane drawPane;
-	public Pane getPane()			{ return drawPane;	}
+	public Pane getPane()					{ return drawPane;	}
 	private Rectangle marquee;
-	public Rectangle getMarquee()	{ return marquee;	}
+	public Rectangle getMarquee()			{ return marquee;	}
 	private Label infoLabel;
 
 	SimpleDoubleProperty widthProperty = new SimpleDoubleProperty();
@@ -104,6 +107,7 @@ public class Pasteboard
 		setHeight(2000);
 		controller = ctrl;
 		factory = new NodeFactory(this);
+		edgeFactory = new EdgeFactory(this);
 		shapeFactory = factory.getShapeFactory();
 		marquee = shapeFactory.makeMarquee();
 		selectionMgr = new Selection(this);
@@ -118,7 +122,7 @@ public class Pasteboard
 //		turnOnClipping();
 	}
 	
-	Rectangle clipRect = new Rectangle();
+	private Rectangle clipRect = new Rectangle();
 	private void turnOnClipping()
 	{
 		drawPane.setClip(clipRect);
@@ -275,19 +279,29 @@ public class Pasteboard
 	private Point2D startPoint = null;		// remember where the mouse was pressed
 //	private Point2D offset = null;			// distance from startPoint to the origin of the target
 	private Point2D curPoint = null;		// mouse location in current event
-//	private Line dragLine = null;			// a polyline edge
+	private Line dragLine = null;			// a polyline edge
 
 	static boolean verbose = false;
 
 //
-//	public void setFirstClick(double x, double y) {
-//		if (dragLine == null)
-//			dragLine = new Line();
-//		dragLine.setStartX(x);
-//		dragLine.setStartY(y);
-//		dragLine.setEndX(x);
-//		dragLine.setEndY(y);
-//	}
+	public void startDragLine(double x, double y) {
+		if (dragLine == null)
+		{
+			dragLine = new Line();
+			drawPane.getChildren().add(dragLine);	
+		}
+		dragLine.setStartX(x);
+		dragLine.setStartY(y);
+		dragLine.setEndX(x);
+		dragLine.setEndY(y);
+	}
+	public void removeDragLine() {
+		if (dragLine != null)
+		{
+			drawPane.getChildren().remove(dragLine);	
+			dragLine = null;
+		}
+	}
 //	public void setLastClick(double x, double y) {
 //		dragLine.setEndX(x);
 //		dragLine.setEndY(y);
@@ -308,6 +322,32 @@ public class Pasteboard
 				event.consume();
 				return;	
 			}
+			if (curTool == Tool.Polyline)
+			{
+				if (verbose) System.out.println("MousePressedHandler, Polyline: " );
+				if (activeShape == null)
+				{
+					activeShape = shapeFactory.makeNewNode(curTool, new AttributeMap());
+ 					drawPane.getChildren().add(activeShape);
+
+				}
+				Polyline p = (Polyline) activeShape;
+				if (event.getClickCount() > 1)
+				{
+					activeShape = null;
+					removeDragLine();
+				}
+				else if (LineUtil.onVertex(startPoint, p) == 0)
+				{
+					activeShape = null;
+					removeDragLine();
+				}
+				else p.getPoints().addAll(event.getX(), event.getY());
+				startDragLine(event.getX(), event.getY());
+				p.setFill(null);
+				event.consume();
+				return;
+			}
 			
 			startPoint = new Point2D(event.getX(), event.getY());
 			if (activeShape instanceof Polygon)
@@ -324,40 +364,7 @@ public class Pasteboard
 			{
 				if (verbose) System.out.println("MousePressedHandler, Line: " );
 				Line line = (Line) activeShape;
-//				if (dragLine != null && dragLine.isVisible())		
-//				{
-//					LineUtil.set(line, dragLine);
-//					drawPane.getChildren().remove(dragLine);
-////					dragLine = null;
-//					line.setVisible(true);
-//					resetTool();
-//					event.consume();
-//				}
-//				else 
-				{
-					line.setVisible(false);
-//					setFirstClick(event.getX(), event.getY());				
-				}
-				event.consume();
-				return;
-			}
-			if (activeShape instanceof Polyline)
-			{
-				if (verbose) System.out.println("MousePressedHandler, Polyline: " );
-				Polyline p = (Polyline) activeShape;
-				if (event.getClickCount() > 1)
-					activeShape = null;
-				else if (LineUtil.onVertex(startPoint, p) >= 0)
-					activeShape = null;
-				else p.getPoints().addAll(event.getX(), event.getY());
-//				if (dragLine == null)
-//				{
-//					dragLine = new Line();
-//					dragLine.setStartX(event.getX());
-//					dragLine.setStartY(event.getY());
-//					drawPane.getChildren().add(dragLine);	
-//				}
-				
+				line.setVisible(false);
 				event.consume();
 				return;
 			}
@@ -377,20 +384,17 @@ public class Pasteboard
 			}
 			if (activeShape instanceof Line)
 			{
-//				if (dragLine == null)
-//				{
-//					dragLine = new Line();
-//					dragLine.setStartX(event.getX());
-//					dragLine.setStartY(event.getY());
-//					drawPane.getChildren().add(dragLine);	
-//				}
-//				else dragLine.setVisible(true);
-				
 				Line p = (Line) activeShape;
 				p.setStartX(event.getX());
 				p.setStartY(event.getY());
 				p.setEndX(event.getX());
 				p.setEndY(event.getY());
+			}
+			if (activeShape instanceof Shape1)
+			{
+			}
+			if (activeShape instanceof Shape2)
+			{
 			}
 			if (activeShape == null) 
 			{
@@ -555,7 +559,8 @@ public class Pasteboard
 //			}
 			startPoint = curPoint = null;
 			drawPane.requestFocus();		// needed for the key event handler to receive events
-			resetTool();
+			if (!isPoly(getTool()))
+				resetTool();
 			event.consume();
 		}
 	}
@@ -578,11 +583,11 @@ public class Pasteboard
 	{
 		@Override public void handle(final MouseEvent event) 
 		{			
-//			if (dragLine != null)
-//			{
-//				dragLine.setEndX(event.getX());
-//				dragLine.setEndY(event.getY());
-//			}
+			if (dragLine != null)
+			{
+				dragLine.setEndX(event.getX());
+				dragLine.setEndY(event.getY());
+			}
 		}
 	}
 	//---------------------------------------------------------------------------
@@ -592,7 +597,7 @@ public class Pasteboard
 		@Override
 		public void handle(KeyEvent event) {
 
-			KeyCode key = event.getCode();
+ 			KeyCode key = event.getCode();
 			if (KeyCode.R.equals(key)) 			setTool(Tool.Rectangle);
 			else if (KeyCode.C.equals(key)) 	setTool(Tool.Circle);
 			else if (KeyCode.P.equals(key)) 	setTool(Tool.Polygon);
@@ -601,7 +606,29 @@ public class Pasteboard
 //			else if (KeyCode.X.equals(key)) 	setTool(Tool.Xhair);
 			else if (KeyCode.DELETE.equals(key)) 		getController().deleteSelection();		// create an undoable action
 			else if (KeyCode.BACK_SPACE.equals(key)) 	getController().deleteSelection();
+			else if (KeyCode.ESCAPE.equals(key)) 	terminatePoly();
+			else if (KeyCode.SPACE.equals(key)) 	terminatePoly();
 		}
+
+		private void terminatePoly() {
+			if (getActiveShape() instanceof Polyline)
+			{
+				Polyline p = (Polyline) getActiveShape();
+				terminatePoly(p.getPoints());
+			}
+				
+			if (getActiveShape() instanceof Polygon)		{
+				Polygon p = (Polygon) getActiveShape();
+					terminatePoly(p.getPoints());
+			}
+		}
+	private void terminatePoly(ObservableList<Double> pts) {
+		double x= pts.get(0);
+		double y= pts.get(1);
+		pts.addAll(x,y);
+		setActiveShape(null);
+		resetPoly();
+	}
 	}	
 	//---------------------------------------------------------------------------
 	Tool curTool = Tool.Arrow;
@@ -610,9 +637,20 @@ public class Pasteboard
 	public void resetTool()		
 	{		
 		if (sticky) return;
-//		if (dragLine != null && dragLine.isVisible()) return;
+		if (isPoly(curTool)) 	return;
+		if (dragLine != null && dragLine.isVisible()) 
+			removeDragLine();
 		setTool(Tool.Arrow);	
 	}
+	public void resetPoly()		
+	{		
+		if (dragLine != null && dragLine.isVisible()) 
+			removeDragLine();
+		if (sticky) return;
+		setTool(Tool.Arrow);	
+	}
+	
+	boolean isPoly(Tool t)	{		return (Tool.Polyline == t || Tool.Polygon == t);	}
 	
 	public void setTool(Tool inTool)
 	{
