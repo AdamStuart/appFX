@@ -147,11 +147,11 @@ public class Pasteboard
 		if (isHighlighted)
 		{
 			shadow = new InnerShadow();
-			shadow.setOffsetX(5.0);
-			shadow.setColor(Color.web("#2FD6FF"));
-			shadow.setOffsetY(5.0);
+			shadow.setOffsetX(2.0);
+			shadow.setColor(Color.web("#9F46AF"));
+			shadow.setOffsetY(2.0);
 		}
-//		pane.setEffect(shadow);
+		drawPane.setEffect(shadow);
 	}
 	
 	private void handlePasteboardDrop(DragEvent e)
@@ -218,7 +218,7 @@ public class Pasteboard
 		Parent p  = getPane().getParent();
 		if (scrlPane != null)
 		{
-			Pane drawPane = (Pane) scrlPane.getContent();
+//			Pane drawPane = (Pane) scrlPane.getContent();
 //			ReadOnlyObjectProperty<Bounds> bds = drawPane.boundsInParentProperty();
 //			DoubleBinding leftProp = Bindings.selectDouble(bds, "minX");
 //			DoubleBinding rightProp = Bindings.selectDouble(bds, "maxX");
@@ -327,7 +327,7 @@ public class Pasteboard
 				if (verbose) System.out.println("MousePressedHandler, Polyline: " );
 				if (activeShape == null)
 				{
-					activeShape = shapeFactory.makeNewNode(curTool, new AttributeMap());
+					activeShape = shapeFactory.makeNewNode(new AttributeMap("ShapeType:" + curTool.name()));
  					drawPane.getChildren().add(activeShape);
 
 				}
@@ -371,7 +371,7 @@ public class Pasteboard
 //			controller.getUndoStack().push(ActionType.Select);
 			getSelectionMgr().clear();  
 	
-			activeShape = shapeFactory.makeNewNode(curTool, new AttributeMap());
+			activeShape = shapeFactory.makeNewNode(new AttributeMap("ShapeType:" + curTool.name()));
 			if (activeShape instanceof Polygon)
 			{
 				Polygon p = (Polygon) activeShape;
@@ -393,9 +393,10 @@ public class Pasteboard
 			if (activeShape instanceof Shape1)
 			{
 			}
-			if (activeShape instanceof Shape2)
-			{
-			}
+//			if (activeShape instanceof Shape2)
+//			{
+//				Shape2 shape = (Shape2) activeShape;
+//			}
 			if (activeShape == null) 
 			{
 				activeShape = marquee;
@@ -453,8 +454,8 @@ public class Pasteboard
 		}
 	}
 
-	/**
-	 *
+	/** 
+	 *  MouseDraggedHandler
 	 */
 	private final class MouseDraggedHandler implements EventHandler<MouseEvent> {
 		@Override public void handle(final MouseEvent event) {
@@ -538,6 +539,9 @@ public class Pasteboard
 		}
 	}
 	//---------------------------------------------------------------------------
+	/** 
+	 *  MouseReleasedHandler
+	 */
 
 	private final class MouseReleasedHandler implements EventHandler<MouseEvent> 
 	{
@@ -565,6 +569,9 @@ public class Pasteboard
 		}
 	}
 	//---------------------------------------------------------------------------
+	/** 
+	 *  MouseClickHandler
+	 */
 
 	private final class MouseClickHandler implements EventHandler<MouseEvent> 
 	{
@@ -578,6 +585,9 @@ public class Pasteboard
 		}
 	}
 	//---------------------------------------------------------------------------
+	/** 
+	 *  MouseMovedHandler
+	 */
 
 	private final class MouseMovedHandler implements EventHandler<MouseEvent> 
 	{
@@ -591,21 +601,31 @@ public class Pasteboard
 		}
 	}
 	//---------------------------------------------------------------------------
-	// unmodified keys switch the tool
+	/** 
+	 *  KeyHandler
+	 *  
+	 *  unmodified keys switch the tool
+	 *  backspace = delete
+	 *  escape or space bar to terminate polyline
+	 */
 	
 	private final class KeyHandler implements EventHandler<KeyEvent> {
 		@Override
 		public void handle(KeyEvent event) {
 
  			KeyCode key = event.getCode();
-			if (KeyCode.R.equals(key)) 			setTool(Tool.Rectangle);
+ 			
+ 			if (key.isArrowKey())	getSelectionMgr().translate(key);
+			else if (KeyCode.DELETE.equals(key)) 		getSelectionMgr().deleteSelection();		// create an undoable action
+			else if (KeyCode.BACK_SPACE.equals(key)) 	getSelectionMgr().deleteSelection();
+			
+ 			else if (KeyCode.R.equals(key)) 	setTool(Tool.Rectangle);
 			else if (KeyCode.C.equals(key)) 	setTool(Tool.Circle);
 			else if (KeyCode.P.equals(key)) 	setTool(Tool.Polygon);
 			else if (KeyCode.L.equals(key)) 	setTool(Tool.Line);
 			else if (KeyCode.W.equals(key)) 	setTool(Tool.Polyline);
+			
 //			else if (KeyCode.X.equals(key)) 	setTool(Tool.Xhair);
-			else if (KeyCode.DELETE.equals(key)) 		getController().deleteSelection();		// create an undoable action
-			else if (KeyCode.BACK_SPACE.equals(key)) 	getController().deleteSelection();
 			else if (KeyCode.ESCAPE.equals(key)) 	terminatePoly();
 			else if (KeyCode.SPACE.equals(key)) 	terminatePoly();
 		}
@@ -622,13 +642,11 @@ public class Pasteboard
 					terminatePoly(p.getPoints());
 			}
 		}
-	private void terminatePoly(ObservableList<Double> pts) {
-		double x= pts.get(0);
-		double y= pts.get(1);
-		pts.addAll(x,y);
-		setActiveShape(null);
-		resetPoly();
-	}
+		private void terminatePoly(ObservableList<Double> pts) {
+			pts.addAll(pts.get(0),pts.get(1));
+			setActiveShape(null);
+			resetPoly();
+		}
 	}	
 	//---------------------------------------------------------------------------
 	Tool curTool = Tool.Arrow;
@@ -675,8 +693,8 @@ public class Pasteboard
 			System.out.println("Tool set to: " + inTool.toString() + (sticky ? "!!" : ""));
 	}
 	//---------------------------------------------------------------------------
-	Paint defaultStroke = Color.BLUE;			// TODO  pref
-	Paint defaultFill = Color.TRANSPARENT;
+	Paint defaultStroke = Color.BLACK;			// TODO  pref
+	Paint defaultFill = Color.WHITESMOKE;
 	
 	public Paint getDefaultFill()		{		return 	defaultFill;	}
 	public Paint getDefaultStroke()		{		return defaultStroke;	}

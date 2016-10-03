@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import diagrams.draw.gpml.GPML;
 import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -52,6 +53,7 @@ public class Model
 	}
 	
 //	public void addResource(Node rgn)				{  resourceMap.put(rgn.getId(), rgn);		}
+	// **-------------------------------------------------------------------------------
 	public void addResource(String key, Node n)		
 	{  
 		if (resourceMap.get(key) == null)
@@ -63,7 +65,7 @@ public class Model
 	}
 	public Edge addEdge(Node start, Node end)		
 	{  
-		Edge edge = new Edge(start, end);
+		Edge edge = new Edge(start, end, null);
 		return addEdge(edge);
 	}
 	
@@ -72,7 +74,7 @@ public class Model
 		edgeTable.add(e);
 		return e;
 	}
-	
+	// **-------------------------------------------------------------------------------
 	public List<Edge> connectSelectedNodes()		
 	{  
 		List<Edge> edges = new ArrayList<Edge>();
@@ -101,7 +103,7 @@ public class Model
 			Edge e = edgeTable.get(z);
 			if (e.isStart(node) || e.isEnd(node))
 			{
-				e.setVisible(false);
+				e.getPolyline().setVisible(false);
 				edgeTable.remove(e);
 			}
 		}
@@ -109,7 +111,8 @@ public class Model
 //		edgeTable.clear();
 //		edgeTable.addAll(okEdges);
 	}
-	
+	// **-------------------------------------------------------------------------------
+
 	public static class TouchingNodeFilter implements Predicate<Edge>
 	{
 		Node node;
@@ -169,16 +172,8 @@ public class Model
 		Pasteboard board  = controller.getPasteboard();
 		int width = (int) board.getWidth();
 		int height = (int) board.getHeight();
-		Scene scene = getController().getPasteboard().getPane().getScene();
-		int winwidth = 0;		// TODO window width and height!
-		int winheight = 0;
-		if (scene != null)
-		{
-			winwidth = (int) scene.getWidth();	
-			winheight = (int) scene.getHeight();
-		}
-		buff.append(String.format("<Graphics BoardWidth=\"%d\" BoardHeight=\"%d\" WindowWidth=\"%d\" WindowHeight=\"%d\" />\n", 
-				width, height, winwidth, winheight));
+		buff.append(String.format("<Graphics BoardWidth=\"%d\" BoardHeight=\"%d\" />\n", 
+				width, height));
 		traverse(buff, root, 0);
 		buff.append("</Pathway>\n");
 		return buff;
@@ -187,7 +182,7 @@ public class Model
 	static private void traverse(StringBuilder buff,Node node, int indent)
 	{
 		if (ShapeFactory.isMarquee(node)) return;
-		if (node instanceof Edge)			buff.append(describe(node));	
+//		if (node instanceof Edge)			buff.append(describe(node));	
 		if (node instanceof Shape)			buff.append(describe(node));	
 		if (node instanceof StackPane)		buff.append(describe(node));
 		if (node instanceof Parent)
@@ -205,129 +200,13 @@ public class Model
 				traverse(buff,n, indent+1);
 			}
 	}
-	
-	static String LINEDIM = "\n";
-	
 	// **-------------------------------------------------------------------------------
-	static public String describe(Node node)
-	{	
-		return nodeToGPML(node);
-//		Map<Object, Object> props = node.getProperties();
-//		StringBuilder buffer = new StringBuilder("<DataNode>");
-//		for (Object key : props.keySet())
-//		{
-//			if (key instanceof String)
-//			{
-//				Object o = props.get(key); 
-//				if (o instanceof Property)
-//				{		
-//					Object val = ((Property) o).getValue();
-//					buffer.append(key).append("=").append('"' + val.toString() + '"').append(" ");
-//				}
-//			}
-//		}
-//		String style = node.getStyle();
-//		String basic = node.toString();
-//		basic = StringUtil.chopLast(basic);		// chop off "]"
-//		
-//		String propStr = buffer.toString();
-//		if (propStr.length() > 0 && propStr.endsWith(", "))
-//		{
-//			propStr = StringUtil.chopLast2(propStr);	// chop off ", "
-//
-//			if (node instanceof StackPane && style != null)
-//			{
-//				StackPane p = (StackPane) node;
-//				String bounds = getBoundsString(p.getLayoutX(), p.getLayoutY(), p.getWidth(), p.getHeight());
-//				bounds += String.format(", rotate=%.1f",p.getRotate());
-//				if (style.length() > 0)
-//				{
-//					String styl = style.substring(1);
-//					styl = styl.replace(": ", "=");
-//					styl = styl.replace("; ", ", ");
-//					styl = styl.substring(0, styl.length()-1);
-//					styl = styl.substring(0, styl.length() - 2);	// chop off ", "
-//					bounds +=  ", " + styl;
-//				}
-//				basic += ", " + bounds;
-//			}
-//			basic += ", " + propStr + "]";		
-//		}
-		
-		
-		
-//		String id = ", id="+node.getId();
-//		String selected = ", selected=" + ((node.getEffect() == null) ? "FALSE" : "TRUE") + "]";			// HACK uses effect!=null for selected
-//		String out = basic.substring(0, basic.length()-1);
-//		return basic + LINEDIM;
-		
-	}
-	
-	public static String edgeToGPML(Edge edge)
-	{
-		StringBuilder buffer = new StringBuilder("<Interaction>\n");
-		buffer.append("<Graphics ZOrder=\"12288\" LineThickness=\"1.0\">\n");
-		buffer.append(getPoints(edge));
-		buffer.append("</Graphics>\n");
-		buffer.append("<XRef Database=\"\" ID=\"\">\n");
-		buffer.append("</Interaction>\n");
-		return buffer.toString();
-	}
-	
-	private static String getPoints (Edge edge)
-	{
-		String firstPart = String.format("<Point X=\"%.2f\" Y=\"%.2f\" ", edge.getStartX(), edge.getStartY());
-		String secondPart = String.format("GraphRef=\"%s\" RelX=\"%.2f\" RelY=\"%.2f\" />\n", edge.getStartNode().getId(),0,0);
-		String thirdPart = String.format("<Point X=\"%.2f\" Y=\"%.2f\" ", edge.getEndX(), edge.getEndY());
-		String fourthPart = String.format("GraphRef=\"%s\" RelX=\"%.2f\" RelY=\"%.2f\" />\n", edge.getEndNode().getId(),0,0);
-		return firstPart + secondPart + thirdPart + fourthPart;
-	}
-	public static String nodeToGPML(Node node)
-	{
-		StringBuilder buffer = new StringBuilder("<DataNode>\n");
-		String basic = node.toString();
-		basic = StringUtil.chopLast(basic);		// chop off "]"
-		String shape = basic.substring(0, basic.indexOf("["));
-		basic = basic.replaceAll(",", "");		// strip commas
-		double w = node.getLayoutBounds().getWidth();
-		double h = node.getLayoutBounds().getHeight();
-		double cx = node.getLayoutX() + w / 2;
-		double cy = node.getLayoutY() + h / 2;
-		String graphics1 = String.format("  <Graphics CenterX=\"%.2f\" CenterY=\"%.2f\" Width=\"%.2f\" Height=\"%.2f\" ZOrder=\"32768\" ", cx, cy, w, h);
-		String graphics2 = String.format("FontWeight=\"%s\" FontSize=\"%d\" Valign=\"%s\" ShapeType=\"%s\"", "Bold", 12, "Middle", shape);
-		buffer.append(graphics1).append(graphics2).append(" />\n") ;
-		buffer.append("  <Xref Database=\"\" ").append("ID=\"\"").append("/>\n") ;
-		buffer.append("</DataNode>"+ LINEDIM);
-		return buffer.toString();
-	}
-	
-//	public static Node nodeFromGPML(String str)
-//	{
-//		
-//		StringBuilder buffer = new StringBuilder("<DataNode>\n");
-//		String basic = node.toString();
-//		basic = StringUtil.chopLast(basic);		// chop off "]"
-//		String shape = basic.substring(0, basic.indexOf("["));
-//		basic = basic.replaceAll(",", "");		// strip commas
-//		double w = node.getLayoutBounds().getWidth();
-//		double h = node.getLayoutBounds().getHeight();
-//		double cx = node.getLayoutX() + w / 2;
-//		double cy = node.getLayoutY() + h / 2;
-//		String graphics1 = String.format("  <Graphics CenterX=\"%.2f\" CenterY=\"%.2f\" Width=\"%.2f\" Height=\"%.2f\" ZOrder=\"32768\" ", cx, cy, w, h);
-//		String graphics2 = String.format("FontWeight=\"%s\" FontSize=\"%d\" Valign=\"%s\" ShapeType=\"%s\"", "Bold", 12, "Middle", shape);
-//		buffer.append(graphics1).append(graphics2).append(" />\n") ;
-//		buffer.append("  <Xref Database=\"\" ").append("ID=\"\"").append("/>\n") ;
-//		buffer.append("</DataNode>"+ LINEDIM);
-//		return buffer.toString();
-//	}
-//	
-	
-	static String getBoundsString(double x, double y, double w, double h)
-	{
+	static public String describe(Node node)	{	return GPML.dataNodeToGPML(node);	}
+	static String getBoundsString(double x, double y, double w, double h)	{
 	 return String.format("x=%.1f, y=%.1f, width=%.1f, height=%.1f", x, y, w, h);
 	}
-	
 	public String gensym(String prefix)	{		return (prefix == null ? "" : prefix ) + ++nodeCounter;	}
+	
 }
 
 

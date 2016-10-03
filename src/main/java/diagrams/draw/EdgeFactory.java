@@ -1,8 +1,12 @@
 package diagrams.draw;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
+import diagrams.draw.gpml.GPMLPoint;
 import javafx.scene.Node;
 import model.AttributeMap;
 import util.StringUtil;
@@ -18,52 +22,52 @@ public class EdgeFactory {
 		undoStack = drawLayer.getController().getUndoStack();
 		shapeFactory = new ShapeFactory(drawLayer, undoStack);
 	}
-	private Model getModel()				{ 	return drawLayer.getController().getDrawModel();	}
 	private Controller getController()		{ 	return drawLayer.getController();	}
-	private String gensym(String s)			{	return getModel().gensym(s);	}
+	private Model getModel()				{ 	return getController().getDrawModel();	}
 	public ShapeFactory getShapeFactory()	{ 	return shapeFactory; }
 
 	public Edge parseGPML(org.w3c.dom.Node edgeML) {
 		AttributeMap attrMap = new AttributeMap();
+		attrMap.add(edgeML.getAttributes());
+		List<GPMLPoint> points = new ArrayList<GPMLPoint>();
 		NodeList elems = edgeML.getChildNodes();
 		String startId="", endId="";
 		double startx=0, starty=0, endx=0, endy=0;
 		for (int i=0; i<elems.getLength(); i++)
 		{
 			org.w3c.dom.Node n = elems.item(i);
-			if ("Graphics".equals(n.getNodeName()))
+			String name = n.getNodeName();
+			if ("Graphics".equals(name))
 			{
+				attrMap.add(n.getAttributes());
 				NodeList pts = n.getChildNodes();
-				boolean firstPt = true;
 				for (int j=0; j<pts.getLength(); j++)
 				{
 					org.w3c.dom.Node pt = pts.item(j);
 					if ("Point".equals(pt.getNodeName()))
-					{
-						NamedNodeMap map = pt.getAttributes();
-						if (firstPt)
-						{
-							startId = getStr(map, "GraphRef");
-							startx = getVal(map, "X");
-							starty = getVal(map, "Y");
-							firstPt = false;
-						}
-						else
-						{
-							endId = getStr(map, "GraphRef");
-							endx = getVal(map, "X");
-							endy = getVal(map, "Y");
-						}
-					}
+						points.add(new GPMLPoint(pt));
 				}
 			}
+			if ("Xref".equals(name))	
+				attrMap.add(n.getAttributes());
 		}
-		attrMap.add(edgeML.getAttributes());
-		Node startNode = getModel().find(startId);
-		Node endNode = getModel().find(endId);
-		if (startNode != null && endNode != null) 
-			return new Edge(startNode, endNode);
-		Edge edge = new Edge(startx, starty, endx, endy);
+		int z = points.size();
+		if (z > 1)
+		{
+			startId = points.get(0).getGraphRef();
+			Node startNode = getModel().getResource(startId);
+			if (startNode != null)
+			{
+				endId = points.get(z-1).getGraphRef();
+				Node endNode = getModel().getResource(endId);
+				if (endNode != null) 
+					return new Edge(startNode, endNode, attrMap);
+			}
+			
+		}
+//		Edge edge = new Edge(startx, starty, endx, endy);
+		Edge edge = new Edge(attrMap, points);
+
 		return edge;
 	}
 	//--------------------------------------------

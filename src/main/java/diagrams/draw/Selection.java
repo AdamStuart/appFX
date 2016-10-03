@@ -14,6 +14,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
@@ -90,7 +91,8 @@ public class Selection
 		for (Node n : kids) 
 		{	
 			if ("grid".equals(n.getId())) continue;
-			if (n instanceof Edge) continue;
+			if (n instanceof Polyline) continue;
+			if (items.contains(n)) continue;
 			select(n); 
 		}
 	}
@@ -105,6 +107,12 @@ public class Selection
 			items.remove(node);
 			getController().remove(node);
 		}
+	}
+	//--------------------------------------------------------------------------
+	public void deleteAll()	
+	{
+		selectAll();
+		deleteSelection();
 	}
 	//--------------------------------------------------------------------------
 	public void doGroup()
@@ -163,7 +171,16 @@ public class Selection
 			factory.setAttributes(n, styleSettings);
 	}
 	//--------------------------------------------------------------------------
-// TODO -- why not always use the translate props, as Group does below?
+	public void translate(KeyCode key)		
+	{
+		double amount = 3;
+		double dx = 0, dy = 0;
+		if (key == KeyCode.LEFT)	dx = -amount;
+		else if (key == KeyCode.RIGHT)	dx = amount;
+		else if (key == KeyCode.UP)	dy = - amount;
+		else if (key == KeyCode.DOWN)	dy = amount;
+		translate(dx, dy);
+	}	
 	
 	public void translate(double dx, double dy)		
 	{		//undoStack.push(new AMove(selection, dx, dy));	

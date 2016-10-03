@@ -9,6 +9,8 @@ import org.w3c.dom.NodeList;
 
 import diagrams.draw.Action.ActionType;
 import diagrams.draw.App.Tool;
+import diagrams.draw.gpml.GPML;
+import gui.Borders;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
@@ -46,6 +48,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.web.WebView;
 import model.AttributeMap;
@@ -98,7 +101,7 @@ public class NodeFactory
 			String name = child.getNodeName();
 			if (name.equals("#text")) continue;
 			attrMap.add(child.getAttributes());
-			System.out.println(name);
+//			System.out.println(name);
 		}
 		String type = attrMap.get("Type");
 		if (type == null)
@@ -107,14 +110,23 @@ public class NodeFactory
 		if (tool == null) return null;
 		if (tool.isShape())
 			return shapeFactory.makeNewShape(tool, attrMap);
+		if (Tool.isSVG(type))
+			return makeNewSVGPane(attrMap);
 		return makeNewNode(tool, attrMap);
+	}
+	
+	private Node makeNewSVGPane(AttributeMap attrMap) {
+		return null;
 	}
 	
 	public Label parseGPMLLabel(org.w3c.dom.Node labelNode) {
 		AttributeMap attrMap = new AttributeMap();
 		NodeList elems = labelNode.getChildNodes();
 		attrMap.add(labelNode.getAttributes());
-		Label label = new Label("Undefined");
+		String txt = attrMap.get("TextLabel");
+		if (txt == null) txt = "Undefined";
+		Label label = new Label(txt);
+//		label.setManaged(false);
 		String name = "";
 		for (int i=0; i<elems.getLength(); i++)
 		{
@@ -137,18 +149,20 @@ public class NodeFactory
 				}
 				if (StringUtil.hasText(key) && StringUtil.hasText(val))
 				{
-					label.setText(key + ": " + val);
+					if (key.startsWith("org.pathvisio."))
+						key = key.substring(14);
+					label.setText(key + ":\n" + val);
+					label.setTextFill(Color.CHOCOLATE);
+					
 				}
 			}
 			if (name != null && name.equals("Graphics")) 
-			{
 				applyGraphicsNode(label, child);
-			}
 		}
 		return label;
 	}
 
-	private void applyGraphicsNode(Node label, org.w3c.dom.Node child) {
+	private void applyGraphicsNode(Label label, org.w3c.dom.Node child) {
 		NamedNodeMap attrs = child.getAttributes();
 		String name = "";
 		for (int i=0; i<attrs.getLength(); i++)
@@ -157,17 +171,31 @@ public class NodeFactory
 			String val = item.getNodeValue();
 			double d = StringUtil.toDouble(val);
 			name = item.getNodeName();
-			if ("CenterX".equals(name)) 	 {	label.setLayoutX(d);}
+			
+			if ("CenterX".equals(name)) 		 {	label.setLayoutX(d);}
 			else if ("CenterY".equals(name)) 	 {	label.setLayoutY(d);}
-			else if ("Width".equals(name)) 		 {	label.maxWidth(d);}
-			else if ("Height".equals(name)) 	{	label.maxHeight(d);}
+			else if ("Width".equals(name)) 		 {	label.maxWidth(d); label.prefWidth(d);}
+			else if ("Height".equals(name)) 	{	label.maxHeight(d); label.prefHeight(d);}
 			else if ("ZOrder".equals(name)) {}
-			else if ("FillColor".equals(name)) 	{	if (label instanceof Shape) ((Shape) label).setFill(Paint.valueOf(val));}
+//			else if ("Color".equals(name)) {	label.setBorder(Borders.coloredBorder(val));}
+			else if ("Color".equals(name)) {	label.setTextFill(Color.web(val));	}
+			else if ("FillColor".equals(name)) 	
+			{	label.setBackground(new Background(
+					new BackgroundFill(Paint.valueOf(val), null, null)));
+			}
 			else if ("FontSize".equals(name)) {}
+			else if ("FontWeight".equals(name)) {}
 			else if ("Valign".equals(name)) {}
-			else if ("ShapeType".equals(name)) {}
+			else if ("ShapeType".equals(name)) 	
+			{	if ("RoundedRectangle".equals(val)) {}		}
 		}
-		}
+		double w = StringUtil.toDouble(attrs.getNamedItem("Width").getNodeValue());
+		double h = StringUtil.toDouble(attrs.getNamedItem("Height").getNodeValue());
+//		label.getWidth();
+//		double h = label.getWidth();
+		label.setLayoutX(label.getLayoutX() - w / 2.);
+		label.setLayoutY(label.getLayoutY() - h / 2.);
+	}
 		
 	// **-------------------------------------------------------------------------------
 	/*
@@ -176,6 +204,18 @@ public class NodeFactory
 	 * param useCache:  determines whether to look for the node in the resource map.
 	 * 					Shapes are generally recreated and not stored in the cache.
 	 */
+	public Node parseGPML(String gpml, boolean useCache )
+	{
+		AttributeMap attrMap = new AttributeMap();
+		attrMap.addDataNodeGPML(gpml);
+		String type = attrMap.get("ShapeType");
+		Tool tool = Tool.fromString(type);
+		if (tool.isShape())		return shapeFactory.parseShape(attrMap);
+		if (tool.isControl())	return makeNewNode(tool, attrMap);
+		return null;
+		
+	}
+	@Deprecated
 	public Node parseNode(String s, boolean useCache)
 	{
 		int attributeStart = s.indexOf('[');
@@ -185,6 +225,8 @@ public class NodeFactory
 		String type = s.substring(start, attributeStart).trim();
 		String attributes = s.substring(attributeStart).trim();
 		if ("Text".equals(type) && attributes.startsWith("[text=\"\"")) return null;  // don't save unused labels
+		
+		
 		AttributeMap attrMap = new AttributeMap(attributes);
 		attrMap.put("type", type);
 		String id = attrMap.getId();
@@ -202,7 +244,7 @@ public class NodeFactory
 
 //		System.out.println("Everything should be cached!!");
 		Tool tool = Tool.fromString(type);
-		if (tool.isShape())		return shapeFactory.parseNode(attrMap);
+		if (tool.isShape())		return shapeFactory.parseShape(attrMap);
 		if (tool.isControl())	return makeNewNode(tool, attrMap);
 		return null;
 	}
@@ -213,7 +255,7 @@ public class NodeFactory
 		for (String k : map.keySet())
 		{
 			String val = map.get(k);
-			if (k.equals("id"))			shape.setId(val);
+			if (k.equals("GraphId"))			shape.setId(val);
 			double d = StringUtil.toDouble(val);			// exception safe:  comes back NaN if val is not a number
 			if (shape instanceof Rectangle)
 			{
@@ -300,13 +342,13 @@ public class NodeFactory
 	}
 
 	// **-------------------------------------------------------------------------------
-	
 	public Node makeNewNode(Tool type, AttributeMap attrMap)
 	{
 		if (type == Tool.Browser)	return makeBrowser(attrMap);	
 		if (type == Tool.Text)		return makeTextArea(attrMap);	
 		if (type == Tool.Table)		return makeTableView(attrMap);	
 		if (type == Tool.Image)		return makeImageView(attrMap);	
+		if (type == Tool.Shape2)	return makeNewSVGPane(attrMap);	
 		return null;
 	}
 	// **-------------------------------------------------------------------------------
@@ -314,9 +356,30 @@ public class NodeFactory
 	{
 		AttributeMap attrs = new AttributeMap(f, x, y);
 		if (FileUtil.isImageFile(f))	return makeImageView(attrs);
+		if (FileUtil.isSVG(f))			return makeSVGPath(attrs);
 		if (FileUtil.isCSV(f))			return makeTableView(attrs);
 		if (FileUtil.isWebloc(f))		return makeBrowser(attrs);
 		if (FileUtil.isTextFile(f))		return makeTextArea(attrs);
+		if (FileUtil.isGPML(f))			new GPML(getController()).addFile(f);
+		return null;
+	}
+	private StackPane makeSVGPath(AttributeMap attrs) {
+		String path = attrs.get("file");
+		if (path != null)
+		{
+			String s = FileUtil.readFileIntoString(path);
+			if (s != null)
+			{
+				SVGPath svg = new SVGPath();
+				int idx1 = s.indexOf("<g>");
+				int idx2 = s.indexOf("</g>") + 4;
+				if (idx1 >0 && idx2 > idx1)
+					s = s.substring(idx1, idx2);
+				svg.setContent(s);
+			    StackPane border = makeStackPane(attrs, svg);
+				return border;
+			}
+		}
 		return null;
 	}
 	// **-------------------------------------------------------------------------------
@@ -354,7 +417,7 @@ public class NodeFactory
 			System.out.println("makeImageView error");
 		ImageView imgView = new ImageView(img);
 		if (attrMap.getId() == null) 
-			attrMap.put("id", gensym("I"));
+			attrMap.put("GraphId", gensym("I"));
 		
 		imgView.prefWidth(200);
 		imgView.prefHeight(200);
@@ -375,7 +438,7 @@ public class NodeFactory
 	{
 		TableView<ObservableList<StringProperty>> table = new TableView<ObservableList<StringProperty>>();
 		if (attrMap.getId() == null)
-			attrMap.put("id", gensym("T"));
+			attrMap.put("GraphId", gensym("T"));
 		CSVTableData data = FileUtil.openCSVfile(attrMap.get("file"), table);		// TODO THIS CURRENTLY ASSUMES ALL INTS!!
 		attrMap.put("name", attrMap.get("file"));
 		if (data == null) return null;
@@ -454,7 +517,7 @@ public class NodeFactory
 		if (nKids == 2)
 		{
 			Node content = orig.getChildren().get(1);
-			System.out.println("content = " + content.toString());
+//			System.out.println("content = " + content.toString());
 			Node copiedContent = null;
 			if (content instanceof ImageView)
 			{
@@ -487,9 +550,7 @@ public class NodeFactory
 				TableView<ObservableList<StringProperty>> table = new TableView<ObservableList<StringProperty>>();
 //				if (attrMap.getId() == null)
 //					attrMap.put("id", gensym("T"));
-				CSVTableData data = new CSVTableData(id);
-				
-				if (data == null) return null;
+//				CSVTableData data = new CSVTableData(id);
 			    StackPane border = makeStackPane(attrs, table);
 				return border;
 			}
@@ -610,7 +671,8 @@ public class NodeFactory
 				for (File f : files)
 				{
 					offset += 20;
-					System.out.println("File: " + f.getAbsolutePath());
+					if (verbose > 2)
+						System.out.println("File: " + f.getAbsolutePath());
 					if (FileUtil.isCSS(f))
 					{
 						String path = f.getAbsolutePath();
@@ -623,7 +685,8 @@ public class NodeFactory
 						Node n = (Node) e.getTarget();
 						String styl = buff.toString();
 //						n.getStyleClass().add(styl);
-						System.out.println("Style: " + styl);
+						if (verbose > 3)
+							System.out.println("Style: " + styl);
 						n.getScene().getStylesheets().add(path);
 				
 					}
@@ -714,7 +777,7 @@ public class NodeFactory
 		EventTarget target = event.getTarget();
 		if (target instanceof StackPane)
 		{
-			System.out.println("sdfasdfasd");
+//			System.out.println("sdfasdfasd");
 			int nKids = ((StackPane)target).getChildren().size();
 			if (nKids == 2)
 			{
@@ -754,14 +817,16 @@ public class NodeFactory
 		{
 			if ("Marquee".equals(n.getId()))	continue;
 			String text = Model.describe(n);
-			int idStart = text.indexOf("id=")+ 3;		// inject a new id into the string
-			int idEnd = text.indexOf(",", idStart );
+			int idx = text.indexOf("GraphId=");
+			if (idx < 0) continue;			// FIXME: nodes read in from file don't have id
+			int idStart = idx+ "GraphId=\"".length();		// inject a new id into the string
+			int idEnd = text.indexOf("\"", idStart );
 			String oldId = text.substring(idStart, idEnd);
 			String newId = getModel().cloneResourceId(oldId);
 			String newText = text.substring(0, idStart);		
 			newText += newId + text.substring(idEnd);
 			
-			cloneNode(oldId, newId);  //parseNode(newText, false);
+//			cloneNode(oldId, newId);  //parseNode(newText, false);
 			Object ob = getModel().getResource(oldId);
 			if (ob != null && ob instanceof StackPane)
 			{
@@ -772,7 +837,13 @@ public class NodeFactory
 					drawLayer.getController().add(clone);
 				}
 			}
-			else drawLayer.getController().add(parseNode(newText, false));
+			else 
+			{
+				Node clone = parseGPML(newText, false);
+				if (clone != null)		
+					drawLayer.getController().add(clone);
+				
+			}
 		}
 	}
 	StackPane cloneNode(String origId, String newId)

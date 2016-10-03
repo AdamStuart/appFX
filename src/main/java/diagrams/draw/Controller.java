@@ -8,11 +8,10 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
-import org.w3c.dom.NodeList;
-
 import animation.BorderPaneAnimator;
 import diagrams.draw.Action.ActionType;
 import diagrams.draw.App.Tool;
+import diagrams.draw.gpml.GPML;
 import dialogs.AboutDialog;
 import gui.BorderPaneRulers;
 import gui.Borders;
@@ -22,7 +21,6 @@ import icon.GlyphsDude;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -67,14 +65,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Callback;
 import model.AttributeMap;
 import model.AttributeValue;
 import model.RandomAttributeValueData;
-import util.StringUtil;
 
 
 public class Controller implements Initializable
@@ -82,6 +80,7 @@ public class Controller implements Initializable
 	//@formatter:off
 	private Model model;
 	public Model getDrawModel()   		{ 		return model;  }
+	public Model getModel() 			{		return model;	}	
 	private Pasteboard pasteboard;
 	public Pasteboard getPasteboard()   { 		return pasteboard;  }
 	public NodeFactory getNodeFactory()	{		return pasteboard.getNodeFactory();	}
@@ -166,7 +165,12 @@ public class Controller implements Initializable
 	@FXML private void close()			
 	{ 
 		doc.close();	
-		App.getInstance().getStage().close();
+		if (drawContainer != null)
+		{
+			Window w = drawContainer.getScene().getWindow();
+			if (w instanceof Stage)
+				((Stage) w).close();
+		}
 	}
 	@FXML private void print()			{ 	doc.print();			}
 	@FXML private void quit()			{ 	Platform.exit();			}
@@ -178,6 +182,7 @@ public class Controller implements Initializable
 	@FXML private void selectAll()		{ 	undoStack.push(ActionType.Select); getSelectionManager().selectAll(); 		}
 	@FXML public void deleteSelection(){ 	undoStack.push(ActionType.Delete);	getSelectionManager().deleteSelection(); 	}
 	@FXML public void duplicateSelection(){ undoStack.push(ActionType.Duplicate);	getNodeFactory().cloneSelection(); 	}
+	@FXML public void clear()			{ undoStack.push(ActionType.Delete);	getSelectionManager().deleteAll(); 	}
 	// **-------------------------------------------------------------------------------
 	@FXML public  void group()			{ 	undoStack.push(ActionType.Group);	getSelectionManager().doGroup();  }
 	@FXML public  void ungroup()		{ 	undoStack.push(ActionType.Ungroup);	getSelectionManager().ungroup(); }
@@ -196,7 +201,6 @@ public class Controller implements Initializable
 				add(0, e);
 		}
 	}
-
 	
 	static String CSS_Gray2 = "-fx-border-width: 2; -fx-border-color: gray;";
 	static String CSS_cellBackground(boolean undone) 	{		return "-fx-background-color: " + (undone ? "GREY; " : "BEIGE; ");	}
@@ -232,6 +236,10 @@ public class Controller implements Initializable
 			ev.consume();
 	        if (ev.getDeltaY() == 0)   return;	
 	        double scaleFactor = (ev.getDeltaY() > 0) ? SCALE_DELTA : 1 / SCALE_DELTA;
+	        if (scale.valueProperty().get() == 1)
+	        {
+	        	scale.valueProperty().set(0.9);
+	        }
 	        scale.valueProperty().set(scale.valueProperty().get() * scaleFactor);
 //	        drawContainer.setScaleX(drawContainer.getScaleX() * scaleFactor);
 //	        drawContainer.setScaleY(drawContainer.getScaleY() * scaleFactor);
@@ -249,7 +257,7 @@ public class Controller implements Initializable
 		new BorderPaneRulers(drawContainer, toggleRulerButton);
 		pasteboard.makeGrid(toggleGridButton, scrollPane);
 
-		boolean startWithShapes = true;
+		boolean startWithShapes = false;
 		if (startWithShapes) test1();
 			
 		
@@ -263,6 +271,7 @@ public class Controller implements Initializable
 		dlog.showAndWait();
 	}
 	Map<Object, Object> dependents = new HashMap<Object, Object>();
+	public Map<Object, Object> getDependents() {		return dependents;	}
 	//-----------------------------------------------------------------------
 	private final ChangeListener<Object> changeListener = 
 		    (obs, oldValue, newValue) ->  System.out.println("The binding is now invalid.");
@@ -308,20 +317,23 @@ public class Controller implements Initializable
 		Edge line2 = model.addEdge(circ, n1);
 		
 		add(0, line1);
+//		Arrow a = new Arrow(line1, 0.0f);
+//		add(1, a);
+//		
 		add(0, line2);
 		
 		Rectangle r1 = new Rectangle(290, 230, 60, 60);
 		attrMap.putRect(r1);
 		attrMap.putFillStroke(Color.CORNSILK, Color.DARKOLIVEGREEN);
-		Rectangle n4 = (Rectangle) f.makeNewNode(Tool.Rectangle, attrMap);
+		Rectangle n4 = (Rectangle) f.makeNewNode(attrMap);
 		add(n4);
 			
 		Edge line3 = model.addEdge(n4, circ);
-		line3.setStrokeWidth(2);
+		line3.getPolyline().setStrokeWidth(2);
 		add(0, line3);
 	
-		Line line4 = model.addEdge(n1, n3);
-		line4.setStrokeWidth(2);
+		Edge line4 = model.addEdge(n1, n3);
+		line4.getPolyline().setStrokeWidth(4);
 		add(0, line4);
 	}
 
@@ -341,13 +353,15 @@ public class Controller implements Initializable
 			{
 				Circle c1 = new Circle(i * spacer, j * spacer, RADIUS);
 				attrMap.putCircle(c1);
-				attrMap.put("id", i + ", " + j);
-				add(f.makeNewNode(Tool.Circle, attrMap));
+				attrMap.put("ShapeType","Circle");
+				attrMap.put("GraphId", i + ", " + j);
+				add(f.makeNewNode(attrMap));
 			}
 	}
 	
 	@FXML private void test3()
 	{
+		addAll(new GPML(this).makeTestItems());
 	}
 	//--------------------------------------------------------------------
 	
@@ -403,8 +417,8 @@ public class Controller implements Initializable
 		polygon.setGraphic(		GlyphsDude.createIcon(FontAwesomeIcons.STAR, GlyphIcon.DEFAULT_ICON_SIZE));
 		polyline.setGraphic(	GlyphsDude.createIcon(FontAwesomeIcons.PENCIL, GlyphIcon.DEFAULT_ICON_SIZE));
 		line.setGraphic(		GlyphsDude.createIcon(FontAwesomeIcons.LONG_ARROW_RIGHT, GlyphIcon.DEFAULT_ICON_SIZE));
-		shape1.setGraphic(		GlyphsDude.createIcon(FontAwesomeIcons.HEART, GlyphIcon.DEFAULT_ICON_SIZE));
-		shape2.setGraphic(		GlyphsDude.createIcon(FontAwesomeIcons.FILTER, GlyphIcon.DEFAULT_ICON_SIZE));
+		shape1.setGraphic(		GlyphsDude.createIcon(FontAwesomeIcons.FILTER, GlyphIcon.DEFAULT_ICON_SIZE));
+		shape2.setGraphic(		GlyphsDude.createIcon(FontAwesomeIcons.HEART, GlyphIcon.DEFAULT_ICON_SIZE));
 
 		arrow.setId(Tool.Arrow.name());
 		rectangle.setId(Tool.Rectangle.name());
@@ -437,107 +451,10 @@ public class Controller implements Initializable
 	//-----------------------------------------------------------------------------
 	public void addState(org.w3c.dom.Document doc)
 	{
-		NodeList nodes = doc.getElementsByTagName("DataNode");
-		ShapeFactory f = getNodeFactory().getShapeFactory();
-		for (int i=0; i<nodes.getLength(); i++)
-		{
-			org.w3c.dom.Node child = nodes.item(i);
-			String name = child.getNodeName();
-			System.out.println(name);
-			Node node = getNodeFactory().parseGPML(child);
-			if (node != null)
-			{
-				ObservableMap<Object, Object> map = node.getProperties();
-				String label = map.get("TextLabel").toString();
-				if (StringUtil.hasText(label)) {
-					final Label text = f.createLabel(label);
-			    	NodeCenter ctr = new NodeCenter(node);
-			    	text.layoutXProperty().bind(ctr.centerXProperty().subtract(text.widthProperty().divide(2.)));	// width / 2
-			    	text.layoutYProperty().bind(ctr.centerYProperty().subtract(text.heightProperty().divide(2.)));
-					dependents.put(node, text);
-					add(node);
-					add(text);
-				}
-				else	add(node);
-			}
-		}
-		NodeList shapes = doc.getElementsByTagName("Shape");
-		for (int i=0; i<shapes.getLength(); i++)
-		{
-			org.w3c.dom.Node child = shapes.item(i);
-			String name = child.getNodeName();
-			System.out.println(name);
-			Node node = getNodeFactory().parseGPML(child);
-			if (node != null)
-				add(node);
-		}
-		NodeList edges = doc.getElementsByTagName("Interaction");
-		for (int i=0; i<edges.getLength(); i++)
-		{
-			org.w3c.dom.Node child = edges.item(i);
-			String name = child.getNodeName();
-			System.out.println(name);
-			Edge edge = getEdgeFactory().parseGPML(child);
-			if (edge != null)
-			{
-				add(edge);
-				model.addEdge(edge);
-			}
-		}
-		
-		handleBiopax(doc.getElementsByTagName("Biopax"));
-		handleGroups(doc.getElementsByTagName("Groups"));
-		handleLines(doc.getElementsByTagName("Line"));
-		handleLinks(doc.getElementsByTagName("Link"));
-		handleLabels(doc.getElementsByTagName("Label"));
-	}
-	
-	private void handleBiopax(NodeList elements) {
-		for (int i=0; i<elements.getLength(); i++)
-		{
-			org.w3c.dom.Node child = elements.item(i);
-			String name = child.getNodeName();
-			System.out.println(name);
-		}
-		
-	}
-	private void handleLabels(NodeList elements) {
-		for (int i=0; i<elements.getLength(); i++)
-		{
-			org.w3c.dom.Node child = elements.item(i);
-			String name = child.getNodeName();
-			System.out.println(name);
-			Label label = getNodeFactory().parseGPMLLabel(child);
-			if (label != null)
-				add(label);
-	
-		}
-	}
-	private void handleLines(NodeList elements) {
-		for (int i=0; i<elements.getLength(); i++)
-		{
-			org.w3c.dom.Node child = elements.item(i);
-			String name = child.getNodeName();
-			System.out.println(name);
-		}
-	}
-	private void handleLinks(NodeList elements) {
-		for (int i=0; i<elements.getLength(); i++)
-		{
-			org.w3c.dom.Node child = elements.item(i);
-			String name = child.getNodeName();
-			System.out.println(name);
-		}
-	}
-	private void handleGroups(NodeList elements) {
-		for (int i=0; i<elements.getLength(); i++)
-		{
-			org.w3c.dom.Node child = elements.item(i);
-			String name = child.getNodeName();
-			System.out.println(name);
-		}
+		new GPML(this).read(doc);
 	}
 	//-----------------------------------------------------------------------------
+	@Deprecated
 	public void addState(String s)
 	{
 		Scanner scan = new Scanner(s);
@@ -749,9 +666,17 @@ public class Controller implements Initializable
 	// **-------------------------------------------------------------------------------
 	public void add(Node n)							
 	{		
+		if (n == null) return;
 		drawPane.getChildren().add(n);	
 		if ("Marquee".equals(n.getId())) 	return;
 		model.addResource(n.getId(), n);
+	}
+	public void add(int idx, Edge e)							
+	{		
+		if (e == null) return;
+		drawPane.getChildren().add(idx, e.getPolyline() );	
+		drawPane.getChildren().add(idx, e.getLine() );	
+		model.addEdge(e);
 	}
 	public void add(int idx, Node n)							
 	{		
@@ -760,6 +685,7 @@ public class Controller implements Initializable
 		model.addResource(n.getId(), n);
 	}
 	public void addAll(ObservableList<Node> n)		{		drawPane.getChildren().addAll(n);	}
+	public void addAll(Node... n)				{		drawPane.getChildren().addAll(n);	}
 
 	public void remove(Node n)						
 	{		
@@ -830,5 +756,4 @@ public class Controller implements Initializable
 
 	public void timeseries(TableView content)	{
 	}
-	
 }

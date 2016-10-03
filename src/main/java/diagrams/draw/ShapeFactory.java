@@ -6,8 +6,8 @@ import java.util.Set;
 
 import diagrams.draw.Action.ActionType;
 import diagrams.draw.App.Tool;
+import diagrams.draw.gpml.GPML;
 import gui.Effects;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -36,7 +36,6 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
-import javafx.util.Pair;
 import model.AttributeMap;
 import util.FileUtil;
 import util.LineUtil;
@@ -65,7 +64,7 @@ public class ShapeFactory {
 	// -----------------------------------------------------------------------
 	public Rectangle makeMarquee() {
 		AttributeMap attrMap = new AttributeMap();
-		attrMap.putAll("id", "Marquee", "-fx-stroke", "Green", "-fx-fill", "TRANSPARENT", "-fx-stroke-width", "1");
+		attrMap.putAll("GraphId", "Marquee", "-fx-stroke", "Green", "-fx-fill", "TRANSPARENT", "-fx-stroke-width", "1");
 		Rectangle marquee = (Rectangle) makeNewShape("Rectangle", attrMap, false);
 		marquee.getStrokeDashArray().addAll(3.0, 7.0, 3.0, 7.0);
 		// marquee.getStyleClass().addAll(STYLE_CLASS_SELECTION_BOX);
@@ -79,9 +78,11 @@ public class ShapeFactory {
 
 	// -----------------------------------------------------------------------
 
-	public Shape makeNewNode(Tool type, AttributeMap attrMap) {
-		assert(type != null);
-		return (type.isShape()) ? makeNewShape(type.toString(), attrMap, true) : null;
+	public Shape makeNewNode(AttributeMap attrMap) {
+		String type = attrMap.get("ShapeType");
+		if (Tool.lookup(type) != null)
+			return makeNewShape(type.toString(), attrMap, true);
+		return null;
 	}
 
 	// **-------------------------------------------------------------------------------
@@ -90,7 +91,7 @@ public class ShapeFactory {
 		sh.setId(attrMap.get("GraphId"));
 		if (sh instanceof  Circle)
 		{
-			double rad = attrMap.getDouble("radius");
+			double rad = attrMap.getDouble("Radius");
 			if (Double.isNaN(rad))
 				rad = attrMap.getDouble("Width") / 2;
 				((Circle) sh).setRadius(rad);
@@ -103,7 +104,7 @@ public class ShapeFactory {
 		if ("Circle".equals(s))					newShape = new Circle();
 		else if ("Rectangle".equals(s))			newShape = new Rectangle();
 		else if ("Shape1".equals(s))			newShape = new Shape1();
-		else if ("Shape2".equals(s))			newShape = new Shape2();
+		else if ("RoundedRectangle".equals(s))	newShape = new Rectangle();
 		else if ("Polygon".equals(s))			newShape = new Polygon();
 		else if ("Polyline".equals(s))			newShape = new Polyline();
 		else if ("Line".equals(s))	{ newShape = new Line(); 
@@ -111,7 +112,10 @@ public class ShapeFactory {
 		else	return null;
 
 		makeHandlers(newShape);
-		newShape.setId(model.gensym("" + s.charAt(0)));
+		String id = attrMap.get("GraphId");
+		if (id == null)
+			id = model.gensym("" + s.charAt(0));
+		newShape.setId(id);
 		newShape.setFill(drawLayer.getDefaultFill());
 		newShape.setStroke(Color.BLUE);
 
@@ -119,33 +123,18 @@ public class ShapeFactory {
 		newShape.setManaged(false);
 		setAttributes(newShape, attrMap);
 		newShape.getProperties().putAll(attrMap);
+		if ("Line".equals(s))
+		{
+			Arrow a = new Arrow((Line) newShape, 1.0f);
+		}
 		return newShape;
 	}
 
-	public Shape nodeFromGPML(String gpmlStr,  AttributeMap attrMap, boolean addHandlers) {
-		String txt = gpmlStr.trim();
-		if (txt.startsWith("<DataNode "))
-		{
-			String graphics =  txt.substring(10 + txt.indexOf("<Graphics "), txt.indexOf("</Graphics>"));
-			String xref = txt.substring(10 + txt.indexOf(6 + "<Xref "), txt.indexOf("</Xref>"));
-			attrMap.addGPML(graphics);
-			attrMap.addGPML(xref);
-		}
-		String shapeType = attrMap.get("ShapeType");
-		Shape newShape = makeNewShape(shapeType, attrMap, addHandlers); 
-		return newShape;
-	}
 
 	public Edge edgeFromGPML(String gpmlStr, AttributeMap attrMap,  boolean addHandlers) {
 		String txt = gpmlStr.trim();
 		if (txt.startsWith("<Interaction>"))
-		{
-			String graphics =  txt.substring(10 + txt.indexOf("<Graphics "), txt.indexOf("</Graphics>"));
-			String xref = txt.substring(10 + txt.indexOf(6 + "<Xref "), txt.indexOf("</Xref>"));
-			attrMap.addGPMLEdgeInfo(graphics);
-			attrMap.addGPML(xref);
-			return new Edge(attrMap, model);
-		}
+			return GPML.createEdge(gpmlStr, attrMap, model);
 		return null;
 	}
 // **-------------------------------------------------------------------------------
@@ -169,9 +158,9 @@ public class ShapeFactory {
 		StackPane.setAlignment(text, Pos.CENTER);
 		stack.getChildren().addAll(newShape, text);
 		makeNodeMouseHandler(stack);
-
 		return stack;
 	}
+	
 	public Group makeLabeledShapeGroup(Tool tool, AttributeMap attrMap, String s) {
 		Shape newShape = makeNewShape(tool, attrMap);
 		Group group = new Group();
@@ -188,16 +177,16 @@ public class ShapeFactory {
 	
 	public Label createLabel(String s) {
 		final Label text = new Label(s);
-		text.setFont(new Font(18));
+		text.setFont(new Font(12));
 //		text.setBoundsType(TextBoundsType.VISUAL);
 		text.setMouseTransparent(true);
 		return text;
 	}
 	// -----------------------------------------------------------------------
 	boolean UseGPML = true;
-	public Shape parseNode(AttributeMap attrMap) {
+	public Shape parseShape(AttributeMap attrMap) {
 		if (UseGPML) 	
-			return nodeFromGPML(attrMap.get("type"), attrMap, false);
+			return makeNewShape(attrMap.get("ShapeType"), attrMap, false);
 		return makeNewShape(attrMap.get("type"), attrMap, false);
 	}
 
@@ -207,15 +196,21 @@ public class ShapeFactory {
 		{
 			String val = map.get(k);
 			k = k.toLowerCase();
+			if (k.equals("textlabel"))   
+				createLabel(val);
+			if (k.equals("fontsize"))			;// TODO	k = "-fx-font-size"??;
+			if (k.equals("fontweight"))			;// TODO	k = "-fx-font-size"??;
+			if (k.equals("valign"))				;// TODO	
+			if (k.equals("zorder"))				;// TODO	
 			if (k.equals("stroke"))				k = "-fx-stroke";
 			if (k.equals("strokeWidth"))		k = "-fx-stroke-weight";
-			if (k.equals("id"))					shape.setId(val);
+			if (k.equals("graphid"))					shape.setId(val);
 			double d = StringUtil.toDouble(val); // exception safe: comes back
 													// NaN if val is not a
 													// number
 			if (shape instanceof Rectangle) {
 				Rectangle r = (Rectangle) shape;
-				if (k.equals("centerx"))		r.setX(d);
+				if (k.equals("centerx"))		r.setX(d);		// TODO -- assumes width is set before centerX!
 				else if (k.equals("centery"))	r.setY(d);
 				else if (k.equals("x"))			r.setX(d);
 				else if (k.equals("y"))			r.setY(d);
@@ -243,21 +238,28 @@ public class ShapeFactory {
 				Line line = (Line) shape;
 				if (k.equals("points"))			parseLinePoints(line, map.get(k));
 				if (k.equals("stroke-width"))	line.setStrokeWidth(d);
+				
 			}
-			if (shape instanceof Shape)
-				try {
-					Shape sh = shape;
-					if (k.equals("fill") || k.equals("-fx-fill")) {
-						sh.setFill(Color.web(val));
-						// String lastTwoChars = val.substring(val.length()-2);
-						// int opac = Integer.parseInt(lastTwoChars, 16);
-						// shape.setOpacity(opac / 255.);
-					} else if (k.equals("-fx-stroke"))			sh.setStroke(Color.web(val));
-					else if (k.equals("-fx-stroke-weight"))		sh.setStrokeWidth(d);
-					// else if (k.equals("selected")) shape.setSelected(val);
-				} catch (Exception e) {
-					System.err.println("Parse errors: " + k);
-				}
+			try {
+				Shape sh = shape;   
+				if (k.equals("fill") || k.equals("-fx-fill") || k.equals("fillcolor")) 
+					sh.setFill(Color.web(val));
+				else if (k.equals("-fx-stroke") || k.equals("color"))	
+					sh.setStroke(Color.web(val));
+				else if (k.equals("-fx-stroke-weight") || k.equals("linethickness"))
+					sh.setStrokeWidth(d);
+			} 
+			catch (Exception e) {		System.err.println("Parse errors: " + k);	}
+		}
+		if (shape instanceof Rectangle) 
+		{
+			String lookforCenter = map.get("CenterX");
+			if (lookforCenter != null)
+			{
+				Rectangle r = (Rectangle) shape;
+				r.setX(r.getX() - r.getWidth() / 2.);
+				r.setY(r.getY() - r.getHeight() / 2.);
+			}
 		}
 	}
 
@@ -295,7 +297,7 @@ public class ShapeFactory {
 		if (s instanceof Polyline)		new PolylineMouseHandler((Polyline) s, drawLayer);
 		if (s instanceof Line)			new LineMouseHandler((Line) s, drawLayer);
 		if (s instanceof Shape1)		new ShapeMouseHandler((Shape1) s, drawLayer);
-		if (s instanceof Shape2)		new ShapeMouseHandler((Shape2) s, drawLayer);
+//		if (s instanceof Shape2)		new ShapeMouseHandler((Shape2) s, drawLayer);
 
 		s.setOnDragEntered(e -> {	s.setEffect(Effects.sepia);			e.consume();		});
 		s.setOnDragExited(e -> 	{	s.setEffect(null);					e.consume();		});
@@ -438,8 +440,8 @@ public class ShapeFactory {
 		@Override
 		protected void handleMouseDragged(final MouseEvent event) {
 			if (drawLayer.getTool() != Tool.Arrow) return;
-			if (((Node) event.getTarget()).getParent() instanceof Group)
-				return;
+//			if (((Node) event.getTarget()).getParent() instanceof Group)
+//				return;
 			if (verbose > 3)
 				System.out.println("RectMouseDraggedHandler, Target: " + event.getTarget());
 			super.handleMouseDragged(event);

@@ -8,8 +8,8 @@ import javafx.scene.Node;
 public class NodeCenter {
     private ReadOnlyDoubleWrapper centerX = new ReadOnlyDoubleWrapper();
     private ReadOnlyDoubleWrapper centerY = new ReadOnlyDoubleWrapper();
-    ReadOnlyDoubleProperty centerXProperty() {   return centerX.getReadOnlyProperty();    }
-    ReadOnlyDoubleProperty centerYProperty() {   return centerY.getReadOnlyProperty();    }
+    public ReadOnlyDoubleProperty centerXProperty() {   return centerX.getReadOnlyProperty();    }
+    public ReadOnlyDoubleProperty centerYProperty() {   return centerY.getReadOnlyProperty();    }
    
     public NodeCenter(Node node) {
         calcCenter(node.getBoundsInParent());

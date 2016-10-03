@@ -58,9 +58,7 @@ public class AppCubicCurveWithArrows extends Application {
             setFill(Color.web("#ff0900"));
 
             rz = new Rotate();
-            {
-                rz.setAxis(Rotate.Z_AXIS);
-            }
+            rz.setAxis(Rotate.Z_AXIS);
             getTransforms().addAll(rz);
 
             update();
