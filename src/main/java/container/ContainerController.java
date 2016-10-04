@@ -7,7 +7,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import animation.BorderPaneAnimator;
-import diagrams.draw.App;
 import gui.Backgrounds;
 import gui.Borders;
 import gui.Effects;
@@ -17,7 +16,6 @@ import javafx.event.EventTarget;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -359,7 +357,7 @@ public class ContainerController implements Initializable
 	{
 		FileChooser chooser = new FileChooser();	
 		chooser.setTitle("Open Container File...");
-		File file = chooser.showOpenDialog(App.getInstance().getStage());
+		File file = chooser.showOpenDialog(anchor.getScene().getWindow());
 		if (file != null)		open(file);
 	}
 	
