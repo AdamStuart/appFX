@@ -34,9 +34,7 @@ public class AppDraggableHeatmap extends Application {
 	    	}
        });	    
 	    topGroup.requestFocus();
-//	    coexGroup.setOnKeyPressed(ev -> {
-//	    	generateSquareMap();
-//	    });
+//	    coexGroup.setOnKeyPressed(ev -> { 	generateSquareMap();     });
 	    stage.show();
 
     }
