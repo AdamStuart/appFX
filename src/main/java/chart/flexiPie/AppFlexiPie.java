@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 
-public class AppPies extends Application 
+public class AppFlexiPie extends Application 
 {
 
    public static void main(final String[] args) {   launch(args);   }
@@ -20,18 +20,19 @@ public class AppPies extends Application
     {
 //    	FlexiPieController ctl = new FlexiPieController();
 //    	VBox content = ctl.createContent();
-		String name = "chart/flexiPie/FlexiPie.fxml";
-		URL res = AppPies.class.getClassLoader().getResource(name);
+ 		String name = "chart/flexiPie/FlexiPie.fxml";
+		URL res = AppFlexiPie.class.getClassLoader().getResource(name);
 		try
 		{
-		    String s = AppPies.class.getResource("chart.css").toExternalForm();
+		    String s = AppFlexiPie.class.getResource("chart.css").toExternalForm();
 			AnchorPane flexiPieRoot = (AnchorPane) FXMLLoader.load(res);
-			Scene scene = new Scene(flexiPieRoot, 1000, 800);
+			Scene scene = new Scene(flexiPieRoot, 900, 600);
 		    scene.getStylesheets().add(s);	    
 		    stage.setScene(scene);
 		    stage.show();
 		}
-		catch (Exception e) {}
+		catch (Exception e) {e.printStackTrace();}
+		
 		
     }
 

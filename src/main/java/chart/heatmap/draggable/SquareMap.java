@@ -65,7 +65,7 @@ public class SquareMap extends HashMap<String, HashMap<String, Double>> {
 		boolean swapped = true;
 		int ct = 0;
 		int swaps = 0;
-		while (ct < 1 && swapped) {
+		while (ct < 10 && swapped) {
 			swapped = false;
 			for (int row = 2; row < len; row++) {
 				double upper = compare(row, row - 2);
@@ -86,7 +86,6 @@ public class SquareMap extends HashMap<String, HashMap<String, Double>> {
 			}
 			makeRows();
 			fillSquares();
-			// refresh();
 			ct++;
 		}
 		System.out.println(swaps + " swaps ");

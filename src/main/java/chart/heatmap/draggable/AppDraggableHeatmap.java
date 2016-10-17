@@ -25,6 +25,7 @@ public class AppDraggableHeatmap extends Application {
 	    	if (event.getCode() == KeyCode.TAB)
 	    	{
 	    		squareMap.selfSwap();
+	    	    topGroup.requestFocus();
 	    	}
 	    	else
 	    	{
@@ -43,7 +44,7 @@ public class AppDraggableHeatmap extends Application {
     SquareMap squareMap;
 	int mode= 0;
 	private Group generateSquareMap() {
-		int nNodes = 100;
+		int nNodes = 50;
 		List<NodeRecord> nodes = new ArrayList<NodeRecord>();
 		for (int i=0; i<nNodes; i++)
 			nodes.add(new NodeRecord("00"+i, "A"+(i+1), "N"+i, "Unknown Table Node"));

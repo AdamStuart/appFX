@@ -1,25 +1,27 @@
 package chart.flexiPie;
 
-import java.util.List;
+import java.lang.reflect.Field;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.css.CssMetaData;
-import javafx.css.Styleable;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.util.Duration;
 
 
 public class PieModel 
@@ -33,7 +35,7 @@ public class PieModel
 	private Line connection;
 	double xMouse,yMouse;
 	boolean verbose = false;
-	
+	DoubleProperty pieSize = new SimpleDoubleProperty(800);
 	//---------------------------------------------------------------------------------
 	public PieModel(double cX, double cY, double rX, double rY, FlexiPieController parent)
 	{
@@ -45,42 +47,23 @@ public class PieModel
 		controller = parent;
 		double total = 0;
 		wedgeList = FXCollections.observableArrayList();
-		
-		ObservableList<PieChart.Data> data = FXCollections.observableArrayList();
-		for (int i=0; i< animals.length; i++)
-			data.add(new PieChart.Data("", 1));
-		
-		PieChart dummy = new PieChart();
-		dummy.getData().add(new PieChart.Data("", 1));
-		dummy.getData().add(new PieChart.Data("", 1));
-		dummy.getData().add(new PieChart.Data("", 1));
-		dummy.getData().add(new PieChart.Data("", 1));
-		dummy.getData().add(new PieChart.Data("", 1));
-		PieChart.Data d = dummy.getData().get(0);
-		Object col = d.getNode().getProperties().get("default-color0");
-		Node node = d.getNode();
-		if (node instanceof Region)
-		{
-			Region rgn = (Region) node;
-//			Color c = rgn.get
-			
-		}
-		List<CssMetaData<? extends Styleable, ?>> list = dummy.getCssMetaData();
-		Pane p = controller.getContainer();
-//		p.getStylesheets().get(index)
-		for (int i =0; i< animals.length; i++)		total += sizes[i];			//stream()
-		for (int i =0; i< animals.length; i++)
+		int ct = names.length;
+
+		for (int i =0; i< ct; i++)		total += sizes[i];			//sizes.stream().collect();
+		pieSize.set(total);
+
+		for (int i =0; i< ct; i++)
 		{
 			Color color = colors[i];
-			double degrees = 360 * (	sizes[i] / total);
-			wedgeList.add(new Wedge(animals[i], color, degrees, this, i));
+			double portion = 360. * sizes[i] / total;
+			wedgeList.add(new Wedge(names[i], color, portion, this, i, pieSize));
 
 		}
 	}
 	
-	String[] animals = new String[]{"cats", "dogs", "mice", "rabbits", "apes", "humans"};
-	Color[] colors = new Color[]{Color.GREEN, Color.BLUE, Color.BROWN, Color.PURPLE, Color.BEIGE, Color.CYAN};
-	double[] sizes = new double[]{3, 4, 3.2, 3,8, 4.2};
+	String[] names = new String[]{"Eva", "AlexP", "Kristina", "AlexW", "Sean", "Stacia", "Reuben", "Justin", "Anders", "Adam"};
+	Color[] colors = new Color[]{Color.GREEN, Color.BLUE, Color.BROWN, Color.PURPLE,  Color.GOLDENROD,  Color.MEDIUMORCHID,  Color.BEIGE, Color.CYAN,  Color.FIREBRICK, Color.AQUAMARINE};
+	double[] sizes = new double[]{100, 100, 100, 100, 100, 100, 100, 100, 100, 100};
 	
 	//---------------------------------------------------------------------------------
 	public Wedge find(String s)
@@ -248,7 +231,8 @@ public class PieModel
 		
 		for (Wedge w : wedgeList)
 		{
-			Arc arc = new Arc(centerX, centerY,  radiusX, radiusY,  startAngle, w.getLength());
+			double len = w.getLength();
+			Arc arc = new Arc(centerX, centerY,  radiusX, radiusY,  startAngle, len);
 			arc.setFill(w.getColor());			// TODO use CSS styles
 			
 			arc.setStroke(Color.BLACK);
@@ -257,14 +241,35 @@ public class PieModel
 			arc.getStyleClass().setAll("chart-pie", "data" + w.getIndex(),
                             "default-color" + w.getIndex() % 8);
 
-			startAngle += w.getLength();
+			startAngle += len;
 			arc.setOnMouseClicked(new EventHandler<MouseEvent>() {		@Override public void handle(MouseEvent event) {	select(w);	}	});
+			Tooltip tip = new Tooltip("");
+			Tooltip.install(arc, tip);
+	        tip.setText(w.getName());
+	        hackTooltipStartTiming(tip);
 			g.getChildren().add(arc);
 			w.setArc(arc);
 		}
 		return g;
 
 	}
+	// http://stackoverflow.com/questions/26854301/control-javafx-tooltip-delay/27739605#27739605
+	public static void hackTooltipStartTiming(Tooltip tooltip) {
+	    try {
+	        Field fieldBehavior = tooltip.getClass().getDeclaredField("BEHAVIOR");
+	        fieldBehavior.setAccessible(true);
+	        Object objBehavior = fieldBehavior.get(tooltip);
+
+	        Field fieldTimer = objBehavior.getClass().getDeclaredField("activationTimer");
+	        fieldTimer.setAccessible(true);
+	        Timeline objTimer = (Timeline) fieldTimer.get(objBehavior);
+
+	        objTimer.getKeyFrames().clear();
+	        objTimer.getKeyFrames().add(new KeyFrame(new Duration(10)));
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}	
 	//---------------------------------------------------------------------------------
 	private Wedge activeWedge;
 
@@ -286,22 +291,21 @@ public class PieModel
 		
 	}
 	//---------------------------------------------------------------------------------
-	public void grabPalette(PieChart other) 
-	{
-		if (other == null) return;
-		int i=0;
-		for (Wedge w : wedgeList)
-		{
-			Node nod = other.getData().get(i++).getNode();
-			
-			w.getArc().setFill(Color.BURLYWOOD);;
-		}
-		
-	}
+//	public void grabPalette(PieChart other) 
+//	{
+//		if (other == null) return;
+//		int i=0;
+//		for (Wedge w : wedgeList)
+//		{
+//			Node nod = other.getData().get(i++).getNode();
+//			
+//			w.getArc().setFill(Color.BURLYWOOD);;
+//		}
+//	}
 	//---------------------------------------------------------------------------------
 	public TreeItem<Wedge> createTreeItems() 
 	{
-		TreeItem<Wedge> root = new TreeItem<Wedge>(new Wedge("Vertibrates", Color.ALICEBLUE, 360, null, -1));
+		TreeItem<Wedge> root = new TreeItem<Wedge>(new Wedge("Bioinformatics Core", Color.WHITE, 360, null, -1, pieSize));
 		for (Wedge w : wedgeList)
 			root.getChildren().add(new TreeItem<Wedge>(w));
 		return root;

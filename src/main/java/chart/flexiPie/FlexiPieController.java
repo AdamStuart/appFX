@@ -1,34 +1,37 @@
 package chart.flexiPie;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
-import javafx.css.CssMetaData;
-import javafx.css.Styleable;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
+import table.binder.Rect;
 
 public class FlexiPieController implements Initializable{
 	
 	@FXML Pane container;
 	public Pane getContainer()	{ return container;	}
 	@FXML TreeTableView<TreeItem> table;
-	@FXML TreeTableColumn<TreeTableView, Wedge>  colorColumn;
+	@FXML TreeTableColumn<TreeTableView, Wedge>  firstColumn;
+	@FXML TreeTableColumn<TreeTableView, Color>  colorColumn;
 	@FXML TreeTableColumn<TreeTableView, Wedge>  categoryColumn;
 	@FXML TreeTableColumn<TreeTableView, Double>  portionColumn;
 //	private Label label;
@@ -42,13 +45,10 @@ public class FlexiPieController implements Initializable{
 		double centerX =  rX;
 		double centerY = rY;
 		model = new PieModel(centerX, centerY, rX, rY, this);
-		Group g = model.buildPie();
-		
-		container.getChildren().add(g);
-		container.getChildren().add(model.createHandle());
-		ObservableMap<Object, Object> props = container.getProperties();
-		ObservableList<String> styles = container.getStylesheets();
-		List<CssMetaData<? extends Styleable, ?>> list = 	PieChart.getClassCssMetaData();
+		container.getChildren().addAll(model.buildPie(), model.createHandle());
+//		ObservableMap<Object, Object> props = container.getProperties();
+//		ObservableList<String> styles = container.getStylesheets();
+//		List<CssMetaData<? extends Styleable, ?>> list = 	PieChart.getClassCssMetaData();
 //		String p = props.get("default-color").toString();
 //		label = new Label("0.0");
 //		container.getChildren().add(label);
@@ -61,10 +61,49 @@ public class FlexiPieController implements Initializable{
 		TreeItem root = model.createTreeItems();
 		table.setRoot(root);
 		root.setExpanded(true);
+		colorColumn.setCellValueFactory(new TreeItemPropertyValueFactory("color"));  
 		categoryColumn.setCellValueFactory(new TreeItemPropertyValueFactory("name"));  
-		portionColumn.setCellValueFactory(new TreeItemPropertyValueFactory("length"));  
+		portionColumn.setCellValueFactory(new TreeItemPropertyValueFactory("scaled"));  
 		portionColumn.setCellFactory( p ->	{	return new TwoDigitCell();	});
-		
+
+		// color popup
+//		TableColumn<Wedge, Color> colorCol = cols[1];
+		colorColumn.setEditable(true);
+//		colorColumn.setCellValueFactory(new PropertyValueFactory<>("color"));
+		colorColumn.setCellFactory((t) -> {    return new TreeTableCell<TreeTableView, Color>(){
+            private ColorPicker colorPicker;
+            private ColorPicker createPicker()
+            {
+                colorPicker = new ColorPicker();
+                colorPicker.getStyleClass().add("button");
+                colorPicker.setPromptText("");
+                colorPicker.setOnAction(evt -> {
+                		int idx = getTreeTableRow().getIndex();
+                        ColorPicker cp = (ColorPicker)evt.getSource();
+                        Color cw = (Color)cp.getValue();
+                        cw = cp.getValue();
+//                        select(getTreeTableRow().getIndex());
+//        				int idx = getSelectedIndex();
+//        				if (idx >= 0)
+//        					table.getItems().get(idx).setColor(cw);
+                });
+                return colorPicker;
+            }
+
+            @Override  protected void updateItem(Color value, boolean empty) 
+            {                      
+                super.updateItem(value, empty);
+                if(empty){   setGraphic(null);  return;}		//http://stackoverflow.com/questions/25532568/javafx-tableview-delete-issue
+                if(colorPicker == null){
+                    colorPicker = createPicker();
+                    colorPicker.setUserData(value);
+                }
+                colorPicker.setValue(value);
+                setGraphic(colorPicker);
+            }
+        	};
+	    });
+	
 	}
 	public void setLabel(String s)	{ /*label.setText(s);*/	}
 	public void setLabel(double d)	{		setLabel(String.format("%.2f", d));	}
@@ -74,6 +113,7 @@ public class FlexiPieController implements Initializable{
 		@Override protected void updateItem(Double item, boolean empty)
 		{
 			super.updateItem(item, empty);
+			setTextAlignment(TextAlignment.RIGHT);
 			setText(empty ? "" : String.format("%.2f", item));
 		}	
 	}

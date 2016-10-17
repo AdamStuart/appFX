@@ -16,6 +16,9 @@
 .text-area .scroll-pane .content{
     -fx-background-color: transparent;
 }
+ .color-picker .color-picker-label .text {
+visibility: false;
+}
 
 
 .drawpane

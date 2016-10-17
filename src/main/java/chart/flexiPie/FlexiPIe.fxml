@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chart.flexiPie.FlexiPieController">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chart.flexiPie.FlexiPieController">
    <children>
-      <HBox layoutX="40.0" layoutY="40.0" spacing="50.0">
+      <HBox layoutX="40.0" layoutY="6.0" prefHeight="442.0" prefWidth="699.0" spacing="50.0">
          <children>
-            <TreeTableView fx:id="table" maxHeight="250.0" maxWidth="-Infinity" minHeight="250.0" minWidth="-Infinity" prefHeight="250.0" prefWidth="256.0" HBox.hgrow="NEVER">
+            <TreeTableView fx:id="table" maxHeight="439.0" maxWidth="-Infinity" minHeight="350.0" minWidth="-Infinity" prefHeight="439.0" prefWidth="349.0" HBox.hgrow="NEVER">
               <columns>
-                  <TreeTableColumn fx:id="colorColumn" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
+                  <TreeTableColumn fx:id="firstColumn" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" text="*" />
+                  <TreeTableColumn fx:id="colorColumn" maxWidth="40.0" prefWidth="40.0" text="Color" />
                 <TreeTableColumn fx:id="categoryColumn" prefWidth="120.0" text="Category" />
                 <TreeTableColumn fx:id="portionColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Portion" />
               </columns>
             </TreeTableView>
-            <Pane fx:id="container" layoutX="40.0" layoutY="40.0" prefHeight="320.0" prefWidth="320.0" />
+            <Pane fx:id="container" layoutX="40.0" layoutY="40.0" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="300.0" prefHeight="300.0" prefWidth="300.0" />
          </children>
       </HBox>
    </children>
