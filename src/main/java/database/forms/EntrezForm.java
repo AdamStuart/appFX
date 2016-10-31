@@ -190,7 +190,12 @@ public class EntrezForm extends VBox
 	{
 		String summary = StringUtil.callURL(summaryReq, false);		// TODO put in task
 		System.out.println(summary);
-		Document summaryDoc = FileUtil.convertStringToDocument(summary);
+		xmlToSummary(summary, null, getItems());
+	}
+	
+	static public void xmlToSummary(String xmlResult, StringBuilder builder, List<EntrezRecord> items)
+	{
+		Document summaryDoc = FileUtil.convertStringToDocument(xmlResult);
 		if (summaryDoc != null)
 		{
 			NodeList sums = summaryDoc.getChildNodes();
@@ -200,7 +205,7 @@ public class EntrezForm extends VBox
 				org.w3c.dom.Node aSum = sums.item(m);
 				if (aSum.getNodeName().equals("eSummaryResult"))
 				{
-					getItems().clear();
+					if (items != null) items.clear();
 					NodeList docSum = aSum.getChildNodes();
 					for (int n=0; n< docSum.getLength(); n++)
 					{
@@ -209,7 +214,10 @@ public class EntrezForm extends VBox
 						{
 							EntrezRecord rec = new EntrezRecord((Element)e);
 							System.out.println(rec.toString());
-							getItems().add(rec);
+							if (builder != null)
+								builder.append(rec.toString());
+							if (items != null)
+								items.add(rec);
 						}
 					}
 				}

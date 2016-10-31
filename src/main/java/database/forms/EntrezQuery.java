@@ -20,6 +20,14 @@ public class EntrezQuery
 	private LocalDateTime lastUsed;
 	private int useCount;
 
+	public static String getPubMedId(String id)
+	{
+		String raw = EntrezForm.EUTILS + "efetch.fcgi?db=pubmed&id=" + id + "&retmode=text&rettype=abstract";
+		String result = StringUtil.callURL(raw, true);
+		
+		return result;
+	}
+	
 	public EntrezQuery(String s)
 	{
 		name.set(s);
