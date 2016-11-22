@@ -215,18 +215,10 @@ public class ResizableBox extends DraggableBox {
      */
     private void processMousePosition(final MouseEvent event) {
 
-        if (event.isPrimaryButtonDown()) {
-            return;
-        }
-
+        if (event.isPrimaryButtonDown())            return;
+       
         final RectangleMouseRegion mouseRegion = getMouseRegion(event.getX(), event.getY());
-
-        if (!mouseRegion.equals(RectangleMouseRegion.INSIDE)) {
-            mouseInPositionForResize = true;
-        } else {
-            mouseInPositionForResize = false;
-        }
-
+        mouseInPositionForResize = !mouseRegion.equals(RectangleMouseRegion.INSIDE);
         updateCursor(mouseRegion);
     }
 

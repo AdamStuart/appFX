@@ -294,25 +294,25 @@ public class BridgeDbController implements Initializable
 
 	//--------------------------------------------------------------------------------
 	// builds a string of all targets supporting this source
-	
-	public String targetsForRec(DataSourceRecord dataSource, String species) {
-		String systemSrc = dataSource.getSystem();
-		StringBuilder builder = new StringBuilder();		//systemSrc + "\t"
-		for (String targ : speciesTargets)
-		{
-			String targSys = nameToSystemLookup.get(targ);
-			if (targSys == null) continue;
-			String sys = dataSource.getSystem();
-//			if (targSys.equals(systemSrc)) continue;		if this is removed its harder to compare the targets for any given source
-			String compatReq = "isMappingSupported/" + systemSrc + "/" + sys;
-			String response = bridgeDbcall(compatReq);
-			boolean supported = response.toLowerCase().contains("true");
-			if (supported) 
-				builder.append(targSys + " ");
-		}
-		System.out.println(systemSrc + " -> " + builder.toString());
-		return builder.toString();
-	}
+//	
+//	public String targetsForRec(DataSourceRecord dataSource, String species) {
+//		String systemSrc = dataSource.getSystem();
+//		StringBuilder builder = new StringBuilder();		//systemSrc + "\t"
+//		for (String targ : speciesTargets)
+//		{
+//			String targSys = nameToSystemLookup.get(targ);
+//			if (targSys == null) continue;
+//			String sys = dataSource.getSystem();
+////			if (targSys.equals(systemSrc)) continue;		if this is removed its harder to compare the targets for any given source
+//			String compatReq = "isMappingSupported/" + systemSrc + "/" + sys;
+//			String response = bridgeDbcall(compatReq);
+//			boolean supported = response.toLowerCase().contains("true");
+//			if (supported) 
+//				builder.append(targSys + " ");
+//		}
+//		System.out.println(systemSrc + " -> " + builder.toString());
+//		return builder.toString();
+//	}
 	//--------------------------------------------------------------------------------
 	private String bridgeDbcall(String command)
 	{
@@ -427,7 +427,7 @@ public class BridgeDbController implements Initializable
 		int idx = s.indexOf(" (");
 		return s.substring(idx, s.indexOf(")"));
 	} 
-	//--------------------------------------------------------------------------------
+//	//--------------------------------------------------------------------------------
 //	@FXML private void doAttributeSet()	{	bridgeDBcall("attributeSet");	}
 //	private void doSources()		{		readDataSources(getSpecies());			}			// bridgeDBcall("sourceDataSources");
 //	private void doTargets()		{		bridgeDBcall("targetDataSources");	}

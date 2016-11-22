@@ -720,6 +720,6 @@ public class PublishController implements Initializable
 	@FXML void doBatch()	{	System.out.println("doBatch: ");	}
 	@FXML void doMonitor()	{	System.out.println("doMonitor: ");	}
 	@FXML void doConfigure(){  	System.out.println("doConfigure: ");		}
-	public Scene getScene()	{		return top.getScene();	}
+	public Scene getScene()	{	return top.getScene();	}
 
 }

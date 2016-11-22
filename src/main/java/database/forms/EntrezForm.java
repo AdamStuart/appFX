@@ -226,7 +226,7 @@ public class EntrezForm extends VBox
 	}
 
 	//-----------------------------------------------------------------
-	public static String EUTILS = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
+	public static String EUTILS = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
 
 
 	public String extract()		// for saving, we don't want the full url

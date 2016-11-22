@@ -94,13 +94,13 @@
                               <TextArea fx:id="inputBridgeDB" layoutX="22.0" layoutY="99.0" prefHeight="459.0" prefWidth="210.0" />
                               <Label layoutX="43.0" layoutY="83.0" text="Identifiers to Map" />
                               <HBox layoutX="280.0" layoutY="84.0" prefHeight="32.0" prefWidth="414.0" spacing="8.0" />
-                              <Button fx:id="attributes" layoutX="14.0" layoutY="559.0" mnemonicParsing="false" onAction="#doAttributeSet" prefHeight="32.0" prefWidth="113.0" text="Attributes">
+                              <Button fx:id="attributes" layoutX="14.0" layoutY="559.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="113.0" text="Attributes">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Button>
                               <TextArea fx:id="outputBridgeDB" layoutX="27.0" layoutY="596.0" prefHeight="343.0" prefWidth="770.0" promptText="Output From Queries" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="596.0" />
-                              <Button fx:id="bridgeDB" layoutX="132.0" layoutY="559.0" mnemonicParsing="false" onAction="#doBridgeDB" prefHeight="32.0" prefWidth="112.0" text="Search">
+                              <Button fx:id="bridgeDB" layoutX="132.0" layoutY="559.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="112.0" text="Search">
                                  <font>
                                     <Font size="16.0" />
                                  </font>

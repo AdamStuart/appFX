@@ -28,7 +28,7 @@ public class DraggableBox extends StackPane {
 
     private static final double DEFAULT_ALIGNMENT_THRESHOLD = 5;
 
-    // Safety mechanism for exceptional case when 'drag' events occur without a 'pressed' event occuring first.
+    // Safety mechanism for exceptional case when 'drag' events occur without a 'pressed' event occurring first.
     protected boolean dragActive;
 
     protected double lastLayoutX;

@@ -237,10 +237,7 @@ public class TreeItemX<T> extends TreeItem<T> implements ChangeListener<Number> 
 					Object item = items.get(index);
 					
 					ClipboardContent content = new ClipboardContent();				/* Put a string on a dragboard */
-//					if (item instanceof Person)
-//						content.put(dataFormat, (item != null) ? item.toString() + " | " + ((Person)item).getImageUrl() : "XData");
-//					else
-						content.put(DataFormat.PLAIN_TEXT, (item != null) ? item.toString() : "NoData??");
+					content.put(DataFormat.PLAIN_TEXT, (item != null) ? item.toString() : "NoData??");
 					db.setContent(content);
 //					event.consume();
 					}
