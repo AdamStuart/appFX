@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javafx.beans.property.SimpleStringProperty;
-import model.Range;
+import model.stat.Range;
 
 public class NodeRecord extends AbstractTableRow
 {

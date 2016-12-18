@@ -6,12 +6,6 @@ package diagrams.grapheditor.core.skins.defaults;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.css.PseudoClass;
-import javafx.geometry.Point2D;
-import javafx.geometry.Side;
-import javafx.scene.Node;
-import javafx.scene.shape.Rectangle;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +17,11 @@ import diagrams.grapheditor.model.GConnector;
 import diagrams.grapheditor.model.GNode;
 import diagrams.grapheditor.utils.GeometryUtils;
 import diagrams.grapheditor.utils.ResizableBox;
+import javafx.css.PseudoClass;
+import javafx.geometry.Point2D;
+import javafx.geometry.Side;
+import javafx.scene.Node;
+import javafx.scene.shape.Rectangle;
 
 /**
  * The default node skin. Uses a {@link ResizableBox}.

@@ -2,11 +2,17 @@
  */
 package diagrams.grapheditor.model.util;
 
-import diagrams.grapheditor.model.*;
-
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.util.Switch;
+
+import diagrams.grapheditor.model.GConnectable;
+import diagrams.grapheditor.model.GConnection;
+import diagrams.grapheditor.model.GConnector;
+import diagrams.grapheditor.model.GJoint;
+import diagrams.grapheditor.model.GModel;
+import diagrams.grapheditor.model.GNode;
+import diagrams.grapheditor.model.GraphPackage;
 
 /**
  * <!-- begin-user-doc -->

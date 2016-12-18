@@ -18,6 +18,7 @@ package container.gmapsfx.javascript;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import netscape.javascript.JSObject;
 
 /** JavascriptObject implementation of an array.

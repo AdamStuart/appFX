@@ -33,14 +33,11 @@ package chart.usMap;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
-import javax.xml.bind.annotation.XmlTransient;
 
 public class USMapRegion implements Serializable {
     private static final long serialVersionUID = 1L;

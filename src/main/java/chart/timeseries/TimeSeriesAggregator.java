@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import javafx.scene.chart.XYChart;
-import model.AggregationLevel;
+import model.stat.AggregationLevel;
 
 public class TimeSeriesAggregator
 {

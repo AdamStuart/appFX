@@ -15,7 +15,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.util.Pair;
 
 //new FindDialog()).showAndWait();
 // TODO  currently there is no information returned !!

@@ -8,8 +8,9 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
-import model.Unit;
-import model.ValueUnitRecord;
+import model.stat.Unit;
+import model.stat.ValueUnitRecord;
+import table.binder.tablecellHelpers.MyColorable;
 
 /**
  * This is the model class for Binder application, as opposed to a geometric object
@@ -18,7 +19,7 @@ import model.ValueUnitRecord;
  * calculation logic migrated from BindingsController, AST 2/19/2015.
  * refactored to use ValueUnitRecords to encapsulate units
  */
-public class Rect
+public class Rect implements MyColorable
 {
 //	public static final Rect DEFAULT = new Rect(1, Unit.IN, 1, Unit.IN, Unit.IN);
 	private final SimpleObjectProperty<ValueUnitRecord> width = new SimpleObjectProperty<ValueUnitRecord>(new ValueUnitRecord(1., Unit.IN));

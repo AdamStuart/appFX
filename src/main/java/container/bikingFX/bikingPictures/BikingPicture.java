@@ -17,10 +17,12 @@ package container.bikingFX.bikingPictures;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javafx.beans.property.Property;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+
 import javax.json.JsonObject;
 import javax.json.JsonValue;
+
+import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 
 /**
  * Represents a biking picture.

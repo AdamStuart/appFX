@@ -7,12 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javafx.geometry.Point2D;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.layout.Region;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
 import diagrams.grapheditor.GConnectionSkin;
 import diagrams.grapheditor.GJointSkin;
 import diagrams.grapheditor.GNodeSkin;
@@ -24,6 +18,12 @@ import diagrams.grapheditor.core.skins.defaults.utils.RectangularConnectionUtils
 import diagrams.grapheditor.model.GConnection;
 import diagrams.grapheditor.model.GNode;
 import diagrams.grapheditor.utils.GeometryUtils;
+import javafx.geometry.Point2D;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.layout.Region;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 
 /**
  * A simple rectangular connection skin.

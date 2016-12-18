@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javafx.geometry.Point2D;
 import diagrams.grapheditor.SkinLookup;
 import diagrams.grapheditor.core.DefaultGraphEditor;
 import diagrams.grapheditor.model.GConnection;
 import diagrams.grapheditor.model.GModel;
 import diagrams.grapheditor.utils.GeometryUtils;
+import javafx.geometry.Point2D;
 
 /**
  * Responsible for telling connection skins to draw themselves.

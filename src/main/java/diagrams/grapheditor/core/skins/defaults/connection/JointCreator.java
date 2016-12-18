@@ -7,11 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javafx.geometry.Point2D;
-import javafx.scene.Group;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Rectangle;
 import diagrams.grapheditor.GJointSkin;
 import diagrams.grapheditor.GraphEditor;
 import diagrams.grapheditor.SkinLookup;
@@ -20,6 +15,11 @@ import diagrams.grapheditor.model.GConnection;
 import diagrams.grapheditor.model.GJoint;
 import diagrams.grapheditor.model.GraphFactory;
 import diagrams.grapheditor.utils.GeometryUtils;
+import javafx.geometry.Point2D;
+import javafx.scene.Group;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Rectangle;
 
 /**
  * Responsible for creating joints when a click + drag gesture occurs on a connection.

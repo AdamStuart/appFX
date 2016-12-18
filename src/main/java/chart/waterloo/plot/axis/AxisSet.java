@@ -21,6 +21,9 @@
  */
 package chart.waterloo.plot.axis;
 
+import chart.waterloo.plot.Chart;
+import chart.waterloo.transforms.AbstractTransform;
+import chart.waterloo.transforms.NOPTransform;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
@@ -28,9 +31,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-import chart.waterloo.plot.Chart;
-import chart.waterloo.transforms.AbstractTransform;
-import chart.waterloo.transforms.NOPTransform;
 
 /**
  * AxisSet class.

@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 

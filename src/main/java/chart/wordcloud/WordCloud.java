@@ -4,19 +4,13 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
 
 import chart.wordcloud.bg.Background;
 import chart.wordcloud.bg.RectangleBackground;

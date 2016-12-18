@@ -1,6 +1,6 @@
 package chart.wordcloud.font;
 
-import java.awt.*;
+import java.awt.Font;
 
 /**
  * Created by kenny on 7/3/14.

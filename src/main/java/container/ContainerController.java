@@ -42,6 +42,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import model.bio.OntologyTerm;
 import util.DialogUtil;
 import util.FileUtil;
 import util.StringUtil;
@@ -55,15 +56,15 @@ public class ContainerController implements Initializable
 	@FXML private ListView<File> list;
 	@FXML private AnchorPane anchor;
 	@FXML private TreeTableView<org.w3c.dom.Node> xmlTree;
-	@FXML private TreeTableView<Onterm> ontologytree;
+	@FXML private TreeTableView<OntologyTerm> ontologytree;
 	@FXML private VBox fileTreeContainer;
 	@FXML private BorderPane container;
 	@FXML private VBox fileListContainer;
 	@FXML TreeTableColumn<TreeTableView<File>, String>  col0;
 	@FXML TreeTableColumn<TreeTableView<File>, String>  col1;
-	@FXML TreeTableColumn<TreeTableView<Onterm>, String>  colId;
-	@FXML TreeTableColumn<TreeTableView<Onterm>, String>  colName;
-	@FXML TreeTableColumn<TreeTableView<Onterm>, String>  colDef;
+	@FXML TreeTableColumn<TreeTableView<OntologyTerm>, String>  colId;
+	@FXML TreeTableColumn<TreeTableView<OntologyTerm>, String>  colName;
+	@FXML TreeTableColumn<TreeTableView<OntologyTerm>, String>  colDef;
 	private Label description;
 	private XMLFileTree fileTree;
 	@FXML TabPane tocTabPane;
@@ -107,7 +108,7 @@ public class ContainerController implements Initializable
 		colDef.setCellValueFactory(new TreeItemPropertyValueFactory("def"));  
 		
 		colName.setCellFactory(col -> {
-	        TreeTableCell<TreeTableView<Onterm>, String> cell = new TreeTableCell<TreeTableView<Onterm>, String>() 
+	        TreeTableCell<TreeTableView<OntologyTerm>, String> cell = new TreeTableCell<TreeTableView<OntologyTerm>, String>() 
 	        {
 	            @Override
 	            public void updateItem(String item, boolean empty) {
@@ -117,12 +118,12 @@ public class ContainerController implements Initializable
 	                 else {
 	                    setText(item);
 	                    int index = getTreeTableRow().getIndex();
-	                    TreeItem<TreeTableView<Onterm>> row = getTreeTableView().getTreeItem(index);
+	                    TreeItem<TreeTableView<OntologyTerm>> row = getTreeTableView().getTreeItem(index);
 //	                    
 	                    Object term = row.getValue();
-	                    if (term instanceof Onterm)
+	                    if (term instanceof OntologyTerm)
 	                    {
-	                    	Onterm t = (Onterm) term;
+	                    	OntologyTerm t = (OntologyTerm) term;
 		                    setTooltip(new Tooltip(t.getDescriptor()));		//term.getDescriptor())
 	                    }
 	                }
@@ -191,12 +192,17 @@ public class ContainerController implements Initializable
 //			formats.forEach(a -> System.out.println("getContentTypes " + a.toString()));
 			anchor.setEffect(null);
 			anchor.setBackground(Backgrounds.white);
-			if (db.hasFiles())  addFiles(e);
+			if (db.hasFiles())  
+			try
+			{
+					addFiles(e);
+			}
+			catch (Exception ex) {}
 		});
 	}
 	//--------------------------------------------------------------------------------
 
-	void addFiles(DragEvent ev)
+	void addFiles(DragEvent ev) throws Exception
 	{
 		Dragboard db = ev.getDragboard();
 		double x = ev.getX();
@@ -278,7 +284,7 @@ public class ContainerController implements Initializable
 			{
 				line = lines.get(index++);
 				term = line.trim();
-				Onterm onterm = new Onterm(term.substring(3).trim());
+				OntologyTerm onterm = new OntologyTerm(term.substring(3).trim());
 				while (term != null)
 				{
 					line = lines.get(index++);

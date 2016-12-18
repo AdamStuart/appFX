@@ -5,9 +5,9 @@ package diagrams.grapheditor.core.skins.defaults.connection.segment;
 
 import java.util.List;
 
+import diagrams.grapheditor.utils.GeometryUtils;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.MoveTo;
-import diagrams.grapheditor.utils.GeometryUtils;
 
 /**
  * A connection segment that draws a gap at points where it intersects other connections.

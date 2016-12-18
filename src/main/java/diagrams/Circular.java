@@ -2,11 +2,13 @@ package diagrams;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.scene.*;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.*;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 import javafx.stage.Stage;
 
 // java 8 code.

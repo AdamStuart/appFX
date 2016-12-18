@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import model.CSVTableData;
+import model.dao.CSVTableData;
 import util.FileUtil;
 import util.StringUtil;
 

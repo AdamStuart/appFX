@@ -3,8 +3,6 @@ package table.networkTable;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import game.bookclub.AppBookClub;
-import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ScrollPane;

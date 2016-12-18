@@ -158,35 +158,40 @@ public class EDLParsingHelper
 		
 		objectFile = findFile(topLevelFiles, f.getName());
 		if (objectFile == null) return;
-		XMLTreeItem root = FileUtil.getXMLtree(objectFile, null);
-		xmlTree.setRoot(root);
-		XMLTreeItem obj = root.getChild("Obj");
-		if (obj != null)
+		try
 		{
-			XMLTreeItem history = obj.getChild( "MethodHistory");
-			if (history != null)
+			XMLTreeItem root = FileUtil.getXMLtree(objectFile, null);
+			xmlTree.setRoot(root);
+			XMLTreeItem obj = root.getChild("Obj");
+			if (obj != null)
 			{
-				List<TreeItem<org.w3c.dom.Node>> steps = history.getChildren();
-				int siz = steps.size();
-				for (int i=0; i<siz; i++)
+				XMLTreeItem history = obj.getChild( "MethodHistory");
+				if (history != null)
 				{
-					TreeItem<org.w3c.dom.Node> step = steps.get(i);
-					org.w3c.dom.Node attr = null;
-					if (step != null) 
-						attr = step.getValue().getAttributes().getNamedItem("UID");
-					if (attr != null) 
+					List<TreeItem<org.w3c.dom.Node>> steps = history.getChildren();
+					int siz = steps.size();
+					for (int i=0; i<siz; i++)
 					{
-						String id = attr.getTextContent();
-						File methodFile = findFile(topLevelFiles, id);
-						if (methodFile != null)
+						TreeItem<org.w3c.dom.Node> step = steps.get(i);
+						org.w3c.dom.Node attr = null;
+						if (step != null) 
+							attr = step.getValue().getAttributes().getNamedItem("UID");
+						if (attr != null) 
 						{
-							XMLTreeItem methodroot = FileUtil.getXMLtree(methodFile);
-							step.getChildren().addAll(methodroot.getChildren().get(0).getChildren());
+							String id = attr.getTextContent();
+							File methodFile = findFile(topLevelFiles, id);
+							if (methodFile != null)
+							{
+								XMLTreeItem methodroot = FileUtil.getXMLtree(methodFile);
+								step.getChildren().addAll(methodroot.getChildren().get(0).getChildren());
+							}
 						}
 					}
 				}
 			}
+
 		}
+		catch (Exception e) {}
 			
 		for (File child : f.listFiles())
 		{

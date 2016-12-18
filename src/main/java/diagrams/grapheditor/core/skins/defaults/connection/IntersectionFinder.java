@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import diagrams.grapheditor.SkinLookup;
 import diagrams.grapheditor.core.skins.defaults.utils.RectangularConnectionUtils;
 import diagrams.grapheditor.model.GConnection;
 import diagrams.grapheditor.utils.GeometryUtils;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
 
 /**
  * Responsible for finding the intersection points between a connection and other connections.

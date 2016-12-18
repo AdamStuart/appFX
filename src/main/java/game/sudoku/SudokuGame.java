@@ -3,7 +3,6 @@ package game.sudoku;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Observable;
 
 /**
  * This class represents a Sudoku game. It contains the solution, the user

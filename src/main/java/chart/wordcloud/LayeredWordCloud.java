@@ -3,13 +3,9 @@ package chart.wordcloud;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
 
 import chart.wordcloud.bg.Background;
 import chart.wordcloud.collide.CollisionMode;

@@ -21,12 +21,9 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonReader;
-import javax.json.JsonValue;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

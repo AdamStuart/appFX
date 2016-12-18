@@ -5,18 +5,14 @@ package image;
  * All rights reserved. Use is subject to license terms.
  */
 import javafx.application.Application;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.scene.Node;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.stage.Stage;
  
 /**
  * A sample that demonstrates the use of double properties and Image Operators.

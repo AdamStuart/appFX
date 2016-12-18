@@ -3,13 +3,6 @@
  */
 package diagrams.grapheditor.core.skins.defaults;
 
-import javafx.css.PseudoClass;
-import javafx.scene.Node;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
-import javafx.util.Duration;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +13,12 @@ import diagrams.grapheditor.core.skins.defaults.utils.ColorAnimationUtils;
 import diagrams.grapheditor.core.skins.defaults.utils.DefaultConnectorTypes;
 import diagrams.grapheditor.core.utils.LogMessages;
 import diagrams.grapheditor.model.GConnector;
+import javafx.css.PseudoClass;
+import javafx.scene.Node;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+import javafx.util.Duration;
 
 /**
  * The default connector skin.

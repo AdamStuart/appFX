@@ -50,7 +50,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
-import model.OverlaidScatterChart;
+import model.chart.OverlaidScatterChart;
 
 //https://gist.github.com/jewelsea/5072743
 public class OffScreenOffThreadCharts {
@@ -330,8 +330,8 @@ public class OffScreenOffThreadCharts {
   
   //----------------------------------------------------------------------------------------
   class SaveChartsTask<Void> extends Task {
-    private final BlockingQueue<Parent>        charts         = new ArrayBlockingQueue(10);
-    private final BlockingQueue<Image> images = new ArrayBlockingQueue(10);
+    private final BlockingQueue<Parent>     charts = new ArrayBlockingQueue<Parent>(10);
+    private final BlockingQueue<Image> 		images = new ArrayBlockingQueue<Image>(10);
     private final ExecutorService    chartsCreationExecutor   = createExecutor("CreateCharts");
     private final ExecutorService    chartsSnapshotExecutor   = createExecutor("TakeSnapshots");
     private final ExecutorService    imagesExportExecutor     = createExecutor("ExportImages");

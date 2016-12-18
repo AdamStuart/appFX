@@ -8,9 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.layout.Region;
 import diagrams.grapheditor.GJointSkin;
 import diagrams.grapheditor.GNodeSkin;
 import diagrams.grapheditor.SkinLookup;
@@ -20,6 +17,9 @@ import diagrams.grapheditor.model.GModel;
 import diagrams.grapheditor.model.GNode;
 import diagrams.grapheditor.utils.DraggableBox;
 import diagrams.grapheditor.utils.ResizableBox;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.layout.Region;
 
 /**
  * Responsible for backing up what nodes and joints are currently selected.
@@ -141,7 +141,7 @@ public class SelectionBackup {
             jointRoot.toFront();
         }
     }
-
+ 
     /**
      * Gets the node skin instance for a given root JavaFX node.
      *

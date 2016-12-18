@@ -13,13 +13,13 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 
 import diagrams.grapheditor.GConnectorSkin;
 import diagrams.grapheditor.GNodeSkin;
+import diagrams.grapheditor.demo.utils.AwesomeIcon;
 import diagrams.grapheditor.model.GConnection;
 import diagrams.grapheditor.model.GConnector;
 import diagrams.grapheditor.model.GModel;
 import diagrams.grapheditor.model.GNode;
 import diagrams.grapheditor.model.GraphFactory;
 import diagrams.grapheditor.model.GraphPackage;
-import diagrams.grapheditor.demo.utils.AwesomeIcon;
 import javafx.css.PseudoClass;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;

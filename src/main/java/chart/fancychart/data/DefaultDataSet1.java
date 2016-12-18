@@ -9,9 +9,9 @@ package chart.fancychart.data;
 
 import java.util.List;
 
-import model.DataItem;
-import model.DataItemDao;
-import model.DataItemDao.FileFormat;
+import model.dao.DataItem;
+import model.dao.DataItemDao;
+import model.dao.DataItemDao.FileFormat;
 
 public class DefaultDataSet1 {
 

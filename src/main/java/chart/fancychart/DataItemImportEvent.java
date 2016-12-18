@@ -9,9 +9,9 @@ package chart.fancychart;
 
 import java.util.List;
 
-import model.DataItem;
 import javafx.event.Event;
 import javafx.event.EventType;
+import model.dao.DataItem;
 
 /**
  * 

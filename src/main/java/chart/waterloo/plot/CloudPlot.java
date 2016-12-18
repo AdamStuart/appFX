@@ -23,6 +23,7 @@
 package chart.waterloo.plot;
 
 import java.util.ArrayList;
+
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.LineTo;

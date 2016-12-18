@@ -66,8 +66,8 @@ public class EntrezForm extends VBox
 		savedSearches.setOnMouseClicked(ev -> {
 			if (ev.getClickCount() ==2)
 			{
-				EntrezQuery query = savedSearches.getSelectionModel().getSelectedItem();
-				search(query);
+			try {	EntrezQuery query = savedSearches.getSelectionModel().getSelectedItem();
+			} catch (Exception e) {		e.printStackTrace();	}
 			}
 		});
 		resultsTable = new TableView<EntrezRecord>();
@@ -144,10 +144,12 @@ public class EntrezForm extends VBox
 //		String url = extract();
 		EntrezQuery query = new EntrezQuery(extract());
 		savedSearches.getItems().add(query);
-		search(query);
+		try {
+			search(query);
+		} catch (Exception e) {			e.printStackTrace();		}
 	}
 	
-	public void search(EntrezQuery query)
+	public void search(EntrezQuery query) throws Exception
 	{	
 		String url = EUTILS + "esearch.fcgi?db=pubmed&term=" + query.getName();
 		String result = StringUtil.callURL(url, false);
@@ -195,7 +197,7 @@ public class EntrezForm extends VBox
 	
 	static public void xmlToSummary(String xmlResult, StringBuilder builder, List<EntrezRecord> items)
 	{
-		Document summaryDoc = FileUtil.convertStringToDocument(xmlResult);
+	try {	Document summaryDoc = FileUtil.convertStringToDocument(xmlResult);
 		if (summaryDoc != null)
 		{
 			NodeList sums = summaryDoc.getChildNodes();
@@ -223,6 +225,7 @@ public class EntrezForm extends VBox
 				}
 			}
 		}
+	} catch (Exception e) {		e.printStackTrace();	}
 	}
 
 	//-----------------------------------------------------------------

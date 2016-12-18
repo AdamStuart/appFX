@@ -42,7 +42,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Callback;
 import javafx.util.Duration;
-import model.OverlaidScatterChart;
+import model.chart.OverlaidScatterChart;
 import util.RectangleUtil;
 
 

@@ -1,17 +1,26 @@
 package table;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //   https://gist.github.com/jewelsea/7821196
 import javafx.application.Application;
-import javafx.collections.*;
-import javafx.geometry.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.image.*;
-import javafx.scene.input.*;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.util.*;
 
 public class ListOrganizer extends Application {
 	public static void main(String[] args) {		launch(ListOrganizer.class);	}

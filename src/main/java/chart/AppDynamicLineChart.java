@@ -1,16 +1,25 @@
 package chart;
+import java.util.List;
+import java.util.Set;
+
 import javafx.application.Application;
-import javafx.collections.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.*;
-import javafx.scene.chart.*;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
-
-import java.util.*;
 
 // Demonstrates dynamically changing the data series assigned to a chart and applying css styles to the 
 // chart based on user selection and data series attributes.

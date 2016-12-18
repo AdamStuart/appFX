@@ -2,6 +2,7 @@ package threeD;
 
 import java.util.List;
 
+import diagrams.plate.Well;
 import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Point3D;
 import javafx.geometry.VPos;
@@ -13,7 +14,6 @@ import javafx.scene.shape.Cylinder;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import diagrams.plate.Well;
 
 public class PlateXForm extends Xform
 {

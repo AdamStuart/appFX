@@ -5,8 +5,6 @@ package diagrams.grapheditor.core;
 
 import java.util.List;
 
-import javafx.scene.layout.Region;
-
 import org.eclipse.emf.common.command.CommandStackListener;
 
 import diagrams.grapheditor.SelectionManager;
@@ -25,6 +23,7 @@ import diagrams.grapheditor.model.GJoint;
 import diagrams.grapheditor.model.GModel;
 import diagrams.grapheditor.model.GNode;
 import diagrams.grapheditor.utils.GraphEditorProperties;
+import javafx.scene.layout.Region;
 
 /**
  * The central controller class for the default graph editor implementation.

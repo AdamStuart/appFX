@@ -3,14 +3,14 @@
  */
 package diagrams.grapheditor.demo.customskins.grey;
 
+import diagrams.grapheditor.GConnectorSkin;
+import diagrams.grapheditor.GConnectorStyle;
+import diagrams.grapheditor.model.GConnector;
 import javafx.css.PseudoClass;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
-import diagrams.grapheditor.GConnectorSkin;
-import diagrams.grapheditor.GConnectorStyle;
-import diagrams.grapheditor.model.GConnector;
 
 /**
  * A square-shaped connector skin for the 'grey-skins' theme.

@@ -6,8 +6,6 @@ package diagrams.grapheditor.core;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import javafx.collections.ObservableList;
-
 import org.eclipse.emf.common.command.CompoundCommand;
 
 import diagrams.grapheditor.SelectionManager;
@@ -23,6 +21,7 @@ import diagrams.grapheditor.core.view.GraphEditorView;
 import diagrams.grapheditor.model.GJoint;
 import diagrams.grapheditor.model.GModel;
 import diagrams.grapheditor.model.GNode;
+import javafx.collections.ObservableList;
 
 /**
  * Manages all graph editor logic relating to selections of one or more nodes and/or joints.

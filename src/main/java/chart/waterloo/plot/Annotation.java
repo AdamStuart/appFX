@@ -23,6 +23,7 @@
 package chart.waterloo.plot;
 
 import java.util.List;
+
 import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;

@@ -13,12 +13,9 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import model.CSVTableData;
-import model.GraphRequest;
-import model.Histogram1D;
-import model.HistogramRequest;
-import model.OverlaidLineChart;
-import model.ScatterRequest;
+import model.chart.OverlaidLineChart;
+import model.dao.CSVTableData;
+import model.stat.Histogram1D;
 
 public class PublishModel
 {

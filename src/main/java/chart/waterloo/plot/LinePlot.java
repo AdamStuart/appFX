@@ -23,6 +23,7 @@
 package chart.waterloo.plot;
 
 import java.util.ArrayList;
+
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.shape.Polyline;

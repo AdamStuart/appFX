@@ -15,20 +15,22 @@
  */
 package container.bikingFX.bikes;
 
+import static java.time.Instant.ofEpochMilli;
+import static java.time.ZoneId.systemDefault;
+import static javax.json.JsonValue.ValueType.NULL;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import javafx.beans.property.Property;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.paint.Color;
+
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
-import static java.time.Instant.ofEpochMilli;
-import static java.time.ZoneId.systemDefault;
-import static javax.json.JsonValue.ValueType.NULL;
+import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.paint.Color;
 
 /**
  * Represents an updateable Bike in my collection of bikes.

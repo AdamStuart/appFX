@@ -13,6 +13,7 @@ import container.mosaic.refimpl.javafx.MosaicPane;
 import database.forms.EntrezForm;
 import gui.Borders;
 import gui.DropUtil;
+import gui.ProgressStatus;
 import gui.TabPaneDetacher;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
@@ -57,10 +58,9 @@ import javafx.scene.text.Text;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.CSVTableData;
-import model.IntegerDataRow;
-import model.Population;
-import model.ProgressStatus;
+import model.dao.CSVTableData;
+import model.dao.IntegerDataRow;
+import model.stat.Population;
 import table.codeOrganizer.TreeTableModel;
 import util.FileUtil;
 import util.StringUtil;
@@ -684,7 +684,11 @@ public class PublishController implements Initializable
 		}
 		else if (FileUtil.isXML(file))
 		{
-			w3cdoc = FileUtil.openXML(file);
+			try {
+				w3cdoc = FileUtil.openXML(file);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			if (w3cdoc != null)
 				doc.install(w3cdoc);
 		}

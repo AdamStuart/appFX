@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javafx.scene.control.TreeItem;
 import util.FileUtil;
@@ -26,7 +25,9 @@ public class MethodsTree
 		Map <String, List<String>> inputMap = new HashMap <String, List<String>>();
 		Map <String, List<String>> outputMap = new HashMap <String, List<String>>();
 		List <String> ids = new ArrayList <String>();
-		traverseFiles(root, ids, inputMap, outputMap);
+		try {
+			traverseFiles(root, ids, inputMap, outputMap);
+		} catch (Exception e) {		e.printStackTrace();	}
 
 		int sz = ids.size();
 		int maxPart1Len = 0;
@@ -50,7 +51,7 @@ public class MethodsTree
 		System.out.println("Time (ms) = " + (System.currentTimeMillis() - startTime));
 	}
 	//-----------------------------------------------------------------------------
-	void traverseFiles(TreeItem<File> tree, List<String> id, Map <String, List<String>> in, Map <String, List<String>> out)
+	void traverseFiles(TreeItem<File> tree, List<String> id, Map <String, List<String>> in, Map <String, List<String>> out) throws Exception
 	{
 		if (tree == null) return;
 		File file = tree.getValue();

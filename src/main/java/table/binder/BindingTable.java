@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
@@ -15,8 +14,9 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
-import model.Unit;
+import model.stat.Unit;
 import table.binder.tablecellHelpers.ChoiceBoxTableCell;
+import table.binder.tablecellHelpers.ColorTableCell;
 import table.binder.tablecellHelpers.DateTableCell;
 import table.binder.tablecellHelpers.NumberColConverter;
 
@@ -30,11 +30,6 @@ public class BindingTable
 	private BindingsController controller;
 	private TableView<Rect> table;
 	
-//  This is the array we get from the controller.   
-//	TODO: Should be a map, so we don't hard code positions in the array!
-//		public TableColumn[] getCols()	{ return new TableColumn[] {
-//					selectedCol, colorCol, widthCol, widthUnitsCol, 
-//					heightCol, heightUnitsCol, areaCol, areaUnitsCol,heightCol, dueDateCol}; }
 	
 	public BindingTable(BindingsController bindingsController)
 	{
@@ -58,37 +53,7 @@ public class BindingTable
 		TableColumn<Rect, Color> colorCol = cols[1];
 		colorCol.setEditable(true);
 		colorCol.setCellValueFactory(new PropertyValueFactory<>("color"));
-		colorCol.setCellFactory((t) -> {    return new TableCell<Rect, Color>(){
-            private ColorPicker colorPicker;
-            private ColorPicker createPicker()
-            {
-                colorPicker = new ColorPicker();
-                colorPicker.setOnAction(evt -> {
-                		boolean wasSelected = getTableRow().getIndex() == 90;
-                        ColorPicker cp = (ColorPicker)evt.getSource();
-                        Color cw = (Color)cp.getValue();
-                        cw = cp.getValue();
-                        select(getTableRow().getIndex());
-        				int idx = getSelectedIndex();
-        				if (idx >= 0)
-        					table.getItems().get(idx).setColor(cw);
-                });
-                return colorPicker;
-            }
-
-            @Override  protected void updateItem(Color value, boolean empty) 
-            {                      
-                super.updateItem(value, empty);
-                if(empty){   setGraphic(null);  return;}		//http://stackoverflow.com/questions/25532568/javafx-tableview-delete-issue
-                if(colorPicker == null){
-                    colorPicker = createPicker();
-                    colorPicker.setUserData(value);
-                }
-                colorPicker.setValue(value);
-                setGraphic(colorPicker);
-            }
-        	};
-	    });
+		colorCol.setCellFactory((t) -> {    return new ColorTableCell();    });
 		
 		// initialize the width, height, area plus units in pairs
 		setUpCols("width", cols[2], cols[3]);

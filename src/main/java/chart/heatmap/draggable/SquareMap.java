@@ -9,7 +9,7 @@ import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
-import model.Range;
+import model.stat.Range;
 import table.networkTable.NodeRecord;
 
 public class SquareMap extends HashMap<String, HashMap<String, Double>> {

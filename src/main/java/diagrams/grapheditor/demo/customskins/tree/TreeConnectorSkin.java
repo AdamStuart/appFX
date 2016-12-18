@@ -3,13 +3,13 @@
  */
 package diagrams.grapheditor.demo.customskins.tree;
 
+import diagrams.grapheditor.GConnectorSkin;
+import diagrams.grapheditor.GConnectorStyle;
+import diagrams.grapheditor.model.GConnector;
 import javafx.css.PseudoClass;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
-import diagrams.grapheditor.GConnectorSkin;
-import diagrams.grapheditor.GConnectorStyle;
-import diagrams.grapheditor.model.GConnector;
 
 /**
  * Connector skin for the 'tree-like' graph.

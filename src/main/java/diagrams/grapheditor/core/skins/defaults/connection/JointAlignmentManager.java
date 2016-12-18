@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
 import diagrams.grapheditor.GJointSkin;
 import diagrams.grapheditor.GNodeSkin;
 import diagrams.grapheditor.SkinLookup;
@@ -19,6 +17,8 @@ import diagrams.grapheditor.model.GConnection;
 import diagrams.grapheditor.model.GConnector;
 import diagrams.grapheditor.model.GNode;
 import diagrams.grapheditor.utils.DraggableBox;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 
 /**
  * Responsible for how joints align to adjacent joints when dragged close enough to them in the default connection skin.

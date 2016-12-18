@@ -2,8 +2,6 @@
  */
 package diagrams.grapheditor.model.util;
 
-import diagrams.grapheditor.model.*;
-
 import java.util.Map;
 
 import org.eclipse.emf.common.util.Diagnostic;
@@ -11,6 +9,14 @@ import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.util.EObjectValidator;
+
+import diagrams.grapheditor.model.GConnectable;
+import diagrams.grapheditor.model.GConnection;
+import diagrams.grapheditor.model.GConnector;
+import diagrams.grapheditor.model.GJoint;
+import diagrams.grapheditor.model.GModel;
+import diagrams.grapheditor.model.GNode;
+import diagrams.grapheditor.model.GraphPackage;
 
 /**
  * <!-- begin-user-doc -->

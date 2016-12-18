@@ -6,8 +6,6 @@ import java.util.List;
 
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -16,9 +14,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Callback;
-import model.DataItem;
-import model.DataItemDao;
-import model.DataItemDao.FileFormat;
+import model.dao.DataItem;
+import model.dao.DataItemDao;
+import model.dao.DataItemDao.FileFormat;
 
 public class HiddenPaneTabTableController {
 

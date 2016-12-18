@@ -16,6 +16,15 @@
 
 package chart.heatmap;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
+
 import javafx.animation.Interpolator;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -32,14 +41,6 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
-
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**

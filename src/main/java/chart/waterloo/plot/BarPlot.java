@@ -25,6 +25,7 @@ package chart.waterloo.plot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.css.CssMetaData;

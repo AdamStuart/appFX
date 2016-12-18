@@ -2,6 +2,7 @@ package image.svg;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javafx.scene.Group;
 import javafx.scene.Node;
 

@@ -23,9 +23,10 @@
  */
 package chart.waterloo.util;
 
-import com.sun.javafx.collections.ObservableListWrapper;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import com.sun.javafx.collections.ObservableListWrapper;
 
 /**
  *

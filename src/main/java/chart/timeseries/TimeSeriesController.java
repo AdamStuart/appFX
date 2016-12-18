@@ -38,8 +38,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.AggregationLevel;
-import model.FileData;
+import model.dao.FileData;
+import model.stat.AggregationLevel;
 
 public class TimeSeriesController implements Initializable
 {

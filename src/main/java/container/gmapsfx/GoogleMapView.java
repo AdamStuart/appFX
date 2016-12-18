@@ -25,8 +25,6 @@ import container.gmapsfx.javascript.event.MapStateEventType;
 import container.gmapsfx.javascript.object.GoogleMap;
 import container.gmapsfx.javascript.object.LatLong;
 import container.gmapsfx.javascript.object.MapOptions;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.AnchorPane;

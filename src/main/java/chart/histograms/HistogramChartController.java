@@ -9,9 +9,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.layout.StackPane;
-import javafx.stage.FileChooser;
-import model.FCSFileReader;
-import model.Histogram1D;
+import model.dao.FCSFileReader;
+import model.stat.Histogram1D;
 
 public class HistogramChartController implements Initializable
 {

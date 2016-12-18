@@ -24,7 +24,7 @@ public class NumberColConverter extends DoubleStringConverter
 	{
 		if (value instanceof Number)
 			return nf.format(value);
-		return "1";
+		return "NaN";
 	}
 
 	@Override public Double fromString(final String s)

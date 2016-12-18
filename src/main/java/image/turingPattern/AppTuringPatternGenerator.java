@@ -5,9 +5,7 @@ import java.awt.Point;
 import java.net.URL;
 
 import chart.usMap.ColorUtil;
-import javafx.animation.Animation.Status;
 import javafx.animation.AnimationTimer;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

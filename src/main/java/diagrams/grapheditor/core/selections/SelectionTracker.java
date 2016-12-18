@@ -1,7 +1,5 @@
 package diagrams.grapheditor.core.selections;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import diagrams.grapheditor.GJointSkin;
 import diagrams.grapheditor.GNodeSkin;
 import diagrams.grapheditor.SkinLookup;
@@ -9,6 +7,8 @@ import diagrams.grapheditor.model.GConnection;
 import diagrams.grapheditor.model.GJoint;
 import diagrams.grapheditor.model.GModel;
 import diagrams.grapheditor.model.GNode;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * Provides observable lists of selected nodes and joints for convenience.

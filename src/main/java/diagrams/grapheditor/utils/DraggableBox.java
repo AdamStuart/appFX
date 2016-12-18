@@ -95,7 +95,7 @@ public class DraggableBox extends StackPane {
      * @return {@code true} if dragging is enabled in the x direction, {@code false} if not
      */
     public boolean isDragEnabledX() {
-        return dragEnabledXProperty.get();
+        return getDragEnabledXProperty().get();
     }
 
     /**
@@ -104,7 +104,7 @@ public class DraggableBox extends StackPane {
      * @param dragEnabledX {@code true} if dragging is enabled in the x direction, {@code false} if not
      */
     public void setDragEnabledX(final boolean dragEnabledX) {
-        dragEnabledXProperty.set(dragEnabledX);
+        getDragEnabledXProperty().set(dragEnabledX);
     }
 
     /**
@@ -113,7 +113,7 @@ public class DraggableBox extends StackPane {
      * @return the {@link BooleanProperty} for whether dragging is enabled in the x direction
      */
     public BooleanProperty dragEnabledXProperty() {
-        return dragEnabledXProperty;
+        return getDragEnabledXProperty();
     }
 
     /**
@@ -377,7 +377,7 @@ public class DraggableBox extends StackPane {
      */
     private void handleDrag(final double x, final double y) {
 
-        if (dragEnabledXProperty.get()) {
+        if (getDragEnabledXProperty().get()) {
             handleDragX(x);
         }
 
@@ -491,4 +491,8 @@ public class DraggableBox extends StackPane {
 
         return position;
     }
+
+	public BooleanProperty getDragEnabledXProperty() {
+		return dragEnabledXProperty;
+	}
 }

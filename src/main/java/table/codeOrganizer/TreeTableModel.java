@@ -4,8 +4,7 @@ import java.util.StringTokenizer;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
-import model.Population;
-import util.TreeUtil;
+import model.stat.Population;
 
 public class TreeTableModel
 {

@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Set;
 
 import animation.BorderPaneAnimator;
+import chart.fancychart.data.DefaultDataSet1;
+import chart.fancychart.data.DefaultDataSet2;
+import chart.fancychart.data.DefaultDataSet3;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -39,10 +42,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Popup;
-import model.DataItem;
-import chart.fancychart.data.DefaultDataSet1;
-import chart.fancychart.data.DefaultDataSet2;
-import chart.fancychart.data.DefaultDataSet3;
+import model.dao.DataItem;
 
 /**
  * 

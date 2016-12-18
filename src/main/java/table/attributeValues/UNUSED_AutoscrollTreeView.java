@@ -1,19 +1,14 @@
 package table.attributeValues;
 
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
-
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 
 @SuppressWarnings("restriction")
 public class UNUSED_AutoscrollTreeView<T> extends TreeView<T>

@@ -26,6 +26,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import chart.waterloo.markers.BottomErrorBar;
+import chart.waterloo.markers.LeftErrorBar;
+import chart.waterloo.markers.RightErrorBar;
+import chart.waterloo.markers.TopErrorBar;
 import javafx.beans.property.BooleanProperty;
 import javafx.css.CssMetaData;
 import javafx.css.StyleConverter;
@@ -35,10 +39,6 @@ import javafx.css.StyleableProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Path;
 import javafx.scene.transform.Rotate;
-import chart.waterloo.markers.BottomErrorBar;
-import chart.waterloo.markers.LeftErrorBar;
-import chart.waterloo.markers.RightErrorBar;
-import chart.waterloo.markers.TopErrorBar;
 
 /**
  * Error bar class.

@@ -24,8 +24,8 @@ package chart.waterloo.transforms;
 
 import java.util.ArrayList;
 
-import javafx.geometry.Point2D;
 import chart.waterloo.plot.Chart;
+import javafx.geometry.Point2D;
 
 /**
  *

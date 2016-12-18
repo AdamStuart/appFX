@@ -29,6 +29,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import chart.waterloo.plot.axis.AbstractAxisRegion;
+import chart.waterloo.plot.axis.AxisBottom;
+import chart.waterloo.plot.axis.AxisLeft;
+import chart.waterloo.plot.axis.AxisRight;
+import chart.waterloo.plot.axis.AxisSet;
+import chart.waterloo.plot.axis.AxisTop;
+import chart.waterloo.transforms.AbstractTransform;
+import chart.waterloo.transforms.Log10Transform;
+import chart.waterloo.transforms.LogTransform;
+import chart.waterloo.transforms.NOPTransform;
 import javafx.application.Platform;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
@@ -76,16 +86,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import chart.waterloo.plot.axis.AbstractAxisRegion;
-import chart.waterloo.plot.axis.AxisBottom;
-import chart.waterloo.plot.axis.AxisLeft;
-import chart.waterloo.plot.axis.AxisRight;
-import chart.waterloo.plot.axis.AxisSet;
-import chart.waterloo.plot.axis.AxisTop;
-import chart.waterloo.transforms.AbstractTransform;
-import chart.waterloo.transforms.Log10Transform;
-import chart.waterloo.transforms.LogTransform;
-import chart.waterloo.transforms.NOPTransform;
 
 /**
  * The {@code Chart} is the basic container for representing charts in

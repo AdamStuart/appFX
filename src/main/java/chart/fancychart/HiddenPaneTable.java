@@ -3,12 +3,12 @@ package chart.fancychart;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.DataItem;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.Pane;
+import model.dao.DataItem;
 
 public class HiddenPaneTable extends Pane 
 {

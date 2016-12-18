@@ -8,7 +8,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
-import model.Unit;
+import model.stat.Unit;
 import table.binder.Rect;
 // TODO -- Deprecate??  I think this is now included in FX
 // ------------------------------------------------------------------------------

@@ -3,8 +3,8 @@
  */
 package diagrams.grapheditor.core.skins.defaults.utils;
 
-import javafx.geometry.Side;
 import diagrams.grapheditor.model.GConnection;
+import javafx.geometry.Side;
 
 /**
  * Miscellaneous helper methods for rectangular-shaped connections.

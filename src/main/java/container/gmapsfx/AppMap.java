@@ -1,6 +1,5 @@
 package container.gmapsfx;
 
-import container.gmapsfx.javascript.object.GoogleMap;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

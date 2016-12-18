@@ -15,17 +15,19 @@
  */
 package container.bikingFX.gallery;
 
+import static java.time.Instant.ofEpochMilli;
+import static java.time.ZoneId.systemDefault;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import javafx.beans.property.Property;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleStringProperty;
+
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
-import static java.time.Instant.ofEpochMilli;
-import static java.time.ZoneId.systemDefault;
+import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleStringProperty;
 
 /**
  * @author Michael J. Simons, 2014-10-18

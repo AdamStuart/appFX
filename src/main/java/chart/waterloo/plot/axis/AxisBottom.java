@@ -21,12 +21,12 @@
  */
 package chart.waterloo.plot.axis;
 
+import chart.waterloo.plot.Chart;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.text.TextAlignment;
-import chart.waterloo.plot.Chart;
 
 /**
  * Implementation of the {@code AbstractAxisRegion} for a bottom axis.

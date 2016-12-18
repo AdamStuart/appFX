@@ -42,11 +42,8 @@ public class ResizableBox extends DraggableBox {
 
         addEventHandler(MouseEvent.MOUSE_ENTERED, this::processMousePosition);
         addEventHandler(MouseEvent.MOUSE_MOVED, this::processMousePosition);
-
         addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
-            if (!event.isPrimaryButtonDown()) {
-                setCursor(null);
-            }
+            if (!event.isPrimaryButtonDown()) setCursor(null);
         });
     }
 
@@ -189,24 +186,22 @@ public class ResizableBox extends DraggableBox {
             storeClickValuesForResize(event.getX(), event.getY());
         }
 
-        if (lastMouseRegion.equals(RectangleMouseRegion.INSIDE)) {
+        if (lastMouseRegion.equals(RectangleMouseRegion.INSIDE)) 
             super.handleMouseDragged(event);
-        } else if (!lastMouseRegion.equals(RectangleMouseRegion.OUTSIDE)) {
+       else if (!lastMouseRegion.equals(RectangleMouseRegion.OUTSIDE)) 
             handleResize(event.getSceneX(), event.getSceneY());
-        }
 
         dragActive = true;
         event.consume();
     }
-
-    @Override
-    protected void handleMouseReleased(final MouseEvent event) {
-
-        super.handleMouseReleased(event);
-        if (event.getButton().equals(MouseButton.PRIMARY)) {
-            processMousePosition(event);
-        }
-    }
+//
+//    @Override
+//    protected void handleMouseReleased(final MouseEvent event) {
+//
+//        super.handleMouseReleased(event);
+//        if (event.getButton().equals(MouseButton.PRIMARY)) 
+//            processMousePosition(event);
+//    }
 
     /**
      * Processes the current mouse position, updating the cursor accordingly.
@@ -216,7 +211,6 @@ public class ResizableBox extends DraggableBox {
     private void processMousePosition(final MouseEvent event) {
 
         if (event.isPrimaryButtonDown())            return;
-       
         final RectangleMouseRegion mouseRegion = getMouseRegion(event.getX(), event.getY());
         mouseInPositionForResize = !mouseRegion.equals(RectangleMouseRegion.INSIDE);
         updateCursor(mouseRegion);
@@ -245,38 +239,16 @@ public class ResizableBox extends DraggableBox {
     private void handleResize(final double x, final double y) {
 
         switch (lastMouseRegion) {
-        case NORTHEAST:
-            handleResizeNorth(y);
-            handleResizeEast(x);
-            break;
-        case NORTHWEST:
-            handleResizeNorth(y);
-            handleResizeWest(x);
-            break;
-        case SOUTHEAST:
-            handleResizeSouth(y);
-            handleResizeEast(x);
-            break;
-        case SOUTHWEST:
-            handleResizeSouth(y);
-            handleResizeWest(x);
-            break;
-        case NORTH:
-            handleResizeNorth(y);
-            break;
-        case SOUTH:
-            handleResizeSouth(y);
-            break;
-        case EAST:
-            handleResizeEast(x);
-            break;
-        case WEST:
-            handleResizeWest(x);
-            break;
+        case NORTHEAST:    handleResizeNorth(y);            handleResizeEast(x);            break;
+        case NORTHWEST:    handleResizeNorth(y);            handleResizeWest(x);            break;
+        case SOUTHEAST:    handleResizeSouth(y);            handleResizeEast(x);            break;
+        case SOUTHWEST:    handleResizeSouth(y);            handleResizeWest(x);            break;
+        case NORTH:        handleResizeNorth(y);       	break;
+        case SOUTH:        handleResizeSouth(y);      	break;
+        case EAST:         handleResizeEast(x);         break;
+        case WEST:         handleResizeWest(x);         break;
         case INSIDE:
-            break;
-        case OUTSIDE:
-            break;
+        case OUTSIDE:							        break;
         }
     }
 
@@ -388,12 +360,8 @@ public class ResizableBox extends DraggableBox {
         }
 
         // Min & max resize logic here.
-        if (newWidth > maxAvailableWidth) {
-            newWidth = maxAvailableWidth;
-        } else if (newWidth < minResizeWidth) {
-            newWidth = minResizeWidth;
-        }
-
+        if (newWidth > maxAvailableWidth)             newWidth = maxAvailableWidth;
+        else if (newWidth < minResizeWidth)           newWidth = minResizeWidth;
         setWidth(newWidth);
     }
 
@@ -453,34 +421,23 @@ public class ResizableBox extends DraggableBox {
         final double width = getWidth();
         final double height = getHeight();
 
-        if (x < 0 || y < 0 || x > width || y > height) {
-            return RectangleMouseRegion.OUTSIDE;
-        }
-
+        if (x < 0 || y < 0)				return RectangleMouseRegion.OUTSIDE;
+        if (x > width || y > height) 	return RectangleMouseRegion.OUTSIDE;
+ 
         final boolean isNorth = y < resizeBorderTolerance;
         final boolean isSouth = y > height - resizeBorderTolerance;
         final boolean isEast = x > width - resizeBorderTolerance;
         final boolean isWest = x < resizeBorderTolerance;
 
-        if (isNorth && isEast) {
-            return RectangleMouseRegion.NORTHEAST;
-        } else if (isNorth && isWest) {
-            return RectangleMouseRegion.NORTHWEST;
-        } else if (isSouth && isEast) {
-            return RectangleMouseRegion.SOUTHEAST;
-        } else if (isSouth && isWest) {
-            return RectangleMouseRegion.SOUTHWEST;
-        } else if (isNorth) {
-            return RectangleMouseRegion.NORTH;
-        } else if (isSouth) {
-            return RectangleMouseRegion.SOUTH;
-        } else if (isEast) {
-            return RectangleMouseRegion.EAST;
-        } else if (isWest) {
-            return RectangleMouseRegion.WEST;
-        } else {
-            return RectangleMouseRegion.INSIDE;
-        }
+        if (isNorth && isEast)  return RectangleMouseRegion.NORTHEAST;
+        if (isNorth && isWest)  return RectangleMouseRegion.NORTHWEST;
+        if (isSouth && isEast)  return RectangleMouseRegion.SOUTHEAST;
+        if (isSouth && isWest)  return RectangleMouseRegion.SOUTHWEST;
+        if (isNorth)           	return RectangleMouseRegion.NORTH;
+        if (isSouth)            return RectangleMouseRegion.SOUTH;
+        if (isEast)            	return RectangleMouseRegion.EAST;
+        if (isWest)             return RectangleMouseRegion.WEST;
+        return RectangleMouseRegion.INSIDE;
     }
 
     /**
@@ -497,37 +454,16 @@ public class ResizableBox extends DraggableBox {
 
         switch (mouseRegion) {
 
-        case NORTHEAST:
-            setCursor(Cursor.NE_RESIZE);
-            break;
-        case NORTHWEST:
-            setCursor(Cursor.NW_RESIZE);
-            break;
-        case SOUTHEAST:
-            setCursor(Cursor.SE_RESIZE);
-            break;
-        case SOUTHWEST:
-            setCursor(Cursor.SW_RESIZE);
-            break;
-        case NORTH:
-            setCursor(Cursor.N_RESIZE);
-            break;
-        case SOUTH:
-            setCursor(Cursor.S_RESIZE);
-            break;
-        case EAST:
-            setCursor(Cursor.E_RESIZE);
-            break;
-        case WEST:
-            setCursor(Cursor.W_RESIZE);
-            break;
-        case INSIDE:
-            // Set to null instead of Cursor.DEFAULT so it doesn't overwrite cursor settings of parent.
-            setCursor(null);
-            break;
-        case OUTSIDE:
-            setCursor(null);
-            break;
+        case NORTHEAST:     setCursor(Cursor.NE_RESIZE);        break;
+        case NORTHWEST:     setCursor(Cursor.NW_RESIZE);        break;
+        case SOUTHEAST:     setCursor(Cursor.SE_RESIZE);        break;
+        case SOUTHWEST:     setCursor(Cursor.SW_RESIZE);        break;
+        case NORTH:         setCursor(Cursor.N_RESIZE);         break;
+        case SOUTH:         setCursor(Cursor.S_RESIZE);         break;
+        case EAST:          setCursor(Cursor.E_RESIZE);         break;
+        case WEST:          setCursor(Cursor.W_RESIZE);         break;
+        case INSIDE:        // Set to null instead of Cursor.DEFAULT so it doesn't overwrite cursor settings of parent.
+        case OUTSIDE: 		setCursor(null);     				break;
         }
     }
 

@@ -1,7 +1,6 @@
 package dialogs;
 
 import java.net.URL;
-import java.sql.ResultSet;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;

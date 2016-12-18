@@ -6,12 +6,12 @@ package diagrams.grapheditor.demo.customskins.tree;
 import java.util.List;
 import java.util.Map;
 
-import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import diagrams.grapheditor.GConnectionSkin;
 import diagrams.grapheditor.GJointSkin;
 import diagrams.grapheditor.model.GConnection;
 import diagrams.grapheditor.utils.Arrow;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
 
 /**
  * Connection skin for the 'tree-like' graph. Pretty much just an arrow.

@@ -2,16 +2,13 @@ package chart.treemap;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
 
-import chart.flexiPie.Wedge;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.TreeItem;
-import javafx.scene.paint.Color;
-import model.DataItem;
+import model.dao.DataItem;
 
 public class BudgetItem implements Item
 {

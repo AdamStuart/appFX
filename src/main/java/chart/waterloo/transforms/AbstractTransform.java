@@ -26,10 +26,10 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
+import chart.waterloo.plot.Chart;
 import javafx.beans.Observable;
 import javafx.beans.binding.ObjectBinding;
 import javafx.geometry.Point2D;
-import chart.waterloo.plot.Chart;
 
 /**
  *

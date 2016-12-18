@@ -10,11 +10,9 @@ package chart.fancychart;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
-import model.DataItem;
+import model.dao.DataItem;
 
 /**
  * 

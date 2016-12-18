@@ -6,8 +6,6 @@ package diagrams.grapheditor.core.skins.defaults.connection;
 import java.util.List;
 import java.util.Set;
 
-import javafx.geometry.Point2D;
-
 import org.eclipse.emf.common.command.CompoundCommand;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.edit.command.AddCommand;
@@ -19,6 +17,7 @@ import diagrams.grapheditor.model.GConnection;
 import diagrams.grapheditor.model.GJoint;
 import diagrams.grapheditor.model.GraphFactory;
 import diagrams.grapheditor.model.GraphPackage;
+import javafx.geometry.Point2D;
 
 /**
  * A set of helper methods to add and remove joints from the default connection skin using EMF commands.

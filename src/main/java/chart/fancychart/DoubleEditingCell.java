@@ -2,7 +2,6 @@ package chart.fancychart;
 
 import java.text.DecimalFormat;
 
-import model.DataItem;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -10,6 +9,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import model.dao.DataItem;
 
 public class DoubleEditingCell extends TableCell<DataItem, Number>
 {

@@ -1,7 +1,7 @@
 package diagrams.grapheditor.demo.customskins.tree;
 
-import javafx.geometry.Point2D;
 import diagrams.grapheditor.utils.Arrow;
+import javafx.geometry.Point2D;
 
 /**
  * Utils for drawing arrows. Used by connection and tail skins.

@@ -2,11 +2,6 @@
  */
 package diagrams.grapheditor.model.impl;
 
-import diagrams.grapheditor.model.GConnection;
-import diagrams.grapheditor.model.GModel;
-import diagrams.grapheditor.model.GNode;
-import diagrams.grapheditor.model.GraphPackage;
-
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -18,6 +13,11 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
+
+import diagrams.grapheditor.model.GConnection;
+import diagrams.grapheditor.model.GModel;
+import diagrams.grapheditor.model.GNode;
+import diagrams.grapheditor.model.GraphPackage;
 
 /**
  * <!-- begin-user-doc -->

@@ -23,6 +23,7 @@ package chart.waterloo.plot.axis;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import chart.waterloo.plot.Chart;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -37,7 +38,6 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
-import chart.waterloo.plot.Chart;
 
 /**
  * {@code AbstractAxisRegion} provides the base class for axes drawn outside of

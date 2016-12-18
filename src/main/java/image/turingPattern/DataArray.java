@@ -1,8 +1,6 @@
 package image.turingPattern;
 
 import java.awt.Dimension;
-import java.util.Formatter;
-import java.util.Locale;
 
 public class DataArray
 {

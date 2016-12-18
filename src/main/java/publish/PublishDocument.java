@@ -1,8 +1,6 @@
 package publish;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,11 +11,9 @@ import javax.xml.stream.events.XMLEvent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javafx.fxml.FXML;
 import javafx.print.PrinterJob;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.CSVTableData;
 import util.FileUtil;
 import xml.XMLFactory;
 import xml.XMLTools;
@@ -45,7 +41,11 @@ public class PublishDocument
 		Document doc = null;
 		if (FileUtil.isXML(file))
 		{
-			doc = FileUtil.openXML(file);
+			try {
+				doc = FileUtil.openXML(file);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return doc;
 		}
 		if (FileUtil.isCSV(file))

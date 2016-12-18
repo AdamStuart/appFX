@@ -2,8 +2,6 @@ package game.bookclub;
 
 import javafx.animation.Animation;
 import javafx.animation.Transition;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;

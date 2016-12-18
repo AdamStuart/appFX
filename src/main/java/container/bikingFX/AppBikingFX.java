@@ -20,12 +20,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
-
 import javafx.application.Application;
-
-import static javafx.application.Application.launch;
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

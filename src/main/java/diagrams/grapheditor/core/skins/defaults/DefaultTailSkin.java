@@ -6,13 +6,6 @@ package diagrams.grapheditor.core.skins.defaults;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Side;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Polyline;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +15,12 @@ import diagrams.grapheditor.core.skins.defaults.utils.DefaultConnectorTypes;
 import diagrams.grapheditor.core.utils.LogMessages;
 import diagrams.grapheditor.model.GConnector;
 import diagrams.grapheditor.utils.GeometryUtils;
+import javafx.geometry.Point2D;
+import javafx.geometry.Side;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Polyline;
 
 /**
  * The default tail skin.

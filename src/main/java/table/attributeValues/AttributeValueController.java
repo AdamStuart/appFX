@@ -183,7 +183,11 @@ private void setupDropPane()
 		if (db.hasFiles())
 		{
 			if (FileUtil.hasXMLFiles(db))
-				openXMLfiles(db);
+				try {
+					openXMLfiles(db);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			else textArea.appendText(FileUtil.readFiles(db) + "\n");
         }
 		
@@ -220,12 +224,16 @@ private void setupDropPane()
 	});
 	
 }
-	private void openXMLfiles(Dragboard db)
+	private void openXMLfiles(Dragboard db) throws Exception
 	{
 		Objects.requireNonNull(db);
-		db.getFiles().stream()
-			.filter(f -> FileUtil.isXML(f))
-			.forEach(f-> FileUtil.openXMLfile(f)) ;
+		try {
+			db.getFiles().stream()
+				.filter(f -> FileUtil.isXML(f))
+				.forEach(f-> FileUtil.openXMLfile(f)) ;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 

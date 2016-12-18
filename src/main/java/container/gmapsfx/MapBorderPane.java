@@ -1,17 +1,14 @@
 package container.gmapsfx;
 
 import container.gmapsfx.javascript.event.UIEventType;
-import container.gmapsfx.javascript.object.Animation;
 import container.gmapsfx.javascript.object.GoogleMap;
 import container.gmapsfx.javascript.object.InfoWindow;
 import container.gmapsfx.javascript.object.InfoWindowOptions;
 import container.gmapsfx.javascript.object.LatLong;
-import container.gmapsfx.javascript.object.LatLongBounds;
 import container.gmapsfx.javascript.object.MapOptions;
 import container.gmapsfx.javascript.object.MapTypeIdEnum;
 import container.gmapsfx.javascript.object.Marker;
 import container.gmapsfx.javascript.object.MarkerOptions;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;

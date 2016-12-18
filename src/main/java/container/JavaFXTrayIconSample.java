@@ -1,17 +1,25 @@
 package container;
-import javafx.application.*;
-import javafx.geometry.Pos;
-import javafx.scene.*;
-import javafx.scene.control.Label;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.stage.*;
-
-import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.net.URL;
-import java.text.*;
-import java.util.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.imageio.ImageIO;
+
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 // Java 8 code
 //https://gist.github.com/jewelsea/e231e89e8d36ef4e5d8a

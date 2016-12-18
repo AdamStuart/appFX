@@ -3,12 +3,12 @@
  */
 package diagrams.grapheditor.core.skins.defaults;
 
-import javafx.beans.value.ChangeListener;
-import javafx.css.PseudoClass;
-import javafx.geometry.Point2D;
 import diagrams.grapheditor.GJointSkin;
 import diagrams.grapheditor.model.GJoint;
 import diagrams.grapheditor.utils.DraggableBox;
+import javafx.beans.value.ChangeListener;
+import javafx.css.PseudoClass;
+import javafx.geometry.Point2D;
 
 /**
  * The default joint skin.

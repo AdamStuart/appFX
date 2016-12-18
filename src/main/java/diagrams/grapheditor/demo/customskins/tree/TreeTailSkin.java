@@ -6,11 +6,11 @@ package diagrams.grapheditor.demo.customskins.tree;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import diagrams.grapheditor.GTailSkin;
 import diagrams.grapheditor.model.GConnector;
 import diagrams.grapheditor.utils.Arrow;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
 
 /**
  * Tail skin for the 'tree-like' graph. Pretty much just an arrow.

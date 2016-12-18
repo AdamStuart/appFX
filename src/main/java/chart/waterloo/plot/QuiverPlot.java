@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import chart.waterloo.markers.ArrowHead;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.css.CssMetaData;
@@ -39,7 +40,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Shape;
-import chart.waterloo.markers.ArrowHead;
 
 /**
  * @author Malcolm Lidierth

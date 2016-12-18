@@ -21,11 +21,11 @@
  */
 package chart.waterloo.plot.axis;
 
+import chart.waterloo.plot.Chart;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.text.Text;
-import chart.waterloo.plot.Chart;
 
 /**
  * Implementation of the {@code AbstractAxisRegion} for a right axis.

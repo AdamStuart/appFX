@@ -3,10 +3,10 @@
  */
 package diagrams.grapheditor.demo.customskins.grey;
 
-import javafx.geometry.Point2D;
 import diagrams.grapheditor.core.skins.defaults.DefaultTailSkin;
 import diagrams.grapheditor.model.GConnector;
 import diagrams.grapheditor.utils.GeometryUtils;
+import javafx.geometry.Point2D;
 
 public class GreyTailSkin extends DefaultTailSkin {
 

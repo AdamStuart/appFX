@@ -10,7 +10,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import model.Range;
+import model.stat.Range;
 
 public class RowGroup extends Group {
 	Square[] squares;

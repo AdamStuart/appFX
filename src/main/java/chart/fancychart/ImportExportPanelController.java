@@ -6,7 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import model.DataItemDao.FileFormat;
+import model.dao.DataItemDao.FileFormat;
 
 public class ImportExportPanelController {
 

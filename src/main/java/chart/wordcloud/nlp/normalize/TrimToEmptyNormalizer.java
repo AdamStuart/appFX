@@ -1,7 +1,5 @@
 package chart.wordcloud.nlp.normalize;
 
-import util.StringUtil;
-
 /**
  * Created by kenny on 7/1/14.
  */

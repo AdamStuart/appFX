@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import model.AttributeValue;
+import model.bio.OntologyTerm;
 import util.StringUtil;
 
 // reading the Cell Type Ontology from a file
@@ -22,33 +23,33 @@ import util.StringUtil;
 
 public class Ontology
 {
-	List<Onterm> terms = new ArrayList<Onterm>();
-	Map<String, Onterm> map = new HashMap<String, Onterm>();
-	TreeItem<Onterm> root;
+	List<OntologyTerm> terms = new ArrayList<OntologyTerm>();
+	Map<String, OntologyTerm> map = new HashMap<String, OntologyTerm>();
+	TreeItem<OntologyTerm> root;
 	
 	
 	public Ontology()
 	{
 		
 	}
-	public TreeItem<Onterm> createTree()
+	public TreeItem<OntologyTerm> createTree()
 	{
-		Onterm top = new Onterm("root");
+		OntologyTerm top = new OntologyTerm("root");
 		top.setName("Cell Type Ontology");
-		root = new TreeItem<Onterm>(top);
+		root = new TreeItem<OntologyTerm>(top);
 		root.setExpanded(true);
-		for (Onterm term : terms)
+		for (OntologyTerm term : terms)
 		{
 			List<AttributeValue> ids = term.getProperties("is_a");
 			for (AttributeValue kv : ids)
 			{
 				String id = StringUtil.firstWord(kv.getValue());
-				Onterm parent = map.get(id);
+				OntologyTerm parent = map.get(id);
 				if (parent != null)
 					parent.addChild(term);
 			}
 		}
-		Onterm cell = map.get("CL:0000000");
+		OntologyTerm cell = map.get("CL:0000000");
 		if (cell != null)
 			traverse(root, cell);
 		
@@ -56,29 +57,29 @@ public class Ontology
 	}
 	
 	// recursive tree traversal core
-	private void traverse(TreeItem<Onterm> parent, Onterm term)
+	private void traverse(TreeItem<OntologyTerm> parent, OntologyTerm term)
 	{
-		TreeItem<Onterm> self = new TreeItem<Onterm>(term);
+		TreeItem<OntologyTerm> self = new TreeItem<OntologyTerm>(term);
 		Label label = new Label("?");
 		self.setGraphic(label);
 		Tooltip.install(label, new Tooltip(term.getDescriptor()));
 		self.setExpanded(true);
 		parent.getChildren().add(self);
-		for (Onterm subterm : term.getChildren())
+		for (OntologyTerm subterm : term.getChildren())
 			traverse(self,subterm);
 	}
 	//--------------------------------------------------------------
-	public TreeItem<Onterm> createShallowTree()
+	public TreeItem<OntologyTerm> createShallowTree()
 	{
-		Onterm top = new Onterm("root");
+		OntologyTerm top = new OntologyTerm("root");
 		top.setName("Cell Type Ontology");
-		TreeItem<Onterm> root = new TreeItem<Onterm>(top);
+		TreeItem<OntologyTerm> root = new TreeItem<OntologyTerm>(top);
 		
 		root.getChildren().addAll(
 			terms.stream()
 				.filter(term -> term.getId().startsWith("CL:"))
 	//			.filter(term -> term.getProperties("is_a").size() <= 6)
-				.map(term -> new TreeItem<Onterm>(term))
+				.map(term -> new TreeItem<OntologyTerm>(term))
 				.collect(Collectors.toList()));
 		return root;
 	}
@@ -87,7 +88,7 @@ public class Ontology
 	public String createSIF(String filterByPrefix)
 	{
 		StringBuilder builder = new StringBuilder();
-		for (Onterm term : terms)
+		for (OntologyTerm term : terms)
 		{
 			if (term.getId().startsWith(filterByPrefix))
 			{
@@ -95,7 +96,7 @@ public class Ontology
 				for (AttributeValue kv : ids)
 				{
 					String id = StringUtil.firstWord(kv.getValue());
-					Onterm parent = map.get(id);
+					OntologyTerm parent = map.get(id);
 					if (parent != null)
 						builder.append(term.getId()).append("\tis_a\t").append(parent.getId()).append("\n");
 				}
@@ -104,7 +105,7 @@ public class Ontology
 		return builder.toString();
 	}
 	//--------------------------------------------------------------
-	public void addTerm(Onterm t)		
+	public void addTerm(OntologyTerm t)		
 	{ 
 		String name = t.getName();
 		if (name != null && !name.toUpperCase().startsWith("OBSOLETE"))
@@ -121,7 +122,7 @@ public class Ontology
 		int doubleParents = 0, multiParents = 0; 
 		int tripleParents = 0, quadParents = 0; 
 		
-		for (Onterm term : terms)
+		for (OntologyTerm term : terms)
 			if (term.getId().startsWith("CL"))
 			{
 				List<AttributeValue> parents = term.getProperties("is_a");

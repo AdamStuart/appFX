@@ -2,7 +2,6 @@ package threeD;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import javafx.application.Application;
 import javafx.stage.Stage;

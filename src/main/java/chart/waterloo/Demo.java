@@ -23,13 +23,6 @@
 package chart.waterloo;
 
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import chart.waterloo.plot.AbstractPlot;
 import chart.waterloo.plot.BarExtra;
 import chart.waterloo.plot.BarPlot;
@@ -37,6 +30,13 @@ import chart.waterloo.plot.Chart;
 import chart.waterloo.plot.LinePlot;
 import chart.waterloo.plot.PlotCollection;
 import chart.waterloo.plot.ScatterPlot;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 
 /**  Needs better demo to show all the chart type

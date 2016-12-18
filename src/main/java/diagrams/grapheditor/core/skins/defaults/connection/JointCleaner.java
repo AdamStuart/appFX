@@ -10,13 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
-import javafx.scene.Parent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Region;
-
 import org.eclipse.emf.common.command.CompoundCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -30,6 +23,12 @@ import diagrams.grapheditor.model.GConnection;
 import diagrams.grapheditor.model.GJoint;
 import diagrams.grapheditor.model.GModel;
 import diagrams.grapheditor.utils.GeometryUtils;
+import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
+import javafx.scene.Parent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 
 /**
  * Monitors joint positions and cleans up / removes unnecessary joints.
