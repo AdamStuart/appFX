@@ -60,10 +60,10 @@ public class DrillDownChart extends VBox
 	private final SynthGenController controller;
 
 	public DrillDownChart(SynthGenController ctlr, ObservableList<SynthGenRecord> observableList)
-		{
-			this(ctlr);
-			addData(observableList);
-		}
+	{
+		this(ctlr);
+		addData(observableList);
+	}
 
 	private void addLayer(String xName, String yName, int transitionType)
 	{
@@ -163,7 +163,7 @@ public class DrillDownChart extends VBox
 	int xIndex = 0;
 	int yIndex = 1; 
 	int nDimensions = 8;
-	String[] dims = new String[]{"FS", "SS","FL1", "FL2", "FL3", "FL4", "FL5", "FL6", "FL7", "FL8" };
+	String[] dims = new String[]{"A", "B","C", "D", "E", "F", "G", "H" };
 	private void prevXParm()
 	{
 		xIndex--;

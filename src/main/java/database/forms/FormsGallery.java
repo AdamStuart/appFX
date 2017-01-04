@@ -142,7 +142,7 @@ public class FormsGallery
 	public static FormError isFormValid()
 	{
 		String addr = email1.getValue();
-		if (addr.isEmpty()) 	return FormError.EMAIL_REQ;
+		if (StringUtil.isEmpty(addr)) 	return FormError.EMAIL_REQ;
 		if (!StringUtil.isValidEmail(addr)) return FormError.EMAIL_INVALID;
 		if (!email1.getValue().equals(email2.getValue())) return FormError.EMAIL_MATCH;
 		String nation = country.getValue();

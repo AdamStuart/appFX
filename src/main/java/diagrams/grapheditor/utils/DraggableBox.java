@@ -298,12 +298,13 @@ public class DraggableBox extends StackPane {
      *
      * @param event {@link MouseEvent}
      */
+    public boolean isMovable()	{ return true;	}
     protected void handleMouseDragged(final MouseEvent event) {
 
         if (!event.getButton().equals(MouseButton.PRIMARY)) {
             return;
         }
-
+        if (!isMovable()) return;
         if (!dragActive) {
             storeClickValuesForDrag(event.getSceneX(), event.getSceneY());
         }

@@ -174,9 +174,10 @@ public class ResizableBox extends DraggableBox {
     @Override
     protected void handleMouseDragged(final MouseEvent event) {
 
-        if (!(getParent() instanceof Region)) {
-            return;
-        } else if (!event.getButton().equals(MouseButton.PRIMARY)) {
+//        if (!(getParent() instanceof Region)) {
+//            return;
+//        } else 
+        	if (!event.getButton().equals(MouseButton.PRIMARY)) {
             setCursor(null);
             return;
         }
@@ -187,9 +188,13 @@ public class ResizableBox extends DraggableBox {
         }
 
         if (lastMouseRegion.equals(RectangleMouseRegion.INSIDE)) 
-            super.handleMouseDragged(event);
+        {
+        	if (isMovable())	
+            	super.handleMouseDragged(event);
+        }
        else if (!lastMouseRegion.equals(RectangleMouseRegion.OUTSIDE)) 
-            handleResize(event.getSceneX(), event.getSceneY());
+            if (canResize())	
+            	handleResize(event.getSceneX(), event.getSceneY());
 
         dragActive = true;
         event.consume();
@@ -236,8 +241,9 @@ public class ResizableBox extends DraggableBox {
      * @param x the cursor scene-x position
      * @param y the cursor scene-y position
      */
-    private void handleResize(final double x, final double y) {
+    protected void handleResize(final double x, final double y) {
 
+    	if (!canResize()) return;
         switch (lastMouseRegion) {
         case NORTHEAST:    handleResizeNorth(y);            handleResizeEast(x);            break;
         case NORTHWEST:    handleResizeNorth(y);            handleResizeWest(x);            break;
@@ -450,8 +456,10 @@ public class ResizableBox extends DraggableBox {
      *
      * @param mouseRegion the {@link RectangleMouseRegion} where the cursor is located
      */
-    private void updateCursor(final RectangleMouseRegion mouseRegion) {
+    protected boolean canResize() { return true;	}
+    protected void updateCursor(final RectangleMouseRegion mouseRegion) {
 
+    	if (!canResize())  return;
         switch (mouseRegion) {
 
         case NORTHEAST:     setCursor(Cursor.NE_RESIZE);        break;
