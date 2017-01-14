@@ -51,7 +51,7 @@ public class AppFilterableTreeItemSample extends Application {
 
 	private Node createFilterPane() {
         filterField = new TextField();
-        filterField.setPromptText("Enter filter text ...");
+        filterField.setPromptText("Enter filter text");
 
         TitledPane pane = new TitledPane("Filter", filterField);
         pane.setCollapsible(false);
