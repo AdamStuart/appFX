@@ -2,6 +2,8 @@ package publish;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -75,17 +77,18 @@ public class PublishController implements Initializable
 	@FXML BorderPane borderPane;
 	@FXML TabPane tocTabPane;
 	
-	@FXML AnchorPane research;
 	@FXML AnchorPane abstractAnchor;
+	@FXML AnchorPane researchAnchor;
 	@FXML AnchorPane methodsAnchor;
 	@FXML AnchorPane checkpointAnchor;
 	@FXML AnchorPane resultsAnchor;
 	@FXML AnchorPane analysisAnchor;
 	@FXML AnchorPane discussionAnchor;
 	@FXML AnchorPane mosaicAnchor;
-	@FXML AnchorPane bridgeDBAnchor;
+	@FXML AnchorPane annotateAnchor;
+	@FXML AnchorPane joinAnnchor;
 //	@FXML AnchorPane specsAnchor;
-	AnchorPane[]  anchors;
+	List<AnchorPane>  anchors;
 
 	//
 	//-------------------------------------------------------------------------------------------
@@ -205,7 +208,7 @@ public class PublishController implements Initializable
 		technology.getSelectionModel().selectFirst();
 
 		//Research---------
-		research.getChildren().add(querier);
+		researchAnchor.getChildren().add(querier);
 		AnchorPane.setBottomAnchor(querier, 10d);
 		AnchorPane.setTopAnchor(querier, 10d);
 		AnchorPane.setLeftAnchor(querier, 10d);
@@ -248,14 +251,13 @@ public class PublishController implements Initializable
 		
 //		String agendaUrl = "https://docs.google.com/document/d/1VT5hmAjFJSIQT_1YsJpF6ELrzmJ1iT2Lng0s-DyZnSg/edit?ts=563105e1";
 //		agendaPage.getEngine().load(agendaUrl);
-		anchors = new AnchorPane[] {abstractAnchor, research, bridgeDBAnchor, methodsAnchor, checkpointAnchor, resultsAnchor, analysisAnchor, discussionAnchor};
-		//, specsAnchor
 	}
 	//----------------------------------------------------------------------------------
 	public void start()
 	{ 
-		
-		
+		anchors = new ArrayList<AnchorPane>();
+        for (int i = 0; i < tocTabPane.getTabs().size(); i++) 
+        	anchors.add((AnchorPane)tocTabPane.getTabs().get(i).getContent());
 		TabPaneDetacher.create().makeTabsDetachable(tocTabPane);
 	}
 				

@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.HTMLEditor?>
+
+<AnchorPane fx:id="top" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="publish.PublishController">
+   <children>
+      <BorderPane fx:id="borderPane" prefHeight="1017.0" prefWidth="817.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <TabPane fx:id="tocTabPane" BorderPane.alignment="CENTER">
+               <tabs>
+                  <Tab id="Hypothesis" closable="false" text="Hypothesis">
+                    <content>
+                      <AnchorPane id="Hypothesis" fx:id="abstractAnchor">
+                           <children>
+                              <VBox fillWidth="false" layoutX="8.0" layoutY="5.0" spacing="8.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="10.0">
+                                 <children>
+                                    <VBox prefHeight="156.0" prefWidth="801.0" spacing="8.0" VBox.vgrow="ALWAYS">
+                                       <children>
+                                          <HBox layoutX="42.0" layoutY="4.0" spacing="8.0">
+                                             <children>
+                                                <Label minHeight="-Infinity" prefHeight="90.0" prefWidth="631.0" text="The purpose of the hypothesis is to assert the connections or correlations you intend to demonstrate. Provide specific enough informations that we can search for similar work in the literature." wrapText="true">
+                                                   <padding>
+                                                      <Insets left="20.0" />
+                                                   </padding>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="8.0">
+                                             <children>
+                                                <Label layoutX="20.0" layoutY="60.0" text="Species">
+                                                   <HBox.margin>
+                                                      <Insets top="6.0" />
+                                                   </HBox.margin></Label>
+                                                <ChoiceBox fx:id="species" />
+                                                <Label text="Cell Type">
+                                                   <HBox.margin>
+                                                      <Insets top="6.0" />
+                                                   </HBox.margin></Label>
+                                                <ChoiceBox fx:id="celltype" />
+                                                <Label text="System">
+                                                   <HBox.margin>
+                                                      <Insets top="6.0" />
+                                                   </HBox.margin></Label>
+                                                <ChoiceBox fx:id="technology" />
+                                             </children>
+                                          </HBox>
+                                          <Label text="Keywords" />
+                                       </children>
+                                    </VBox>
+                                    <TextArea fx:id="keywords" minHeight="45.0" prefHeight="139.0" prefWidth="798.0" />
+                                    <HTMLEditor fx:id="hypothesis" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutY="223.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="223.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab id="Research" text="Research">
+                    <content>
+                      <AnchorPane id="Research" fx:id="research" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    </content>
+                  </Tab>
+                  <Tab id="Methods" closable="false" text="Methods">
+                    <content>
+                      <AnchorPane id="Methods" fx:id="methodsAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Label layoutX="14.0" layoutY="2.0" text="A Hierarchical Display of Biological Methods" />
+                              <SplitPane fx:id="methodsplitter" dividerPositions="0.4" layoutY="27.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+                                 <items>
+                                    <SplitPane dividerPositions="0.3, 0.5" orientation="VERTICAL">
+                                       <items>
+                                          <VBox prefHeight="200.0" prefWidth="100.0">
+                                             <children>
+                                                <Label text="Standard Operating Procedures" />
+                                                <ListView fx:id="soplist" VBox.vgrow="ALWAYS" />
+                                             </children>
+                                          </VBox>
+                                          <VBox fx:id="connectionsBox">
+                                             <children>
+                                                <Label text="Server Connections" />
+                                             </children>
+                                          </VBox>
+                                          <VBox fx:id="fileTreeBox">
+                                             <children>
+                                                <Label text="File Cache" />
+                                             </children>
+                                          </VBox>
+                                       </items>
+                                    </SplitPane>
+                                    <TreeTableView layoutX="190.0" layoutY="27.0" prefHeight="438.0" prefWidth="443.0" fx:id="xmlTree">
+                                      <columns>
+                                        <TreeTableColumn prefWidth="75.0" text="C1" />
+                                        <TreeTableColumn prefWidth="75.0" text="C2" />
+                                      </columns>
+                                    </TreeTableView>
+                                 </items>
+                              </SplitPane>
+                              <Button layoutX="324.0" layoutY="-3.0" mnemonicParsing="false" onAction="#showMethodsTree" text="Show Methods Tree" AnchorPane.rightAnchor="354.0" />
+                              <Label layoutX="494.0" layoutY="6.0" text="Filter" AnchorPane.rightAnchor="292.0" AnchorPane.topAnchor="6.0" />
+                              <TextField fx:id="filterText" layoutX="546.0" layoutY="1.0" prefHeight="26.0" prefWidth="256.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="1.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                   <Tab id="Checkpoint" closable="false" text="Checkpoint">
+                      <content>
+                           <AnchorPane id="Checkpoint" fx:id="checkpointAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <children>
+                              <HBox layoutX="20.0" layoutY="20.0">
+                                 <children>
+                                         <VBox layoutX="20.0" layoutY="20.0" spacing="8.0">
+                                          <children>
+                                            <CheckBox fx:id="auth" mnemonicParsing="false" text="Are you authorized to run the experiment?" />
+                                            <CheckBox fx:id="scheduled" mnemonicParsing="false" text="Is it on the schedule?" />
+                                            <CheckBox fx:id="resources" mnemonicParsing="false" text="Are all required resources on site?" />
+                                            <CheckBox fx:id="qc" mnemonicParsing="false" text="Are QC records up to date?" />
+                                            <CheckBox fx:id="lucky" mnemonicParsing="false" text="Are you feeling lucky?" />
+                                          </children>
+                                          </VBox>
+                                    <Label fx:id="droplabel" alignment="CENTER" prefHeight="77.0" prefWidth="484.0" text="Drop Data Files Here" textAlignment="CENTER" visible="false">
+                                       <font>
+                                          <Font size="64.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                              </children>
+                           </AnchorPane>
+                      </content>
+                   </Tab>
+                  <Tab id="Results" closable="false" text="Results">
+                    <content>
+                      <AnchorPane id="Results" fx:id="resultsAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <VBox layoutX="29.0" layoutY="14.0" spacing="8.0">
+                                 <children>
+                                    <CheckBox fx:id="showAllColumns" disable="true" mnemonicParsing="false" text="Show All Columns" />
+                                    <HBox spacing="4.0">
+                                       <children>
+                                          <Button fx:id="plotButton" layoutX="21.0" layoutY="564.0" mnemonicParsing="false" onAction="#doPlot" text="Plot 1D" />
+                                          <Button fx:id="plot2DButton" mnemonicParsing="false" onAction="#doPlot2D" text="Plot 2D" />
+                                       </children>
+                                    </HBox>
+                                    <Button fx:id="histogramProfiles" layoutX="10.0" layoutY="70.0" mnemonicParsing="false" onAction="#doHistogramProfiles" prefHeight="26.0" text="Histogram Profiles" />
+                                    <Button fx:id="plotAllButton" disable="true" mnemonicParsing="false" onAction="#doPlotAll" prefHeight="26.0" text=" Overlay" />
+                                    <CheckBox fx:id="addYOffset" disable="true" mnemonicParsing="false" text="Add Y Offset" />
+                                    <CheckBox fx:id="showSumCk" disable="true" mnemonicParsing="false" text="Show Sum" />
+                                    <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="653.0" prefWidth="202.0">
+                                       <items>
+                                          <VBox prefHeight="346.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="Segments" />
+                                                <ListView fx:id="segments" layoutX="21.0" layoutY="262.0" prefHeight="232.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                             </children>
+                                          </VBox>
+                                          <VBox layoutX="20.0" layoutY="26.0">
+                                             <children>
+                                                <Label text="Scans" />
+                                                <ListView fx:id="scans" layoutX="20.0" layoutY="26.0" prefHeight="207.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                             </children>
+                                          </VBox>
+                                       </items>
+                                    </SplitPane>
+                                 </children>
+                              </VBox>
+                              <StackPane layoutX="238.0" layoutY="22.0" prefHeight="424.0" prefWidth="549.0" AnchorPane.bottomAnchor="21.0" AnchorPane.leftAnchor="238.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="22.0">
+                                 <children>
+                                    <ImageView fx:id="image" fitHeight="305.0" fitWidth="526.0" layoutX="238.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
+                                    <SplitPane fx:id="resultsplitter" dividerPositions="0.5">
+                                       <items>
+                                          <ScrollPane prefHeight="809.0" prefWidth="275.0">
+                                             <content>
+                                                <VBox fx:id="graphVBox" prefWidth="265.0" />
+                                             </content>
+                                          </ScrollPane>
+                                          <TableView fx:id="csvtable" prefHeight="827.0" prefWidth="279.0">
+                                            <columns>
+                                              <TableColumn prefWidth="75.0" text="C1" />
+                                              <TableColumn prefWidth="75.0" text="C2" />
+                                            </columns>
+                                          </TableView>
+                                       </items>
+                                    </SplitPane>
+                                 </children>
+                              </StackPane>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab id="Research" text="BridgeDB">
+                     <content>
+                        <AnchorPane id="Research" fx:id="bridgeDBAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <TextArea fx:id="inputBridgeDB" layoutX="22.0" layoutY="99.0" prefHeight="459.0" prefWidth="210.0" />
+                              <Label layoutX="43.0" layoutY="83.0" text="Identifiers to Map" />
+                              <HBox layoutX="280.0" layoutY="84.0" prefHeight="32.0" prefWidth="414.0" spacing="8.0" />
+                              <Button fx:id="attributes" layoutX="14.0" layoutY="559.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="113.0" text="Attributes">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Button>
+                              <TextArea fx:id="outputBridgeDB" layoutX="27.0" layoutY="596.0" prefHeight="343.0" prefWidth="770.0" promptText="Output From Queries" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="596.0" />
+                              <Button fx:id="bridgeDB" layoutX="132.0" layoutY="559.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="112.0" text="Search">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Button>
+                              <ListView fx:id="sourceList" layoutX="280.0" layoutY="100.0" prefHeight="459.0" prefWidth="240.0" />
+                              <ListView fx:id="targetList" layoutX="568.0" layoutY="100.0" prefHeight="460.0" prefWidth="219.0" />
+                              <Label layoutX="49.0" layoutY="23.0" text="Organism" />
+                              <ChoiceBox fx:id="organism" layoutX="116.0" layoutY="17.0" />
+                              <Label layoutX="309.0" layoutY="82.0" text="Sources" />
+                              <Label layoutX="583.0" layoutY="83.0" text="Targets" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+                  <Tab id="Analysis" text="Join">
+                    <content>
+                      <AnchorPane id="Analysis" fx:id="analysisAnchor" minHeight="0.0" minWidth="0.0" prefHeight="413.0" prefWidth="800.0">
+                           <children>
+                              <VBox layoutX="-1.0" layoutY="46.0" prefHeight="421.0" prefWidth="800.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="46.0">
+                                 <children>
+                                    <SplitPane dividerPositions="0.24874371859296482, 0.5954773869346733" layoutX="31.0" layoutY="46.0" prefHeight="355.0" AnchorPane.bottomAnchor="174.0" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="46.0" VBox.vgrow="ALWAYS">
+                                       <items>
+                                          <VBox prefHeight="761.0" prefWidth="164.0" spacing="8.0">
+                                             <children>
+                                                <Label text="Digest" />
+                                                <ListView fx:id="normalizeList" layoutX="31.0" layoutY="48.0" prefHeight="243.0" prefWidth="189.0" VBox.vgrow="ALWAYS" />
+                                             </children>
+                                          </VBox>
+                                          <VBox spacing="8.0">
+                                             <children>
+                                                <Label text="Classify" />
+                                                <TreeTableView fx:id="classifyTree" layoutX="232.0" layoutY="48.0" prefHeight="737.0" prefWidth="318.0" VBox.vgrow="ALWAYS">
+                                                  <columns>
+                                                    <TreeTableColumn fx:id="nameColumn" prefWidth="106.0" text="Population" />
+                                                      <TreeTableColumn fx:id="countColumn" prefWidth="83.0" text="Count" />
+                                                    <TreeTableColumn fx:id="rangeColumn" prefWidth="83.0" text="Range" />
+                                                      <TreeTableColumn fx:id="markerColumn" prefWidth="83.0" text="Marker" />
+                                                  </columns>
+                                                </TreeTableView>
+                                             </children>
+                                          </VBox>
+                                          <VBox fx:id="canvasVbox" spacing="8.0">
+                                             <children>
+                                                <Label text="Canvas" />
+                                             </children>
+                                          </VBox>
+                                       </items>
+                                    </SplitPane>
+                                    <HBox spacing="8.0">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#doBatch" text="Batch" />
+                                          <Button mnemonicParsing="false" onAction="#doMonitor" text="Monitor" />
+                                          <Button mnemonicParsing="false" onAction="#doConfigure" text="Configure" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab id="Mosaic" closable="false" text="Analyze">
+                     <content>
+                        <AnchorPane fx:id="mosaicAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
+                  <Tab id="Mosaic" closable="false" text="Visualize">
+                     <content>
+                        <AnchorPane fx:id="mosaicAnchor1" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
+                  <Tab id="Mosaic" closable="false" text="References">
+                     <content>
+                        <AnchorPane fx:id="mosaicAnchor11" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
+                  <Tab id="Discussion" closable="false" text="Discussion">
+                    <content>
+                      <AnchorPane id="Discussion" fx:id="discussionAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <HTMLEditor fx:id="discussion" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="5.0" layoutY="17.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="104.0" />
+                              <Label layoutX="14.0" layoutY="9.0" text="Prompts" />
+                              <Label layoutX="14.0" layoutY="44.0" text="Explain how this work is novel and innovative" />
+                              <Label layoutX="14.0" layoutY="69.0" text="Explain how this work extends our understanding of the subject" />
+                              <Label layoutX="466.0" layoutY="69.0" text="Describe Future work that might extend these results" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="69.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+               </tabs>
+            </TabPane>
+         </center>
+         <top>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#doNew" text="New" />
+                        <MenuItem mnemonicParsing="false" onAction="#doOpen" text="Open" />
+                        <MenuItem fx:id="recentMenu" mnemonicParsing="false" text="Open Recent..." />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
+                        <MenuItem mnemonicParsing="false" onAction="#saveas" text="Save As...." />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#doClose" text="Close" />
+                        <MenuItem mnemonicParsing="false" onAction="#doQuit" text="Quit" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#doUndo" text="Undo" />
+                        <MenuItem mnemonicParsing="false" onAction="#doRedo" text="Redo" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#doCut" text="Cut" />
+                        <MenuItem mnemonicParsing="false" onAction="#doCopy" text="Copy" />
+                        <MenuItem mnemonicParsing="false" onAction="#doPaste" text="Paste" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Duplicate" />
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                        <MenuItem mnemonicParsing="false" text="Select All" />
+                  </items>
+                </Menu>
+                  <Menu mnemonicParsing="false" text="View">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Hypothesis" />
+                        <MenuItem mnemonicParsing="false" text="Research" />
+                        <MenuItem mnemonicParsing="false" text="Methods" />
+                        <MenuItem mnemonicParsing="false" text="Results" />
+                        <MenuItem mnemonicParsing="false" text="Analysis" />
+                        <MenuItem mnemonicParsing="false" text="Discussion" />
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Layout">
+                     <items>
+                        <MenuItem fx:id="tearoffTabs" mnemonicParsing="false" onAction="#doShowTabView" text="Tear-off Tabs" />
+                        <MenuItem mnemonicParsing="false" onAction="#doShowListView" text="Sectioned list" />
+                        <MenuItem mnemonicParsing="false" onAction="#doShowMosaic" text="Mosaic" />
+                        <MenuItem mnemonicParsing="false" onAction="#doShowWizard" text="Wizard" />
+                     </items>
+                  </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                        <MenuItem mnemonicParsing="false" text="Manual Online" />
+                        <MenuItem mnemonicParsing="false" text="Stack Overflow" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </top>
+      </BorderPane>
+   </children>
+</AnchorPane>

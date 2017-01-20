@@ -265,7 +265,8 @@ public class EntrezForm extends VBox
 				catch( Exception e) {}
 			}
 		}
-		buf.setLength(buf.length()-1);		// remove trailing +		
+		if (buf.length() > 0)
+			buf.setLength(buf.length()-1);		// remove trailing +		
 	}
 
 	//------------------------------------------------------------------------------

@@ -10,7 +10,8 @@ import javafx.stage.Stage;
 public class AppPublish extends Application
 {
     public static void main(String[] args)    {        launch(args);    }
-	static final String RESOURCE = "publisher.fxml";
+//	static final String RESOURCE = "publisher.fxml";
+	static final String RESOURCE = "apms.fxml";
     static final String STYLE = "publish.css";
 
 	public AppPublish() 					{	   instance = this;	}
@@ -32,7 +33,7 @@ public class AppPublish extends Application
         Scene scene = new Scene(loader.load());
         PublishController controller = (PublishController) loader.getController();
 		scene.getStylesheets().add(getClass().getResource(STYLE).toExternalForm());
-        stage.setTitle("A Biological Investigation Editor");
+        stage.setTitle("Affinity Purification Mass Spectometry");
         stage.setX(20);
 		stage.setWidth(1100);
 		stage.setHeight(650);
