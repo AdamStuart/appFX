@@ -1,11 +1,10 @@
 package publish;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -13,18 +12,18 @@ import org.w3c.dom.Document;
 
 import container.mosaic.refimpl.javafx.MosaicPane;
 import database.forms.EntrezForm;
-import gui.Borders;
+import game.bookclub.BorderPaneAnimator;
 import gui.DropUtil;
 import gui.ProgressStatus;
 import gui.TabPaneDetacher;
 import javafx.application.Application;
+import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -34,8 +33,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -60,10 +58,9 @@ import javafx.scene.text.Text;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.dao.CSVTableData;
-import model.dao.IntegerDataRow;
+import model.bio.Gene;
+import model.dao.StringDataRow;
 import model.stat.Population;
-import table.codeOrganizer.TreeTableModel;
 import util.FileUtil;
 import util.StringUtil;
 import xml.XMLFileTree;
@@ -75,8 +72,9 @@ public class PublishController implements Initializable
 {
 	@FXML AnchorPane top;
 	@FXML BorderPane borderPane;
+	@FXML BorderPane fluomicsContainer;
 	@FXML TabPane tocTabPane;
-	
+		
 	@FXML AnchorPane abstractAnchor;
 	@FXML AnchorPane researchAnchor;
 	@FXML AnchorPane methodsAnchor;
@@ -84,8 +82,11 @@ public class PublishController implements Initializable
 	@FXML AnchorPane resultsAnchor;
 	@FXML AnchorPane analysisAnchor;
 	@FXML AnchorPane discussionAnchor;
-	@FXML AnchorPane mosaicAnchor;
+	@FXML AnchorPane mosaicAnchor;			// Visualize
 	@FXML AnchorPane annotateAnchor;
+	@FXML AnchorPane referencesAnchor;
+//	@FXML AnchorPane visualizationAnchor;
+	
 	@FXML AnchorPane joinAnnchor;
 //	@FXML AnchorPane specsAnchor;
 	List<AnchorPane>  anchors;
@@ -120,10 +121,14 @@ public class PublishController implements Initializable
 	@FXML CheckBox resources;
 	@FXML CheckBox qc;
 	@FXML CheckBox lucky;
+	@FXML Button cluster;
+	@FXML Button betweenness;
+	@FXML Button toggleLeftButton;
+	@FXML Button overRep;
+	@FXML CheckBox MiST;
+	@FXML CheckBox SAInt;
 	@FXML Label droplabel;
 	
-	
-
 	// Methods
 	@FXML private VBox connectionsBox; 
 	@FXML private TreeTableView<org.w3c.dom.Node> xmlTree;
@@ -136,30 +141,75 @@ public class PublishController implements Initializable
 	public void setFilterText(String s)	{ filterText.setText(s); }
 
 	public TreeTableView<org.w3c.dom.Node> getXmlTree()		{ return xmlTree;	}
-	public XMLFileTree 		getFileTree()		{ return fileTree;	}
+	public XMLFileTree 	getFileTree()		{ return fileTree;	}
 	
 	// Results
-	@FXML Button plotButton;
-	@FXML Button plot2DButton;
-	@FXML Button plotAllButton;
-	@FXML VBox graphVBox;
+//	@FXML Button plotButton;
+//	@FXML Button plot2DButton;
+//	@FXML Button plotAllButton;
+//	@FXML VBox graphVBox;
 
-	@FXML CheckBox addYOffset;
-	@FXML CheckBox showAllColumns;
-	@FXML CheckBox showSumCk;
-	@FXML SplitPane resultsplitter;
-	@FXML ListView<ScanJob> scans;
-	public ListView<ScanJob> getScans() { return scans; }
-	@FXML ListView<Segment> segments;
-	public ListView<Segment> getSegments() { return segments; }
-	@FXML TableView<IntegerDataRow> csvtable;
+//	@FXML CheckBox addYOffset;
+//	@FXML CheckBox showAllColumns;
+//	@FXML CheckBox showSumCk;
+//	@FXML SplitPane resultsplitter;
+//	@FXML ListView<ScanJob> scans;
+//	public ListView<ScanJob> getScans() { return scans; }
+//	@FXML ListView<Segment> segments;
+//	public ListView<Segment> getSegments() { return segments; }
 
+	@FXML TableView<ResultsRow> resultsTable;
+	@FXML Button filterPrey;
+	@FXML Button removeContaminants;
+	@FXML Button prescore;
+	@FXML Button score;
+
+	// Annotate -----------------------------------------------------
+	
+	@FXML TableView<StringDataRow> annotationTable;
+	
+	@FXML Slider significance;
+	@FXML Slider foldChange;
+
+	@FXML CheckBox H1N1;
+	@FXML CheckBox H3N2;
+	@FXML CheckBox H5N1;
+
+	@FXML CheckBox hr12;
+	@FXML CheckBox hr24;
+	@FXML CheckBox hr48;
+	@FXML CheckBox hr72;
+	@FXML CheckBox hr96;
+
+	@FXML CheckBox hideOrphans;
+	@FXML CheckBox literature;
+	@FXML CheckBox binary;
+	@FXML CheckBox regulatory;
+	@FXML CheckBox signaling;
+
+	@FXML ChoiceBox<String> windowSize;
+	@FXML ChoiceBox<String> layout;
+
+	@FXML TableColumn<Gene, String> labelColumn;
+	@FXML TableColumn<Gene, String> idColumn;
+	@FXML TableColumn<Gene, String> nameColumn;
+	@FXML TableColumn<Gene, String> timeColumn;
+	@FXML TableColumn<Gene, String> H1N1Column;
+	@FXML TableColumn<Gene, String> H3N2Column;
+	@FXML TableColumn<Gene, String> H5N1Column;
+	@FXML Label sigLabel;
+	@FXML Label foldChangeLabel;
+	// Annotate -----------------------------------------------------
+	@FXML TableView<Gene> analysisTable;
+	@FXML TableColumn<Gene, Double> betweennessColumn;
+	@FXML TableColumn<Gene, Integer> clusterColumn;
+	@FXML TableColumn<Gene, String> overRepColumn;
 	// Analysis
-	@FXML ListView<String> normalizeList;
+//	@FXML ListView<String> normalizeList;
 //	@FXML ListView<String> interrogateList;
 //	@FXML ListView<String> visualizeList;
-	@FXML private TreeTableView<Population> classifyTree;
-	@FXML private VBox canvasVbox;
+//	@FXML private TreeTableView<Population> classifyTree;
+//	@FXML private VBox canvasVbox;
 	
 	// discussion
 	@FXML HTMLEditor discussion;
@@ -191,6 +241,27 @@ public class PublishController implements Initializable
 	@FXML void showMethodsTree()	{		new MethodsTree(fileTree.getRoot());	}
 	MosaicPane<Region> mosaicPane;
 	PublishModel model;
+	void addText(DragEvent ev)
+	{
+		Dragboard db = ev.getDragboard();
+		List<File> files = db.getFiles();
+		
+		for (File f : files)
+		{
+			if (FileUtil.isZip(f))
+			{
+				String manifest = FileUtil.decompress(f);
+				System.out.println("\nunzipped these files: \n" + manifest);
+				f = new File(StringUtil.chopExtension(f.getAbsolutePath()));
+			}
+			if (FileUtil.isTXT(f))
+			{
+				String text = FileUtil.readFileIntoString(f.getAbsolutePath());		
+				setHTML(text);
+				ev.consume();
+			}
+		}
+	}
 	
 	//-------------------------------------------------------------------------------------------
 	@Override public void initialize(URL location, ResourceBundle resBundle)
@@ -206,7 +277,7 @@ public class PublishController implements Initializable
 		celltype.getSelectionModel().selectFirst();
 		technology.setItems(EDLParsingHelper.technologyList);
 		technology.getSelectionModel().selectFirst();
-
+		DropUtil.makeFileDropPane(hypothesis, this::addText);
 		//Research---------
 		researchAnchor.getChildren().add(querier);
 		AnchorPane.setBottomAnchor(querier, 10d);
@@ -228,29 +299,90 @@ public class PublishController implements Initializable
 //		String surface = "model5";		Mosaic Pane seems to be brittle around "bad" input here.
 		
 		//Results --------- there is an overlay of an ImageView and TableView, so show/hide panes on selection change
+		setupResults();
 		
-		graphVBox.setSpacing(5);
+		//Annotate --------- 
+		setupAnnotate();
+
 		
-		addOffset.bind(addYOffset.selectedProperty());
-		allColumns.bind(showAllColumns.selectedProperty());
-		showSum.bind(showSumCk.selectedProperty());
-		setupCSVTable();
-		scans.getSelectionModel().selectedItemProperty().addListener((obs, old, val)-> {
-			image.setImage(val.getImage());
-			image.setVisible(true);
-			resultsplitter.setVisible(false);
-		});
-		segments.getSelectionModel().selectedItemProperty().addListener((obs, old, val)-> {
-			if (val != null) installSegmentTable(val.getData());
-			image.setVisible(false);
-			resultsplitter.setVisible(true);
-		});
 		//Analysis --------- 
 		setupAnalysis();
 		setupMosaic();
+		setupReferences();
 		
 //		String agendaUrl = "https://docs.google.com/document/d/1VT5hmAjFJSIQT_1YsJpF6ELrzmJ1iT2Lng0s-DyZnSg/edit?ts=563105e1";
 //		agendaPage.getEngine().load(agendaUrl);
+	}
+	private void setupReferences() {
+		
+		final String RESOURCE = "../table/referenceList/ReferenceList.fxml";
+	    final String STYLE = "genelistStyles.css";
+		URL res = getClass().getResource(RESOURCE);
+	    FXMLLoader referenceLoader = new FXMLLoader(res);
+		try {
+			BorderPane pane = referenceLoader.load();
+			referencesAnchor.getChildren().add(pane);
+			AnchorPane.setTopAnchor(pane, 5.);
+			AnchorPane.setLeftAnchor(pane, 5.);
+			AnchorPane.setBottomAnchor(pane, 5.);
+			AnchorPane.setRightAnchor(pane, 5.);
+			} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	private void setupAnnotate() {		// FLUOMICS
+		
+		DropUtil.makeFileDropPane(annotationTable, ev -> 
+		{  importResults(ev.getDragboard().getFiles(), allRows, columnNames);  } );
+		
+		H1N1Column.visibleProperty().bind(H1N1.selectedProperty());
+		H3N2Column.visibleProperty().bind(H3N2.selectedProperty());
+		H5N1Column.visibleProperty().bind(H5N1.selectedProperty());
+		
+		hr12.selectedProperty().addListener((newValue) -> timePointFilter(newValue));
+		CheckBox[] checks = { hr12, hr24, hr48, hr72, hr96 };
+		for ( CheckBox ck : checks)
+			ck.selectedProperty().addListener((newValue) -> timePointFilter(newValue));
+
+		sigLabel.setStyle("-fx-font-size: 11");
+		foldChangeLabel.setStyle("-fx-font-size: 11");
+
+	}
+	
+	List<String> columnNames = new ArrayList<String>();
+	List<ResultsRow> allRows = new ArrayList<ResultsRow>();
+	
+	private void timePointFilter(Observable newValue) {
+		CheckBox[] checks = { hr12, hr24, hr48, hr72, hr96 };
+		StringBuilder bldr = new StringBuilder();
+		for ( CheckBox ck : checks)
+		{
+			if (ck.isSelected())
+				bldr.append(ck.getId().substring(2)).append("H");
+		}
+		String desiredTimePoints = bldr.toString();
+		System.out.println("timePointFilter: " + desiredTimePoints);
+		int nRows = allRows.size();
+		for (int i=0; i< nRows; i++)
+		{
+//			Gene rec = allRows.get(i);
+//			String timeFld = rec.get("time");
+//			if (desiredTimePoints.contains(timeFld))
+//				annotationTable.getItems().add(rec);
+		}
+
+
+	}
+	List<ResultsRow> resultRows = new ArrayList<ResultsRow>();
+	List<String> resultColumnNames = new ArrayList<String>();
+
+	private void setupResults() {
+		resultsTable.getItems().clear();
+		DropUtil.makeFileDropPane(resultsTable, ev -> 
+			{  importResults(ev.getDragboard().getFiles(), resultRows, resultColumnNames); 
+			resultsTable.getItems().addAll(resultRows); });		
+		new BorderPaneAnimator(fluomicsContainer, toggleLeftButton, Side.LEFT, false, 200);
 	}
 	//----------------------------------------------------------------------------------
 	public void start()
@@ -271,12 +403,6 @@ public class PublishController implements Initializable
 				break;
 			}
 	}
-	//-------------------------------------------------------------------------------------				
-	public void installSegmentTable(CSVTableData inData)
-	{
-		if (inData == null) return;
-		inData.populateCSVTable(csvtable);
-	}
 
 
 	//-------------------------------------------------------------------------------------				
@@ -287,6 +413,34 @@ public class PublishController implements Initializable
 	}
 	
 	//-------------------------------------------------------------------------------------				
+	@FXML private void betweenness()
+	{
+		System.out.println("betweenness");
+		System.out.println("");
+		betweennessColumn.setVisible(true);
+		analysisTable.getColumns();
+	}
+	
+	@FXML private void cluster()
+	{
+		System.out.println("cluster");
+		clusterColumn.setVisible(true);
+
+	}
+		
+	@FXML private void toggleLeft()
+	{
+		System.out.println("toggleLeft");
+		clusterColumn.setVisible(true);
+
+	}
+		
+	@FXML private void overRep()
+	{
+		overRepColumn.setVisible(true);
+		System.out.println("overRep");
+}
+	
 	private void setupSOPList()
 	{
 		soplist.setItems(EDLParsingHelper.getSOPLinks());
@@ -302,7 +456,30 @@ public class PublishController implements Initializable
 	
 	/** Mapping of element id's to labels for later reference when serializing Mosaic*/
 	private java.util.Map<String, Label> clientMap = new java.util.HashMap<>();
+	//-------------------------------------------------------------------------------------				
 
+//	private void importResults(List<File> fList, TableView table) {
+//		for (File f : fList)
+//				APMSParsingHelper.addTXTFilesToResults(f, table);
+//	}
+
+	private void importResults(List<File> fList, List<ResultsRow> list, List<String> columnNames) {
+		for (File f : fList)
+				APMSParsingHelper.addTXTFilesToResults(f, list, columnNames);
+	}
+
+	@FXML private void filterPrey() {
+		
+	}
+	@FXML private void  removeContaminants() {
+		
+	}
+	@FXML private void  prescore() {
+		
+	}
+	@FXML private void  score() {
+		
+	}
 	//-------------------------------------------------------------------------------------				
 	private void setupMosaic()
 	{
@@ -312,10 +489,10 @@ public class PublishController implements Initializable
 		mosaicPane.prefWidthProperty().bind(mosaicAnchor.widthProperty());
 		
 		String[] model = { 
-						"Methods , 	0, 		0, 		0.50, 	1",  
-						"File , 	0.50, 	0, 		0.50, 	0.33", 
-						"Inventory, 0.5, 	0.33, 	0.50, 	0.33",  
-						"SOPs, 		.5, 	0.66, 	0.50, 	0.33"
+						"Network , 	0, 		0, 		0.50, 	1",  
+						"Proteins , 	0.50, 	0, 		0.50, 	0.33", 
+						"Interactions, 0.5, 	0.33, 	0.50, 	0.33",  
+						"Procedures, 		.5, 	0.66, 	0.50, 	0.33"
 						}; 
 		Color[] colors = new Color[] { Color.GAINSBORO,   Color.CORAL,   Color.CORNFLOWERBLUE,   Color.DARKSLATEGRAY};
 		/** Used to randomize ui element colors */
@@ -338,6 +515,7 @@ public class PublishController implements Initializable
 		}
       mosaicPane.getEngine().addSurface(mosaicPane.getSurface());
 	}
+	//--------------------------------------------------------------------------------
 
 	public Label getLabel(Color color, String id) {
 		Label label = new Label(id);
@@ -354,16 +532,6 @@ public class PublishController implements Initializable
 	boolean verbose = false;
 	
 	
-	//--------------------------------------------------------------------------------
-	public void showAllColumns(boolean isShowing)
-	{
-		List<TableColumn<IntegerDataRow,?>> cols = csvtable.getColumns();
-		TableColumn<?,?> col0 = cols.get(0);
-		if (col0 == null || cols.size() < 9) return;		// table not populated
-//		boolean isShowing = col0.isVisible();		
-		for (int i=0;i<6;i++)
-			cols.get(i).setVisible(!isShowing);
-	}
 	VBox bigView = new VBox();
 	//--------------------------------------------------------------------------------
 	@FXML private void doShowListView()
@@ -422,71 +590,68 @@ public class PublishController implements Initializable
 	{
 		
 		System.out.println("doPlotAll   	 NEEDS THREADING");
-		graphVBox.getChildren().clear();
-		graphVBox.setPrefWidth(750);
-		graphVBox.setBorder(Borders.dashedBorder);
-		model.processSegmentTables(graphVBox, segments.getItems());
+//		graphVBox.getChildren().clear();
+//		graphVBox.setPrefWidth(750);
+//		graphVBox.setBorder(Borders.dashedBorder);
+//		model.processSegmentTables(graphVBox, segments.getItems());
 		
 		}
 	//--------------------------------------------------------------------------------
 	@FXML void doHistogramProfiles()	
 	{	
 		System.out.println("doHistogramProfiles: ");	
-		graphVBox.getChildren().clear();
-		graphVBox.setPrefWidth(1450);
-		resultsplitter.setDividerPosition(0, 0.9);
-//		graphVBox.setBorder(Borders.dashedBorder);
-		model.profileHistograms(graphVBox, segments.getItems());
+//		graphVBox.getChildren().clear();
+//		graphVBox.setPrefWidth(1450);
+//		resultsplitter.setDividerPosition(0, 0.9);
+////		graphVBox.setBorder(Borders.dashedBorder);
+//		model.profileHistograms(graphVBox, segments.getItems());
 	}
 
 	//--------------------------------------------------------------------------------
-	@FXML private void doPlot()
-	{
-		ObservableList<IntegerDataRow> data = csvtable.getItems();
-		if (data == null) return;
-		Segment activeSeg = segments.getSelectionModel().getSelectedItem();
-		CSVTableData model = activeSeg == null ? null : activeSeg.getData();
-		if (model != null)
-		{
-			graphVBox.getChildren().clear();
-			model.generateRawHistogramCharts(graphVBox);
-		}
-	}
+//	@FXML private void doPlot()
+//	{
+//		ObservableList<IntegerDataRow> data = resultsTable.getItems();
+//		if (data == null) return;
+//		Segment activeSeg = segments.getSelectionModel().getSelectedItem();
+//		CSVTableData model = activeSeg == null ? null : activeSeg.getData();
+//		if (model != null)
+//		{
+//			graphVBox.getChildren().clear();
+//			model.generateRawHistogramCharts(graphVBox);
+//		}
+//	}
 	//--------------------------------------------------------------------------------
-	@FXML private void doViz()
-	{
-		System.out.println("doViz");
-	}
+//	@FXML private void doViz()
+//	{
+//		System.out.println("doViz");
+//	}
 	//--------------------------------------------------------------------------------
-	@FXML private void doViz2D()
-	{
-		System.out.println("doViz2D");
-	}
+//	@FXML private void doViz2D()
+//	{
+//		System.out.println("doViz2D");
+//	}
 	//--------------------------------------------------------------------------------
-	@FXML private void doPlot2D()
-	{
-		System.out.println("doPlot2D");
-		
-		ObservableList<IntegerDataRow> data = csvtable.getItems();
-		if (data == null) return;
-		Segment activeSeg = segments.getSelectionModel().getSelectedItem();
-		if (activeSeg != null)
-		{
-			CSVTableData model = activeSeg.getData();
-			model.getImages().clear();
-			graphVBox.getChildren().clear();
-			model.generateScatters(graphVBox);
-		}
-	}
+//	@FXML private void doPlot2D()
+//	{
+//		System.out.println("doPlot2D");
+//		
+//		ObservableList<IntegerDataRow> data = resultsTable.getItems();
+//		if (data == null) return;
+//		Segment activeSeg = segments.getSelectionModel().getSelectedItem();
+//		if (activeSeg != null)
+//		{
+//			CSVTableData model = activeSeg.getData();
+//			model.getImages().clear();
+//			graphVBox.getChildren().clear();
+//			model.generateScatters(graphVBox);
+//		}
+//	}
 
 	//--------------------------------------------------------------------------------
-
 	private void setupDropPane()
 	{
 		DropUtil.makeFileDropPane(borderPane, this::addFiles);
 	}
-	
-
 	//--------------------------------------------------------------------------------
 	// specifically adding an experiment folder with xmls and subfolders
 	void addFiles(DragEvent ev)
@@ -502,19 +667,23 @@ public class PublishController implements Initializable
 				System.out.println("\nunzipped these files: \n" + manifest);
 				f = new File(StringUtil.chopExtension(f.getAbsolutePath()));
 			}
+			if (FileUtil.isTXT(f))
+			{
+				APMSParsingHelper.addTXTFilesToResults(f, resultsTable);
+			}
 			if (FileUtil.isCSV(f))
 			{
-				EDLParsingHelper.addCSVFilesToSegments(f, segments);
+//				EDLParsingHelper.addCSVFilesToSegments(f, segments);
 			}
 			if (f.isDirectory())
 			{		
-				if (f.getName().toUpperCase().contains("GATE"))
-					EDLParsingHelper.addCSVFilesToSegments(f, segments);
-				else
+//				if (f.getName().toUpperCase().contains("GATE"))
+//					EDLParsingHelper.addCSVFilesToSegments(f, segments);
+//				else
 				{
 					doc.setMethodsFilePath(f.getAbsolutePath());
 					fileTree.setRoot(f);				// traverse down the file system tree, adding everything	
-					EDLParsingHelper.setEDLDirectory(f, this);
+//					EDLParsingHelper.setEDLDirectory(f, this);
 					if (xmlTreeRoot == null)
 					{
 						xmlTreeRoot = (XMLTreeItem) xmlTree.getRoot();
@@ -530,13 +699,7 @@ public class PublishController implements Initializable
 		}
 		
 	}
-	//--------------------------------------------------------------------------------
 
-	private void setupCSVTable()
-	{
-		assert (csvtable != null);
-	}
-	
 	//--------------------------------------------------------------------------------
 	private void setupXMLTree()
 	{
@@ -580,7 +743,7 @@ public class PublishController implements Initializable
 	//--------------------------------------------------------------------------------
 // Analysis commands
 	
-	@FXML	private TreeTableColumn<Population, String> nameColumn;
+	@FXML	private TreeTableColumn<Population, String> analysisColumn;
 	@FXML	private TreeTableColumn<Population, String> countColumn;
 	@FXML	private TreeTableColumn<Population, String> markerColumn;
 	@FXML	private TreeTableColumn<Population, String> rangeColumn;
@@ -588,29 +751,16 @@ public class PublishController implements Initializable
 
 	private void setupAnalysis()
 	{
-		normalizeList.setItems(FXCollections.observableArrayList(EDLParsingHelper.stepList));
-		normalizeList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		normalizeList.setCellFactory(item -> new StepCell());
-		
-		classifyTree.setRoot(TreeTableModel.getCellPopulationTree());
-		classifyTree.getStyleClass().add("classifierTree");
-		
-		nameColumn.setPrefWidth(200);	 
-		nameColumn.setCellValueFactory(p ->   {   Population pop = p.getValue().getValue();   	return new ReadOnlyObjectWrapper<String>(pop.getName());	});
-		countColumn.setCellValueFactory(p ->  {   Population pop = p.getValue().getValue();    	return new ReadOnlyObjectWrapper(pop.getCountStr());	});
-		markerColumn.setCellValueFactory(p -> {   Population pop = p.getValue().getValue();     return new ReadOnlyObjectWrapper<String>(pop.getMarker());	});
-		rangeColumn.setCellValueFactory(p -> 
-		{  
-			Population pop = p.getValue().getValue();   
-			String txt =  (pop.getHigh() <= pop.getLow()) ?  "" :"(" + pop.getLow() + " - " + pop.getHigh() + "%)";
-			return new ReadOnlyObjectWrapper<String>(txt);	
-		});
-		Objects.requireNonNull(canvasVbox);
-//		canvasVbox.setBorder(Borders.dashedBorder);
-		AnchorPane canvas = new AnchorPane();
-		canvas.setPrefHeight(3000);
-		canvasVbox.getChildren().add(canvas);
-		canvas.setBorder(Borders.dashedBorder);
+		betweennessColumn.setVisible(false);
+		clusterColumn.setVisible(false);
+		overRepColumn.setVisible(false);
+//		betweennessColumn.setCellValueFactory(value);
+//		clusterColumn.setCellValueFactory(value);
+//		overRepColumn.setCellValueFactory(value);
+//		AnchorPane canvas = new AnchorPane();
+//		canvas.setPrefHeight(3000);
+//		canvasVbox.getChildren().add(canvas);
+//		canvas.setBorder(Borders.dashedBorder);
 
 		
 		//these two list commented out because it wasn't clear what they are for.
@@ -682,7 +832,7 @@ public class PublishController implements Initializable
 		Document w3cdoc = null;
 		if (FileUtil.isCSV(file))
 		{
-			EDLParsingHelper.addCSVFilesToSegments(file, segments);
+//			EDLParsingHelper.addCSVFilesToSegments(file, segments);
 		}
 		else if (FileUtil.isXML(file))
 		{

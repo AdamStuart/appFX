@@ -9,8 +9,8 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -21,6 +21,7 @@
 <?import javafx.scene.control.TreeTableColumn?>
 <?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -39,7 +40,7 @@
                     <content>
                       <AnchorPane id="Hypothesis" fx:id="abstractAnchor">
                            <children>
-                              <VBox fillWidth="false" layoutX="8.0" layoutY="5.0" spacing="8.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="10.0">
+                              <VBox layoutX="8.0" layoutY="5.0" spacing="8.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="10.0">
                                  <children>
                                     <VBox prefHeight="156.0" prefWidth="801.0" spacing="8.0" VBox.vgrow="ALWAYS">
                                        <children>
@@ -74,8 +75,8 @@
                                           <Label text="Keywords" />
                                        </children>
                                     </VBox>
-                                    <TextArea fx:id="keywords" minHeight="45.0" prefHeight="139.0" prefWidth="798.0" />
-                                    <HTMLEditor fx:id="hypothesis" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutY="223.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="223.0" />
+                                    <TextArea fx:id="keywords" minHeight="45.0" prefHeight="139.0" prefWidth="798.0" VBox.vgrow="ALWAYS" />
+                                    <HTMLEditor fx:id="hypothesis" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutY="223.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="223.0" VBox.vgrow="ALWAYS" />
                                  </children>
                               </VBox>
                            </children>
@@ -84,7 +85,7 @@
                   </Tab>
                   <Tab id="Research" text="Research">
                     <content>
-                      <AnchorPane id="Research" fx:id="research" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                      <AnchorPane id="Research" fx:id="researchAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                     </content>
                   </Tab>
                   <Tab id="Methods" closable="false" text="Methods">
@@ -109,7 +110,7 @@
                                           </VBox>
                                           <VBox fx:id="fileTreeBox">
                                              <children>
-                                                <Label text="File Cache" />
+                                                <Label text="Femote File Cache" />
                                              </children>
                                           </VBox>
                                        </items>
@@ -140,8 +141,14 @@
                                             <CheckBox fx:id="auth" mnemonicParsing="false" text="Are you authorized to run the experiment?" />
                                             <CheckBox fx:id="scheduled" mnemonicParsing="false" text="Is it on the schedule?" />
                                             <CheckBox fx:id="resources" mnemonicParsing="false" text="Are all required resources on site?" />
+                                          <CheckBox fx:id="lucky1111" layoutX="10.0" layoutY="244.0" mnemonicParsing="false" text="Enough Replicates?" />
                                             <CheckBox fx:id="qc" mnemonicParsing="false" text="Are QC records up to date?" />
-                                            <CheckBox fx:id="lucky" mnemonicParsing="false" text="Are you feeling lucky?" />
+                                          <CheckBox fx:id="lucky1121" layoutX="10.0" layoutY="114.0" mnemonicParsing="false" text="Data Preprocessing" />
+                                          <CheckBox fx:id="lucky112" layoutX="10.0" layoutY="166.0" mnemonicParsing="false" text="Network Analysis" />
+                                            <CheckBox fx:id="lucky" mnemonicParsing="false" text="Clustering" />
+                                          <CheckBox fx:id="lucky1" layoutX="10.0" layoutY="114.0" mnemonicParsing="false" text="Network Visualizaiton" />
+                                          <CheckBox fx:id="lucky11" layoutX="10.0" layoutY="140.0" mnemonicParsing="false" text="Topology Analysis" />
+                                          <CheckBox fx:id="lucky111" layoutX="10.0" layoutY="166.0" mnemonicParsing="false" text="Enrichment Analysis" />
                                           </children>
                                           </VBox>
                                     <Label fx:id="droplabel" alignment="CENTER" prefHeight="77.0" prefWidth="484.0" text="Drop Data Files Here" textAlignment="CENTER" visible="false">
@@ -161,46 +168,29 @@
                            <children>
                               <VBox layoutX="29.0" layoutY="14.0" spacing="8.0">
                                  <children>
-                                    <CheckBox fx:id="showAllColumns" disable="true" mnemonicParsing="false" text="Show All Columns" />
                                     <HBox spacing="4.0">
                                        <children>
-                                          <Button fx:id="plotButton" layoutX="21.0" layoutY="564.0" mnemonicParsing="false" onAction="#doPlot" text="Plot 1D" />
-                                          <Button fx:id="plot2DButton" mnemonicParsing="false" onAction="#doPlot2D" text="Plot 2D" />
+                                          <Button fx:id="filterPrey" layoutX="21.0" layoutY="564.0" mnemonicParsing="false" onAction="#filterPrey" text="Filter Prey" />
                                        </children>
                                     </HBox>
-                                    <Button fx:id="histogramProfiles" layoutX="10.0" layoutY="70.0" mnemonicParsing="false" onAction="#doHistogramProfiles" prefHeight="26.0" text="Histogram Profiles" />
-                                    <Button fx:id="plotAllButton" disable="true" mnemonicParsing="false" onAction="#doPlotAll" prefHeight="26.0" text=" Overlay" />
-                                    <CheckBox fx:id="addYOffset" disable="true" mnemonicParsing="false" text="Add Y Offset" />
-                                    <CheckBox fx:id="showSumCk" disable="true" mnemonicParsing="false" text="Show Sum" />
-                                    <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="653.0" prefWidth="202.0">
-                                       <items>
-                                          <VBox prefHeight="346.0" prefWidth="200.0">
-                                             <children>
-                                                <Label text="Segments" />
-                                                <ListView fx:id="segments" layoutX="21.0" layoutY="262.0" prefHeight="232.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                                             </children>
-                                          </VBox>
-                                          <VBox layoutX="20.0" layoutY="26.0">
-                                             <children>
-                                                <Label text="Scans" />
-                                                <ListView fx:id="scans" layoutX="20.0" layoutY="26.0" prefHeight="207.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                                             </children>
-                                          </VBox>
-                                       </items>
-                                    </SplitPane>
+                                    <Button fx:id="removeContaminants" mnemonicParsing="false" onAction="#removeContaminants" text="Remove Contaminants" />
+                                    <Button fx:id="prescore" layoutX="10.0" layoutY="70.0" mnemonicParsing="false" onAction="#prescore" prefHeight="26.0" text="Prepare For Scoring" />
+                                    <CheckBox fx:id="useMiST" mnemonicParsing="false" selected="true" text="Include MiST" />
+                                    <CheckBox fx:id="useSAInt" mnemonicParsing="false" selected="true" text="Include SAInt" />
+                                    <CheckBox fx:id="useCompPASS" layoutX="10.0" layoutY="167.0" mnemonicParsing="false" text="Include CompPASS" />
+                                    <HBox>
+                                       <children>
+                                          <Button fx:id="score" mnemonicParsing="false" onAction="#score" prefHeight="26.0" text="Score" />
+                                       </children>
+                                    </HBox>
                                  </children>
                               </VBox>
                               <StackPane layoutX="238.0" layoutY="22.0" prefHeight="424.0" prefWidth="549.0" AnchorPane.bottomAnchor="21.0" AnchorPane.leftAnchor="238.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="22.0">
                                  <children>
                                     <ImageView fx:id="image" fitHeight="305.0" fitWidth="526.0" layoutX="238.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
-                                    <SplitPane fx:id="resultsplitter" dividerPositions="0.5">
+                                    <SplitPane fx:id="resultsplitter">
                                        <items>
-                                          <ScrollPane prefHeight="809.0" prefWidth="275.0">
-                                             <content>
-                                                <VBox fx:id="graphVBox" prefWidth="265.0" />
-                                             </content>
-                                          </ScrollPane>
-                                          <TableView fx:id="csvtable" prefHeight="827.0" prefWidth="279.0">
+                                          <TableView fx:id="resultsTable" prefHeight="827.0" prefWidth="279.0">
                                             <columns>
                                               <TableColumn prefWidth="75.0" text="C1" />
                                               <TableColumn prefWidth="75.0" text="C2" />
@@ -214,94 +204,120 @@
                         </AnchorPane>
                     </content>
                   </Tab>
-                  <Tab id="Research" text="BridgeDB">
+                  <Tab id="Research" text="Fluomics">
                      <content>
-                        <AnchorPane id="Research" fx:id="bridgeDBAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <AnchorPane id="Research" fx:id="annotateAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <TextArea fx:id="inputBridgeDB" layoutX="22.0" layoutY="99.0" prefHeight="459.0" prefWidth="210.0" />
-                              <Label layoutX="43.0" layoutY="83.0" text="Identifiers to Map" />
-                              <HBox layoutX="280.0" layoutY="84.0" prefHeight="32.0" prefWidth="414.0" spacing="8.0" />
-                              <Button fx:id="attributes" layoutX="14.0" layoutY="559.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="113.0" text="Attributes">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Button>
-                              <TextArea fx:id="outputBridgeDB" layoutX="27.0" layoutY="596.0" prefHeight="343.0" prefWidth="770.0" promptText="Output From Queries" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="596.0" />
-                              <Button fx:id="bridgeDB" layoutX="132.0" layoutY="559.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="112.0" text="Search">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Button>
-                              <ListView fx:id="sourceList" layoutX="280.0" layoutY="100.0" prefHeight="459.0" prefWidth="240.0" />
-                              <ListView fx:id="targetList" layoutX="568.0" layoutY="100.0" prefHeight="460.0" prefWidth="219.0" />
-                              <Label layoutX="49.0" layoutY="23.0" text="Organism" />
-                              <ChoiceBox fx:id="organism" layoutX="116.0" layoutY="17.0" />
-                              <Label layoutX="309.0" layoutY="82.0" text="Sources" />
-                              <Label layoutX="583.0" layoutY="83.0" text="Targets" />
+                              <BorderPane fx:id="fluomicsContainer" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
+                                 <left>
+                                    <VBox minWidth="150.0" prefHeight="947.0" prefWidth="205.0" spacing="3.0" BorderPane.alignment="CENTER">
+                                       <children>
+                                          <HBox prefHeight="33.0" prefWidth="205.0" VBox.vgrow="NEVER">
+                                             <children>
+                                                <Label fx:id="sigLabel" prefHeight="17.0" prefWidth="83.0" text="Significance">
+                                                   <font>
+                                                      <Font name="System Italic" size="11.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="foldChangeLabel" layoutX="69.0" layoutY="10.0" prefHeight="17.0" prefWidth="78.0" text="Fold Change">
+                                                   <font>
+                                                      <Font name="System Bold Italic" size="11.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Slider fx:id="significance" blockIncrement="5.0" majorTickUnit="0.02" max="0.1" minorTickCount="0" orientation="VERTICAL" prefHeight="200.0" prefWidth="63.0" showTickLabels="true" showTickMarks="true" />
+                                                <Slider fx:id="foldChange" majorTickUnit="1.0" max="6.0" min="1.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="86.0" showTickLabels="true" showTickMarks="true" value="2.0" />
+                                             </children>
+                                          </HBox>
+                                          <Label text="Select Virus Strains" />
+                                          <CheckBox fx:id="H1N1" mnemonicParsing="false" text="H1N1" textFill="#f50505">
+                                             <font>
+                                                <Font name="System Bold" size="13.0" />
+                                             </font></CheckBox>
+                                          <CheckBox fx:id="H3N2" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="H3N2" textFill="#0433dd">
+                                             <font>
+                                                <Font name="System Bold" size="13.0" />
+                                             </font>
+                                          </CheckBox>
+                                          <CheckBox fx:id="H5N1" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="H5N1" textFill="#00b500">
+                                             <font>
+                                                <Font name="System Bold" size="13.0" />
+                                             </font>
+                                          </CheckBox>
+                                          <Label text="Select Time Points" />
+                                          <CheckBox fx:id="hr12" layoutX="10.0" layoutY="28.0" mnemonicParsing="false" text="12 Hours" />
+                                          <CheckBox fx:id="hr24" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="24 Hours" />
+                                          <CheckBox fx:id="hr48" layoutX="10.0" layoutY="28.0" mnemonicParsing="false" text="48 Hours" />
+                                          <CheckBox fx:id="hr72" layoutX="10.0" layoutY="46.0" mnemonicParsing="false" text="72 Hours" />
+                                          <CheckBox fx:id="hr96" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" text="96 Hours" />
+                                          <Label text="Select Connections" />
+                                          <CheckBox fx:id="literature" layoutX="10.0" layoutY="100.0" mnemonicParsing="false" text="Literature" />
+                                          <CheckBox fx:id="binary" layoutX="10.0" layoutY="118.0" mnemonicParsing="false" text="Binary" />
+                                          <CheckBox fx:id="regulatory" layoutX="10.0" layoutY="136.0" mnemonicParsing="false" text="Regulatory" />
+                                          <CheckBox fx:id="signaling" layoutX="10.0" layoutY="190.0" mnemonicParsing="false" text="Signallng" />
+                                          <CheckBox fx:id="hideOrphans" layoutX="10.0" layoutY="136.0" mnemonicParsing="false" text="Hide Nodes w/o Edges" />
+                                       </children>
+                                       <opaqueInsets>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </opaqueInsets>
+                                    </VBox>
+                                 </left>
+                                 <center>
+                                    <TableView fx:id="annotationTable" prefHeight="858.0" prefWidth="789.0" BorderPane.alignment="CENTER">
+                                      <columns>
+                                        <TableColumn fx:id="labelColumn" prefWidth="75.0" text="Label" />
+                                        <TableColumn fx:id="idColumn" prefWidth="75.0" text="UniProt" />
+                                          <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
+                                          <TableColumn fx:id="timeColumn" prefWidth="75.0" text="Time" />
+                                          <TableColumn fx:id="H1N1Column" prefWidth="75.0" text="H1N1" />
+                                          <TableColumn fx:id="H3N2Column" prefWidth="75.0" text="H3N2" />
+                                          <TableColumn fx:id="H5N1Column" prefWidth="75.0" text="H5N1" />
+                                          <TableColumn fx:id="name_idColumn" prefWidth="75.0" text="Name_Id" />
+                                      </columns>
+                                    </TableView>
+                                 </center>
+                              </BorderPane>
                            </children>
                         </AnchorPane>
                      </content>
                   </Tab>
-                  <Tab id="Analysis" text="Join">
-                    <content>
-                      <AnchorPane id="Analysis" fx:id="analysisAnchor" minHeight="0.0" minWidth="0.0" prefHeight="413.0" prefWidth="800.0">
+                  <Tab id="Mosaic" closable="false" text="Analysis">
+                     <content>
+                        <AnchorPane fx:id="mosaicAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <VBox layoutX="-1.0" layoutY="46.0" prefHeight="421.0" prefWidth="800.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="46.0">
+                              <TabPane fx:id="analysisTableSheets" layoutY="75.0" side="BOTTOM" AnchorPane.bottomAnchor="133.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="75.0">
+                                 <tabs>
+                                    <Tab fx:id="analysis1" text="Sheet 1">
+                                       <content>
+                                          <TableView fx:id="analysisTable" prefHeight="747.0" prefWidth="808.0">
+                                             <columns>
+                                                <TableColumn prefWidth="75.0" text="Label" />
+                                                <TableColumn prefWidth="109.0" text="UniProt" />
+                                                <TableColumn fx:id="betweennessColumn" prefWidth="128.0" text="Betweenness" />
+                                                <TableColumn fx:id="clusterColumn" prefWidth="62.0" text="Cluster" />
+                                                <TableColumn fx:id="overRepColumn" prefWidth="196.0" text="OverRep" />
+                                             </columns>
+                                          </TableView>
+                                       </content>
+                                    </Tab>
+                                 </tabs>
+                              </TabPane>
+                              <HBox layoutX="7.0" layoutY="27.0" prefHeight="27.0" prefWidth="809.0" spacing="6.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="1.0">
                                  <children>
-                                    <SplitPane dividerPositions="0.24874371859296482, 0.5954773869346733" layoutX="31.0" layoutY="46.0" prefHeight="355.0" AnchorPane.bottomAnchor="174.0" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="46.0" VBox.vgrow="ALWAYS">
-                                       <items>
-                                          <VBox prefHeight="761.0" prefWidth="164.0" spacing="8.0">
-                                             <children>
-                                                <Label text="Digest" />
-                                                <ListView fx:id="normalizeList" layoutX="31.0" layoutY="48.0" prefHeight="243.0" prefWidth="189.0" VBox.vgrow="ALWAYS" />
-                                             </children>
-                                          </VBox>
-                                          <VBox spacing="8.0">
-                                             <children>
-                                                <Label text="Classify" />
-                                                <TreeTableView fx:id="classifyTree" layoutX="232.0" layoutY="48.0" prefHeight="737.0" prefWidth="318.0" VBox.vgrow="ALWAYS">
-                                                  <columns>
-                                                    <TreeTableColumn fx:id="nameColumn" prefWidth="106.0" text="Population" />
-                                                      <TreeTableColumn fx:id="countColumn" prefWidth="83.0" text="Count" />
-                                                    <TreeTableColumn fx:id="rangeColumn" prefWidth="83.0" text="Range" />
-                                                      <TreeTableColumn fx:id="markerColumn" prefWidth="83.0" text="Marker" />
-                                                  </columns>
-                                                </TreeTableView>
-                                             </children>
-                                          </VBox>
-                                          <VBox fx:id="canvasVbox" spacing="8.0">
-                                             <children>
-                                                <Label text="Canvas" />
-                                             </children>
-                                          </VBox>
-                                       </items>
-                                    </SplitPane>
-                                    <HBox spacing="8.0">
-                                       <children>
-                                          <Button mnemonicParsing="false" onAction="#doBatch" text="Batch" />
-                                          <Button mnemonicParsing="false" onAction="#doMonitor" text="Monitor" />
-                                          <Button mnemonicParsing="false" onAction="#doConfigure" text="Configure" />
-                                       </children>
-                                    </HBox>
+                                    <Button fx:id="betweenness" mnemonicParsing="false" onAction="#betweenness" text="Find Betweenness" />
+                                    <Button fx:id="cluster" mnemonicParsing="false" onAction="#cluster" text="Cluster" />
+                                    <Button fx:id="overRep" mnemonicParsing="false" onAction="#overRep" text="Flag Over-representation" />
                                  </children>
-                              </VBox>
-                           </children>
-                        </AnchorPane>
-                    </content>
+                              </HBox>
+                           </children></AnchorPane>
+                     </content>
                   </Tab>
-                  <Tab id="Mosaic" closable="false" text="Analyze">
+                  <Tab id="Mosaic" closable="false" text="Visualization">
                      <content>
                         <AnchorPane fx:id="mosaicAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                     </content>
-                  </Tab>
-                  <Tab id="Mosaic" closable="false" text="Visualize">
-                     <content>
-                        <AnchorPane fx:id="mosaicAnchor1" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                     </content>
-                  </Tab>
-                  <Tab id="Mosaic" closable="false" text="References">
-                     <content>
-                        <AnchorPane fx:id="mosaicAnchor11" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                      </content>
                   </Tab>
                   <Tab id="Discussion" closable="false" text="Discussion">
@@ -317,66 +333,82 @@
                         </AnchorPane>
                     </content>
                   </Tab>
+                  <Tab id="Mosaic" closable="false" text="References">
+                     <content>
+                        <AnchorPane fx:id="referencesAnchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
                </tabs>
             </TabPane>
          </center>
          <top>
-            <MenuBar BorderPane.alignment="CENTER">
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#doNew" text="New" />
-                        <MenuItem mnemonicParsing="false" onAction="#doOpen" text="Open" />
-                        <MenuItem fx:id="recentMenu" mnemonicParsing="false" text="Open Recent..." />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
-                        <MenuItem mnemonicParsing="false" onAction="#saveas" text="Save As...." />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#doClose" text="Close" />
-                        <MenuItem mnemonicParsing="false" onAction="#doQuit" text="Quit" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#doUndo" text="Undo" />
-                        <MenuItem mnemonicParsing="false" onAction="#doRedo" text="Redo" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#doCut" text="Cut" />
-                        <MenuItem mnemonicParsing="false" onAction="#doCopy" text="Copy" />
-                        <MenuItem mnemonicParsing="false" onAction="#doPaste" text="Paste" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Duplicate" />
-                        <MenuItem mnemonicParsing="false" text="Delete" />
-                        <MenuItem mnemonicParsing="false" text="Select All" />
-                  </items>
-                </Menu>
-                  <Menu mnemonicParsing="false" text="View">
-                    <items>
-                      <MenuItem mnemonicParsing="false" text="Hypothesis" />
-                        <MenuItem mnemonicParsing="false" text="Research" />
-                        <MenuItem mnemonicParsing="false" text="Methods" />
-                        <MenuItem mnemonicParsing="false" text="Results" />
-                        <MenuItem mnemonicParsing="false" text="Analysis" />
-                        <MenuItem mnemonicParsing="false" text="Discussion" />
-                    </items>
-                  </Menu>
-                  <Menu mnemonicParsing="false" text="Layout">
-                     <items>
-                        <MenuItem fx:id="tearoffTabs" mnemonicParsing="false" onAction="#doShowTabView" text="Tear-off Tabs" />
-                        <MenuItem mnemonicParsing="false" onAction="#doShowListView" text="Sectioned list" />
-                        <MenuItem mnemonicParsing="false" onAction="#doShowMosaic" text="Mosaic" />
-                        <MenuItem mnemonicParsing="false" onAction="#doShowWizard" text="Wizard" />
-                     </items>
-                  </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
-                        <MenuItem mnemonicParsing="false" text="Manual Online" />
-                        <MenuItem mnemonicParsing="false" text="Stack Overflow" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
+            <HBox BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="toggleLeftButton" mnemonicParsing="false" onAction="#toggleLeft" text="&lt;" />
+                  <MenuBar>
+                    <menus>
+                      <Menu mnemonicParsing="false" text="File">
+                        <items>
+                          <MenuItem mnemonicParsing="false" onAction="#doNew" text="New" />
+                              <MenuItem mnemonicParsing="false" onAction="#doOpen" text="Open" />
+                              <MenuItem fx:id="recentMenu" mnemonicParsing="false" text="Open Recent..." />
+                              <SeparatorMenuItem mnemonicParsing="false" />
+                              <MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
+                              <MenuItem mnemonicParsing="false" onAction="#saveas" text="Save As...." />
+                              <SeparatorMenuItem mnemonicParsing="false" />
+                              <MenuItem mnemonicParsing="false" onAction="#doClose" text="Close" />
+                              <MenuItem mnemonicParsing="false" onAction="#doQuit" text="Quit" />
+                        </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Edit">
+                        <items>
+                          <MenuItem mnemonicParsing="false" onAction="#doUndo" text="Undo" />
+                              <MenuItem mnemonicParsing="false" onAction="#doRedo" text="Redo" />
+                              <SeparatorMenuItem mnemonicParsing="false" />
+                              <MenuItem mnemonicParsing="false" onAction="#doCut" text="Cut" />
+                              <MenuItem mnemonicParsing="false" onAction="#doCopy" text="Copy" />
+                              <MenuItem mnemonicParsing="false" onAction="#doPaste" text="Paste" />
+                              <SeparatorMenuItem mnemonicParsing="false" />
+                              <MenuItem mnemonicParsing="false" text="Duplicate" />
+                              <MenuItem mnemonicParsing="false" text="Delete" />
+                              <MenuItem mnemonicParsing="false" text="Select All" />
+                        </items>
+                      </Menu>
+                        <Menu mnemonicParsing="false" text="View">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Hypothesis" />
+                              <MenuItem mnemonicParsing="false" text="Research" />
+                              <MenuItem mnemonicParsing="false" text="Methods" />
+                              <MenuItem mnemonicParsing="false" text="Results" />
+                              <MenuItem mnemonicParsing="false" text="Analysis" />
+                              <MenuItem mnemonicParsing="false" text="Discussion" />
+                              <SeparatorMenuItem mnemonicParsing="false" />
+                              <MenuItem fx:id="toggleLeft" mnemonicParsing="false" onAction="#toggleLeft" text="Toggle Left Sidebar">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="L" control="UP" meta="DOWN" shift="UP" shortcut="UP" />
+                                 </accelerator>
+                              </MenuItem>
+                          </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Layout">
+                           <items>
+                              <MenuItem fx:id="tearoffTabs" mnemonicParsing="false" onAction="#doShowTabView" text="Tear-off Tabs" />
+                              <MenuItem mnemonicParsing="false" onAction="#doShowListView" text="Sectioned list" />
+                              <MenuItem mnemonicParsing="false" onAction="#doShowMosaic" text="Mosaic" />
+                              <MenuItem mnemonicParsing="false" onAction="#doShowWizard" text="Wizard" />
+                           </items>
+                        </Menu>
+                      <Menu mnemonicParsing="false" text="Help">
+                        <items>
+                          <MenuItem mnemonicParsing="false" text="About" />
+                              <MenuItem mnemonicParsing="false" text="Manual Online" />
+                              <MenuItem mnemonicParsing="false" text="Stack Overflow" />
+                        </items>
+                      </Menu>
+                    </menus>
+                  </MenuBar>
+               </children>
+            </HBox>
          </top>
       </BorderPane>
    </children>

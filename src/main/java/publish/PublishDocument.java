@@ -249,7 +249,7 @@ public class PublishDocument
 				if (path != null)
 				{
 					File f = new File(path);
-					EDLParsingHelper.setEDLDirectory(f, controller);
+//					EDLParsingHelper.setEDLDirectory(f, controller);
 				}
 			}			
 		}

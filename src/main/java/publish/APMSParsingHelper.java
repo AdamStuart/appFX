@@ -1,6 +1,8 @@
 package publish;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,16 +13,19 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TreeItem;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
+import model.dao.DataItem;
 import util.FileUtil;
 import util.StringUtil;
-import xml.XMLTreeItem;
+public class APMSParsingHelper {
 
-public class EDLParsingHelper
-{
-	public EDLParsingHelper(TreeTableView<Node> xmlTree)
+	public APMSParsingHelper(TreeTableView<Node> xmlTree)
 	{
 		TreeTableColumn<Node, String> nameColumn = new TreeTableColumn<Node, String>("Name");
 		nameColumn.setPrefWidth(500);
@@ -148,6 +153,7 @@ public class EDLParsingHelper
 	static String[] suppressNames = new String[]{ "SpecificParameters", "Environment", "Machine", "MethodHistory"};		// close the disclosure triangle, as they may be big
 
 	//--------------------------------------------------------------------------------
+	
 
 	//--------------------------------------------------------------------------------
 	
@@ -191,48 +197,73 @@ public class EDLParsingHelper
 	}
 
 	//--------------------------------------------------------------------------------
-	public static void addCSVFilesToSegments(File fileOrDir, ListView<Segment> segments)
+	public static void addTXTFilesToResults(File fileOrDir, List<ResultsRow> results, List<String> columnNames)
 	{
 		if (fileOrDir.isDirectory())
 		{
 			File[] kids = fileOrDir.listFiles();
 			for (File kid : kids)
-				if (FileUtil.isCSV(kid))
-				{
-					Segment seg = new Segment(kid.getName(), kid);	// read the file, build the table
-					if (seg.getData() != null)
-						segments.getItems().add(seg);	
-				}
+				if (FileUtil.isTXT(kid))
+					addTXTFilesToResults(kid, results, columnNames);
 		}
-		else
+		else if (FileUtil.isTextFile(fileOrDir))
 		{
-			Segment seg = new Segment(fileOrDir.getName(), fileOrDir);	// read the file, build the table
-			if (seg.getData() != null)
-				segments.getItems().add(seg);	
+			List<String> lines = FileUtil.readFileIntoStringList(fileOrDir);
+			for (String line : lines)
+			{
+				if (columnNames.isEmpty())
+					columnNames.addAll(Arrays.asList(lines.get(0).split("\t")));
+				else results.add(new ResultsRow(line.split("\t")));
+			}
 		}
 	}
+	
+	public static void addTXTFilesToResults(File fileOrDir, TableView<ResultsRow> resultsTable)
+	{
+		List<ResultsRow> results = new ArrayList<ResultsRow>();
+		List<String> columns = new ArrayList<String>();
+		addTXTFilesToResults(fileOrDir, results, columns);
+		
+		resultsTable.getColumns().clear();
+		for (String col : columns)
+		{
+			TableColumn<ResultsRow, String> c = new TableColumn<ResultsRow, String>(col);
+			final Callback<TableColumn<ResultsRow, String>, TableCell<ResultsRow, String>> xCellFactory = new Callback<TableColumn<ResultsRow, String>, TableCell<ResultsRow, String>>() {
+				public TableCell<ResultsRow, String> call(final TableColumn<ResultsRow, String> p) {
+					return new TableCell<ResultsRow, String>();
+				}
+			};
+			c.setCellFactory(xCellFactory);
+			
+			if ("name".equals(col))
+				c.setCellValueFactory(new PropertyValueFactory<ResultsRow, String>("name"));
+			else if ("label".equals(col))
+				c.setCellValueFactory(new PropertyValueFactory<ResultsRow, String>("label"));
+			else if ("id".equals(col))
+				c.setCellValueFactory(new PropertyValueFactory<ResultsRow, String>("id"));
+			else if ("time".equals(col))
+				c.setCellValueFactory(new PropertyValueFactory<ResultsRow, String>("time"));
+			else if ("idList".equals(col))
+				c.setCellValueFactory(new PropertyValueFactory<ResultsRow, String>("idList"));
+			c.setMinWidth(100);
+			resultsTable.getColumns().add(c);
+		}
+		resultsTable.getItems().addAll(results);
+	}
 
-	public static ObservableList<String> organismList = FXCollections.observableArrayList("Human", "Mouse", "Cow", "Dog", "Pig", "Yeast", "More...");
-	public static ObservableList<String> speciesList = FXCollections.observableArrayList("Mouse", "Human", "Yeast", "More...");
-	public static ObservableList<String> cellTypes = FXCollections.observableArrayList("Jurkat Cells", "HEK293 Cells", "T Cells", "B Cells", "NK Cells", "More...");
-	public static ObservableList<String> technologyList = FXCollections.observableArrayList("APMS", "ChipCytometry", "PCR", "HPLC", "More...");
+	public static ObservableList<String> organismList = FXCollections.observableArrayList("Human", "Mouse", "Cow", "Dog", "Pig", "Yeast");
+	public static ObservableList<String> speciesList = FXCollections.observableArrayList("Mouse", "Human", "More...");
+	public static ObservableList<String> cellTypes = FXCollections.observableArrayList("T Cells", "B Cells", "NK Cells", "More...");
+	public static ObservableList<String> technologyList = FXCollections.observableArrayList("APMS", "Genomics", "Proteinomics", "ChipCytometry", "PCR", "HPLC", "More...");
 
 
 	public static ObservableList<SOPLink> getSOPLinks()
 	{
 		ObservableList<SOPLink> links = FXCollections.observableArrayList();
-		links.add(new SOPLink("https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4332878", "Morris, Nature Protocols, 2014."));
-		links.add(new SOPLink("https://www.ncbi.nlm.nih.gov/pubmed/18653769", "Protein Prospector"));
-		
-		links.add(new SOPLink("https://github.com/everschueren/mist", "MiST software"));
-		links.add(new SOPLink("http://saint-apms.sourceforge.net/Main.html", "SAINT software"));
-		links.add(new SOPLink("http://www.cytoscape.org", "Cytoscape software"));
-//		links.add(new SOPLink("url", "label"));
+		links.add(new SOPLink("http://chipcytometry.com/Blog/", "Chip Cytometry SOPs"));
+		links.add(new SOPLink("http://www.protocol-online.org/prot/Cell_Biology/Flow_Cytometry__FCM_/", "FACS Protocols"));
+		links.add(new SOPLink("https://www.thermofisher.com/us/en/home/references/"
+		+ "protocols/cell-and-tissue-analysis/flow-cytometry-protocol.html", "ThermoFisher"));
 		return links;
 	}
 }
-
-//links.add(new SOPLink("http://chipcytometry.com/Blog/", "Chip Cytometry SOPs"));
-//links.add(new SOPLink("http://www.protocol-online.org/prot/Cell_Biology/Flow_Cytometry__FCM_/", "FACS Protocols"));
-//links.add(new SOPLink("https://www.thermofisher.com/us/en/home/references/"
-//+ "protocols/cell-and-tissue-analysis/flow-cytometry-protocol.html", "ThermoFisher"));

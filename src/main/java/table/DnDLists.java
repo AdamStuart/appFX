@@ -135,28 +135,18 @@ public class DnDLists extends Application {
 
  class Player {
 	private String name;
+	public String getName() { return name; }
+	public void setName(String name) { this.name = name; }
 
-	public Player(String name) {
-		this.name = name;
-	}
+	public Player(String name) { this.name = name; }
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 
 		Player player = (Player) o;
-
 		if (name != null ? !name.equals(player.name) : player.name != null)
 			return false;
 
